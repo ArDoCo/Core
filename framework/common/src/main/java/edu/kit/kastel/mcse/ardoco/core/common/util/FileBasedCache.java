@@ -2,6 +2,7 @@ package edu.kit.kastel.mcse.ardoco.core.common.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -32,6 +33,8 @@ public abstract class FileBasedCache<T> implements AutoCloseable {
     }
 
     public abstract T load(boolean allowReload);
+
+    public abstract Optional<T> get();
 
     public abstract T getDefault();
 
@@ -85,6 +88,9 @@ public abstract class FileBasedCache<T> implements AutoCloseable {
 
     @Override
     public void close() {
-        save(load());
+        var currentState = get();
+        if (currentState.isPresent()) {
+            save(currentState.orElseThrow());
+        }
     }
 }

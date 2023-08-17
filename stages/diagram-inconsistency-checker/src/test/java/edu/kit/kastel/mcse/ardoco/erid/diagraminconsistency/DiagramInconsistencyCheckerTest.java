@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
-import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.AnonymousRunner;
 import edu.kit.kastel.mcse.ardoco.core.models.ModelProviderAgent;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
@@ -32,7 +31,7 @@ import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognition;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 import edu.kit.kastel.mcse.ardoco.tests.eval.StageTest;
 
-public class DiagramInconsistencyCheckerTest extends StageTest<DiagramInconsistencyChecker, DiagramInconsistencyCheckerTest.Results> {
+public class DiagramInconsistencyCheckerTest extends StageTest<DiagramInconsistencyChecker, DiagramProject, DiagramInconsistencyCheckerTest.Results> {
     private static final Logger logger = LoggerFactory.getLogger(DiagramInconsistencyCheckerTest.class);
     private final static boolean useMockDiagrams = true;
 
@@ -44,7 +43,7 @@ public class DiagramInconsistencyCheckerTest extends StageTest<DiagramInconsiste
     }
 
     public DiagramInconsistencyCheckerTest() {
-        super(new DiagramInconsistencyChecker(Map.of(), null));
+        super(new DiagramInconsistencyChecker(Map.of(), null), DiagramProject.values());
     }
 
     @Override
@@ -69,11 +68,8 @@ public class DiagramInconsistencyCheckerTest extends StageTest<DiagramInconsiste
         logger.info("Run PreTestRunner for {}", project.name());
         return new AnonymousRunner(project.name()) {
             @Override
-            public List<AbstractPipelineStep> initializePipelineSteps() throws IOException {#
+            public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) throws IOException {
                 var pipelineSteps = new ArrayList<AbstractPipelineStep>();
-
-                ArDoCo arDoCo = getArDoCo();
-                var dataRepository = arDoCo.getDataRepository();
 
                 if (useMockDiagrams) {
                     pipelineSteps.add(new DiagramRecognitionMock(project, project.getAdditionalConfigurations(), dataRepository));
@@ -99,21 +95,15 @@ public class DiagramInconsistencyCheckerTest extends StageTest<DiagramInconsiste
     }
 
     @Override
-    protected DataRepository runTestRunner(DiagramProject project, Map<String, String> additionalConfigurations, DataRepository dataRepository) {
+    protected DataRepository runTestRunner(DiagramProject project, Map<String, String> additionalConfigurations, DataRepository preRunDataRepository) {
         logger.info("Run TestRunner for {}", project.name());
         var combinedConfigs = new HashMap<>(project.getAdditionalConfigurations());
         combinedConfigs.putAll(additionalConfigurations);
-        return new AnonymousRunner(project.name()) {
+        return new AnonymousRunner(project.name(), preRunDataRepository) {
             @Override
-            public List<AbstractPipelineStep> initializePipelineSteps() {
+            public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) {
                 var pipelineSteps = new ArrayList<AbstractPipelineStep>();
-
-                ArDoCo arDoCo = getArDoCo();
-                var combinedRepository = arDoCo.getDataRepository();
-                combinedRepository.addAllData(dataRepository);
-
-                pipelineSteps.add(new DiagramInconsistencyChecker(combinedConfigs, combinedRepository));
-
+                pipelineSteps.add(new DiagramInconsistencyChecker(combinedConfigs, dataRepository));
                 return pipelineSteps;
             }
         }.runWithoutSaving();

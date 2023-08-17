@@ -1,7 +1,13 @@
 package edu.kit.kastel.mcse.ardoco.tests.eval;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
@@ -21,36 +27,41 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public abstract class StageTest<T extends AbstractExecutionStage, U extends GoldStandardProject, V extends Record> {
+public abstract class StageTest<T extends AbstractExecutionStage, U extends GoldStandardProject, V extends Record> implements Serializable {
     private static final String ENV_DEBUG = "debug";
+    private static final String ENV_DEBUG_KEEP_CACHE = "debugKeepCache";
     private static final String CACHING = "stageTestCaching";
     private static final Logger logger = LoggerFactory.getLogger(StageTest.class);
-    private final T stage;
-    private final List<U> allProjects;
-    private final Set<Class<? extends PipelineAgent>> agents;
-    private final Map<Class<? extends PipelineAgent>, Set<Class<? extends Informant>>> informantsMap;
-    private final Map<U, TestDataRepositoryCache> dataRepositoryCaches = new HashMap<>();
+    private transient final T stage;
+    private transient final List<U> allProjects;
+    private transient final Set<Class<? extends PipelineAgent>> agents;
+    private transient final Map<Class<? extends PipelineAgent>, Set<Class<? extends Informant>>> informantsMap;
+    private transient final Map<U, TestDataRepositoryCache<U>> dataRepositoryCaches = new HashMap<>();
 
-    public StageTest(T stage, List<U> allProjects) {
+    public StageTest(T stage, U[] allProjects) {
         this.stage = stage;
         this.agents = ConfigurationUtility.getAgents(stage);
         this.informantsMap = ConfigurationUtility.getInformantsMap(stage);
-        this.allProjects = allProjects;
+        this.allProjects = List.of(allProjects);
     }
 
     private DataRepository setup(U project) {
         logger.info("Run PreTestRunner for {}", project.getProjectName());
-        return runPreTestRunner(project);
+        var preRunDataRepository = runPreTestRunner(project);
+        logger.info("Finished PreTestRunner for {}", project.getProjectName());
+        return preRunDataRepository;
     }
 
     protected DataRepository run(U project, Map<String, String> additionalConfigurations) {
-        var dataRepository = getDataRepository(project, true);
-        return runTestRunner(project, additionalConfigurations, dataRepository);
+        return run(project, additionalConfigurations, true);
     }
 
     protected DataRepository run(U project, Map<String, String> additionalConfigurations, boolean cachePreRun) {
-        var dataRepository = getDataRepository(project, cachePreRun);
-        return runTestRunner(project, additionalConfigurations, dataRepository);
+        var preRunDataRepository = getDataRepository(project, cachePreRun);
+        logger.info("Run TestRunner for {}", project.getProjectName());
+        var dataRepository = runTestRunner(project, additionalConfigurations, preRunDataRepository);
+        logger.info("Finished TestRunner for {}", project.getProjectName());
+        return dataRepository;
     }
 
     protected void debugAskCache(String id, Serializable obj) {
@@ -81,12 +92,19 @@ public abstract class StageTest<T extends AbstractExecutionStage, U extends Gold
         }
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     protected void cache(@NotNull String id, @NotNull Serializable obj) {
-        new TestDataCache<Serializable>(stage.getClass(), id, "cache/").save(new TestData<>(obj));
+        try (TestDataCache<Serializable> drCache = new TestDataCache<>(stage.getClass(), obj.getClass(), id, "cache/") {
+        }) {
+            drCache.save(obj);
+        }
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     protected <W extends Serializable> W getCached(@NotNull String id, Class<W> cls) {
-        return new TestDataCache<W>(stage.getClass(), id, "cache/").load().data();
+        try (TestDataCache<W> drCache = new TestDataCache<>(stage.getClass(), cls, id, "cache/")) {
+            return drCache.load();
+        }
     }
 
     @NotNull
@@ -96,7 +114,10 @@ public abstract class StageTest<T extends AbstractExecutionStage, U extends Gold
             return this.setup(project);
         }
 
-        return dataRepositoryCaches.computeIfAbsent(project, dp -> new TestDataRepositoryCache<U>(stage.getClass(), project)).get(this::setup);
+        try (TestDataRepositoryCache<U> drCache = dataRepositoryCaches.computeIfAbsent(project,
+                dp -> new TestDataRepositoryCache<>(stage.getClass(), project))) {
+            return drCache.get(this::setup);
+        }
     }
 
     protected DataRepository run(U project) {
@@ -119,14 +140,18 @@ public abstract class StageTest<T extends AbstractExecutionStage, U extends Gold
 
     protected abstract DataRepository runPreTestRunner(U project);
 
-    protected abstract DataRepository runTestRunner(U project, Map<String, String> additionalConfigurations, DataRepository dataRepository);
+    protected abstract DataRepository runTestRunner(U project, Map<String, String> additionalConfigurations, DataRepository preRunDataRepository);
 
     private static final int repetitions = 2;
 
     @BeforeAll
     void resetAllTestDataRepositoryCaches() {
-        allProjects.forEach(d -> new TestDataRepositoryCache<U>(stage.getClass(), d).deleteFile());
-        debugAskCache();
+        if (Boolean.parseBoolean(System.getenv().getOrDefault(ENV_DEBUG_KEEP_CACHE, "false"))) {
+            logger.warn("Keeping caches, careful! Set \"" + ENV_DEBUG_KEEP_CACHE + "=false\" to disable persistent caching");
+        } else {
+            allProjects.forEach(d -> new TestDataRepositoryCache<U>(stage.getClass(), d).deleteFile());
+            debugAskCache();
+        }
     }
 
     @DisplayName("Repetition Test Stage")

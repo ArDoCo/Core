@@ -12,7 +12,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState;
-import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
+import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.AnonymousRunner;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
 import edu.kit.kastel.mcse.ardoco.erid.diagramrecognitionmock.DiagramRecognitionMock;
@@ -37,21 +37,16 @@ public class DiagramRecognitionMockTest {
     }
 
     private void run(DiagramProject project) {
-        var dataRepository = new AnonymousRunner(project.name()) {
+        var result = new AnonymousRunner(project.name()) {
             @Override
-            public List<AbstractPipelineStep> initializePipelineSteps() {
+            public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) {
                 var pipelineSteps = new ArrayList<AbstractPipelineStep>();
-
-                ArDoCo arDoCo = getArDoCo();
-                var dataRepository = arDoCo.getDataRepository();
-
                 pipelineSteps.add(new DiagramRecognitionMock(project, project.getAdditionalConfigurations(), dataRepository));
-
                 return pipelineSteps;
             }
         }.runWithoutSaving();
-        var diagramRecognition = dataRepository.getData(DiagramRecognitionState.ID, DiagramRecognitionState.class).orElseThrow();
+        var diagramRecognition = result.getData(DiagramRecognitionState.ID, DiagramRecognitionState.class).orElseThrow();
         var diagrams = diagramRecognition.getDiagrams();
-        Assertions.assertTrue(diagrams.size() > 0);
+        Assertions.assertFalse(diagrams.isEmpty());
     }
 }

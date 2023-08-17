@@ -27,7 +27,6 @@ import org.slf4j.LoggerFactory;
 import edu.kit.kastel.mcse.ardoco.core.api.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TraceType;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
-import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.AnonymousRunner;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
 import edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator.DiagramConnectionStates;
@@ -39,12 +38,12 @@ import edu.kit.kastel.mcse.ardoco.tests.eval.StageTest;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionGenerator, Results> {
+public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionGenerator, DiagramProject, Results> {
     private static final Logger logger = LoggerFactory.getLogger(DiagramConnectionGeneratorTest.class);
     private static final String OUTPUT_DIR = "src/test/resources/testout";
 
     public DiagramConnectionGeneratorTest() {
-        super(new DiagramConnectionGenerator(Map.of(), null));
+        super(new DiagramConnectionGenerator(Map.of(), null), DiagramProject.values());
     }
 
     @Override
@@ -104,21 +103,15 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
     }
 
     @Override
-    protected DataRepository runTestRunner(DiagramProject project, Map<String, String> additionalConfigurations, DataRepository dataRepository) {
+    protected DataRepository runTestRunner(DiagramProject project, Map<String, String> additionalConfigurations, DataRepository preRunDataRepository) {
         logger.info("Run TestRunner for {}", project.name());
         var combinedConfigs = new HashMap<>(project.getAdditionalConfigurations());
         combinedConfigs.putAll(additionalConfigurations);
-        return new AnonymousRunner(project.name()) {
+        return new AnonymousRunner(project.name(), preRunDataRepository) {
             @Override
-            public List<AbstractPipelineStep> initializePipelineSteps() {
+            public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) {
                 var pipelineSteps = new ArrayList<AbstractPipelineStep>();
-
-                ArDoCo arDoCo = getArDoCo();
-                var combinedRepository = arDoCo.getDataRepository();
-                combinedRepository.addAllData(dataRepository);
-
-                pipelineSteps.add(new DiagramConnectionGenerator(combinedConfigs, combinedRepository));
-
+                pipelineSteps.add(new DiagramConnectionGenerator(combinedConfigs, dataRepository));
                 return pipelineSteps;
             }
         }.runWithoutSaving();

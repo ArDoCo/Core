@@ -1,6 +1,10 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
@@ -10,10 +14,11 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.stanford.nlp.pipeline.CoreDocument;
+import edu.stanford.nlp.pipeline.ProtobufAnnotationSerializer;
 
 class TextImpl implements Text {
 
-    final transient CoreDocument coreDocument;
+    private transient CoreDocument coreDocument;
     private ImmutableList<Sentence> sentences = Lists.immutable.empty();
     private ImmutableList<Word> words = Lists.immutable.empty();
 
@@ -62,5 +67,17 @@ class TextImpl implements Text {
 
         sentences = sentenceList.toImmutable();
         words = wordList.toImmutable();
+    }
+
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        ProtobufAnnotationSerializer serializer = new ProtobufAnnotationSerializer();
+        serializer.writeCoreDocument(coreDocument, out);
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        ProtobufAnnotationSerializer serializer = new ProtobufAnnotationSerializer();
+        coreDocument = serializer.readCoreDocument(in).first;
     }
 }

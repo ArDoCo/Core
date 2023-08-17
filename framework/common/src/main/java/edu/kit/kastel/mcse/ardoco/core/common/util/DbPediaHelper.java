@@ -3,6 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.common.util;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.compress.utils.Lists;
 import org.apache.jena.query.ParameterizedSparqlString;
@@ -27,7 +28,7 @@ public class DbPediaHelper extends FileBasedCache<DbPediaHelper.DbPediaData> {
         return instance;
     }
 
-    private DbPediaHelper() {
+    public DbPediaHelper() {
         super("dbpedia", ".json", "");
     }
 
@@ -151,6 +152,11 @@ public class DbPediaHelper extends FileBasedCache<DbPediaHelper.DbPediaData> {
             logger.error("Error reading {} file", getIdentifier());
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public Optional<DbPediaData> get() {
+        return Optional.ofNullable(dbPediaData);
     }
 
     public record DbPediaData(List<String> programmingLanguages, List<String> markupLanguages, List<String> software) {

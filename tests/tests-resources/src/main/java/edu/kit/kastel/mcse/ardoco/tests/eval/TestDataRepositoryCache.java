@@ -13,23 +13,30 @@ import edu.kit.kastel.mcse.ardoco.core.data.DeepCopy;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
 
-public class TestDataRepositoryCache<T extends GoldStandardProject> extends TestDataCache<HashMap<T, DataRepository>> {
+@SuppressWarnings({ "unchecked", "rawtypes" })
+public class TestDataRepositoryCache<T extends GoldStandardProject> extends TestDataCache<HashMap> {
     private static final Logger logger = LoggerFactory.getLogger(TestDataRepositoryCache.class);
     private final T project;
 
     public TestDataRepositoryCache(@NotNull Class<? extends AbstractExecutionStage> stage, T project) {
-        super(stage, project.getProjectName(), "data-repositories/");
+        super(stage, HashMap.class, project.getProjectName(), "data-repositories/");
         this.project = project;
     }
 
     @Override
-    public TestData<HashMap<T, DataRepository>> getDefault() {
-        return new TestData<>(new HashMap<>());
+    public HashMap<T, DataRepository> getDefault() {
+        return new HashMap<>();
     }
 
     @Override
-    public TestData<HashMap<T, DataRepository>> load() {
+    public HashMap<T, DataRepository> load() {
         return super.load();
+    }
+
+    @Override
+    public void save(HashMap content) {
+        var cast = (HashMap<T, DataRepository>) content;
+        super.save(cast);
     }
 
     @NotNull
@@ -38,12 +45,12 @@ public class TestDataRepositoryCache<T extends GoldStandardProject> extends Test
         checkVersion();
 
         var testData = load();
-        if (!testData.data().containsKey(project)) {
-            testData.data().put(project, mappingFunction.apply(project));
+        if (!testData.containsKey(project)) {
+            testData.put(project, mappingFunction.apply(project));
             save(testData);
         }
 
-        return testData.data().get(project).deepCopy();
+        return testData.get(project).deepCopy();
     }
 
     private void checkVersion() {

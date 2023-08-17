@@ -27,12 +27,12 @@ public class AbbreviationDisambiguationHelper extends FileBasedCache<ImmutableMa
      * Matches abbreviations with up to 1 lowercase letter between uppercase letters. Accounts for camelCase by lookahead, e.g. UserDBAdapter is matched as "DB"
      * rather than "DBA". Matches abbreviations at any point in the word, including at the start and end.
      */
-    private final static Pattern abbreviationsPattern = Pattern.compile("(?:([A-Z]+[a-z]?)+[A-Z])(?=([A-Z][a-z])|\\b)");
+    private final static Pattern abbreviationsPattern = Pattern.compile("(?:([A-Z]+[a-z]?)+[A-Z])" + "(?=([A-Z][a-z])|\\b)");
     public static final int LIMIT = 2;
     public static final double SIMILARITY_THRESHOLD = 0.9;
     private static Logger logger = LoggerFactory.getLogger(AbbreviationDisambiguationHelper.class);
     private static final String abbreviationsCom = "https://www.abbreviations.com/";
-    private static final String acronymFinderCom = "https://www.acronymfinder.com/Information-Technology/";
+    private static final String acronymFinderCom = "https://www.acronymfinder" + ".com/Information-Technology/";
     private static AbbreviationDisambiguationHelper instance;
     private MutableMap<String, Disambiguation> abbreviationsCache;
 
@@ -43,7 +43,7 @@ public class AbbreviationDisambiguationHelper extends FileBasedCache<ImmutableMa
         return instance;
     }
 
-    private AbbreviationDisambiguationHelper() {
+    public AbbreviationDisambiguationHelper() {
         super("abbreviations", ".json", "");
     }
 
@@ -129,7 +129,7 @@ public class AbbreviationDisambiguationHelper extends FileBasedCache<ImmutableMa
         var meanings = new LinkedHashSet<String>();
         try {
             Document document = Jsoup.connect(acronymFinderCom + abbreviation + ".html").get();
-            var elements = document.select("td.result-list__body__meaning > a, td.result-list__body__meaning");
+            var elements = document.select("td.result-list__body__meaning > a, td" + ".result-list__body__meaning");
             meanings.addAll(elements.stream().limit(LIMIT).map(Element::text).map(this::removeAllBrackets).toList());
             logger.info("Crawler found {} -> {} on {}", abbreviation, meanings, acronymFinderCom);
         } catch (IOException e) {
@@ -148,6 +148,11 @@ public class AbbreviationDisambiguationHelper extends FileBasedCache<ImmutableMa
     @Override
     public @NotNull ImmutableMap<String, Disambiguation> load(boolean allowReload) {
         return Maps.immutable.ofMap(loadMutable(allowReload));
+    }
+
+    @Override
+    public Optional<ImmutableMap<String, Disambiguation>> get() {
+        return Optional.ofNullable(abbreviationsCache).map(MutableMap::toImmutable);
     }
 
     /**
@@ -246,7 +251,7 @@ public class AbbreviationDisambiguationHelper extends FileBasedCache<ImmutableMa
      * @param initialismThreshold the percentage of characters in a word that need to be uppercase for a word to be considered an initialism candidate
      */
     public static boolean isInitialismOf(@NotNull String text, @NotNull String initialismCandidate, double initialismThreshold) {
-        if (!couldBeInitialism(initialismCandidate, initialismThreshold))
+        if (!couldBeAbbreviation(initialismCandidate, initialismThreshold))
             return false;
 
         //Check if the entire Initialism is contained within the single word
@@ -271,21 +276,21 @@ public class AbbreviationDisambiguationHelper extends FileBasedCache<ImmutableMa
     }
 
     /**
-     * {@return whether the text could be an initialism} Compares the share of uppercase letters to the initialism threshold.
+     * {@return whether the text could be an abbreviation} Compares the share of uppercase letters to the threshold.
      *
-     * @param initialismCandidate the initialism candidate
-     * @param initialismThreshold the initialism threshold
+     * @param candidate the initialism candidate
+     * @param threshold the initialism threshold
      */
-    public static boolean couldBeInitialism(@NotNull String initialismCandidate, double initialismThreshold) {
-        if (initialismCandidate.isEmpty())
+    public static boolean couldBeAbbreviation(@NotNull String candidate, double threshold) {
+        if (candidate.isEmpty())
             return false;
         var upperCaseCharacters = 0;
-        var cArray = initialismCandidate.toCharArray();
+        var cArray = candidate.toCharArray();
         for (char c : cArray) {
             if (Character.isUpperCase(c))
                 upperCaseCharacters++;
         }
-        return upperCaseCharacters >= initialismThreshold * initialismCandidate.length();
+        return upperCaseCharacters >= threshold * candidate.length();
     }
 
     /**
@@ -306,21 +311,27 @@ public class AbbreviationDisambiguationHelper extends FileBasedCache<ImmutableMa
      * @param text  the text
      * @param query the query
      */
-    public static int containsInOrder(@NotNull String text, @NotNull String query) {
-        var total = 0;
-        var remainingText = text;
-        var cArray = query.toCharArray();
+    public static long containsInOrder(@NotNull String text, @NotNull String query) {
+        return Math.round(maximumAbbreviationScore(text, query, 0, 0, 1, 0));
+    }
 
-        for (char c : cArray) {
-            if (remainingText.isEmpty())
-                return total;
-            var current = remainingText.indexOf(String.valueOf(c));
-            if (current == -1)
-                continue;
-            remainingText = remainingText.substring(current + 1);
-            total++;
+    public static double maximumAbbreviationScore(@NotNull String text, @NotNull String abbreviation, double rewardInitialMatch, double rewardAnyMatch,
+            double rewardCaseMatch, int textIndex) {
+        if (abbreviation.isEmpty() || textIndex >= text.length())
+            return 0;
+        var current = abbreviation.substring(0, 1);
+        var index = text.toLowerCase(Locale.US).indexOf(current.toLowerCase(Locale.US), textIndex);
+        if (index == -1)
+            return 0;
+        var score = maximumAbbreviationScore(text, abbreviation.substring(1), rewardInitialMatch, rewardAnyMatch, rewardCaseMatch, index + 1);
+        if (index == 0 || text.charAt(index - 1) == ' ') {
+            score += rewardInitialMatch;
         }
-        return total;
+        if (text.substring(index, index + 1).equals(current)) {
+            score += rewardCaseMatch;
+        }
+        score += rewardAnyMatch;
+        return Math.max(score, maximumAbbreviationScore(text, abbreviation, rewardInitialMatch, rewardAnyMatch, rewardCaseMatch, index + 1));
     }
 
     public static boolean shareInitial(String a, String b) {

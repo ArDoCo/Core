@@ -1,6 +1,7 @@
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
 import java.io.*;
+import java.util.Optional;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,6 +30,7 @@ public class SerializableFileBasedCache<T extends Serializable> extends FileBase
     }
 
     @Override
+    @SuppressWarnings("uncecked")
     public @Nullable T load(boolean allowReload) {
         if (content != null)
             return content;
@@ -53,6 +55,11 @@ public class SerializableFileBasedCache<T extends Serializable> extends FileBase
             logger.error("Error reading {} file", getIdentifier());
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public Optional<T> get() {
+        return Optional.ofNullable(content);
     }
 
     @Override

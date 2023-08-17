@@ -1,14 +1,15 @@
 package edu.kit.kastel.mcse.ardoco.core.execution.runner;
 
-import edu.kit.kastel.mcse.ardoco.core.execution.PipelineMetaData;
-import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
-
 import java.io.IOException;
-
 import java.util.List;
+import javax.annotation.Nullable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
+import edu.kit.kastel.mcse.ardoco.core.execution.PipelineMetaData;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
 
 public abstract class AnonymousRunner extends ArDoCoRunner {
     private static final Logger logger = LoggerFactory.getLogger(AnonymousRunner.class);
@@ -17,20 +18,33 @@ public abstract class AnonymousRunner extends ArDoCoRunner {
 
     protected AnonymousRunner(String projectName) {
         super(projectName);
-        pipelineSteps = setUp();
+        pipelineSteps = setUp(null);
+    }
+
+    protected AnonymousRunner(String projectName, DataRepository preRunDataRepository) {
+        super(projectName);
+        pipelineSteps = setUp(preRunDataRepository);
     }
 
     /**
-     * Sets up the runner using {@link #initializePipelineSteps}. {@link #isSetUp} must return true, if successful.
+     * Sets up the runner using {@link #initializePipelineSteps}. Initializes the new data repository using the preRunDataRepository, if present.
+     * {@link #isSetUp} must return true, if successful.
      *
+     * @param preRunDataRepository data repository of a previous run used as a base
      * @return List of AbstractPipelineSteps this runner consists of
      */
-    public List<AbstractPipelineStep> setUp() {
+    public List<AbstractPipelineStep> setUp(@Nullable DataRepository preRunDataRepository) {
         try {
             var arDoCo = getArDoCo();
-            var pipelineSteps = initializePipelineSteps();
+            var dataRepository = arDoCo.getDataRepository();
+
+            if (preRunDataRepository != null) {
+                dataRepository.addAllData(preRunDataRepository);
+            }
+
+            var pipelineSteps = initializePipelineSteps(dataRepository);
             pipelineSteps.forEach(arDoCo::addPipelineStep);
-            arDoCo.getDataRepository().addData(PipelineMetaData.ID, new PipelineMetaData(this));
+            dataRepository.addData(PipelineMetaData.ID, new PipelineMetaData(this));
             isSetUp = true;
             return pipelineSteps;
         } catch (IOException e) {
@@ -43,7 +57,8 @@ public abstract class AnonymousRunner extends ArDoCoRunner {
     /**
      * Initializes and returns the pipeline steps according to the supplied parameters
      *
+     * @param dataRepository the data repository of this runner
      * @throws IOException can occur when loading data
      */
-    public abstract List<AbstractPipelineStep> initializePipelineSteps() throws IOException;
+    public abstract List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) throws IOException;
 }

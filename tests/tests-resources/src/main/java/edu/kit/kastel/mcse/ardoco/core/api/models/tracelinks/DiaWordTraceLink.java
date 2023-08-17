@@ -61,8 +61,8 @@ public class DiaWordTraceLink extends DiaTexTraceLink {
         if (this == obj)
             return true;
         else if (obj instanceof DiaWordTraceLink other) {
-            return Objects.equals(getDiagramElement(), other.getDiagramElement()) && Objects.equals(getWord().getPosition(),
-                    other.getWord().getPosition()) && Objects.equals(getConfidence(), other.getConfidence());
+            return Objects.equals(getDiagramElement(), other.getDiagramElement()) && getWord().getPosition() == other.getWord().getPosition() && Objects.equals(
+                    getConfidence(), other.getConfidence());
         }
         return super.equals(obj);
     }
