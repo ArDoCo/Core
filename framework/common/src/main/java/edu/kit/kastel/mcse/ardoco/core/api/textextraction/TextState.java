@@ -3,8 +3,8 @@ package edu.kit.kastel.mcse.ardoco.core.api.textextraction;
 
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.map.MutableMap;
-import org.eclipse.collections.api.set.ImmutableSet;
+import org.eclipse.collections.api.map.sorted.ImmutableSortedMap;
+import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
@@ -38,10 +38,10 @@ public interface TextState extends IConfigurable, PipelineStepData {
      */
     NounMapping addNounMapping(Word word, MappingKind kind, Claimant claimant, double probability, ImmutableList<String> surfaceForms);
 
-    NounMapping addNounMapping(ImmutableSet<Word> words, MappingKind kind, Claimant claimant, double probability, ImmutableList<Word> referenceWords,
+    NounMapping addNounMapping(ImmutableSortedSet<Word> words, MappingKind kind, Claimant claimant, double probability, ImmutableList<Word> referenceWords,
             ImmutableList<String> surfaceForms, String reference);
 
-    NounMapping addNounMapping(ImmutableSet<Word> words, MutableMap<MappingKind, Confidence> distribution, ImmutableList<Word> referenceWords,
+    NounMapping addNounMapping(ImmutableSortedSet<Word> words, ImmutableSortedMap<MappingKind, Confidence> distribution, ImmutableList<Word> referenceWords,
             ImmutableList<String> surfaceForms, String reference);
 
     /**

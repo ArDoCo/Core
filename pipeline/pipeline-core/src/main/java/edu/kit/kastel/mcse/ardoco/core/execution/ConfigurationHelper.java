@@ -7,23 +7,19 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.kit.kastel.mcse.ardoco.core.api.UserReviewedDeterministic;
 import edu.kit.kastel.mcse.ardoco.core.configuration.AbstractConfigurable;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.configuration.ConfigurationInstantiatorUtils;
 
+@UserReviewedDeterministic
 public class ConfigurationHelper {
     private static final Logger logger = LoggerFactory.getLogger(ConfigurationHelper.class);
 
@@ -37,8 +33,8 @@ public class ConfigurationHelper {
      * @param additionalConfigsFile the file containing the additional configurations
      * @return a Map with the additional configurations
      */
-    public static Map<String, String> loadAdditionalConfigs(File additionalConfigsFile) {
-        Map<String, String> additionalConfigs = new HashMap<>();
+    public static SortedMap<String, String> loadAdditionalConfigs(File additionalConfigsFile) {
+        SortedMap<String, String> additionalConfigs = new TreeMap<>();
         if (additionalConfigsFile != null && (!additionalConfigsFile.exists() || !additionalConfigsFile.isFile())) {
             throw new IllegalArgumentException("File " + additionalConfigsFile + " is not a valid configuration file!");
         }

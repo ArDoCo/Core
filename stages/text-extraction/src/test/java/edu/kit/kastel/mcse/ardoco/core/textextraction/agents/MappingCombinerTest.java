@@ -4,7 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction.agents;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.set.MutableSet;
+import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -450,10 +450,10 @@ class MappingCombinerTest implements Claimant {
         TextStateImpl newTextState = new TextStateImpl();
 
         MutableList<ElementWrapper<NounMapping>> nounMappings = getField(textState, "nounMappings");
-        MutableSet<PhraseMapping> phraseMappings = getField(textState, "phraseMappings");
+        MutableSortedSet<PhraseMapping> phraseMappings = getField(textState, "phraseMappings");
 
         MutableList<ElementWrapper<NounMapping>> newNounMappings = getField(newTextState, "nounMappings");
-        MutableSet<PhraseMapping> newPhraseMappings = getField(newTextState, "phraseMappings");
+        MutableSortedSet<PhraseMapping> newPhraseMappings = getField(newTextState, "phraseMappings");
 
         newNounMappings.addAll(nounMappings);
         newPhraseMappings.addAll(phraseMappings);

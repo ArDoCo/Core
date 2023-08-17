@@ -9,8 +9,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
+import edu.kit.kastel.mcse.ardoco.core.api.UserReviewedDeterministic;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 
+@UserReviewedDeterministic
 public final class ConfigurationInstantiatorUtils {
     private ConfigurationInstantiatorUtils() {
         throw new IllegalAccessError();

@@ -1,11 +1,12 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl;
 
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import edu.kit.kastel.mcse.ardoco.core.api.UserReviewedDeterministic;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SamCodeTraceLink;
@@ -17,6 +18,7 @@ import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functi
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.aggregation.Maximum;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.heuristics.*;
 
+@UserReviewedDeterministic
 public final class TraceLinkGenerator {
 
     private static final Node interfaceName = new ComponentNameResemblance(ComponentNameResemblance.NameConfig.INTERFACE,
@@ -48,7 +50,7 @@ public final class TraceLinkGenerator {
 
     private static final Node root = Filter.getFilterArchNode(maxCompInterface, new ProvidedInterfaceCorrespondence().getNode(maxCompInterface));
 
-    private static final Map<Node, String> treeConfigs = new HashMap<>();
+    private static final Map<Node, String> treeConfigs = new LinkedHashMap<>();
 
     static {
         treeConfigs.put(interfaceName, "interfaceName");

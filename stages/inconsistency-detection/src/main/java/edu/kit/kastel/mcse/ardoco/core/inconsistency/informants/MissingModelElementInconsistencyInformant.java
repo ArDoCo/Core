@@ -4,10 +4,10 @@ package edu.kit.kastel.mcse.ardoco.core.inconsistency.informants;
 import java.util.Map;
 
 import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.factory.Sets;
+import org.eclipse.collections.api.factory.SortedSets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.set.MutableSet;
+import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionStates;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistencyState;
@@ -54,7 +54,7 @@ public class MissingModelElementInconsistencyInformant extends Informant {
         var inconsistencyState = inconsistencyStates.getInconsistencyState(metamodel);
         var connectionState = connectionStates.getConnectionState(metamodel);
 
-        var candidates = Sets.mutable.<MissingElementInconsistencyCandidate>empty();
+        var candidates = SortedSets.mutable.<MissingElementInconsistencyCandidate>empty();
 
         var candidateElements = Lists.mutable.ofAll(inconsistencyState.getRecommendedInstances());
         var linkedRecommendedInstances = connectionState.getInstanceLinks().collect(InstanceLink::getTextualInstance);
@@ -94,7 +94,7 @@ public class MissingModelElementInconsistencyInformant extends Informant {
         }
     }
 
-    private void addToCandidates(MutableSet<MissingElementInconsistencyCandidate> candidates, RecommendedInstance recommendedInstance,
+    private void addToCandidates(MutableSortedSet<MissingElementInconsistencyCandidate> candidates, RecommendedInstance recommendedInstance,
             MissingElementSupport support) {
         for (var candidate : candidates) {
             var candidateRecommendedInstance = candidate.getRecommendedInstance();
@@ -116,7 +116,7 @@ public class MissingModelElementInconsistencyInformant extends Informant {
         candidates.add(candidate);
     }
 
-    private void createInconsistencies(MutableSet<MissingElementInconsistencyCandidate> candidates, InconsistencyState inconsistencyState) {
+    private void createInconsistencies(MutableSortedSet<MissingElementInconsistencyCandidate> candidates, InconsistencyState inconsistencyState) {
         for (var candidate : candidates) {
             var support = candidate.getAmountOfSupport();
             if (support >= minSupport) {

@@ -3,15 +3,15 @@ package edu.kit.kastel.mcse.ardoco.core.inconsistency;
 
 import java.util.Objects;
 
-import org.eclipse.collections.api.factory.Sets;
-import org.eclipse.collections.api.set.MutableSet;
+import org.eclipse.collections.api.factory.SortedSets;
+import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 
 public class MissingElementInconsistencyCandidate {
 
     private final RecommendedInstance recommendedInstance;
-    private final MutableSet<MissingElementSupport> supports = Sets.mutable.empty();
+    private final MutableSortedSet<MissingElementSupport> supports = SortedSets.mutable.empty();
 
     public MissingElementInconsistencyCandidate(RecommendedInstance recommendedInstance, MissingElementSupport support) {
         this.recommendedInstance = recommendedInstance;

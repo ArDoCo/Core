@@ -7,14 +7,16 @@ import java.util.Map;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.Sets;
+import org.eclipse.collections.api.factory.SortedSets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.MutableSet;
+import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.PreprocessingData;
+import edu.kit.kastel.mcse.ardoco.core.api.UserReviewedDeterministic;
 import edu.kit.kastel.mcse.ardoco.core.api.codetraceability.CodeTraceabilityState;
 import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.Inconsistency;
@@ -40,6 +42,7 @@ import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
  * This record represents the result of running ArDoCo. It is backed by a {@link DataRepository} and grabs data from it. Besides accessing all data from the
  * calculation steps, this record also provides some convenience methods to directly access results such as found trace links and detected inconsistencies.
  */
+@UserReviewedDeterministic
 public record ArDoCoResult(DataRepository dataRepository) {
     private static final Logger logger = LoggerFactory.getLogger(ArDoCoResult.class);
 
@@ -58,12 +61,12 @@ public record ArDoCoResult(DataRepository dataRepository) {
      * @param modelId the ID of the model that should be traced
      * @return Trace links for the model with the given id
      */
-    public ImmutableSet<SadSamTraceLink> getTraceLinksForModel(String modelId) {
+    public ImmutableSortedSet<SadSamTraceLink> getTraceLinksForModel(String modelId) {
         ConnectionState connectionState = getConnectionState(modelId);
         if (connectionState != null) {
             return connectionState.getTraceLinks();
         }
-        return Sets.immutable.empty();
+        return SortedSets.immutable.empty();
     }
 
     /**
@@ -72,9 +75,10 @@ public record ArDoCoResult(DataRepository dataRepository) {
      * @param modelId the ID of the model that should be traced
      * @return Trace links for the model with the given id as Strings
      */
-    public ImmutableSet<String> getTraceLinksForModelAsStrings(String modelId) {
+    public ImmutableSortedSet<String> getTraceLinksForModelAsStrings(String modelId) {
         var formatString = "%s,%d";
-        return getTraceLinksForModel(modelId).collect(tl -> String.format(formatString, tl.getModelElementUid(), tl.getSentenceNumber() + 1));
+        return getTraceLinksForModel(modelId).collect(tl -> String.format(formatString, tl.getModelElementUid(), tl.getSentenceNumber() + 1))
+                .toImmutableSortedSet();
     }
 
     /**

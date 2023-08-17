@@ -3,10 +3,11 @@ package edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architectur
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import edu.kit.kastel.mcse.ardoco.core.api.UserReviewedDeterministic;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureComponent;
@@ -25,6 +26,7 @@ import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture
 /**
  * An extractor for PCM. Extracts an AMTL instance.
  */
+@UserReviewedDeterministic
 public final class PcmExtractor extends ArchitectureExtractor {
 
     public PcmExtractor(String path) {
@@ -55,7 +57,7 @@ public final class PcmExtractor extends ArchitectureExtractor {
     private static List<ArchitectureInterface> extractInterfaces(PcmModel originalModel) {
         List<ArchitectureInterface> interfaces = new ArrayList<>();
         for (PcmInterface originalInterface : originalModel.getRepository().getInterfaces()) {
-            Set<ArchitectureMethod> signatures = new HashSet<>();
+            Set<ArchitectureMethod> signatures = new LinkedHashSet<>();
             for (PcmSignature originalMethod : originalInterface.getMethods()) {
                 ArchitectureMethod signature = new ArchitectureMethod(originalMethod.getEntityName());
                 signatures.add(signature);
@@ -69,9 +71,9 @@ public final class PcmExtractor extends ArchitectureExtractor {
     private static List<ArchitectureComponent> extractComponents(PcmModel originalModel, List<ArchitectureInterface> interfaces) {
         List<ArchitectureComponent> components = new ArrayList<>();
         for (PcmComponent originalComponent : originalModel.getRepository().getComponents()) {
-            Set<ArchitectureComponent> subcomponents = new HashSet<>();
-            Set<ArchitectureInterface> providedInterfaces = new HashSet<>();
-            Set<ArchitectureInterface> requiredInterfaces = new HashSet<>();
+            Set<ArchitectureComponent> subcomponents = new LinkedHashSet<>();
+            Set<ArchitectureInterface> providedInterfaces = new LinkedHashSet<>();
+            Set<ArchitectureInterface> requiredInterfaces = new LinkedHashSet<>();
             for (PcmInterface providedInterface : originalComponent.getProvided()) {
                 ArchitectureInterface modelInterface = findInterface(providedInterface.getId(), interfaces);
                 providedInterfaces.add(modelInterface);

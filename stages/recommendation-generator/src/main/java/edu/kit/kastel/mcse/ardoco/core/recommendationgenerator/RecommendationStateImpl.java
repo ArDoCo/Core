@@ -1,7 +1,7 @@
 /* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator;
 
-import java.util.HashSet;
+import java.util.TreeSet;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -66,7 +66,7 @@ public class RecommendationStateImpl extends AbstractState implements Recommenda
     public RecommendedInstance addRecommendedInstance(String name, String type, Claimant claimant, double probability, ImmutableList<NounMapping> nameMappings,
             ImmutableList<NounMapping> typeMappings) {
         var recommendedInstance = new RecommendedInstanceImpl(name, type, claimant, probability, //
-                Lists.immutable.withAll(new HashSet<>(nameMappings.castToCollection())), Lists.immutable.withAll(new HashSet<>(typeMappings
+                Lists.immutable.withAll(new TreeSet<>(nameMappings.castToCollection())), Lists.immutable.withAll(new TreeSet<>(typeMappings
                         .castToCollection())));
         this.addRecommendedInstance(recommendedInstance);
 

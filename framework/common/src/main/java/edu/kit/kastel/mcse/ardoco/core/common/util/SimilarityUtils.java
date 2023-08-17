@@ -10,8 +10,9 @@ import org.apache.commons.text.similarity.CosineSimilarity;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.map.MutableMap;
+import org.eclipse.collections.api.map.sorted.ImmutableSortedMap;
 
+import edu.kit.kastel.mcse.ardoco.core.api.UserReviewedDeterministic;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.text.PhraseType;
@@ -25,6 +26,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 /**
  * This class is a utility class.
  */
+@UserReviewedDeterministic
 public final class SimilarityUtils {
 
     private SimilarityUtils() {
@@ -295,10 +297,10 @@ public final class SimilarityUtils {
 
     private static boolean coversOtherPhraseVector(PhraseMapping phraseMapping1, PhraseMapping phraseMapping2) {
 
-        MutableMap<Word, Integer> phraseVector1 = phraseMapping1.getPhraseVector().toMap();
-        MutableMap<Word, Integer> phraseVector2 = phraseMapping2.getPhraseVector().toMap();
+        ImmutableSortedMap<Word, Integer> phraseVector1 = phraseMapping1.getPhraseVector();
+        ImmutableSortedMap<Word, Integer> phraseVector2 = phraseMapping2.getPhraseVector();
 
-        return phraseVector1.keySet().containsAll(phraseVector2.keySet());
+        return phraseVector1.keysView().containsAll(phraseVector2.keysView().toSortedSet());
     }
 
     private static boolean containsAllNounMappingsOfPhraseMapping(TextState textState, PhraseMapping phraseMapping1, PhraseMapping phraseMapping2) {

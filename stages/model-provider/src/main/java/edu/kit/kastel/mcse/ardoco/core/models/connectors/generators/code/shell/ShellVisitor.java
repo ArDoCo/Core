@@ -9,7 +9,7 @@ import java.nio.file.FileVisitor;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -18,12 +18,14 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.kit.kastel.mcse.ardoco.core.api.UserReviewedDeterministic;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItem;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItemRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.ProgrammingLanguage;
 
+@UserReviewedDeterministic
 public class ShellVisitor implements FileVisitor<Path> {
     private static final Logger logger = LoggerFactory.getLogger(ShellVisitor.class);
 
@@ -34,7 +36,7 @@ public class ShellVisitor implements FileVisitor<Path> {
     public ShellVisitor(CodeItemRepository codeItemRepository, Path startingDir) {
         this.codeItemRepository = codeItemRepository;
         this.startingDir = startingDir;
-        codeEndpoints = new HashSet<>();
+        codeEndpoints = new LinkedHashSet<>();
     }
 
     public CodeModel getCodeModel() {
@@ -81,7 +83,7 @@ public class ShellVisitor implements FileVisitor<Path> {
         for (int i = 0; i < relativePath.getNameCount() - 1; i++) {
             pathElements.add(relativePath.getName(i).toString());
         }
-        CodeCompilationUnit sourceFile = new CodeCompilationUnit(codeItemRepository, fileNameWithoutExtension, new HashSet<>(), pathElements, extension,
+        CodeCompilationUnit sourceFile = new CodeCompilationUnit(codeItemRepository, fileNameWithoutExtension, new LinkedHashSet<>(), pathElements, extension,
                 ProgrammingLanguage.SHELL);
         codeEndpoints.add(sourceFile);
         return FileVisitResult.CONTINUE;

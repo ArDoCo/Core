@@ -2,11 +2,12 @@
 package edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import edu.kit.kastel.mcse.ardoco.core.api.UserReviewedDeterministic;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItem;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItemRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModel;
@@ -14,6 +15,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.ProgrammingLanguag
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.java.JavaExtractor;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.shell.ShellExtractor;
 
+@UserReviewedDeterministic
 public final class AllLanguagesExtractor extends CodeExtractor {
 
     private final Map<ProgrammingLanguage, CodeExtractor> codeExtractors;
@@ -34,7 +36,7 @@ public final class AllLanguagesExtractor extends CodeExtractor {
                 var model = extractor.extractModel();
                 models.add(model);
             }
-            Set<CodeItem> codeEndpoints = new HashSet<>();
+            Set<CodeItem> codeEndpoints = new LinkedHashSet<>();
             for (CodeModel model : models) {
                 codeEndpoints.addAll(model.getContent());
             }

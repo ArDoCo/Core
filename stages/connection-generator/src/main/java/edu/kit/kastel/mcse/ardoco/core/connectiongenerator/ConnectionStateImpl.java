@@ -1,11 +1,10 @@
 /* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.factory.SortedSets;
 import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
@@ -20,13 +19,13 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
  */
 public class ConnectionStateImpl extends AbstractState implements ConnectionState {
 
-    private transient Set<InstanceLink> instanceLinks;
+    private transient MutableSortedSet<InstanceLink> instanceLinks;
 
     /**
      * Creates a new connection state.
      */
     public ConnectionStateImpl() {
-        instanceLinks = new HashSet<>();
+        instanceLinks = SortedSets.mutable.empty();
     }
 
     /**

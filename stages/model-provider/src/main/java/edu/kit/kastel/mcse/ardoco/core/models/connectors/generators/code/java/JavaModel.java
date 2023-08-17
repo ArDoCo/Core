@@ -2,23 +2,19 @@
 package edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.java;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.commons.io.FilenameUtils;
 import org.eclipse.jdt.core.dom.*;
 
+import edu.kit.kastel.mcse.ardoco.core.api.UserReviewedDeterministic;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.*;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.java.finder.EnumDeclarationFinder;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.java.finder.MethodDeclarationFinder;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.java.finder.TypeDeclarationFinder;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.java.finder.TypeFinder;
 
+@UserReviewedDeterministic
 public final class JavaModel {
 
     private final CodeItemRepository codeItemRepository;
@@ -27,11 +23,11 @@ public final class JavaModel {
     private Set<JavaInterface> javaInterfaces;
     private CodeModel codeModel;
 
-    public JavaModel(CodeItemRepository codeItemRepository, Map<String, CompilationUnit> compUnitMap) {
+    public JavaModel(CodeItemRepository codeItemRepository, SortedMap<String, CompilationUnit> compUnitMap) {
         this.codeItemRepository = codeItemRepository;
-        javaTypes = new HashSet<>();
-        javaClassifiers = new HashSet<>();
-        javaInterfaces = new HashSet<>();
+        javaTypes = new LinkedHashSet<>();
+        javaClassifiers = new LinkedHashSet<>();
+        javaInterfaces = new LinkedHashSet<>();
         initModel(compUnitMap);
     }
 
@@ -86,7 +82,7 @@ public final class JavaModel {
                             .findFirst()
                             .orElseThrow())
                     .toList();
-            Set<Datatype> codeImplInterfaces = new HashSet<>();
+            Set<Datatype> codeImplInterfaces = new LinkedHashSet<>();
             javaImplInterfaces.forEach(javaImplInterface -> codeImplInterfaces.add(javaImplInterface.codeInterface()));
             javaClassifier.codeClassifier().setImplementedTypes(codeImplInterfaces);
         }
@@ -102,7 +98,7 @@ public final class JavaModel {
                             .findFirst()
                             .orElseThrow())
                     .toList();
-            Set<Datatype> codeExtendedInterfaces = new HashSet<>();
+            Set<Datatype> codeExtendedInterfaces = new LinkedHashSet<>();
             javaExtendedInterfaces.forEach(javaExtendedInterface -> codeExtendedInterfaces.add(javaExtendedInterface.codeInterface()));
             javaInterface.codeInterface().setExtendedTypes(codeExtendedInterfaces);
         }
@@ -119,7 +115,7 @@ public final class JavaModel {
                     .filter(otherJavaClass -> otherJavaClass.binding().getErasure().isEqualTo(superclassBinding.getErasure()))
                     .findFirst()
                     .orElseThrow();
-            Set<Datatype> superclasses = new HashSet<>();
+            Set<Datatype> superclasses = new LinkedHashSet<>();
             superclasses.add(javaSuperclass.codeClassifier());
             javaClassifier.codeClassifier().setExtendedTypes(superclasses);
         }
@@ -142,10 +138,10 @@ public final class JavaModel {
 
     //
 
-    private void initModel(Map<String, CompilationUnit> compUnitMap) {
-        Set<CodeItem> modelContent = new HashSet<>();
-        Set<CodePackage> codePackages = new HashSet<>();
-        Set<CodeCompilationUnit> codeCompilationUnits = new HashSet<>();
+    private void initModel(SortedMap<String, CompilationUnit> compUnitMap) {
+        Set<CodeItem> modelContent = new LinkedHashSet<>();
+        Set<CodePackage> codePackages = new LinkedHashSet<>();
+        Set<CodeCompilationUnit> codeCompilationUnits = new LinkedHashSet<>();
 
         for (var entry : compUnitMap.entrySet()) {
             CompilationUnit compilationUnit = entry.getValue();
@@ -163,7 +159,7 @@ public final class JavaModel {
                 Name fullName = packageDeclaration.getName();
                 packageNames = getPackageNames(fullName);
             }
-            CodeCompilationUnit codeCompilationUnit = new CodeCompilationUnit(codeItemRepository, fileNameWithoutExtension, new HashSet<>(), pathElements,
+            CodeCompilationUnit codeCompilationUnit = new CodeCompilationUnit(codeItemRepository, fileNameWithoutExtension, new LinkedHashSet<>(), pathElements,
                     extension, ProgrammingLanguage.JAVA);
             codeCompilationUnits.add(codeCompilationUnit);
             if (null != packageDeclaration) {
@@ -225,7 +221,7 @@ public final class JavaModel {
     }
 
     private Set<ControlElement> extractMethods(ASTNode node) {
-        Set<ControlElement> declaredMethods = new HashSet<>();
+        Set<ControlElement> declaredMethods = new LinkedHashSet<>();
         Set<MethodDeclaration> methodDeclarations = MethodDeclarationFinder.find(node);
         for (MethodDeclaration methodDeclaration : methodDeclarations) {
             declaredMethods.add(extractMethod(methodDeclaration));
@@ -269,7 +265,7 @@ public final class JavaModel {
     }
 
     private static Set<CodePackage> mergePackages(Set<CodePackage> packages) {
-        Map<String, CodePackage> packageMap = new HashMap<>();
+        Map<String, CodePackage> packageMap = new LinkedHashMap<>();
         List<CodePackage> packageList = new ArrayList<>(packages);
         for (CodePackage codePackage : packageList) {
             if (packageMap.containsKey(codePackage.getName())) {
@@ -286,6 +282,6 @@ public final class JavaModel {
             mergedPackageElements.forEach(packageElement -> packageElement.setParent(codePackage));
             codePackage.setContent(mergedPackageElements);
         }
-        return new HashSet<>(packageMap.values());
+        return new LinkedHashSet<>(packageMap.values());
     }
 }

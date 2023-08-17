@@ -3,22 +3,26 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction.agents;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.text.PDFTextStripper;
+import org.eclipse.collections.api.factory.SortedSets;
+import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import edu.kit.kastel.mcse.ardoco.core.api.UserReviewedDeterministic;
+
 /**
  * Not a test, but it extracts the data from the downloaded pdfs.
  */
 @EnabledIfEnvironmentVariable(matches = "true", named = "ExtractPDF")
+@UserReviewedDeterministic
 class PDFExtractorTestCase {
 
     @Test
@@ -67,7 +71,7 @@ class PDFExtractorTestCase {
         extract("./src/main/resources/pdfs/24765-2017.pdf", "./src/main/resources/pdfs/24765-2017.pdf.words.txt", this::processTextISO24765);
     }
 
-    private void processTextISO24765(String text, Set<String> foundWords) {
+    private void processTextISO24765(String text, MutableSortedSet<String> foundWords) {
         String[] lines = text.lines().toArray(String[]::new);
         boolean lastLineWasIdentifier = false;
         Predicate<String> isIdentifier = l -> l != null && l.trim().matches("^3\\.[0-9]+$");
@@ -84,10 +88,10 @@ class PDFExtractorTestCase {
         }
     }
 
-    private void extract(String in, String out, BiConsumer<String, Set<String>> processor) throws IOException {
+    private void extract(String in, String out, BiConsumer<String, MutableSortedSet<String>> processor) throws IOException {
         var file = new File(in);
         var pdf = Loader.loadPDF(file);
-        Set<String> foundWords = new LinkedHashSet<>();
+        MutableSortedSet<String> foundWords = SortedSets.mutable.empty();
         PDFTextStripper pts = new PDFTextStripper();
         var text = pts.getText(pdf);
         processor.accept(text, foundWords);

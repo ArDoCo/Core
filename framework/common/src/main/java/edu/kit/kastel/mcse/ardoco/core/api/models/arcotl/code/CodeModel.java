@@ -2,10 +2,11 @@
 package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -74,10 +75,10 @@ public class CodeModel extends Model {
      *
      * @return all code packages of this code model
      */
-    public Set<? extends CodePackage> getAllPackages() {
+    public SortedSet<? extends CodePackage> getAllPackages() {
         if (!initialized)
             initialize();
-        Set<CodePackage> codePackages = new HashSet<>();
+        SortedSet<CodePackage> codePackages = new TreeSet<>();
         getContent().forEach(c -> codePackages.addAll(c.getAllPackages()));
         return codePackages;
     }

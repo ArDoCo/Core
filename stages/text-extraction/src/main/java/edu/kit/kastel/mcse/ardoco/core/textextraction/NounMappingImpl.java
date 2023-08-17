@@ -7,19 +7,18 @@ import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.factory.Maps;
-import org.eclipse.collections.api.factory.Sets;
+import org.eclipse.collections.api.factory.SortedMaps;
+import org.eclipse.collections.api.factory.SortedSets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.map.ImmutableMap;
-import org.eclipse.collections.api.map.MutableMap;
-import org.eclipse.collections.api.set.ImmutableSet;
-import org.eclipse.collections.api.set.MutableSet;
+import org.eclipse.collections.api.map.sorted.ImmutableSortedMap;
+import org.eclipse.collections.api.map.sorted.MutableSortedMap;
 import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
+import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 
+import edu.kit.kastel.mcse.ardoco.core.api.UserReviewedDeterministic;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
@@ -32,12 +31,13 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 /**
  * The Class NounMapping is a basic realization of {@link NounMapping}.
  */
+@UserReviewedDeterministic
 public final class NounMappingImpl implements NounMapping, Comparable<NounMappingImpl> {
 
     private static final AggregationFunctions DEFAULT_AGGREGATOR = AVERAGE;
     private final Long earliestCreationTime;
     private final ImmutableSortedSet<Word> words;
-    private final MutableMap<MappingKind, Confidence> distribution;
+    private final MutableSortedMap<MappingKind, Confidence> distribution;
     private final ImmutableList<Word> referenceWords;
     private final ImmutableList<String> surfaceForms;
     private final String reference;
@@ -55,11 +55,11 @@ public final class NounMappingImpl implements NounMapping, Comparable<NounMappin
      * @param reference            the String reference
      */
 
-    public NounMappingImpl(Long earliestCreationTime, ImmutableSortedSet<Word> words, MutableMap<MappingKind, Confidence> distribution,
+    public NounMappingImpl(Long earliestCreationTime, ImmutableSortedSet<Word> words, ImmutableSortedMap<MappingKind, Confidence> distribution,
             ImmutableList<Word> referenceWords, ImmutableList<String> surfaceForms, String reference) {
         this.earliestCreationTime = earliestCreationTime;
         this.words = words;
-        this.distribution = distribution;
+        this.distribution = distribution.toSortedMap();
         this.referenceWords = referenceWords;
         this.surfaceForms = surfaceForms;
         this.reference = reference;
@@ -78,9 +78,10 @@ public final class NounMappingImpl implements NounMapping, Comparable<NounMappin
      * @param referenceWords       the reference words
      * @param surfaceForms         the surface forms
      */
-    public NounMappingImpl(Long earliestCreationTime, ImmutableSet<Word> words, MappingKind kind, Claimant claimant, double probability,
+    public NounMappingImpl(Long earliestCreationTime, ImmutableSortedSet<Word> words, MappingKind kind, Claimant claimant, double probability,
             ImmutableList<Word> referenceWords, ImmutableList<String> surfaceForms) {
-        this(earliestCreationTime, words.toSortedSet().toImmutable(), Maps.mutable.empty(), referenceWords, surfaceForms, calculateReference(referenceWords));
+        this(earliestCreationTime, words.toSortedSet().toImmutable(), SortedMaps.immutable.empty(), referenceWords, surfaceForms, calculateReference(
+                referenceWords));
 
         Objects.requireNonNull(claimant);
         this.distribution.putIfAbsent(MappingKind.NAME, new Confidence(DEFAULT_AGGREGATOR));
@@ -127,8 +128,8 @@ public final class NounMappingImpl implements NounMapping, Comparable<NounMappin
     }
 
     @Override
-    public ImmutableSet<Phrase> getPhrases() {
-        MutableSet<Phrase> phrases = Sets.mutable.empty();
+    public ImmutableSortedSet<Phrase> getPhrases() {
+        MutableSortedSet<Phrase> phrases = SortedSets.mutable.empty();
         for (Word word : this.words) {
             phrases.add(word.getPhrase());
         }
@@ -143,7 +144,7 @@ public final class NounMappingImpl implements NounMapping, Comparable<NounMappin
     }
 
     @Override
-    public ImmutableMap<MappingKind, Confidence> getDistribution() {
+    public ImmutableSortedMap<MappingKind, Confidence> getDistribution() {
         return distribution.toImmutable();
     }
 
@@ -169,10 +170,7 @@ public final class NounMappingImpl implements NounMapping, Comparable<NounMappin
 
     @Override
     public String toString() {
-        return "NounMapping [" + "distribution=" + distribution.entrySet()
-                .stream()
-                .map(entry -> entry.getKey() + ":" + entry.getValue())
-                .collect(Collectors.joining(",")) + //
+        return "NounMapping [" + "distribution=" + distribution.keyValuesView().collect(entry -> entry.getOne() + ":" + entry.getTwo()).makeString(",") + //
                 ", reference=" + getReference() + //
                 ", node=" + String.join(", ", surfaceForms) + //
                 ", position=" + String.join(", ", getWords().collect(word -> String.valueOf(word.getPosition()))) + //
@@ -207,8 +205,8 @@ public final class NounMappingImpl implements NounMapping, Comparable<NounMappin
     }
 
     @Override
-    public ImmutableSet<Claimant> getClaimants() {
-        return this.distribution.valuesView().flatCollect(Confidence::getClaimants).toImmutableSet();
+    public ImmutableSortedSet<Claimant> getClaimants() {
+        return this.distribution.valuesView().flatCollect(Confidence::getClaimants).toImmutableSortedSet();
     }
 
     public static Long earliestCreationTime(NounMapping... nounMappings) {
@@ -233,7 +231,7 @@ public final class NounMappingImpl implements NounMapping, Comparable<NounMappin
         return words;
     }
 
-    public MutableMap<MappingKind, Confidence> distribution() {
+    public MutableSortedMap<MappingKind, Confidence> distribution() {
         return distribution;
     }
 

@@ -8,13 +8,13 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.factory.Maps;
-import org.eclipse.collections.api.factory.Sets;
+import org.eclipse.collections.api.factory.SortedMaps;
+import org.eclipse.collections.api.factory.SortedSets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.map.MutableMap;
-import org.eclipse.collections.api.set.ImmutableSet;
-import org.eclipse.collections.api.set.MutableSet;
+import org.eclipse.collections.api.map.sorted.MutableSortedMap;
+import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
+import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
@@ -51,7 +51,7 @@ public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy 
         } else if (nounMappingsWithWord.size() > 1) {
             throw new IllegalStateException("The word '" + word.getText() + "' occurs several times in the text state.");
         }
-        ImmutableSet<Word> words = Sets.immutable.with(word);
+        ImmutableSortedSet<Word> words = SortedSets.immutable.with(word);
         if (surfaceForms == null) {
             surfaceForms = Lists.immutable.with(word.getText());
         }
@@ -64,17 +64,17 @@ public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy 
     public NounMapping mergeNounMappings(NounMapping firstNounMapping, NounMapping secondNounMapping, ImmutableList<Word> referenceWords, String reference,
             MappingKind mappingKind, Claimant claimant, double probability) {
 
-        MutableSet<Word> mergedWords = firstNounMapping.getWords().toSet();
+        MutableSortedSet<Word> mergedWords = firstNounMapping.getWords().toSortedSet();
         mergedWords.addAllIterable(secondNounMapping.getWords());
 
-        var distribution1 = firstNounMapping.getDistribution().toMap();
-        var distribution2 = secondNounMapping.getDistribution().toMap();
+        var distribution1 = firstNounMapping.getDistribution();
+        var distribution2 = secondNounMapping.getDistribution();
         var mergedRawMap = Arrays.stream(MappingKind.values())
                 .collect(Collectors.toMap( //
                         kind -> kind, //
                         kind -> putAllConfidencesTogether(distribution1.get(kind), distribution2.get(kind)) //
                 ));
-        MutableMap<MappingKind, Confidence> mergedDistribution = Maps.mutable.withMap(mergedRawMap);
+        MutableSortedMap<MappingKind, Confidence> mergedDistribution = SortedMaps.mutable.withSortedMap(mergedRawMap);
 
         MutableList<String> mergedSurfaceForms = firstNounMapping.getSurfaceForms().toList();
         for (var surface : secondNounMapping.getSurfaceForms()) {
@@ -104,7 +104,8 @@ public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy 
         }
 
         NounMapping mergedNounMapping = new NounMappingImpl(NounMappingImpl.earliestCreationTime(firstNounMapping, secondNounMapping), mergedWords
-                .toImmutableSortedSet(), mergedDistribution, mergedReferenceWords.toImmutable(), mergedSurfaceForms.toImmutable(), mergedReference);
+                .toImmutableSortedSet(), mergedDistribution.toImmutable(), mergedReferenceWords.toImmutable(), mergedSurfaceForms.toImmutable(),
+                mergedReference);
         mergedNounMapping.addKindWithProbability(mappingKind, claimant, probability);
 
         this.getTextState().removeNounMappingFromState(firstNounMapping, mergedNounMapping);

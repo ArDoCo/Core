@@ -8,12 +8,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.factory.Maps;
-import org.eclipse.collections.api.factory.Sets;
+import org.eclipse.collections.api.factory.SortedMaps;
+import org.eclipse.collections.api.factory.SortedSets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.map.MutableMap;
-import org.eclipse.collections.api.set.MutableSet;
+import org.eclipse.collections.api.map.sorted.MutableSortedMap;
+import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
@@ -37,7 +37,7 @@ public class OriginalTextStateStrategy extends DefaultTextStateStrategy {
     @Override
     public NounMapping addOrExtendNounMapping(Word word, MappingKind kind, Claimant claimant, double probability, ImmutableList<String> surfaceForms) {
 
-        NounMapping disposableNounMapping = new NounMappingImpl(System.currentTimeMillis(), Sets.immutable.with(word), kind, claimant, probability,
+        NounMapping disposableNounMapping = new NounMappingImpl(System.currentTimeMillis(), SortedSets.immutable.with(word), kind, claimant, probability,
                 Lists.immutable.with(word), surfaceForms);
 
         for (var existingNounMapping : super.getTextState().getNounMappings()) {
@@ -62,18 +62,18 @@ public class OriginalTextStateStrategy extends DefaultTextStateStrategy {
     public NounMapping mergeNounMappings(NounMapping firstNounMapping, NounMapping secondNounMapping, ImmutableList<Word> referenceWords, String reference,
             MappingKind mappingKind, Claimant claimant, double probability) {
 
-        MutableSet<Word> mergedWords = firstNounMapping.getWords().toSet();
+        MutableSortedSet<Word> mergedWords = firstNounMapping.getWords().toSortedSet();
         mergedWords.add(secondNounMapping.getReferenceWords().get(0));
         //This makes only sense under specific conditions, since it is sequentially dependent. It might be fixed in future versions
 
-        var existingNounMappingDistribution = firstNounMapping.getDistribution().toMap();
-        var disposableNounMappingDistribution = secondNounMapping.getDistribution().toMap();
+        var existingNounMappingDistribution = firstNounMapping.getDistribution();
+        var disposableNounMappingDistribution = secondNounMapping.getDistribution();
         var mergedRawMap = Arrays.stream(MappingKind.values())
                 .collect(Collectors.toMap( //
                         kind -> kind, //
                         kind -> putAllConfidencesTogether(existingNounMappingDistribution.get(kind), disposableNounMappingDistribution.get(kind)) //
                 ));
-        MutableMap<MappingKind, Confidence> mergedDistribution = Maps.mutable.withMap(mergedRawMap);
+        MutableSortedMap<MappingKind, Confidence> mergedDistribution = SortedMaps.mutable.withSortedMap(mergedRawMap);
 
         MutableList<String> mergedSurfaceForms = firstNounMapping.getSurfaceForms().toList();
         for (var surface : secondNounMapping.getSurfaceForms()) {
@@ -87,7 +87,7 @@ public class OriginalTextStateStrategy extends DefaultTextStateStrategy {
         String mergedReference = mergedReferenceWords.collect(Word::getText).makeString(" ");
 
         NounMapping mergedNounMapping = new NounMappingImpl(NounMappingImpl.earliestCreationTime(firstNounMapping, secondNounMapping), mergedWords.toSortedSet()
-                .toImmutable(), mergedDistribution, mergedReferenceWords.toImmutable(), mergedSurfaceForms.toImmutable(), mergedReference);
+                .toImmutable(), mergedDistribution.toImmutable(), mergedReferenceWords.toImmutable(), mergedSurfaceForms.toImmutable(), mergedReference);
 
         this.getTextState().removeNounMappingFromState(firstNounMapping, mergedNounMapping);
         this.getTextState().removeNounMappingFromState(secondNounMapping, mergedNounMapping);

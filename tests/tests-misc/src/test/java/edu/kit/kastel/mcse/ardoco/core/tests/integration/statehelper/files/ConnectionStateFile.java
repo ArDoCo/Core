@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.set.ImmutableSet;
+import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -150,7 +150,7 @@ public class ConnectionStateFile {
                 ImmutableList<String> names = currentTextInstance.getNameMappings().collect(NounMapping::getReference).toSet().toImmutableList();
                 ImmutableList<String> types = currentTextInstance.getTypeMappings().collect(NounMapping::getReference).toSet().toImmutableList();
                 String probability = df.format(currentTextInstance.getProbability());
-                ImmutableSet<String> claimants = currentTextInstance.getClaimants().collect(c -> c.getClass().getSimpleName());
+                ImmutableSortedSet<String> claimants = currentTextInstance.getClaimants().collect(c -> c.getClass().getSimpleName()).toImmutableSortedSet();
 
                 String currentModelLine = String.join(VALUE_SEPARATOR, uid, modelName, modelType);
                 String currentLinkLine = String.join(VALUE_SEPARATOR, linkProbability, String.join(LIST_SEPARATOR, sentences), name, type, String.join(

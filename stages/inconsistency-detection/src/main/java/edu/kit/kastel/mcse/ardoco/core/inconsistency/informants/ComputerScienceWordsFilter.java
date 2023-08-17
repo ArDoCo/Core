@@ -4,10 +4,11 @@ package edu.kit.kastel.mcse.ardoco.core.inconsistency.informants;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.factory.SortedSets;
 import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -82,17 +83,17 @@ public class ComputerScienceWordsFilter extends Filter {
     }
 
     private ImmutableList<String> loadWords() {
-        Set<String> result = new HashSet<>();
+        MutableSortedSet<String> result = SortedSets.mutable.empty();
         loadDBPedia(result);
         loadISO24765(result);
         loadStandardGlossary(result);
         result.addAll(additionalWords);
         // Remove after bracket (
-        result = result.stream().map(e -> e.split("\\(", -1)[0].trim()).collect(Collectors.toSet());
+        result = result.collect(e -> e.split("\\(", -1)[0].trim()).toSortedSet();
         return Lists.immutable.withAll(result.stream().map(w -> w.trim().toLowerCase()).toList());
     }
 
-    private void loadDBPedia(Set<String> result) {
+    private void loadDBPedia(MutableSortedSet<String> result) {
         if (!this.sources.contains(WIKI))
             return;
 
@@ -117,7 +118,7 @@ public class ComputerScienceWordsFilter extends Filter {
         logger.debug("Found {} words by adding DBPedia", result.size() - before);
     }
 
-    private void loadISO24765(Set<String> result) {
+    private void loadISO24765(MutableSortedSet<String> result) {
         if (!this.sources.contains(ISO24765))
             return;
 
@@ -128,7 +129,7 @@ public class ComputerScienceWordsFilter extends Filter {
         logger.debug("Found {} words by adding ISO24765", result.size() - before);
     }
 
-    private void loadStandardGlossary(Set<String> result) {
+    private void loadStandardGlossary(MutableSortedSet<String> result) {
         if (!this.sources.contains(STANDARD_GLOSSARY))
             return;
 

@@ -4,10 +4,12 @@ package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
 @JsonTypeName("CodePackage")
-public class CodePackage extends CodeModule {
+public class CodePackage extends CodeModule implements Comparable<CodePackage> {
 
     private CodePackage() {
         // Jackson
@@ -47,5 +49,10 @@ public class CodePackage extends CodeModule {
         result.add(this);
         getContent().forEach(c -> result.addAll(c.getAllPackages()));
         return result;
+    }
+
+    @Override
+    public int compareTo(@NotNull CodePackage o) {
+        return this.getName().compareTo(o.getName());
     }
 }

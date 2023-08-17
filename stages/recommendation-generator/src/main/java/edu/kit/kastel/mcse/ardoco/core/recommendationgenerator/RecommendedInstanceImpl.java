@@ -2,20 +2,16 @@
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 
 import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.factory.Sets;
+import org.eclipse.collections.api.factory.SortedSets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.set.ImmutableSet;
-import org.eclipse.collections.api.set.MutableSet;
 import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
+import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
@@ -46,16 +42,16 @@ public class RecommendedInstanceImpl extends RecommendedInstance implements Clai
     private String type;
     private String name;
     private Confidence internalConfidence;
-    private final Set<NounMapping> typeMappings;
-    private final Set<NounMapping> nameMappings;
+    private final MutableSortedSet<NounMapping> typeMappings;
+    private final MutableSortedSet<NounMapping> nameMappings;
 
     private RecommendedInstanceImpl(String name, String type) {
         super(name, UUID.randomUUID().toString());
         this.type = type;
         this.name = name;
         this.internalConfidence = new Confidence(AggregationFunctions.AVERAGE);
-        nameMappings = Collections.newSetFromMap(new IdentityHashMap<>());
-        typeMappings = Collections.newSetFromMap(new IdentityHashMap<>());
+        nameMappings = SortedSets.mutable.empty();
+        typeMappings = SortedSets.mutable.empty();
     }
 
     @Override
@@ -243,7 +239,7 @@ public class RecommendedInstanceImpl extends RecommendedInstance implements Clai
 
     @Override
     public ImmutableSortedSet<Integer> getSentenceNumbers() {
-        MutableSet<Integer> sentenceNos = getNameMappings().flatCollect(nm -> nm.getWords().collect(Word::getSentenceNo)).toSet();
+        MutableSortedSet<Integer> sentenceNos = getNameMappings().flatCollect(nm -> nm.getWords().collect(Word::getSentenceNo)).toSortedSet();
         return sentenceNos.toImmutableSortedSet();
     }
 
@@ -280,8 +276,8 @@ public class RecommendedInstanceImpl extends RecommendedInstance implements Clai
     }
 
     @Override
-    public ImmutableSet<Claimant> getClaimants() {
-        return Sets.immutable.withAll(this.internalConfidence.getClaimants());
+    public ImmutableSortedSet<Claimant> getClaimants() {
+        return SortedSets.immutable.withAll(this.internalConfidence.getClaimants());
     }
 
 }
