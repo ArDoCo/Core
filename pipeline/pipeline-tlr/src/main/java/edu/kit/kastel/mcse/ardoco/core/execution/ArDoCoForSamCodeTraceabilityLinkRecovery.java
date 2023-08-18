@@ -4,16 +4,12 @@ package edu.kit.kastel.mcse.ardoco.core.execution;
 import java.io.File;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.SamCodeTraceabilityLinkRecovery;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.ArDoCoRunner;
 import edu.kit.kastel.mcse.ardoco.core.models.ArCoTLModelProviderAgent;
 
 public class ArDoCoForSamCodeTraceabilityLinkRecovery extends ArDoCoRunner {
-    private static final Logger logger = LoggerFactory.getLogger(ArDoCoForSamCodeTraceabilityLinkRecovery.class);
 
     public ArDoCoForSamCodeTraceabilityLinkRecovery(String projectName) {
         super(projectName);

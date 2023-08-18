@@ -4,7 +4,6 @@ package edu.kit.kastel.mcse.ardoco.core.data;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedConsistencyBetweenEqualsHashCodeAndComparable;
 import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
 import edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions;
 import edu.kit.kastel.mcse.ardoco.core.common.ICopyable;
@@ -16,7 +15,6 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
  * Different {@link Claimant Claimants} can add their confidences that get aggregated via one of the {@link AggregationFunctions} to a single confidence value.
  */
 @UserReviewedDeterministic
-@UserReviewedConsistencyBetweenEqualsHashCodeAndComparable
 public final class Confidence implements Comparable<Confidence>, ICopyable<Confidence> {
 
     private final AggregationFunctions confidenceAggregator;

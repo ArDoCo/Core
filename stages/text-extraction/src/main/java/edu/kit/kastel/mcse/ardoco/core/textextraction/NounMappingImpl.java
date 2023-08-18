@@ -23,7 +23,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMappingChangeListener;
 import edu.kit.kastel.mcse.ardoco.core.architecture.NoHashCodeEquals;
-import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedConsistencyBetweenEqualsHashCodeAndComparable;
 import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
 import edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions;
 import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
@@ -34,8 +33,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
  */
 @UserReviewedDeterministic
 @NoHashCodeEquals
-@UserReviewedConsistencyBetweenEqualsHashCodeAndComparable
-public final class NounMappingImpl implements NounMapping, Comparable<NounMappingImpl> {
+public final class NounMappingImpl implements NounMapping {
 
     private static final AggregationFunctions DEFAULT_AGGREGATOR = AVERAGE;
     private final Long earliestCreationTime;
@@ -207,12 +205,6 @@ public final class NounMappingImpl implements NounMapping, Comparable<NounMappin
                 earliest = impl.earliestCreationTime();
         }
         return earliest == Long.MAX_VALUE ? null : earliest;
-    }
-
-    @Override
-    public int compareTo(NounMappingImpl o) {
-        // Equals == True => compareTo == 0
-        return Long.compare(this.earliestCreationTime, o.earliestCreationTime);
     }
 
     public Long earliestCreationTime() {

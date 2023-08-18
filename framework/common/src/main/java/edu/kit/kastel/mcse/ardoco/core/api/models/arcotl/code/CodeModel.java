@@ -1,17 +1,13 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
 
 /**
@@ -75,11 +71,18 @@ public class CodeModel extends Model {
      *
      * @return all code packages of this code model
      */
-    public SortedSet<? extends CodePackage> getAllPackages() {
+    public List<? extends CodePackage> getAllPackages() {
         if (!initialized)
             initialize();
-        SortedSet<CodePackage> codePackages = new TreeSet<>();
-        getContent().forEach(c -> codePackages.addAll(c.getAllPackages()));
+        List<CodePackage> codePackages = new ArrayList<>();
+        for (CodeItem c : getContent()) {
+            for (CodePackage cp : c.getAllPackages()) {
+                if (!codePackages.contains(cp)) {
+                    codePackages.add(cp);
+                }
+            }
+        }
+        codePackages.sort(Comparator.comparing(Entity::getName));
         return codePackages;
     }
 

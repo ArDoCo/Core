@@ -36,7 +36,6 @@ import com.tngtech.archunit.lang.ConditionEvents;
 import com.tngtech.archunit.lang.SimpleConditionEvent;
 
 import edu.kit.kastel.mcse.ardoco.core.architecture.NoHashCodeEquals;
-import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedConsistencyBetweenEqualsHashCodeAndComparable;
 import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
 
 @AnalyzeClasses(packages = "edu.kit.kastel.mcse.ardoco.core")
@@ -92,8 +91,38 @@ public class DeterministicArDoCoTest {
             .areNotAnonymousClasses() // e.g., type references for jackson
             .and()
             .resideOutsideOfPackages("..codetraceability..", "..arcotl..") // TODO: FixMe: Ignore ArCoTL for now ..
-            .should()
-            .beAnnotatedWith(UserReviewedConsistencyBetweenEqualsHashCodeAndComparable.class);
+            .should(implementEqualsAndHashCode());
+
+    private static ArchCondition<? super JavaClass> implementEqualsAndHashCode() {
+        return new ArchCondition<>("implement equals or hashCode") {
+            @Override
+            public void check(JavaClass javaClass, ConditionEvents conditionEvents) {
+                var methods = javaClass.getAllMethods();
+                boolean equals = false;
+                boolean hashCode = false;
+                for (var method : methods) {
+                    if (!method.getFullName().contains(javaClass.getFullName()))
+                        continue;
+
+                    if (method.getName().equals("hashCode")) {
+                        hashCode = true;
+                    } else if (method.getName().equals("equals")) {
+                        equals = true;
+                    }
+                }
+
+                if (equals && hashCode) {
+                    conditionEvents.add(new SimpleConditionEvent(javaClass, true, "Class " + javaClass.getName() + " implements equals and hashCode"));
+                } else if (equals) {
+                    conditionEvents.add(new SimpleConditionEvent(javaClass, false, "Class " + javaClass.getName() + " implements equals but not hashCode"));
+                } else if (hashCode) {
+                    conditionEvents.add(new SimpleConditionEvent(javaClass, false, "Class " + javaClass.getName() + " implements hashCode but not equals"));
+                } else {
+                    conditionEvents.add(new SimpleConditionEvent(javaClass, false, "Class " + javaClass.getName() + " implements neither equals nor hashCode"));
+                }
+            }
+        };
+    }
 
     @ArchTest
     public static final ArchRule ensureSortedCollectionsOnlyForComparableTypes = fields().that()
