@@ -433,7 +433,6 @@ class MappingCombinerTest implements Claimant {
         Mockito.when(phrase.getContainedWords()).thenReturn(containedWords);
         Mockito.when(phrase.getPhraseVector()).thenCallRealMethod();
         Mockito.when(phrase.toString()).thenCallRealMethod();
-        Mockito.when(phrase.compareTo(Mockito.any())).thenCallRealMethod();
     }
 
     private void mockWord(Word word, String text, String lemma, int sentenceNumber, Phrase phrase, int position) {

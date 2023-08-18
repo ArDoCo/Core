@@ -4,6 +4,8 @@ package edu.kit.kastel.mcse.ardoco.core.connectiongenerator;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.SortedSets;
 import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.list.primitive.MutableBooleanList;
 import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionState;
@@ -19,13 +21,13 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
  */
 public class ConnectionStateImpl extends AbstractState implements ConnectionState {
 
-    private transient MutableSortedSet<InstanceLink> instanceLinks;
+    private transient MutableList<InstanceLink> instanceLinks;
 
     /**
      * Creates a new connection state.
      */
     public ConnectionStateImpl() {
-        instanceLinks = SortedSets.mutable.empty();
+        instanceLinks = Lists.mutable.empty();
     }
 
     /**
