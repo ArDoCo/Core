@@ -16,8 +16,8 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.data.AbstractState;
 
 /**
- * This state contains all from the model extracted information. This are the extracted instances and relations. For
- * easier handling, the occurring types and names are stored additionally.
+ * This state contains all from the model extracted information. This are the extracted instances and relations. For easier handling, the occurring types and
+ * names are stored additionally.
  */
 public class ModelExtractionStateImpl extends AbstractState implements ModelExtractionState {
 
@@ -25,7 +25,7 @@ public class ModelExtractionStateImpl extends AbstractState implements ModelExtr
     private final Metamodel metamodelType;
     private final MutableSet<String> instanceTypes;
     private final MutableSet<String> names;
-    private transient ImmutableList<ModelInstance> instances;
+    private ImmutableList<ModelInstance> instances;
 
     // For generation of configuration
     private ModelExtractionStateImpl() {
@@ -52,8 +52,7 @@ public class ModelExtractionStateImpl extends AbstractState implements ModelExtr
     }
 
     /**
-     * Collects all occurring types and names from the instances and relations and stores them. The titles of relations
-     * are stored in types.
+     * Collects all occurring types and names from the instances and relations and stores them. The titles of relations are stored in types.
      */
     private void collectTypesAndNames() {
         for (ModelInstance i : instances) {

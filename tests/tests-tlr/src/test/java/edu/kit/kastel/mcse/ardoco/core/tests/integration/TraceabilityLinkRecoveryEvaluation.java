@@ -33,7 +33,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ResultMatrix;
 
-public abstract class TraceabilityLinkRecoveryEvaluation {
+public abstract class TraceabilityLinkRecoveryEvaluation<T extends GoldStandardProject> {
     protected static final Logger logger = LoggerFactory.getLogger(TraceabilityLinkRecoveryEvaluation.class);
     private static final String WARNING_NO_CODE_MODEL = "Could not get code model to enroll gold standard. Using not enrolled gold standard!";
     // The path separator is to show that a code entry is not a class but rather a directory that ends with, currently, a "/" (unix style)
@@ -42,20 +42,20 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
 
     protected static Map<GoldStandardProject, ArDoCoResult> resultMap = new HashMap<>();
 
-    protected ArDoCoResult runTraceLinkEvaluation(CodeProject codeProject) {
-        ArDoCoResult result = resultMap.get(codeProject);
+    protected ArDoCoResult runTraceLinkEvaluation(T project) {
+        ArDoCoResult result = resultMap.get(project);
         if (result == null || !resultHasRequiredData(result)) {
-            ArDoCoRunner runner = getAndSetupRunner(codeProject);
+            ArDoCoRunner runner = getAndSetupRunner(project);
             result = runner.run();
         }
         Assertions.assertNotNull(result);
 
-        var goldStandard = getGoldStandard(codeProject);
+        var goldStandard = getGoldStandard(project);
         goldStandard = enrollGoldStandard(goldStandard, result);
         var evaluationResults = calculateEvaluationResults(result, goldStandard);
 
-        ExpectedResults expectedResults = getExpectedResults(codeProject);
-        TestUtil.logExtendedResultsWithExpected(logger, this, codeProject.name(), evaluationResults, expectedResults);
+        ExpectedResults expectedResults = getExpectedResults(project);
+        TestUtil.logExtendedResultsWithExpected(logger, this, project.getProjectName(), evaluationResults, expectedResults);
         compareResults(evaluationResults, expectedResults);
         return result;
     }
@@ -73,7 +73,7 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
         return inputCode;
     }
 
-    protected abstract ArDoCoRunner getAndSetupRunner(CodeProject codeProject);
+    protected abstract ArDoCoRunner getAndSetupRunner(T project);
 
     private void prepareCode(CodeProject codeProject) {
         File codeLocation = new File(codeProject.getCodeLocation());
@@ -83,9 +83,9 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
         }
     }
 
-    protected abstract ExpectedResults getExpectedResults(CodeProject codeProject);
+    protected abstract ExpectedResults getExpectedResults(T project);
 
-    protected abstract ImmutableList<String> getGoldStandard(CodeProject codeProject);
+    protected abstract ImmutableList<String> getGoldStandard(T project);
 
     protected abstract ImmutableList<String> enrollGoldStandard(ImmutableList<String> goldStandard, ArDoCoResult result);
 

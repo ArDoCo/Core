@@ -11,13 +11,11 @@ import edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator.informants.Lin
 import edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator.informants.DiagramTextInformant;
 
 public class InitialDiagramConnectionAgent extends PipelineAgent {
-    private static final String id = InitialDiagramConnectionAgent.class.getSimpleName();
-
     @Configurable
     private final List<String> enabledInformants;
 
     public InitialDiagramConnectionAgent(DataRepository dataRepository) {
-        super(id, dataRepository, List.of(new DiagramAsModelInformant(dataRepository), new DiagramTextInformant(dataRepository),
+        super(InitialDiagramConnectionAgent.class.getSimpleName(), dataRepository, List.of(new DiagramAsModelInformant(dataRepository), new DiagramTextInformant(dataRepository),
                 new LinkBetweenDeAndRiProbabilityFilter(dataRepository)));
         enabledInformants = getInformantClassNames();
     }

@@ -7,9 +7,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.eclipse.collections.api.list.ImmutableList;
 import org.jetbrains.annotations.NotNull;
-import com.google.common.collect.Lists;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import edu.kit.kastel.mcse.ardoco.core.api.Disambiguation;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
@@ -23,6 +26,8 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.strategy.SimilaritySt
  * Provides utility methods that are shared by {@link edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant informants} of this stage.
  */
 public class DiagramUtil {
+    private final static Logger logger = LoggerFactory.getLogger(DiagramUtil.class);
+
     private DiagramUtil() {
         throw new IllegalStateException("Cannot be instantiated");
     }
@@ -124,40 +129,36 @@ public class DiagramUtil {
     }
 
     /**
-     * Determines a set of possible names for a box by processing the associated
-     * {@link edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.TextBox textboxes}. Tries to filter out technical terms using {@link DbPediaHelper}.
+     * Determines a set of possible references for a textBox. Tries to filter out technical terms using {@link DbPediaHelper}.
      *
-     * @param box the box
+     * @param textBox the textBox
      * @return a set of possible names
      */
-    public static @NotNull Set<String> getPossibleNames(@NotNull Box box) {
+    public static @NotNull Set<String> getReferences(@NotNull TextBox textBox) {
         var names = new LinkedHashSet<String>();
 
-        var texts = box.getTexts();
-        for (var textBox : texts) {
-            var text = textBox.getText();
-            var splitAndDecameled = processText(text).stream()
-                    .filter(s -> !DbPediaHelper.isWordMarkupLanguage(s))
-                    .filter(s -> !DbPediaHelper.isWordProgrammingLanguage(s))
-                    .filter(s -> !DbPediaHelper.isWordSoftware(s))
-                    .toList();
-            var abbreviations = AbbreviationDisambiguationHelper.getPossibleAbbreviations(text);
-            var meaningsMap = abbreviations.stream().collect(Collectors.toMap(a -> a, AbbreviationDisambiguationHelper.getInstance()::disambiguate));
-            var crossProduct = Lists.cartesianProduct(
-                    meaningsMap.entrySet().stream().map(s -> s.getValue().stream().map(v -> new Pair<>(s.getKey(), v)).toList()).toList());
-            for (var meanings : crossProduct) {
-                if (meanings.isEmpty())
-                    continue;
-                var textWithReplacements = text;
-                for (Pair<String, String> replacement : meanings) {
-                    textWithReplacements = textWithReplacements.replace(replacement.first(), replacement.second());
-                }
-                names.add(textWithReplacements);
+        var text = textBox.getText();
+        var splitAndDecameled = processText(text).stream()
+                .filter(s -> !DbPediaHelper.isWordMarkupLanguage(s))
+                .filter(s -> !DbPediaHelper.isWordProgrammingLanguage(s))
+                .filter(s -> !DbPediaHelper.isWordSoftware(s))
+                .toList();
+        var abbreviations = AbbreviationDisambiguationHelper.getPossibleAbbreviations(text);
+        var meaningsMap = abbreviations.stream().collect(Collectors.toMap(a -> a, AbbreviationDisambiguationHelper.getInstance()::disambiguate));
+        var crossProduct = com.google.common.collect.Lists.cartesianProduct(
+                meaningsMap.entrySet().stream().map(s -> s.getValue().stream().map(v -> new Pair<>(s.getKey(), v)).toList()).toList());
+        for (var meanings : crossProduct) {
+            if (meanings.isEmpty())
+                continue;
+            var textWithReplacements = text;
+            for (Pair<String, String> replacement : meanings) {
+                textWithReplacements = textWithReplacements.replace(replacement.first(), replacement.second());
             }
-            var noBlank = splitAndDecameled.stream().map(s -> s.replaceAll("\\s+", "")).toList();
-            names.addAll(splitAndDecameled);
-            names.addAll(noBlank);
+            names.add(textWithReplacements);
         }
+        var noBlank = splitAndDecameled.stream().map(s -> s.replaceAll("\\s+", "")).toList();
+        names.addAll(splitAndDecameled);
+        names.addAll(noBlank);
 
         return names;
     }

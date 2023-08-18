@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Objects;
 
 import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
 import org.sqlite.SQLiteConfig;
 import org.sqlite.SQLiteOpenMode;
 
@@ -22,7 +22,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.strategy.SimilaritySt
  */
 public class WordSimUtils {
 
-    private static ImmutableList<WordSimMeasure> measures = WordSimLoader.loadUsingProperties();
+    private static MutableList<WordSimMeasure> measures = Lists.mutable.withAll(WordSimLoader.loadUsingProperties());
     private static ComparisonStrategy strategy = ComparisonStrategy.AT_LEAST_ONE;
     private static SimilarityStrategy similarityStrategy = SimilarityStrategy.AVERAGE;
 
@@ -35,7 +35,17 @@ public class WordSimUtils {
      * @param measures the measures to use
      */
     public static void setMeasures(Collection<WordSimMeasure> measures) {
-        WordSimUtils.measures = Lists.immutable.withAll(measures);
+        WordSimUtils.measures = Lists.mutable.withAll(measures);
+    }
+
+    /**
+     * Adds the specified measure to the measures, which should be used for similarity comparison.
+     *
+     * @param measure the measure to add
+     * @return Whether the measure was added successfully
+     */
+    public static boolean addMeasure(WordSimMeasure measure) {
+        return WordSimUtils.measures.add(measure);
     }
 
     /**

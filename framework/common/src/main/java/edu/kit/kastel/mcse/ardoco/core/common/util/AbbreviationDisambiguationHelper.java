@@ -6,7 +6,9 @@ import java.util.*;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
+import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.Maps;
+import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.map.MutableMap;
 import org.jetbrains.annotations.NotNull;
 import org.jsoup.Jsoup;
@@ -15,7 +17,6 @@ import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Lists;
 
 import edu.kit.kastel.mcse.ardoco.core.api.Disambiguation;
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
@@ -70,6 +71,10 @@ public class AbbreviationDisambiguationHelper extends FileBasedCache<MutableMap<
         return set;
     }
 
+    public ImmutableList<Disambiguation> getAll() {
+        return Lists.immutable.ofAll(getOrRead().values());
+    }
+
     public void add(@NotNull Disambiguation disambiguation) {
         //Specifically check. We do not want to mess up our files.
         Objects.requireNonNull(disambiguation);
@@ -98,7 +103,7 @@ public class AbbreviationDisambiguationHelper extends FileBasedCache<MutableMap<
                 continue;
             allAbbrevs.add(listOfPairs);
         }
-        return Lists.cartesianProduct(allAbbrevs).stream().filter(l -> !l.isEmpty()).toList();
+        return com.google.common.collect.Lists.cartesianProduct(allAbbrevs).stream().filter(l -> !l.isEmpty()).toList();
     }
 
     public Disambiguation crawl(@NotNull String abbreviation) {

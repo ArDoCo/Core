@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.Locale;
 import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
@@ -56,5 +57,15 @@ public class Disambiguation implements Serializable {
     public Disambiguation addMeanings(Disambiguation other) {
         meanings.addAll(other.meanings);
         return this;
+    }
+
+    public String replaceMeaningWithAbbreviation(String text, boolean ignoreCase) {
+        var abbreviatedText = text;
+        for (String meaning : meanings) {
+            if (ignoreCase)
+                abbreviatedText = abbreviatedText.replace(meaning.toLowerCase(Locale.US), abbreviation);
+            abbreviatedText = abbreviatedText.replace(meaning, abbreviation);
+        }
+        return abbreviatedText;
     }
 }

@@ -85,4 +85,9 @@ public class TextBox implements Serializable {
     public void setDominatingColor(Integer dominatingColor) {
         this.dominatingColor = dominatingColor;
     }
+
+    @Override
+    public String toString() {
+        return String.format("TextBox [text=%s]", getText());
+    }
 }

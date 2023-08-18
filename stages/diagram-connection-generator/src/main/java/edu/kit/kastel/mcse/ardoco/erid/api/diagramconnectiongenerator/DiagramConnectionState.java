@@ -1,6 +1,5 @@
 package edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator;
 
-import edu.kit.kastel.mcse.ardoco.erid.api.models.tracelinks.LinkBetweenDeAndRi;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -20,6 +19,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.configuration.IConfigurable;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
+import edu.kit.kastel.mcse.ardoco.erid.api.models.tracelinks.LinkBetweenDeAndRi;
 
 public interface DiagramConnectionState extends IConfigurable {
     Logger logger = LoggerFactory.getLogger(DiagramConnectionState.class);
@@ -87,14 +87,17 @@ public interface DiagramConnectionState extends IConfigurable {
     }
 
     default @NotNull ImmutableSet<DiaWordTraceLink> getMostSpecificWordTraceLinks() {
-        var sameDiagram = getWordTraceLinks().stream().collect(Collectors.groupingBy(tl -> tl.getDiagramElement().getDiagram()));
-        var values = sameDiagram.values();
         var allLinks = Sets.mutable.<DiaWordTraceLink>empty();
+        /*var sameDiagram = getWordTraceLinks().stream().collect(Collectors.groupingBy(tl -> tl.getDiagramElement().getDiagram()));
+        var values = sameDiagram.values();
         for (var diagram : values) {
             var sameWord = diagram.stream().collect(Collectors.groupingBy(tl -> tl.getWord().getPosition()));
             sameWord.remove(-1);
             allLinks.addAll(sameWord.values().stream().flatMap(tls -> getHighestConfidenceTraceLinks(tls).stream()).toList());
-        }
+        }*/
+        var sameWord = getWordTraceLinks().stream().collect(Collectors.groupingBy(tl -> tl.getWord().getPosition()));
+        sameWord.remove(-1);
+        allLinks.addAll(sameWord.values().stream().flatMap(tls -> getHighestConfidenceTraceLinks(tls).stream()).toList());
         return Sets.immutable.ofAll(allLinks);
     }
 

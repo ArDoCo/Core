@@ -31,7 +31,6 @@ import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCoForSadSamTraceabilityLink
 import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.ArDoCoRunner;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.CodeProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
@@ -42,7 +41,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLGoldS
  * Integration test that evaluates the traceability link recovery capabilities of ArDoCo.
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class SadSamTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryEvaluation {
+class SadSamTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryEvaluation<GoldStandardProject> {
 
     @Override
     protected boolean resultHasRequiredData(ArDoCoResult arDoCoResult) {
@@ -51,19 +50,19 @@ class SadSamTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryE
     }
 
     @Override
-    protected ArDoCoResult runTraceLinkEvaluation(CodeProject codeProject) {
-        var result = super.runTraceLinkEvaluation(codeProject);
-        DATA_MAP.put(codeProject, result);
+    protected ArDoCoResult runTraceLinkEvaluation(GoldStandardProject project) {
+        var result = super.runTraceLinkEvaluation(project);
+        DATA_MAP.put(project, result);
         return result;
     }
 
     @Override
-    protected ArDoCoRunner getAndSetupRunner(CodeProject codeProject) {
-        var additionalConfigsMap = ConfigurationHelper.loadAdditionalConfigs(codeProject.getAdditionalConfigurationsFile());
+    protected ArDoCoRunner getAndSetupRunner(GoldStandardProject project) {
+        var additionalConfigsMap = ConfigurationHelper.loadAdditionalConfigs(project.getAdditionalConfigurationsFile());
 
-        String name = codeProject.name().toLowerCase();
-        File inputModel = codeProject.getModelFile();
-        File inputText = codeProject.getTextFile();
+        String name = project.getProjectName().toLowerCase();
+        File inputModel = project.getModelFile();
+        File inputText = project.getTextFile();
         File outputDir = new File(OUTPUT);
 
         var runner = new ArDoCoForSadSamTraceabilityLinkRecovery(name);
@@ -72,13 +71,13 @@ class SadSamTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryE
     }
 
     @Override
-    protected ExpectedResults getExpectedResults(CodeProject codeProject) {
-        return codeProject.getExpectedTraceLinkResults();
+    protected ExpectedResults getExpectedResults(GoldStandardProject project) {
+        return project.getExpectedTraceLinkResults();
     }
 
     @Override
-    protected ImmutableList<String> getGoldStandard(CodeProject codeProject) {
-        return codeProject.getTlrGoldStandard();
+    protected ImmutableList<String> getGoldStandard(GoldStandardProject project) {
+        return project.getTlrGoldStandard();
     }
 
     @Override

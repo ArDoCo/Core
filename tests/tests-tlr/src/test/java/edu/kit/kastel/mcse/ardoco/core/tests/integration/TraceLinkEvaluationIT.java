@@ -49,7 +49,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLSente
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLSummaryFile;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class TraceLinkEvaluationIT {
+public class TraceLinkEvaluationIT {
 
     protected static final Logger logger = LoggerFactory.getLogger(TraceLinkEvaluationIT.class);
 

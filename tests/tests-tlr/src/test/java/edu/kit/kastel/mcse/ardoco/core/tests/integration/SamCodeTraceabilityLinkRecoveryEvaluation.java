@@ -21,7 +21,7 @@ import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCoForSamCodeTraceabilityLin
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.CodeProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 
-class SamCodeTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryEvaluation {
+class SamCodeTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryEvaluation<CodeProject> {
 
     @Override
     protected boolean resultHasRequiredData(ArDoCoResult arDoCoResult) {

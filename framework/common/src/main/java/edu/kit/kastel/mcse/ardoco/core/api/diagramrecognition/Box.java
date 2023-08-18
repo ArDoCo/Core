@@ -7,11 +7,14 @@ import java.awt.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
+import org.eclipse.collections.api.set.MutableSet;
+import org.eclipse.collections.impl.factory.Sets;
 import org.jetbrains.annotations.NotNull;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -30,7 +33,7 @@ public class Box extends DiagramElement implements Serializable {
     private String classification;
     private List<TextBox> textBoxes = new ArrayList<>();
     private Integer dominatingColor = null;
-    private Set<String> references;
+    private MutableSet<String> references = null;
 
     // Jackson JSON
     private Box() {
@@ -129,10 +132,21 @@ public class Box extends DiagramElement implements Serializable {
     }
 
     public Set<String> getReferences() {
-        if (references == null) {
-            references = DiagramUtil.getPossibleNames(this);
-        }
-        return references;
+        if (references == null)
+            references = Sets.mutable.fromStream(getTexts().stream().flatMap(t -> DiagramUtil.getReferences(t).stream()));
+        return Collections.unmodifiableSet(references);
+    }
+
+    public boolean addReference(String reference) {
+        return references.add(reference);
+    }
+
+    public void setReferences(Set<String> references) {
+        this.references = Sets.mutable.ofAll(references);
+    }
+
+    public boolean removeReference(String reference) {
+        return references.remove(reference);
     }
 
     /**
