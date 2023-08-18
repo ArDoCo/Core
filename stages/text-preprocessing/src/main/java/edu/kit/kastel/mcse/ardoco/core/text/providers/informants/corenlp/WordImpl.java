@@ -13,12 +13,14 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.POSTag;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
+import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedConsistencyBetweenEqualsHashCodeAndComparable;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.semgraph.SemanticGraph;
 import edu.stanford.nlp.trees.GrammaticalRelation;
 import edu.stanford.nlp.trees.TypedDependency;
 
+@UserReviewedConsistencyBetweenEqualsHashCodeAndComparable
 class WordImpl implements Word {
 
     private final CoreLabel token;
@@ -178,5 +180,17 @@ class WordImpl implements Word {
     @Override
     public int hashCode() {
         return Objects.hash(getPosition(), getPosTag(), getText(), getSentenceNo());
+    }
+
+    @Override
+    public int compareTo(Word o) {
+        if (this.equals(o))
+            return 0;
+
+        int compareSentences = Integer.compare(this.getSentenceNo(), o.getSentenceNo());
+        if (compareSentences != 0) {
+            return compareSentences;
+        }
+        return Integer.compare(this.getPosition(), o.getPosition());
     }
 }

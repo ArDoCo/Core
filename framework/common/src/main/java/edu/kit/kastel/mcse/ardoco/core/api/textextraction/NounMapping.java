@@ -81,7 +81,7 @@ public interface NounMapping {
      */
     ImmutableSortedMap<MappingKind, Confidence> getDistribution();
 
-    ImmutableSortedSet<Claimant> getClaimants();
+    ImmutableList<Claimant> getClaimants();
 
     /**
      * Adds the kind with probability.

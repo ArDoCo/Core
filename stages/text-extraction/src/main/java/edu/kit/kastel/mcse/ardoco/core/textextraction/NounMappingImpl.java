@@ -5,6 +5,7 @@ import static edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions.AVERAG
 
 import java.util.Collections;
 import java.util.IdentityHashMap;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -22,6 +23,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMappingChangeListener;
 import edu.kit.kastel.mcse.ardoco.core.architecture.NoHashCodeEquals;
+import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedConsistencyBetweenEqualsHashCodeAndComparable;
 import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
 import edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions;
 import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
@@ -32,6 +34,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
  */
 @UserReviewedDeterministic
 @NoHashCodeEquals
+@UserReviewedConsistencyBetweenEqualsHashCodeAndComparable
 public final class NounMappingImpl implements NounMapping, Comparable<NounMappingImpl> {
 
     private static final AggregationFunctions DEFAULT_AGGREGATOR = AVERAGE;
@@ -190,8 +193,11 @@ public final class NounMappingImpl implements NounMapping, Comparable<NounMappin
     }
 
     @Override
-    public ImmutableSortedSet<Claimant> getClaimants() {
-        return this.distribution.valuesView().flatCollect(Confidence::getClaimants).toImmutableSortedSet();
+    public ImmutableList<Claimant> getClaimants() {
+        Set<Claimant> identitySet = new LinkedHashSet<>();
+        for (var claimant : this.distribution.valuesView().flatCollect(Confidence::getClaimants))
+            identitySet.add(claimant);
+        return Lists.immutable.withAll(identitySet);
     }
 
     public static Long earliestCreationTime(NounMapping... nounMappings) {
@@ -205,6 +211,7 @@ public final class NounMappingImpl implements NounMapping, Comparable<NounMappin
 
     @Override
     public int compareTo(NounMappingImpl o) {
+        // Equals == True => compareTo == 0
         return Long.compare(this.earliestCreationTime, o.earliestCreationTime);
     }
 

@@ -5,6 +5,8 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.OptionalDouble;
 
+import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedConsistencyBetweenEqualsHashCodeAndComparable;
+
 /**
  * The calculated confidence of an endpoint tuple. The confidence has a value
  * between 0 and 1 if a value exists. The value represents how likely a trace
@@ -17,6 +19,7 @@ import java.util.OptionalDouble;
  * result in a value. A nonexistent value does not make any statement about how
  * likely a trace link between the two specific endpoints would be correct.
  */
+@UserReviewedConsistencyBetweenEqualsHashCodeAndComparable
 public class Confidence implements Comparable<Confidence> {
 
     private final OptionalDouble confidenceOptional;

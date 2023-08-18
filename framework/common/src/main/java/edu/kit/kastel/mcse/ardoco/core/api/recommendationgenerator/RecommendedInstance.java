@@ -107,5 +107,5 @@ public abstract class RecommendedInstance extends Entity {
 
     public abstract ImmutableSortedSet<Integer> getSentenceNumbers();
 
-    public abstract ImmutableSortedSet<Claimant> getClaimants();
+    public abstract ImmutableList<Claimant> getClaimants();
 }

@@ -7,7 +7,6 @@ import java.util.Objects;
 import java.util.UUID;
 
 import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.factory.SortedSets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
@@ -275,8 +274,8 @@ public class RecommendedInstanceImpl extends RecommendedInstance implements Clai
     }
 
     @Override
-    public ImmutableSortedSet<Claimant> getClaimants() {
-        return SortedSets.immutable.withAll(this.internalConfidence.getClaimants());
+    public ImmutableList<Claimant> getClaimants() {
+        return Lists.immutable.withAll(this.internalConfidence.getClaimants());
     }
 
 }
