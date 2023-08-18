@@ -4,10 +4,8 @@ package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants;
 import java.util.Map;
 
 import org.eclipse.collections.api.factory.Sets;
-import org.eclipse.collections.api.factory.SortedSets;
+import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.MutableSet;
-import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
-import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.codetraceability.CodeTraceabilityState;
 import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionStates;
@@ -49,9 +47,9 @@ public class TraceLinkCombiner extends Informant {
         codeTraceabilityState.addSadCodeTraceLinks(transitiveTraceLinks);
     }
 
-    private ImmutableSortedSet<SadCodeTraceLink> combineToTransitiveTraceLinks(ImmutableSortedSet<SadSamTraceLink> sadSamTraceLinks,
-            ImmutableSortedSet<SamCodeTraceLink> samCodeTraceLinks) {
-        MutableSortedSet<SadCodeTraceLink> transitiveTraceLinks = SortedSets.mutable.empty();
+    private ImmutableSet<SadCodeTraceLink> combineToTransitiveTraceLinks(ImmutableSet<SadSamTraceLink> sadSamTraceLinks,
+            ImmutableSet<SamCodeTraceLink> samCodeTraceLinks) {
+        MutableSet<SadCodeTraceLink> transitiveTraceLinks = Sets.mutable.empty();
         for (var sadSamTraceLink : sadSamTraceLinks) {
             String modelElementUid = sadSamTraceLink.getModelElementUid();
             for (var samCodeTraceLink : samCodeTraceLinks) {

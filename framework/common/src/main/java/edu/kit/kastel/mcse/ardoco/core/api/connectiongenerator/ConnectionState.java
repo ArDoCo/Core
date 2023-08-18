@@ -1,10 +1,10 @@
 /* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator;
 
-import org.eclipse.collections.api.factory.SortedSets;
+import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
-import org.eclipse.collections.api.set.sorted.MutableSortedSet;
+import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.set.ImmutableSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.InstanceLink;
@@ -63,8 +63,8 @@ public interface ConnectionState extends IConfigurable {
      *
      * @return list of tracelinks within this connection state
      */
-    default ImmutableSortedSet<SadSamTraceLink> getTraceLinks() {
-        MutableSortedSet<SadSamTraceLink> traceLinks = SortedSets.mutable.empty();
+    default ImmutableSet<SadSamTraceLink> getTraceLinks() {
+        MutableList<SadSamTraceLink> traceLinks = Lists.mutable.empty();
         for (var instanceLink : getInstanceLinks()) {
             var textualInstance = instanceLink.getTextualInstance();
             for (var nm : textualInstance.getNameMappings()) {
@@ -74,7 +74,7 @@ public interface ConnectionState extends IConfigurable {
                 }
             }
         }
-        return traceLinks.toImmutable();
+        return traceLinks.toImmutableSet();
     }
 
     /**

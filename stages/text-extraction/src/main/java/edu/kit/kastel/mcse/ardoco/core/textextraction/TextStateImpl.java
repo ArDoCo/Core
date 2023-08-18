@@ -296,7 +296,8 @@ public class TextStateImpl extends AbstractState implements TextState {
     void addNounMappingAddPhraseMapping(NounMapping nounMapping) {
         addNounMappingToState(nounMapping);
 
-        if (phraseMappings.anySatisfy(it -> Comparators.collectionsEqualsAnyOrder(it.getPhrases(), nounMapping.getPhrases())))
+        // TODO: Old impl uses identity hash sets .. seems to be better than equals ..
+        if (phraseMappings.anySatisfy(it -> Comparators.collectionsIdentityAnyOrder(it.getPhrases(), nounMapping.getPhrases())))
             return;
         phraseMappings.add(new PhraseMappingImpl(nounMapping.getPhrases()));
     }

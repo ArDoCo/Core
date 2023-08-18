@@ -17,4 +17,12 @@ public final class Comparators {
     public static <T> boolean collectionsEqualsAnyOrder(Collection<T> first, Collection<T> second) {
         return first.size() == second.size() && first.containsAll(second) && second.containsAll(first);
     }
+
+    public static <T> boolean collectionsIdentityAnyOrder(ImmutableCollection<T> first, ImmutableCollection<T> second) {
+        return collectionsIdentityAnyOrder(first.castToCollection(), second.castToCollection());
+    }
+
+    public static <T> boolean collectionsIdentityAnyOrder(Collection<T> first, Collection<T> second) {
+        return first.size() == second.size() && first.stream().allMatch(f -> second.stream().anyMatch(s -> f == s));
+    }
 }

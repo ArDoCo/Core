@@ -151,8 +151,6 @@ public class RecommendedInstanceImpl extends RecommendedInstance implements Clai
     public void addMappings(NounMapping nameMapping, NounMapping typeMapping) {
         addName(nameMapping);
         addType(typeMapping);
-        nameMapping.registerChangeListener(this);
-        typeMapping.registerChangeListener(this);
     }
 
     /**
@@ -165,9 +163,6 @@ public class RecommendedInstanceImpl extends RecommendedInstance implements Clai
     public void addMappings(ImmutableList<NounMapping> nameMapping, ImmutableList<NounMapping> typeMapping) {
         nameMapping.forEach(this::addName);
         typeMapping.forEach(this::addType);
-
-        nameMapping.forEach(nm -> nm.registerChangeListener(this));
-        typeMapping.forEach(nm -> nm.registerChangeListener(this));
     }
 
     /**
@@ -177,6 +172,8 @@ public class RecommendedInstanceImpl extends RecommendedInstance implements Clai
      */
     @Override
     public void addName(NounMapping nameMapping) {
+        if (nameMappings.contains(nameMapping))
+            return;
         nameMappings.add(nameMapping);
         nameMapping.registerChangeListener(this);
     }
@@ -188,6 +185,8 @@ public class RecommendedInstanceImpl extends RecommendedInstance implements Clai
      */
     @Override
     public void addType(NounMapping typeMapping) {
+        if (typeMappings.contains(typeMapping))
+            return;
         typeMappings.add(typeMapping);
         typeMapping.registerChangeListener(this);
     }

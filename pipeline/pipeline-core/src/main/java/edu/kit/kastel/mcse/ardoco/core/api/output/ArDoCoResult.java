@@ -1,15 +1,16 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.output;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.Sets;
-import org.eclipse.collections.api.factory.SortedSets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.MutableSet;
 import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 import org.slf4j.Logger;
@@ -61,12 +62,12 @@ public record ArDoCoResult(DataRepository dataRepository) {
      * @param modelId the ID of the model that should be traced
      * @return Trace links for the model with the given id
      */
-    public ImmutableSortedSet<SadSamTraceLink> getTraceLinksForModel(String modelId) {
+    public ImmutableSet<SadSamTraceLink> getTraceLinksForModel(String modelId) {
         ConnectionState connectionState = getConnectionState(modelId);
         if (connectionState != null) {
             return connectionState.getTraceLinks();
         }
-        return SortedSets.immutable.empty();
+        return Sets.immutable.empty();
     }
 
     /**
@@ -96,12 +97,13 @@ public record ArDoCoResult(DataRepository dataRepository) {
     }
 
     /**
-     * Returns the set of {@link SadSamTraceLink}s as strings. The strings are beautified to have a human-readable format
+     * Returns the set of {@link SadSamTraceLink SadSamTraceLinks} as strings. The strings are beautified to have a human-readable format
      *
      * @return Trace links as Strings
      */
     public List<String> getAllTraceLinksAsBeautifiedStrings() {
-        return getAllTraceLinks().toSortedList(SadSamTraceLink::compareTo).collect(ArDoCoResult::formatTraceLinksHumanReadable);
+        return getAllTraceLinks().toSortedList(Comparator.comparingInt(SadSamTraceLink::getSentenceNumber))
+                .collect(ArDoCoResult::formatTraceLinksHumanReadable);
     }
 
     private static String formatTraceLinksHumanReadable(SadSamTraceLink traceLink) {
