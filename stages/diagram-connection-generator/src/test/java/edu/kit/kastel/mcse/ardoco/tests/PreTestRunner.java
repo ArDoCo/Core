@@ -17,7 +17,7 @@ import edu.kit.kastel.mcse.ardoco.core.text.providers.TextPreprocessingAgent;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.DiagramBackedTextStateStrategy;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextStateImpl;
-import edu.kit.kastel.mcse.ardoco.erid.diagramrecognitionmock.DiagramRecognitionMock;
+import edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.DiagramRecognitionMock;
 import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognition;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 
@@ -36,12 +36,6 @@ public class PreTestRunner extends ParameterizedRunner<PreTestRunner.Parameters>
         ArDoCo arDoCo = getArDoCo();
         var dataRepository = arDoCo.getDataRepository();
 
-        if (p.useMockDiagrams) {
-            pipelineSteps.add(new DiagramRecognitionMock(p.diagramProject, p.diagramProject.getAdditionalConfigurations(), dataRepository));
-        } else {
-            pipelineSteps.add(DiagramRecognition.get(p.diagramProject.getAdditionalConfigurations(), dataRepository));
-        }
-
         var text = CommonUtilities.readInputText(p.diagramProject.getTextFile());
         if (text.isBlank()) {
             throw new IllegalArgumentException("Cannot deal with empty input text. Maybe there was an error reading the file.");
@@ -50,6 +44,12 @@ public class PreTestRunner extends ParameterizedRunner<PreTestRunner.Parameters>
         pipelineSteps.add(TextPreprocessingAgent.get(p.diagramProject.getAdditionalConfigurations(), dataRepository));
 
         pipelineSteps.add(ModelProviderAgent.get(p.diagramProject.getModelFile(), p.diagramProject.getArchitectureModelType(), dataRepository));
+
+        if (p.useMockDiagrams) {
+            pipelineSteps.add(new DiagramRecognitionMock(p.diagramProject, p.diagramProject.getAdditionalConfigurations(), dataRepository));
+        } else {
+            pipelineSteps.add(DiagramRecognition.get(p.diagramProject.getAdditionalConfigurations(), dataRepository));
+        }
 
         var textState = new TextStateImpl();
         var textStrategy = new DiagramBackedTextStateStrategy(textState, dataRepository);

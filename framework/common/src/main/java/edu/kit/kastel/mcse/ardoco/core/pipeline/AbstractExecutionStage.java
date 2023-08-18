@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Agent;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
 
 /**
@@ -63,6 +64,13 @@ public abstract class AbstractExecutionStage extends Pipeline {
      */
     public List<PipelineAgent> getAgents() {
         return List.copyOf(agents);
+    }
+
+    /**
+     * {@return the class names of all agents including disabled}
+     */
+    public List<String> getAgentClassNames() {
+        return agents.stream().map(Agent::getClass).map(Class::getSimpleName).toList();
     }
 
     @Override

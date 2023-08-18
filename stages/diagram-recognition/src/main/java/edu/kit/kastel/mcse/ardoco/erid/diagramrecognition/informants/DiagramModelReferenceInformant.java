@@ -1,4 +1,4 @@
-package edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator.informants;
+package edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.informants;
 
 import java.util.LinkedHashMap;
 import java.util.Locale;

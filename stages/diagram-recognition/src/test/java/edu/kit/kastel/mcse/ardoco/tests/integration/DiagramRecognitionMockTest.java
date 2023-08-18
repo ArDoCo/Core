@@ -1,7 +1,9 @@
 package edu.kit.kastel.mcse.ardoco.tests.integration;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -14,12 +16,18 @@ import org.junit.jupiter.params.provider.MethodSource;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.AnonymousRunner;
+import edu.kit.kastel.mcse.ardoco.core.models.ModelProviderAgent;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
-import edu.kit.kastel.mcse.ardoco.erid.diagramrecognitionmock.DiagramRecognitionMock;
+import edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.DiagramRecognitionMock;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
+import edu.kit.kastel.mcse.ardoco.tests.eval.StageTest;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class DiagramRecognitionMockTest {
+public class DiagramRecognitionMockTest extends StageTest<DiagramRecognitionMock, DiagramProject, DiagramRecognitionMockTest.DiagramRecognitionResult> {
+    public DiagramRecognitionMockTest() {
+        super(new DiagramRecognitionMock(null, Map.of(), null), DiagramProject.values());
+    }
+
     @DisplayName("Evaluate Diagram Recognition")
     @ParameterizedTest(name = "{0}")
     @MethodSource("edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject#getNonHistoricalProjects")
@@ -36,8 +44,30 @@ public class DiagramRecognitionMockTest {
         run(project);
     }
 
-    private void run(DiagramProject project) {
-        var result = new AnonymousRunner(project.name()) {
+    @Override
+    protected DiagramRecognitionResult runComparable(DiagramProject project, Map<String, String> additionalConfigurations, boolean cachePreRun) {
+        var result = run(project, additionalConfigurations, cachePreRun);
+        var diagramRecognition = result.getData(DiagramRecognitionState.ID, DiagramRecognitionState.class).orElseThrow();
+        var diagrams = diagramRecognition.getDiagrams();
+        Assertions.assertFalse(diagrams.isEmpty());
+        return null;
+    }
+
+    @Override
+    protected DataRepository runPreTestRunner(DiagramProject project) {
+        return new AnonymousRunner(project.getProjectName()) {
+            @Override
+            public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) throws IOException {
+                var pipelineSteps = new ArrayList<AbstractPipelineStep>();
+                pipelineSteps.add(ModelProviderAgent.get(project.getModelFile(), project.getArchitectureModelType(), dataRepository));
+                return pipelineSteps;
+            }
+        }.runWithoutSaving();
+    }
+
+    @Override
+    protected DataRepository runTestRunner(DiagramProject project, Map<String, String> additionalConfigurations, DataRepository preRunDataRepository) {
+        return new AnonymousRunner(project.getProjectName(), preRunDataRepository) {
             @Override
             public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) {
                 var pipelineSteps = new ArrayList<AbstractPipelineStep>();
@@ -45,8 +75,8 @@ public class DiagramRecognitionMockTest {
                 return pipelineSteps;
             }
         }.runWithoutSaving();
-        var diagramRecognition = result.getData(DiagramRecognitionState.ID, DiagramRecognitionState.class).orElseThrow();
-        var diagrams = diagramRecognition.getDiagrams();
-        Assertions.assertFalse(diagrams.isEmpty());
+    }
+
+    public record DiagramRecognitionResult() {
     }
 }

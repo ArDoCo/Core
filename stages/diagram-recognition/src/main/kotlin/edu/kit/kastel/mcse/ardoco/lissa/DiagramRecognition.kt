@@ -6,10 +6,11 @@ import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent
+import edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.agents.DiagramReferenceAgent
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.agents.DiagramRecognitionAgent
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.model.DiagramImpl
 
-class DiagramRecognition(dataRepository: DataRepository) : AbstractExecutionStage(ID, dataRepository, listOf(DiagramRecognitionAgent(dataRepository))) {
+class DiagramRecognition(dataRepository: DataRepository) : AbstractExecutionStage(ID, dataRepository, listOf(DiagramRecognitionAgent(dataRepository), DiagramReferenceAgent(dataRepository))) {
 
     companion object {
         const val ID = "DiagramRecognition"

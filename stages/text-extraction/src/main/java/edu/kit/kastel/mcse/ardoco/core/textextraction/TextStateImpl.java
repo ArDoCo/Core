@@ -301,14 +301,16 @@ public class TextStateImpl extends AbstractState implements TextState {
         this.nounMappings.sortThis(ORDER_NOUNMAPPING);
     }
 
-    void removePhraseMappingFromState(PhraseMapping phraseMapping, PhraseMapping replacement) {
-        this.phraseMappings.remove(phraseMapping);
+    boolean removePhraseMappingFromState(PhraseMapping phraseMapping, PhraseMapping replacement) {
+        var success = this.phraseMappings.remove(phraseMapping);
         phraseMapping.onDelete(replacement);
+        return success;
     }
 
-    void removeNounMappingFromState(NounMapping nounMapping, NounMapping replacement) {
-        this.nounMappings.remove(wrap(nounMapping));
+    boolean removeNounMappingFromState(NounMapping nounMapping, NounMapping replacement) {
+        var success = this.nounMappings.remove(wrap(nounMapping));
         nounMapping.onDelete(replacement);
+        return success;
     }
 
     private ElementWrapper<NounMapping> wrap(NounMapping nounMapping) {

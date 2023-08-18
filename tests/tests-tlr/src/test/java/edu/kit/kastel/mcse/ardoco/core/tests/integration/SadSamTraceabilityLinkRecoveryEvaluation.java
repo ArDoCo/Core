@@ -41,8 +41,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLGoldS
  * Integration test that evaluates the traceability link recovery capabilities of ArDoCo.
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class SadSamTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryEvaluation<GoldStandardProject> {
-
+public class SadSamTraceabilityLinkRecoveryEvaluation<T extends GoldStandardProject> extends TraceabilityLinkRecoveryEvaluation<T> {
     @Override
     protected boolean resultHasRequiredData(ArDoCoResult arDoCoResult) {
         var traceLinks = arDoCoResult.getAllTraceLinks();
@@ -50,14 +49,14 @@ class SadSamTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryE
     }
 
     @Override
-    protected ArDoCoResult runTraceLinkEvaluation(GoldStandardProject project) {
+    protected ArDoCoResult runTraceLinkEvaluation(T project) {
         var result = super.runTraceLinkEvaluation(project);
         DATA_MAP.put(project, result);
         return result;
     }
 
     @Override
-    protected ArDoCoRunner getAndSetupRunner(GoldStandardProject project) {
+    protected ArDoCoRunner getAndSetupRunner(T project) {
         var additionalConfigsMap = ConfigurationHelper.loadAdditionalConfigs(project.getAdditionalConfigurationsFile());
 
         String name = project.getProjectName().toLowerCase();
@@ -71,12 +70,12 @@ class SadSamTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryE
     }
 
     @Override
-    protected ExpectedResults getExpectedResults(GoldStandardProject project) {
+    protected ExpectedResults getExpectedResults(T project) {
         return project.getExpectedTraceLinkResults();
     }
 
     @Override
-    protected ImmutableList<String> getGoldStandard(GoldStandardProject project) {
+    protected ImmutableList<String> getGoldStandard(T project) {
         return project.getTlrGoldStandard();
     }
 
@@ -109,7 +108,7 @@ class SadSamTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryE
         return results;
     }
 
-    protected ArDoCoResult getArDoCoResult(GoldStandardProject project) {
+    public ArDoCoResult getArDoCoResult(T project) {
         String name = project.getProjectName().toLowerCase();
         var inputModel = project.getModelFile();
         var inputText = project.getTextFile();
@@ -139,7 +138,7 @@ class SadSamTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryE
      * @param project      the result's project
      * @param arDoCoResult the result
      */
-    protected static void checkResults(GoldStandardProject project, ArDoCoResult arDoCoResult) {
+    public static void checkResults(GoldStandardProject project, ArDoCoResult arDoCoResult) {
 
         var modelIds = arDoCoResult.getModelIds();
         var modelId = modelIds.stream().findFirst().orElseThrow();
@@ -190,7 +189,7 @@ class SadSamTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryE
                         "Phi coefficient " + results.phiCoefficient() + " is below the expected minimum value " + expectedResults.phiCoefficient()));
     }
 
-    static void writeDetailedOutput(GoldStandardProject project, ArDoCoResult arDoCoResult) {
+    public static void writeDetailedOutput(GoldStandardProject project, ArDoCoResult arDoCoResult) {
         String name = project.getProjectName().toLowerCase();
         var path = Path.of(OUTPUT).resolve(name);
         try {

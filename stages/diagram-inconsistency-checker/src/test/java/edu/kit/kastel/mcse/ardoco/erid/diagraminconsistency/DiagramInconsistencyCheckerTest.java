@@ -26,7 +26,7 @@ import edu.kit.kastel.mcse.ardoco.erid.api.diagraminconsistency.DiagramInconsist
 import edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator.DiagramConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.types.MDEInconsistency;
 import edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.types.MTDEInconsistency;
-import edu.kit.kastel.mcse.ardoco.erid.diagramrecognitionmock.DiagramRecognitionMock;
+import edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.DiagramRecognitionMock;
 import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognition;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 import edu.kit.kastel.mcse.ardoco.tests.eval.StageTest;
@@ -71,12 +71,6 @@ public class DiagramInconsistencyCheckerTest extends StageTest<DiagramInconsiste
             public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) throws IOException {
                 var pipelineSteps = new ArrayList<AbstractPipelineStep>();
 
-                if (useMockDiagrams) {
-                    pipelineSteps.add(new DiagramRecognitionMock(project, project.getAdditionalConfigurations(), dataRepository));
-                } else {
-                    pipelineSteps.add(DiagramRecognition.get(project.getAdditionalConfigurations(), dataRepository));
-                }
-
                 var text = CommonUtilities.readInputText(project.getTextFile());
                 if (text.isBlank()) {
                     throw new IllegalArgumentException("Cannot deal with empty input text. Maybe there was an error reading the file.");
@@ -85,6 +79,13 @@ public class DiagramInconsistencyCheckerTest extends StageTest<DiagramInconsiste
                 pipelineSteps.add(TextPreprocessingAgent.get(project.getAdditionalConfigurations(), dataRepository));
 
                 pipelineSteps.add(ModelProviderAgent.get(project.getModelFile(), project.getArchitectureModelType(), dataRepository));
+
+                if (useMockDiagrams) {
+                    pipelineSteps.add(new DiagramRecognitionMock(project, project.getAdditionalConfigurations(), dataRepository));
+                } else {
+                    pipelineSteps.add(DiagramRecognition.get(project.getAdditionalConfigurations(), dataRepository));
+                }
+
                 pipelineSteps.add(TextExtraction.get(project.getAdditionalConfigurations(), dataRepository));
                 pipelineSteps.add(RecommendationGenerator.get(project.getAdditionalConfigurations(), dataRepository));
                 pipelineSteps.add(new DiagramConnectionGenerator(project.getAdditionalConfigurations(), dataRepository));

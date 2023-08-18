@@ -54,6 +54,12 @@
       <artifactId>tests-resources</artifactId>
       <version>${revision}</version>
     </dependency>
+    <dependency>
+      <groupId>io.github.ardoco.core</groupId>
+      <artifactId>model-provider</artifactId>
+      <version>${revision}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>

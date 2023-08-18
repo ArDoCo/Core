@@ -1,5 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.execution.runner;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -61,4 +62,9 @@ public abstract class AnonymousRunner extends ArDoCoRunner {
      * @throws IOException can occur when loading data
      */
     public abstract List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) throws IOException;
+
+    @Override
+    public void setOutputDirectory(File outputDirectory) {
+        super.setOutputDirectory(outputDirectory);
+    }
 }

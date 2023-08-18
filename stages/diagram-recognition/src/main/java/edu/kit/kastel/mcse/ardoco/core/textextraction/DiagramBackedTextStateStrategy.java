@@ -72,8 +72,8 @@ public class DiagramBackedTextStateStrategy extends OriginalTextStateStrategy {
         var mergedNounMapping = new DiagramBackedNounMappingImpl(
                 mergeNounMappingsStateless(firstNounMapping, secondNounMapping, referenceWords, reference, mappingKind, claimant, probability), box);
 
-        this.getTextState().removeNounMappingFromState(firstNounMapping, mergedNounMapping);
-        this.getTextState().removeNounMappingFromState(secondNounMapping, mergedNounMapping);
+        var success1 = this.getTextState().removeNounMappingFromState(firstNounMapping, mergedNounMapping);
+        var success2 = this.getTextState().removeNounMappingFromState(secondNounMapping, mergedNounMapping);
         this.getTextState().addNounMappingAddPhraseMapping(mergedNounMapping);
 
         return mergedNounMapping;
