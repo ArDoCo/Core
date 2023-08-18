@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
@@ -123,7 +124,7 @@ public class TextStateFile {
                         .toSortedList()
                         .collect(no -> Integer.toString(no))
                         .toImmutable();
-                ImmutableList<String> claimants = currentNounMapping.getClaimants().collect(c -> c.getClass().getSimpleName());
+                ImmutableSortedSet<String> claimants = currentNounMapping.getClaimants().collect(c -> c.getClass().getSimpleName()).toImmutableSortedSet();
 
                 String currentLine = String.join(VALUE_SEPARATOR, ref, nameProb, typeProb, surfaceForms, String.join(LIST_SEPARATOR, words), String.join(
                         LIST_SEPARATOR, sentences), String.join(LIST_SEPARATOR, claimants));

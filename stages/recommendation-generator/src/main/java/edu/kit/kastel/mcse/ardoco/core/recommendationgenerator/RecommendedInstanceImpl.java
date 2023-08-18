@@ -42,16 +42,16 @@ public class RecommendedInstanceImpl extends RecommendedInstance implements Clai
     private String type;
     private String name;
     private Confidence internalConfidence;
-    private final MutableSortedSet<NounMapping> typeMappings;
-    private final MutableSortedSet<NounMapping> nameMappings;
+    private final MutableList<NounMapping> typeMappings;
+    private final MutableList<NounMapping> nameMappings;
 
     private RecommendedInstanceImpl(String name, String type) {
         super(name, UUID.randomUUID().toString());
         this.type = type;
         this.name = name;
         this.internalConfidence = new Confidence(AggregationFunctions.AVERAGE);
-        nameMappings = SortedSets.mutable.empty();
-        typeMappings = SortedSets.mutable.empty();
+        nameMappings = Lists.mutable.empty();
+        typeMappings = Lists.mutable.empty();
     }
 
     @Override
