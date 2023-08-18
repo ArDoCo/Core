@@ -92,18 +92,16 @@ public abstract class StageTest<T extends AbstractExecutionStage, U extends Gold
         }
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     protected void cache(@NotNull String id, @NotNull Serializable obj) {
         try (TestDataCache<Serializable> drCache = new TestDataCache<>(stage.getClass(), obj.getClass(), id, "cache/") {
         }) {
-            drCache.save(obj);
+            drCache.cache(obj);
         }
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
     protected <W extends Serializable> W getCached(@NotNull String id, Class<W> cls) {
         try (TestDataCache<W> drCache = new TestDataCache<>(stage.getClass(), cls, id, "cache/")) {
-            return drCache.load();
+            return drCache.getOrRead();
         }
     }
 
@@ -146,11 +144,15 @@ public abstract class StageTest<T extends AbstractExecutionStage, U extends Gold
 
     @BeforeAll
     void resetAllTestDataRepositoryCaches() {
+        debugAskCache();
         if (Boolean.parseBoolean(System.getenv().getOrDefault(ENV_DEBUG_KEEP_CACHE, "false"))) {
             logger.warn("Keeping caches, careful! Set \"" + ENV_DEBUG_KEEP_CACHE + "=false\" to disable persistent caching");
         } else {
-            allProjects.forEach(d -> new TestDataRepositoryCache<U>(stage.getClass(), d).deleteFile());
-            debugAskCache();
+            for (U d : allProjects) {
+                try (var drCache = new TestDataRepositoryCache<>(stage.getClass(), d)) {
+                    drCache.cache(null);
+                }
+            }
         }
     }
 

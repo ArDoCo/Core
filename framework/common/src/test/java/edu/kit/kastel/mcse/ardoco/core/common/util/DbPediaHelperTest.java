@@ -9,14 +9,14 @@ import org.junit.jupiter.api.Test;
 class DbPediaHelperTest {
     @Test
     void load() {
-        var record = DbPediaHelper.getInstance().load();
+        var record = DbPediaHelper.getInstance().getOrRead();
         assertTrue(record.programmingLanguages().size() > 0);
         assertTrue(record.markupLanguages().size() > 0);
     }
 
     @Test
     void containsAtLeastSomePopularLanguages() {
-        var record = DbPediaHelper.getInstance().load();
+        var record = DbPediaHelper.getInstance().getOrRead();
         List<String> all = record.programmingLanguages();
         all.addAll(record.markupLanguages());
         all.addAll(record.software());

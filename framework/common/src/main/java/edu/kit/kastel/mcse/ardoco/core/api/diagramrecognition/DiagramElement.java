@@ -1,5 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
+import java.awt.*;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -10,10 +11,12 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 
 public abstract class DiagramElement extends Entity implements Comparable<DiagramElement> {
     private Diagram diagram;
+    private Color primaryColor;
 
-    protected DiagramElement(@NotNull Diagram diagram, @NotNull String name) {
+    protected DiagramElement(@NotNull Diagram diagram, @NotNull String name, @NotNull Color primaryColor) {
         super(name);
         this.diagram = diagram;
+        this.primaryColor = primaryColor;
     }
 
     /**
@@ -41,6 +44,10 @@ public abstract class DiagramElement extends Entity implements Comparable<Diagra
     public @NotNull Set<DiagramElement> getSubElements() {
         var all = getDiagram().getBoxes();
         return new LinkedHashSet<>(all.stream().filter(de -> !de.equals(this) && getBoundingBox().containsEntirely(de.getBoundingBox())).toList());
+    }
+
+    public @NotNull Color getPrimaryColor() {
+        return primaryColor;
     }
 
     @Override

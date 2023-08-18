@@ -17,8 +17,40 @@ public abstract class FileBasedCache<T> implements AutoCloseable {
     private final String identifier;
     private final String fileExtension;
     private final String subFolder;
+    private boolean flagRead = false;
+    private boolean flagWrite = false;
+    private T currentState = null;
+    private T originalState = null;
 
-    public abstract void save(T content);
+    protected abstract void write(T content);
+
+    public T getOrRead() {
+        if (currentState == null) {
+            try {
+                originalState = read();
+            } catch (CacheException e) {
+                try {
+                    resetFile();
+                    originalState = read();
+                } catch (CacheException ex) {
+                    //If resetting doesn't solve the issue, fail entirely
+                    throw new RuntimeException(ex);
+                }
+            }
+            currentState = originalState;
+            flagRead = true;
+        }
+        return currentState;
+    }
+
+    public Optional<T> get() {
+        return Optional.ofNullable(currentState);
+    }
+
+    public void cache(T cache) {
+        currentState = cache;
+        flagWrite = true;
+    }
 
     protected FileBasedCache(@NotNull String identifier, @NotNull String fileExtension, @NotNull String subFolder) {
         this.identifier = identifier;
@@ -28,15 +60,9 @@ public abstract class FileBasedCache<T> implements AutoCloseable {
         this.subFolder = subFolder;
     }
 
-    public T load() {
-        return load(true);
-    }
+    protected abstract T read() throws CacheException;
 
-    public abstract T load(boolean allowReload);
-
-    public abstract Optional<T> get();
-
-    public abstract T getDefault();
+    protected abstract T getDefault();
 
     public String getIdentifier() {
         return this.identifier;
@@ -51,7 +77,7 @@ public abstract class FileBasedCache<T> implements AutoCloseable {
         }
     }
 
-    public boolean deleteFile() {
+    protected boolean deleteFile() {
         try {
             if (file == null)
                 file = getFileHandle();
@@ -61,7 +87,7 @@ public abstract class FileBasedCache<T> implements AutoCloseable {
         }
     }
 
-    public File getFileHandle() throws IOException {
+    protected File getFileHandle() throws IOException {
         AppDirs appDirs = AppDirsFactory.getInstance();
         var arDoCoDataDir = appDirs.getUserDataDir("ArDoCo", null, "MCSE", true);
         file = new File(arDoCoDataDir + "/" + subFolder + this.identifier + this.fileExtension);
@@ -71,7 +97,7 @@ public abstract class FileBasedCache<T> implements AutoCloseable {
         return file;
     }
 
-    public File getFile() throws IOException {
+    protected File getFile() throws IOException {
         if (file != null && file.exists())
             return file;
 
@@ -80,7 +106,7 @@ public abstract class FileBasedCache<T> implements AutoCloseable {
         if (file.createNewFile()) {
             logger.info("Created {} file {}", this.identifier, file.getCanonicalPath());
             T defaultContent = getDefault();
-            save(defaultContent);
+            write(defaultContent);
         }
 
         return file;
@@ -88,9 +114,14 @@ public abstract class FileBasedCache<T> implements AutoCloseable {
 
     @Override
     public void close() {
-        var currentState = get();
-        if (currentState.isPresent()) {
-            save(currentState.orElseThrow());
+        if (flagWrite) {
+            if (currentState == null) {
+                deleteFile();
+            } else {
+                if (currentState != originalState) {
+                    write(currentState);
+                }
+            }
         }
     }
 }

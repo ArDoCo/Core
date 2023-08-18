@@ -35,7 +35,7 @@ class AbbreviationDisambiguationHelperTest {
 
   @Test
   void load() {
-    var abbreviations = AbbreviationDisambiguationHelper.getInstance().load();
+    var abbreviations = AbbreviationDisambiguationHelper.getInstance().getOrRead();
     assertNotNull(abbreviations);
   }
 

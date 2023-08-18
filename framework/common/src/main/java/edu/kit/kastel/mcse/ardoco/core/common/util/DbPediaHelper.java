@@ -3,7 +3,6 @@ package edu.kit.kastel.mcse.ardoco.core.common.util;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
-import java.util.Optional;
 
 import org.apache.commons.compress.utils.Lists;
 import org.apache.jena.query.ParameterizedSparqlString;
@@ -19,7 +18,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class DbPediaHelper extends FileBasedCache<DbPediaHelper.DbPediaData> {
     private static Logger logger = LoggerFactory.getLogger(DbPediaHelper.class);
     private static DbPediaHelper instance;
-    private DbPediaData dbPediaData;
 
     public static synchronized @NotNull DbPediaHelper getInstance() {
         if (instance == null) {
@@ -123,7 +121,7 @@ public class DbPediaHelper extends FileBasedCache<DbPediaHelper.DbPediaData> {
     }
 
     @Override
-    public void save(DbPediaData r) {
+    protected void write(DbPediaData r) {
         try (PrintWriter out = new PrintWriter(getFile())) {
             //Parse before writing to the file, so we don't mess up the entire file due to a parsing error
             String json = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(r);
@@ -135,42 +133,35 @@ public class DbPediaHelper extends FileBasedCache<DbPediaHelper.DbPediaData> {
     }
 
     @Override
-    public DbPediaData getDefault() {
+    protected DbPediaData getDefault() {
         return new DbPediaData(loadProgrammingLanguages(), loadMarkupLanguages(), loadSoftware());
     }
 
     @Override
-    public DbPediaData load(boolean allowReload) {
-        if (dbPediaData != null)
-            return dbPediaData;
+    protected DbPediaData read() throws CacheException {
         try {
             logger.info("Reading {} file", getIdentifier());
-            dbPediaData = new ObjectMapper().readValue(getFile(), new TypeReference<DbPediaData>() {
+            var dbPediaData = new ObjectMapper().readValue(getFile(), new TypeReference<DbPediaData>() {
             });
             return dbPediaData;
         } catch (IOException e) {
             logger.error("Error reading {} file", getIdentifier());
-            throw new RuntimeException(e);
+            throw new CacheException(e);
         }
-    }
-
-    @Override
-    public Optional<DbPediaData> get() {
-        return Optional.ofNullable(dbPediaData);
     }
 
     public record DbPediaData(List<String> programmingLanguages, List<String> markupLanguages, List<String> software) {
     }
 
     public static boolean isWordProgrammingLanguage(String word) {
-        return getInstance().load().programmingLanguages().stream().anyMatch(s -> s.replaceAll("\\s+", "").equalsIgnoreCase(word.replaceAll("\\s+", "")));
+        return getInstance().getOrRead().programmingLanguages().stream().anyMatch(s -> s.replaceAll("\\s+", "").equalsIgnoreCase(word.replaceAll("\\s+", "")));
     }
 
     public static boolean isWordMarkupLanguage(String word) {
-        return getInstance().load().markupLanguages().stream().anyMatch(s -> s.replaceAll("\\s+", "").equalsIgnoreCase(word.replaceAll("\\s+", "")));
+        return getInstance().getOrRead().markupLanguages().stream().anyMatch(s -> s.replaceAll("\\s+", "").equalsIgnoreCase(word.replaceAll("\\s+", "")));
     }
 
     public static boolean isWordSoftware(String word) {
-        return getInstance().load().software().stream().anyMatch(s -> s.replaceAll("\\s+", "").equalsIgnoreCase(word.replaceAll("\\s+", "")));
+        return getInstance().getOrRead().software().stream().anyMatch(s -> s.replaceAll("\\s+", "").equalsIgnoreCase(word.replaceAll("\\s+", "")));
     }
 }

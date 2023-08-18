@@ -29,14 +29,14 @@ public class TestDataRepositoryCache<T extends GoldStandardProject> extends Test
     }
 
     @Override
-    public HashMap<T, DataRepository> load() {
-        return super.load();
+    public HashMap<T, DataRepository> getOrRead() {
+        return super.getOrRead();
     }
 
     @Override
-    public void save(HashMap content) {
+    public void write(HashMap content) {
         var cast = (HashMap<T, DataRepository>) content;
-        super.save(cast);
+        super.write(cast);
     }
 
     @NotNull
@@ -44,10 +44,10 @@ public class TestDataRepositoryCache<T extends GoldStandardProject> extends Test
     public DataRepository get(Function<T, DataRepository> mappingFunction) {
         checkVersion();
 
-        var testData = load();
+        var testData = getOrRead();
         if (!testData.containsKey(project)) {
             testData.put(project, mappingFunction.apply(project));
-            save(testData);
+            this.write(testData);
         }
 
         return testData.get(project).deepCopy();

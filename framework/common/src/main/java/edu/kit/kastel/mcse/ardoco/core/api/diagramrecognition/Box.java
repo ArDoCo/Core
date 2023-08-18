@@ -3,6 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
 import static java.lang.Math.abs;
 
+import java.awt.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,7 +35,7 @@ public class Box extends DiagramElement implements Serializable {
     // Jackson JSON
     private Box() {
         //TODO violates the DiagramElement constructor contract
-        super(null, UUID.randomUUID().toString());
+        super(null, UUID.randomUUID().toString(), Color.BLACK);
         this.uuid = getName();
     }
 
@@ -50,7 +51,7 @@ public class Box extends DiagramElement implements Serializable {
      */
     public Box(@NotNull Diagram diagram, String uuid, int[] coordinates, double confidence, String classification, List<TextBox> textBoxes,
             Integer dominatingColor) {
-        super(diagram, uuid);
+        super(diagram, uuid, new Color(dominatingColor));
         this.uuid = uuid;
         this.coordinates = coordinates;
         this.confidence = confidence;

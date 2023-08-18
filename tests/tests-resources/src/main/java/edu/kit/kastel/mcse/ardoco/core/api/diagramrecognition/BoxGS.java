@@ -1,5 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
+import java.awt.*;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
@@ -35,7 +36,8 @@ public class BoxGS extends Box implements Serializable {
     @JsonCreator
     public BoxGS(@JacksonInject DiagramGS diagram, @JsonProperty("boundingBox") BoundingBox boundingBox, @JsonProperty("textBoxes") TextBox[] textBoxes,
             @JsonProperty("subBoxes") BoxGS[] subBoxes, @JsonProperty("tracelinks") TraceLinkGS[] tracelinks) {
-        super(diagram, getUUID(boundingBox), boundingBox.toCoordinates(), 1, Classification.UNKNOWN.getClassificationString(), Arrays.asList(textBoxes), null);
+        super(diagram, getUUID(boundingBox), boundingBox.toCoordinates(), 1, Classification.UNKNOWN.getClassificationString(), Arrays.asList(textBoxes),
+                Color.BLACK.getRGB());
         this.diagramGS = diagram;
         this.boundingBox = boundingBox;
         this.textBoxes = textBoxes;

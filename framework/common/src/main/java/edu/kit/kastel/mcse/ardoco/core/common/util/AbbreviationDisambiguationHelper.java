@@ -7,7 +7,6 @@ import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
 import org.eclipse.collections.api.factory.Maps;
-import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.MutableMap;
 import org.jetbrains.annotations.NotNull;
 import org.jsoup.Jsoup;
@@ -22,7 +21,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.Disambiguation;
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 
-public class AbbreviationDisambiguationHelper extends FileBasedCache<ImmutableMap<String, Disambiguation>> {
+public class AbbreviationDisambiguationHelper extends FileBasedCache<MutableMap<String, Disambiguation>> {
     /**
      * Matches abbreviations with up to 1 lowercase letter between uppercase letters. Accounts for camelCase by lookahead, e.g. UserDBAdapter is matched as "DB"
      * rather than "DBA". Matches abbreviations at any point in the word, including at the start and end.
@@ -34,7 +33,6 @@ public class AbbreviationDisambiguationHelper extends FileBasedCache<ImmutableMa
     private static final String abbreviationsCom = "https://www.abbreviations.com/";
     private static final String acronymFinderCom = "https://www.acronymfinder" + ".com/Information-Technology/";
     private static AbbreviationDisambiguationHelper instance;
-    private MutableMap<String, Disambiguation> abbreviationsCache;
 
     public static synchronized @NotNull AbbreviationDisambiguationHelper getInstance() {
         if (instance == null) {
@@ -53,7 +51,7 @@ public class AbbreviationDisambiguationHelper extends FileBasedCache<ImmutableMa
         if (abbreviation.isBlank())
             throw new IllegalArgumentException();
 
-        var disambiguation = loadMutable(true).computeIfAbsent(abbreviation, this::crawl);
+        var disambiguation = getOrRead().computeIfAbsent(abbreviation, this::crawl);
         return Set.copyOf(disambiguation.getMeanings());
     }
 
@@ -81,13 +79,13 @@ public class AbbreviationDisambiguationHelper extends FileBasedCache<ImmutableMa
                 .stream()
                 .anyMatch(String::isBlank))
             throw new IllegalArgumentException();
-        var disambiguations = loadMutable(true);
+        var disambiguations = getOrRead();
         disambiguations.merge(disambiguation.getAbbreviation(), disambiguation, Disambiguation::addMeanings);
-        save(disambiguations);
+        cache(disambiguations);
     }
 
     private List<List<Pair<String, String>>> similarAbbreviations(@NotNull String meaning) {
-        var disambiguations = load();
+        var disambiguations = getOrRead();
         var allAbbrevs = new ArrayList<List<Pair<String, String>>>();
         for (var disambiguation : disambiguations) {
             var listOfPairs = disambiguation.getMeanings()
@@ -146,40 +144,24 @@ public class AbbreviationDisambiguationHelper extends FileBasedCache<ImmutableMa
      * @return the abbreviations
      */
     @Override
-    public @NotNull ImmutableMap<String, Disambiguation> load(boolean allowReload) {
-        return Maps.immutable.ofMap(loadMutable(allowReload));
-    }
-
-    @Override
-    public Optional<ImmutableMap<String, Disambiguation>> get() {
-        return Optional.ofNullable(abbreviationsCache).map(MutableMap::toImmutable);
-    }
-
-    /**
-     * Gets the abbreviation file from the disk and parses its content.
-     *
-     * @return the abbreviations
-     */
-    protected @NotNull MutableMap<String, Disambiguation> loadMutable(boolean allowReload) {
-        if (abbreviationsCache != null)
-            return abbreviationsCache;
+    protected @NotNull MutableMap<String, Disambiguation> read() throws CacheException {
         try {
             logger.info("Reading abbreviations file");
-            abbreviationsCache = toMutableMap(new ObjectMapper().readValue(getFile(), Disambiguation[].class));
-            logger.info("Found {} cached abbreviation", abbreviationsCache.keySet().size());
-            return abbreviationsCache;
+            var read = toMutableMap(new ObjectMapper().readValue(getFile(), Disambiguation[].class));
+            logger.info("Found {} cached abbreviation", read.keysView().size());
+            return read;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new CacheException(e);
         }
     }
 
     @Override
-    public ImmutableMap<String, Disambiguation> getDefault() {
-        return Maps.immutable.empty();
+    public MutableMap<String, Disambiguation> getDefault() {
+        return Maps.mutable.empty();
     }
 
     @Override
-    public void save(ImmutableMap<String, Disambiguation> content) {
+    protected void write(MutableMap<String, Disambiguation> content) {
         Collection<Disambiguation> values = content.valuesView().toList();
         try (PrintWriter out = new PrintWriter(getFile())) {
             //Parse before writing to the file, so we don't mess up the entire file due to a parsing error
@@ -189,10 +171,6 @@ public class AbbreviationDisambiguationHelper extends FileBasedCache<ImmutableMa
         } catch (IOException e) {
             logger.error(e.getCause().getMessage());
         }
-    }
-
-    private void save(MutableMap<String, Disambiguation> content) {
-        save(Maps.immutable.ofMap(content));
     }
 
     private @NotNull MutableMap<String, Disambiguation> toMutableMap(@NotNull Disambiguation[] abbreviations) {

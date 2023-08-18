@@ -14,7 +14,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.stanford.nlp.pipeline.CoreDocument;
-import edu.stanford.nlp.pipeline.ProtobufAnnotationSerializer;
 
 class TextImpl implements Text {
 
@@ -70,14 +69,19 @@ class TextImpl implements Text {
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {
+        iterateDocumentForWordsAndSentences(); //Initialize words, sentences
         out.defaultWriteObject();
+        /* It is a lot cheaper to serialize the phrases (up to 70x less storage space and much faster), if the coreDocument is ever made accessible, this should be uncommented
         ProtobufAnnotationSerializer serializer = new ProtobufAnnotationSerializer();
         serializer.writeCoreDocument(coreDocument, out);
+         */
     }
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
+        /* It is a lot cheaper to serialize the phrases (up to 70x less storage space and much faster), if the coreDocument is ever made accessible, this should be uncommented
         ProtobufAnnotationSerializer serializer = new ProtobufAnnotationSerializer();
         coreDocument = serializer.readCoreDocument(in).first;
+         */
     }
 }
