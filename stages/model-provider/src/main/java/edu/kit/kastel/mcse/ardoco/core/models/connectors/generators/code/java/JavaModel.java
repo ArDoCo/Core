@@ -82,7 +82,7 @@ public final class JavaModel {
                             .findFirst()
                             .orElseThrow())
                     .toList();
-            Set<Datatype> codeImplInterfaces = new LinkedHashSet<>();
+            SortedSet<Datatype> codeImplInterfaces = new TreeSet<>();
             javaImplInterfaces.forEach(javaImplInterface -> codeImplInterfaces.add(javaImplInterface.codeInterface()));
             javaClassifier.codeClassifier().setImplementedTypes(codeImplInterfaces);
         }
@@ -98,7 +98,7 @@ public final class JavaModel {
                             .findFirst()
                             .orElseThrow())
                     .toList();
-            Set<Datatype> codeExtendedInterfaces = new LinkedHashSet<>();
+            SortedSet<Datatype> codeExtendedInterfaces = new TreeSet<>();
             javaExtendedInterfaces.forEach(javaExtendedInterface -> codeExtendedInterfaces.add(javaExtendedInterface.codeInterface()));
             javaInterface.codeInterface().setExtendedTypes(codeExtendedInterfaces);
         }
@@ -115,7 +115,7 @@ public final class JavaModel {
                     .filter(otherJavaClass -> otherJavaClass.binding().getErasure().isEqualTo(superclassBinding.getErasure()))
                     .findFirst()
                     .orElseThrow();
-            Set<Datatype> superclasses = new LinkedHashSet<>();
+            SortedSet<Datatype> superclasses = new TreeSet<>();
             superclasses.add(javaSuperclass.codeClassifier());
             javaClassifier.codeClassifier().setExtendedTypes(superclasses);
         }
@@ -139,9 +139,9 @@ public final class JavaModel {
     //
 
     private void initModel(SortedMap<String, CompilationUnit> compUnitMap) {
-        Set<CodeItem> modelContent = new LinkedHashSet<>();
-        Set<CodePackage> codePackages = new LinkedHashSet<>();
-        Set<CodeCompilationUnit> codeCompilationUnits = new LinkedHashSet<>();
+        SortedSet<CodeItem> modelContent = new TreeSet<>();
+        SortedSet<CodePackage> codePackages = new TreeSet<>();
+        SortedSet<CodeCompilationUnit> codeCompilationUnits = new TreeSet<>();
 
         for (var entry : compUnitMap.entrySet()) {
             CompilationUnit compilationUnit = entry.getValue();
@@ -159,7 +159,7 @@ public final class JavaModel {
                 Name fullName = packageDeclaration.getName();
                 packageNames = getPackageNames(fullName);
             }
-            CodeCompilationUnit codeCompilationUnit = new CodeCompilationUnit(codeItemRepository, fileNameWithoutExtension, new LinkedHashSet<>(), pathElements,
+            CodeCompilationUnit codeCompilationUnit = new CodeCompilationUnit(codeItemRepository, fileNameWithoutExtension, new TreeSet<>(), pathElements,
                     extension, ProgrammingLanguage.JAVA);
             codeCompilationUnits.add(codeCompilationUnit);
             if (null != packageDeclaration) {
@@ -198,7 +198,7 @@ public final class JavaModel {
 
     private ClassUnit processEnumDeclaration(EnumDeclaration enumDeclaration) {
         String name = enumDeclaration.getName().getIdentifier();
-        Set<ControlElement> declaredMethods = extractMethods(enumDeclaration);
+        SortedSet<ControlElement> declaredMethods = extractMethods(enumDeclaration);
         ClassUnit codeClassifier = new ClassUnit(codeItemRepository, name, declaredMethods);
         addClassifier(codeClassifier, enumDeclaration);
         return codeClassifier;
@@ -206,7 +206,7 @@ public final class JavaModel {
 
     private Datatype processTypeDeclaration(TypeDeclaration typeDeclaration) {
         String name = typeDeclaration.getName().getIdentifier();
-        Set<ControlElement> declaredMethods = extractMethods(typeDeclaration);
+        SortedSet<ControlElement> declaredMethods = extractMethods(typeDeclaration);
         Datatype codeType;
         if (typeDeclaration.isInterface()) {
             InterfaceUnit codeInterface = new InterfaceUnit(codeItemRepository, name, declaredMethods);
@@ -220,8 +220,8 @@ public final class JavaModel {
         return codeType;
     }
 
-    private Set<ControlElement> extractMethods(ASTNode node) {
-        Set<ControlElement> declaredMethods = new LinkedHashSet<>();
+    private SortedSet<ControlElement> extractMethods(ASTNode node) {
+        SortedSet<ControlElement> declaredMethods = new TreeSet<>();
         Set<MethodDeclaration> methodDeclarations = MethodDeclarationFinder.find(node);
         for (MethodDeclaration methodDeclaration : methodDeclarations) {
             declaredMethods.add(extractMethod(methodDeclaration));

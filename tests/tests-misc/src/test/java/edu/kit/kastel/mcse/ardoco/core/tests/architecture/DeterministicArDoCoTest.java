@@ -23,6 +23,7 @@ import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.tngtech.archunit.base.DescribedPredicate;
 import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.core.domain.JavaField;
 import com.tngtech.archunit.core.domain.JavaMethod;
@@ -46,8 +47,6 @@ public class DeterministicArDoCoTest {
     @ArchTest
     public static final ArchRule forbidUnorderedSetsAndMaps = noClasses().that()
             .resideOutsideOfPackages("..tests..")
-            .and()
-            .resideOutsideOfPackages("..codetraceability..", "..arcotl..") // TODO: FixMe: Ignore ArCoTL for now ..
             .and()
             .areNotAnnotatedWith(UserReviewedDeterministic.class)
             .should()
@@ -83,15 +82,30 @@ public class DeterministicArDoCoTest {
     }
 
     @ArchTest
-    public static final ArchRule ensureContractBetweenEqualsHashCodeAndCompareTo = classes().that()
-            .implement(Comparable.class)
+    public static final ArchRule ensureContractBetweenEqualsHashCodeAndCompareTo = classes().that(directlyImplement(Comparable.class))
             .and()
             .areNotEnums()
             .and()
-            .areNotAnonymousClasses() // e.g., type references for jackson
+            .areNotInterfaces()
             .and()
-            .resideOutsideOfPackages("..codetraceability..", "..arcotl..") // TODO: FixMe: Ignore ArCoTL for now ..
+            .areNotAnonymousClasses() // e.g., type references for jackson
             .should(implementEqualsAndHashCode());
+
+    private static DescribedPredicate<? super JavaClass> directlyImplement(Class<?> targetClass) {
+        // TODO We have to walk the hierarchy to find out if a class implements an interface and if there is a direct implementation of hashCode and equals
+        return new DescribedPredicate<JavaClass>("directly implement " + targetClass.getName()) {
+            @Override
+            public boolean test(JavaClass javaClass) {
+                var directInterfaces = javaClass.getRawInterfaces();
+                for (var di : directInterfaces) {
+                    if (di.getName().equals(targetClass.getName())) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        };
+    }
 
     private static ArchCondition<? super JavaClass> implementEqualsAndHashCode() {
         return new ArchCondition<>("implement equals or hashCode") {

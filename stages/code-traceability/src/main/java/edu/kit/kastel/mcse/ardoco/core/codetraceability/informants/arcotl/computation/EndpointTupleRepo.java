@@ -1,8 +1,8 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.computation;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModel;
@@ -14,7 +14,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModel;
  */
 public class EndpointTupleRepo {
 
-    private Set<SamCodeEndpointTuple> endpointTuples;
+    private List<SamCodeEndpointTuple> endpointTuples;
 
     /**
      * Creates a new repository of endpoint tuples. Contains every possible
@@ -27,7 +27,7 @@ public class EndpointTupleRepo {
      *                  repository
      */
     public EndpointTupleRepo(ArchitectureModel archModel, CodeModel codeModel) {
-        endpointTuples = new HashSet<>();
+        endpointTuples = new ArrayList<>();
         for (var architectureEndpoint : archModel.getEndpoints()) {
             for (var codeEndpoint : codeModel.getEndpoints()) {
                 endpointTuples.add(new SamCodeEndpointTuple(architectureEndpoint, codeEndpoint));
@@ -40,7 +40,7 @@ public class EndpointTupleRepo {
      *
      * @return all endpoint tuples
      */
-    public Set<SamCodeEndpointTuple> getEndpointTuples() {
-        return endpointTuples;
+    public List<SamCodeEndpointTuple> getEndpointTuples() {
+        return new ArrayList<>(endpointTuples);
     }
 }

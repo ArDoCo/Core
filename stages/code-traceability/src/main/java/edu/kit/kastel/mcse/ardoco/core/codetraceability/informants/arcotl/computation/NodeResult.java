@@ -3,8 +3,11 @@ package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.compu
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
@@ -13,11 +16,13 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUni
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.EndpointTuple;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SamCodeTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
 
 /**
  * The result of a computation node. A computation node's final result are the
  * calculated {@link Confidence confidences} of every endpoint tuple.
  */
+@UserReviewedDeterministic
 public class NodeResult {
 
     private final Map<SamCodeEndpointTuple, Confidence> confidenceMap;
@@ -28,7 +33,7 @@ public class NodeResult {
      * been calculated.
      */
     public NodeResult() {
-        confidenceMap = new HashMap<>();
+        confidenceMap = new LinkedHashMap<>();
     }
 
     public NodeResult(ArchitectureModel archModel, CodeModel codeModel) {
@@ -76,8 +81,8 @@ public class NodeResult {
         return result;
     }
 
-    public Set<Entity> getLinkedEndpoints(Entity endpoint) {
-        Set<Entity> linkedEndpoints = new HashSet<>();
+    public SortedSet<Entity> getLinkedEndpoints(Entity endpoint) {
+        SortedSet<Entity> linkedEndpoints = new TreeSet<>();
         for (var entry : confidenceMap.entrySet()) {
             SamCodeEndpointTuple tuple = entry.getKey();
             Confidence confidence = entry.getValue();

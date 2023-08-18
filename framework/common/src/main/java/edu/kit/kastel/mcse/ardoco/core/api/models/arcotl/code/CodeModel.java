@@ -34,7 +34,7 @@ public class CodeModel extends Model {
      *
      * @param content the content of the code model
      */
-    public CodeModel(CodeItemRepository codeItemRepository, Set<? extends CodeItem> content) {
+    public CodeModel(CodeItemRepository codeItemRepository, SortedSet<? extends CodeItem> content) {
         this.initialized = true;
         this.codeItemRepository = codeItemRepository;
         this.content = new ArrayList<>();

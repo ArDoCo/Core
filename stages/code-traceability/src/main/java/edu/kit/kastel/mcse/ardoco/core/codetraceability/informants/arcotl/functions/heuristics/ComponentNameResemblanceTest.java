@@ -1,9 +1,9 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.heuristics;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureComponent;
@@ -17,7 +17,7 @@ import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.comput
 
 public class ComponentNameResemblanceTest extends DependentHeuristic {
 
-    private static final Set<String> commonWords = Set.of("Test", "Action", "Impl", "Factory", "Exception");
+    private static final SortedSet<String> commonWords = new TreeSet<>(List.of("Test", "Action", "Impl", "Factory", "Exception"));
 
     @Override
     protected Confidence calculateConfidence(ArchitectureComponent archComponent, CodeCompilationUnit compUnit) {
@@ -36,16 +36,16 @@ public class ComponentNameResemblanceTest extends DependentHeuristic {
         if (getNodeResult().getConfidence(new EndpointTuple(archEndpoint, compUnit)).hasValue()) {
             return new Confidence();
         }
-        Set<String> filteredCommonWords = new HashSet<>(commonWords);
+        SortedSet<String> filteredCommonWords = new TreeSet<>(commonWords);
         for (Entity ae : getArchModel().getEndpoints()) {
             filteredCommonWords = NameComparisonUtils.removeWords(filteredCommonWords, ae);
         }
-        Set<CodeItem> items = compUnit.getAllDataTypesAndSelf();
-        if (areSimilar(items, Set.of(archEndpoint), filteredCommonWords)) {
+        SortedSet<CodeItem> items = compUnit.getAllDataTypesAndSelf();
+        if (areSimilar(items, new TreeSet<>(List.of(archEndpoint)), filteredCommonWords)) {
             return new Confidence(1.0);
         }
         Confidence maxConfidence = new Confidence();
-        Set<Entity> linkedEndpoints = getNodeResult().getLinkedEndpoints(archEndpoint);
+        SortedSet<Entity> linkedEndpoints = getNodeResult().getLinkedEndpoints(archEndpoint);
         for (Entity linkedEndpoint : linkedEndpoints) {
             CodeCompilationUnit linkedCompUnit = (CodeCompilationUnit) linkedEndpoint;
             if (InheritLinks.areInDifferentPackages(compUnit, linkedCompUnit) || !areSimilar(items, linkedCompUnit.getAllDataTypesAndSelf(),
@@ -60,7 +60,7 @@ public class ComponentNameResemblanceTest extends DependentHeuristic {
         return maxConfidence;
     }
 
-    private static boolean areSimilar(Set<? extends Entity> entities1, Set<? extends Entity> entities2, Set<String> filteredCommonWords) {
+    private static boolean areSimilar(SortedSet<? extends Entity> entities1, SortedSet<? extends Entity> entities2, SortedSet<String> filteredCommonWords) {
         for (var entity1 : entities1) {
             for (var entity2 : entities2) {
                 List<String> words1 = NameComparisonUtils.removeWords(entity1, filteredCommonWords);

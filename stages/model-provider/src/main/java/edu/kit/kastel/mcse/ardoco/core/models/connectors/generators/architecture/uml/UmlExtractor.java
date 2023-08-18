@@ -3,9 +3,9 @@ package edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architectur
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelType;
@@ -55,7 +55,7 @@ public final class UmlExtractor extends ArchitectureExtractor {
     private static List<ArchitectureInterface> extractInterfaces(UmlModel originalModel) {
         List<ArchitectureInterface> interfaces = new ArrayList<>();
         for (UmlInterface originalInterface : originalModel.getModel().getInterfaces()) {
-            Set<ArchitectureMethod> signatures = new LinkedHashSet<>();
+            SortedSet<ArchitectureMethod> signatures = new TreeSet<>();
             for (OwnedOperation originalMethod : originalInterface.getOperations()) {
                 ArchitectureMethod signature = new ArchitectureMethod(originalMethod.getName());
                 signatures.add(signature);
@@ -69,9 +69,9 @@ public final class UmlExtractor extends ArchitectureExtractor {
     private static List<ArchitectureComponent> extractComponents(UmlModel originalModel, List<ArchitectureInterface> interfaces) {
         List<ArchitectureComponent> components = new ArrayList<>();
         for (UmlComponent originalComponent : originalModel.getModel().getComponents()) {
-            Set<ArchitectureComponent> subcomponents = new LinkedHashSet<>();
-            Set<ArchitectureInterface> providedInterfaces = new LinkedHashSet<>();
-            Set<ArchitectureInterface> requiredInterfaces = new LinkedHashSet<>();
+            SortedSet<ArchitectureComponent> subcomponents = new TreeSet<>();
+            SortedSet<ArchitectureInterface> providedInterfaces = new TreeSet<>();
+            SortedSet<ArchitectureInterface> requiredInterfaces = new TreeSet<>();
             for (UmlInterface providedInterface : originalComponent.getProvided()) {
                 ArchitectureInterface modelInterface = findInterface(providedInterface.getId(), interfaces);
                 providedInterfaces.add(modelInterface);

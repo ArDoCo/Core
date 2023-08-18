@@ -2,10 +2,10 @@
 package edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItem;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItemRepository;
@@ -36,7 +36,7 @@ public final class AllLanguagesExtractor extends CodeExtractor {
                 var model = extractor.extractModel();
                 models.add(model);
             }
-            Set<CodeItem> codeEndpoints = new LinkedHashSet<>();
+            SortedSet<CodeItem> codeEndpoints = new TreeSet<>();
             for (CodeModel model : models) {
                 codeEndpoints.addAll(model.getContent());
             }
