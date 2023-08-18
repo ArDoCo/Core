@@ -16,7 +16,7 @@ import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import edu.kit.kastel.mcse.ardoco.core.api.UserReviewedDeterministic;
+import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
 
 /**
  * Not a test, but it extracts the data from the downloaded pdfs.

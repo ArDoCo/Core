@@ -8,7 +8,7 @@ import java.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.api.UserReviewedDeterministic;
+import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
 
 @UserReviewedDeterministic
 public abstract class AbstractConfigurable implements IConfigurable {

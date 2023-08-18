@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import edu.kit.kastel.mcse.ardoco.core.api.UserReviewedDeterministic;
+import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
 
 /**

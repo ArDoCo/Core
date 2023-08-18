@@ -64,7 +64,7 @@ public interface NounMapping {
      */
     ImmutableList<Integer> getMappingSentenceNo();
 
-    ImmutableSortedSet<Phrase> getPhrases();
+    ImmutableList<Phrase> getPhrases();
 
     /**
      * Gets the probability for name.

@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import edu.kit.kastel.mcse.ardoco.core.api.UserReviewedDeterministic;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.EndpointTuple;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SamCodeTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.computation.computationtree.Node;
 
 /**

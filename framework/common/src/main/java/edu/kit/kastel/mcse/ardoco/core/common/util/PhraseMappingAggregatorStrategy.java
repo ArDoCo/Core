@@ -6,8 +6,8 @@ import static edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils.unique
 
 import java.util.function.ToDoubleBiFunction;
 
-import edu.kit.kastel.mcse.ardoco.core.api.UserReviewedDeterministic;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.PhraseMapping;
+import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
 
 @UserReviewedDeterministic
 public enum PhraseMappingAggregatorStrategy implements ToDoubleBiFunction<PhraseMapping, PhraseMapping> {

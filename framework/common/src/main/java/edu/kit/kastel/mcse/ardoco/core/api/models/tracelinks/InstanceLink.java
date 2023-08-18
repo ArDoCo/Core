@@ -9,10 +9,10 @@ import java.util.Set;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.api.UserReviewedDeterministic;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
 import edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions;
 import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;

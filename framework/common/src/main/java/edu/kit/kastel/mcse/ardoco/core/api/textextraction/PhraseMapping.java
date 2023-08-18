@@ -8,7 +8,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.PhraseType;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 
-public interface PhraseMapping extends Comparable<PhraseMapping> {
+public interface PhraseMapping {
 
     ImmutableList<NounMapping> getNounMappings(TextState textState);
 

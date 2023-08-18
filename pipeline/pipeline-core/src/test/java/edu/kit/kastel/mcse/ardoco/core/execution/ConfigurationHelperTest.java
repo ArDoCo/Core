@@ -8,7 +8,7 @@ import java.util.TreeMap;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import edu.kit.kastel.mcse.ardoco.core.api.UserReviewedDeterministic;
+import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
 import edu.kit.kastel.mcse.ardoco.core.configuration.AbstractConfigurable;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 

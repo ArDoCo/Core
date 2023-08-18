@@ -4,7 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.api.text;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.map.ImmutableMap;
 
-public interface Phrase extends Comparable<Phrase> {
+public interface Phrase {
     int getSentenceNo();
 
     String getText();

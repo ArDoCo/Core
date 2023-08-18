@@ -1,14 +1,8 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
-import edu.kit.kastel.mcse.ardoco.core.api.UserReviewedDeterministic;
-import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
-import edu.kit.kastel.mcse.ardoco.core.api.text.PhraseType;
-import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
-import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.textextraction.PhraseMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.textextraction.PhraseMappingChangeListener;
-import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.SortedMaps;
@@ -17,38 +11,29 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.sorted.ImmutableSortedMap;
 import org.eclipse.collections.api.map.sorted.MutableSortedMap;
-import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
-import org.eclipse.collections.api.set.sorted.MutableSortedSet;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.LinkedHashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicLong;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
+import edu.kit.kastel.mcse.ardoco.core.api.text.PhraseType;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.PhraseMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.PhraseMappingChangeListener;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
+import edu.kit.kastel.mcse.ardoco.core.architecture.NoHashCodeEquals;
+import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
 
 @UserReviewedDeterministic
+@NoHashCodeEquals
 public final class PhraseMappingImpl implements PhraseMapping {
-
-    private static final AtomicLong idCounter = new AtomicLong(0);
-
-    private final long id = idCounter.getAndIncrement();
-
-    @Override
-    public int compareTo(@NotNull PhraseMapping o) {
-        if (o instanceof PhraseMappingImpl impl)
-            return Long.compare(id, impl.id);
-        return 0;
-    }
-
     /**
      * Phrases encapsulated in the mapping.
      */
-    private final MutableSortedSet<Phrase> phrases;
+    private final MutableList<Phrase> phrases;
 
     private final Set<PhraseMappingChangeListener> changeListeners = new LinkedHashSet<>();
 
-    public PhraseMappingImpl(ImmutableSortedSet<Phrase> phrases) {
-        this.phrases = SortedSets.mutable.withAll(phrases);
+    public PhraseMappingImpl(ImmutableList<Phrase> phrases) {
+        this.phrases = Lists.mutable.withAll(phrases);
     }
 
     @Override
@@ -89,21 +74,6 @@ public final class PhraseMappingImpl implements PhraseMapping {
         grouped.forEach((key, value) -> phraseVector.put(value.getAny(), value.size()));
 
         return phraseVector.toImmutable();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        PhraseMappingImpl that = (PhraseMappingImpl) o;
-        return phrases.size() == that.phrases.size() && phrases.containsAll(that.phrases) && that.phrases.containsAll(phrases);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(phrases);
     }
 
     @Override

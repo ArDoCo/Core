@@ -10,20 +10,19 @@ import java.util.Set;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.SortedMaps;
-import org.eclipse.collections.api.factory.SortedSets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.sorted.ImmutableSortedMap;
 import org.eclipse.collections.api.map.sorted.MutableSortedMap;
 import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
-import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 
-import edu.kit.kastel.mcse.ardoco.core.api.UserReviewedDeterministic;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMappingChangeListener;
+import edu.kit.kastel.mcse.ardoco.core.architecture.NoHashCodeEquals;
+import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
 import edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions;
 import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
@@ -32,6 +31,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
  * The Class NounMapping is a basic realization of {@link NounMapping}.
  */
 @UserReviewedDeterministic
+@NoHashCodeEquals
 public final class NounMappingImpl implements NounMapping, Comparable<NounMappingImpl> {
 
     private static final AggregationFunctions DEFAULT_AGGREGATOR = AVERAGE;
@@ -128,9 +128,11 @@ public final class NounMappingImpl implements NounMapping, Comparable<NounMappin
     }
 
     @Override
-    public ImmutableSortedSet<Phrase> getPhrases() {
-        MutableSortedSet<Phrase> phrases = SortedSets.mutable.empty();
+    public ImmutableList<Phrase> getPhrases() {
+        MutableList<Phrase> phrases = Lists.mutable.empty();
         for (Word word : this.words) {
+            if (phrases.contains(word.getPhrase()))
+                continue;
             phrases.add(word.getPhrase());
         }
         return phrases.toImmutable();
@@ -175,23 +177,6 @@ public final class NounMappingImpl implements NounMapping, Comparable<NounMappin
                 ", node=" + String.join(", ", surfaceForms) + //
                 ", position=" + String.join(", ", getWords().collect(word -> String.valueOf(word.getPosition()))) + //
                 ", probability=" + getProbability() + ", isCompound=" + isCompound() + "]";
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getReference());
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!(obj instanceof NounMappingImpl)) {
-            return false;
-        }
-        var other = (NounMapping) obj;
-        return Objects.equals(getReference(), other.getReference());
     }
 
     @Override

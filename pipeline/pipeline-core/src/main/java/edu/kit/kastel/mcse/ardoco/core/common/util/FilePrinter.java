@@ -28,7 +28,6 @@ import org.eclipse.collections.api.list.MutableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.api.UserReviewedDeterministic;
 import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.Inconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistencyState;
@@ -47,6 +46,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
+import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
 
 /**
  * The Class FilePrinter contains some helpers for stats.

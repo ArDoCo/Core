@@ -19,7 +19,6 @@ import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
-import edu.kit.kastel.mcse.ardoco.core.common.util.ElementWrapper;
 import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
@@ -31,11 +30,6 @@ public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy 
 
     public PhraseConcerningTextStateStrategy(TextStateImpl textState) {
         super.setTextState(textState);
-    }
-
-    @Override
-    public ElementWrapper<NounMapping> wrap(NounMapping nounMapping) {
-        return new ElementWrapper<>(NounMapping.class, nounMapping, NOUN_MAPPING_HASH, NOUN_MAPPING_EQUALS);
     }
 
     @Override

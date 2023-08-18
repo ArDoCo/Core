@@ -1,11 +1,7 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp;
 
-import edu.kit.kastel.mcse.ardoco.core.api.UserReviewedDeterministic;
-import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
-import edu.kit.kastel.mcse.ardoco.core.api.text.PhraseType;
-import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
-import edu.stanford.nlp.trees.Tree;
+import java.util.Objects;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.Maps;
@@ -13,24 +9,15 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.MutableMap;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
+import edu.kit.kastel.mcse.ardoco.core.api.text.PhraseType;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
+import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
+import edu.stanford.nlp.trees.Tree;
 
 @UserReviewedDeterministic
 public class PhraseImpl implements Phrase {
-
-    private static final AtomicLong idCounter = new AtomicLong(0);
-
-    private final long id = idCounter.getAndIncrement();
-
-    @Override
-    public int compareTo(@NotNull Phrase o) {
-        if (o instanceof PhraseImpl impl)
-            return Long.compare(id, impl.id);
-        return 0;
-    }
 
     private final Tree tree;
     private final ImmutableList<Word> words;

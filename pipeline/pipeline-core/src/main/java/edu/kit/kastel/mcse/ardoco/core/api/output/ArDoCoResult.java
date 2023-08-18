@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.PreprocessingData;
-import edu.kit.kastel.mcse.ardoco.core.api.UserReviewedDeterministic;
 import edu.kit.kastel.mcse.ardoco.core.api.codetraceability.CodeTraceabilityState;
 import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.Inconsistency;
@@ -35,6 +34,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.Recommendatio
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
+import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 

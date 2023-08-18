@@ -12,6 +12,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.PhraseMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
+import edu.kit.kastel.mcse.ardoco.core.common.util.Comparators;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.PhraseMappingAggregatorStrategy;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
@@ -41,6 +42,9 @@ public class MappingCombinerInformant extends Informant {
         for (PhraseMapping phraseMapping : phraseMappings) {
             ImmutableList<PhraseMapping> similarPhraseMappings = phraseMappings.select(p -> SimilarityUtils.getPhraseMappingSimilarity(textState, phraseMapping,
                     p, PhraseMappingAggregatorStrategy.MAX_SIMILARITY) > minCosineSimilarity);
+            // Remove the phrase mapping from the list of similar phrase mappings
+            // TODO This breaks the logic but seems to be logical ..
+            // similarPhraseMappings = similarPhraseMappings.newWithout(phraseMapping);
             processPhraseMappingForSimilarPhraseMappings(textState, similarPhraseMappings, phraseMapping);
         }
 
@@ -54,7 +58,8 @@ public class MappingCombinerInformant extends Informant {
 
             ImmutableList<NounMapping> nounMappingsOfSimilarPhraseMapping = textState.getNounMappingsByPhraseMapping(similarPhraseMapping);
 
-            if (similarPhraseMapping.getPhrases().collect(Phrase::getText).equals(phraseMapping.getPhrases().collect(Phrase::getText))) {
+            if (Comparators.collectionsEqualsAnyOrder(similarPhraseMapping.getPhrases().collect(Phrase::getText), phraseMapping.getPhrases()
+                    .collect(Phrase::getText))) {
                 processSimilarPhraseMappingWhenEqualPhraseText(textState, phraseMapping, nounMappingsOfSimilarPhraseMapping);
                 continue;
             }
@@ -78,9 +83,11 @@ public class MappingCombinerInformant extends Informant {
             }
         }
 
-        if (!((similarNounMappings.size() != nounMappingsOfPhraseMapping.size()) || (similarPhraseMappings.size() != similarNounMappings.collect(Pair::second)
-                .distinct()
-                .size() * 2))) {
+        boolean merge = true;
+        merge &= similarNounMappings.size() == nounMappingsOfPhraseMapping.size();
+        merge &= similarPhraseMappings.size() == similarNounMappings.collect(Pair::second).distinct().size() * 2;
+
+        if (merge) {
             textState.mergePhraseMappingsAndNounMappings(phraseMapping, similarPhraseMapping, similarNounMappings, this);
         }
     }
