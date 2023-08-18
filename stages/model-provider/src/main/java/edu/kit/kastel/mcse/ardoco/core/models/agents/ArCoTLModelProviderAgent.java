@@ -1,0 +1,73 @@
+/* Licensed under MIT 2023. */
+package edu.kit.kastel.mcse.ardoco.core.models.agents;
+
+import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItemRepository;
+import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
+import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.Extractor;
+import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.ArchitectureExtractor;
+import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.pcm.PcmExtractor;
+import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.uml.UmlExtractor;
+import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.AllLanguagesExtractor;
+import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.CodeExtractor;
+import edu.kit.kastel.mcse.ardoco.core.models.informants.ArCoTLModelProviderInformant;
+import edu.kit.kastel.mcse.ardoco.core.models.informants.ModelDisambiguationInformant;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Stream;
+
+/**
+ * Agent that provides information from models.
+ */
+public class ArCoTLModelProviderAgent extends PipelineAgent {
+  /**
+   * Instantiates a new model provider agent. The constructor takes a list of ModelConnectors
+   * that are executed and used to extract information from models.
+   *
+   * @param dataRepository the DataRepository
+   * @param extractors     the list of ModelConnectors that should be used
+   */
+  public ArCoTLModelProviderAgent(DataRepository dataRepository, List<Extractor> extractors) {
+    super(ArCoTLModelProviderAgent.class.getSimpleName(), dataRepository,
+            Stream.concat(fromConnectors(dataRepository, extractors).stream(),
+                    Stream.of(new ModelDisambiguationInformant(dataRepository))).toList());
+  }
+
+  private static List<Informant> fromConnectors(DataRepository dataRepository,
+                                                List<Extractor> extractors) {
+    return extractors.stream().map(extractor -> (Informant) new ArCoTLModelProviderInformant(dataRepository,
+            extractor)).toList();
+  }
+
+  public static ArCoTLModelProviderAgent get(File inputArchitectureModel,
+                                             ArchitectureModelType architectureModelType,
+                                             File inputCode,
+                                             Map<String, String> additionalConfigs,
+                                             DataRepository dataRepository) {
+    ArchitectureExtractor architectureExtractor = switch (architectureModelType) {
+      case PCM -> new PcmExtractor(inputArchitectureModel.getAbsolutePath());
+      case UML -> new UmlExtractor(inputArchitectureModel.getAbsolutePath());
+    };
+    CodeItemRepository codeItemRepository = new CodeItemRepository();
+    CodeExtractor codeExtractor = new AllLanguagesExtractor(codeItemRepository,
+            inputCode.getAbsolutePath());
+    ArCoTLModelProviderAgent agent = new ArCoTLModelProviderAgent(dataRepository,
+            List.of(architectureExtractor, codeExtractor));
+    agent.applyConfiguration(additionalConfigs);
+    return agent;
+  }
+
+  @Override
+  protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+    // empty //FIXME is this intentional? why not delegate to informants?
+  }
+
+  @Override
+  protected List<Informant> getEnabledPipelineSteps() {
+    return new ArrayList<>(getInformants());
+  }
+}

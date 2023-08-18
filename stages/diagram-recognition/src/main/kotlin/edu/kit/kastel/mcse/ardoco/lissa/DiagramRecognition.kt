@@ -6,11 +6,19 @@ import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent
+import edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.agents.DiagramDisambiguationAgent
 import edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.agents.DiagramReferenceAgent
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.agents.DiagramRecognitionAgent
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.model.DiagramImpl
 
-class DiagramRecognition(dataRepository: DataRepository) : AbstractExecutionStage(ID, dataRepository, listOf(DiagramRecognitionAgent(dataRepository), DiagramReferenceAgent(dataRepository))) {
+class DiagramRecognition(dataRepository: DataRepository) : AbstractExecutionStage(
+    ID,
+    dataRepository, listOf(
+        DiagramRecognitionAgent(dataRepository), DiagramDisambiguationAgent
+            (dataRepository), DiagramReferenceAgent
+            (dataRepository)
+    )
+) {
 
     companion object {
         const val ID = "DiagramRecognition"
@@ -23,7 +31,10 @@ class DiagramRecognition(dataRepository: DataRepository) : AbstractExecutionStag
          * @return a DiagramRecognition with the provided diagrams
          */
         @JvmStatic
-        fun get(additionalConfigs: Map<String?, String?>?, dataRepository: DataRepository?): DiagramRecognition? {
+        fun get(
+            additionalConfigs: Map<String?, String?>?,
+            dataRepository: DataRepository?
+        ): DiagramRecognition? {
             val diagramDetection = DiagramRecognition(dataRepository!!)
             diagramDetection.applyConfiguration(additionalConfigs)
             return diagramDetection
@@ -34,7 +45,8 @@ class DiagramRecognition(dataRepository: DataRepository) : AbstractExecutionStag
     private var enabledAgents: MutableList<String> = agents.map { it.id }.toMutableList()
 
     override fun initializeState() {
-        val inputDiagrams = dataRepository.getData(InputDiagramData.ID, InputDiagramData::class.java)
+        val inputDiagrams =
+            dataRepository.getData(InputDiagramData.ID, InputDiagramData::class.java)
         if (inputDiagrams.isEmpty) {
             return
         }
