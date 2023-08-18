@@ -28,6 +28,8 @@ public class CodeItemRepository {
     }
 
     CodeItem getCodeItem(String id) {
+        if (id == null)
+            return null;
         return repository.get(id);
     }
 

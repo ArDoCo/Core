@@ -4,7 +4,6 @@ package edu.kit.kastel.mcse.ardoco.core.api.codetraceability;
 import java.util.Collection;
 
 import org.eclipse.collections.api.set.ImmutableSet;
-import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadCodeTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SamCodeTraceLink;
@@ -58,5 +57,5 @@ public interface CodeTraceabilityState extends PipelineStepData {
      *
      * @return set of stored {@link TransitiveTraceLink TransitiveTraceLinks}
      */
-    ImmutableSortedSet<SadCodeTraceLink> getSadCodeTraceLinks();
+    ImmutableSet<SadCodeTraceLink> getSadCodeTraceLinks();
 }

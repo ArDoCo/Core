@@ -6,7 +6,6 @@ import java.util.Collection;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.set.ImmutableSet;
-import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.codetraceability.CodeTraceabilityState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadCodeTraceLink;
@@ -44,8 +43,8 @@ public class CodeTraceabilityStateImpl extends AbstractState implements CodeTrac
     }
 
     @Override
-    public ImmutableSortedSet<SadCodeTraceLink> getSadCodeTraceLinks() {
-        return this.transitiveTraceLinks.toImmutableSortedSet();
+    public ImmutableSet<SadCodeTraceLink> getSadCodeTraceLinks() {
+        return this.transitiveTraceLinks.toImmutableSet();
     }
 
 }
