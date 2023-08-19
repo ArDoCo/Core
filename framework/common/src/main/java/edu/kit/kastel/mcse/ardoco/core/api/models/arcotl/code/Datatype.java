@@ -23,6 +23,8 @@ public class Datatype extends CodeItem {
     @JsonProperty
     private String compilationUnitId;
     @JsonProperty
+    private String parentDatatypeId;
+    @JsonProperty
     private List<String> extendedDataTypesIds;
     @JsonProperty
     private List<String> implementedDataTypesIds;
@@ -41,6 +43,14 @@ public class Datatype extends CodeItem {
         CodeItem codeItem = codeItemRepository.getCodeItem(compilationUnitId);
         if (codeItem instanceof CodeCompilationUnit codeCompilationUnit) {
             return codeCompilationUnit;
+        }
+        return null;
+    }
+
+    public Datatype getParentDatatype() {
+        CodeItem codeItem = codeItemRepository.getCodeItem(parentDatatypeId);
+        if (codeItem instanceof Datatype datatype) {
+            return datatype;
         }
         return null;
     }
@@ -69,6 +79,9 @@ public class Datatype extends CodeItem {
 
     public void setCompilationUnit(CodeCompilationUnit compilationUnit) {
         this.compilationUnitId = compilationUnit.getId();
+    }
+    public void setParentDatatype(Datatype parentDatatype) {
+        this.parentDatatypeId = parentDatatype.getId();
     }
 
     public void setExtendedTypes(Set<Datatype> extendedDatatypes) {

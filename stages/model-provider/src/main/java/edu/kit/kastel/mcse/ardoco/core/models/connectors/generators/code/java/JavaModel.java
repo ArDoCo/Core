@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -188,16 +189,23 @@ public final class JavaModel {
     }
 
     private List<Datatype> extractTypes(CompilationUnit compilationUnit) {
-        List<Datatype> codeTypes = new ArrayList<>();
+        Map<ASTNode, Datatype> codeTypes = new LinkedHashMap<>();
         Set<TypeDeclaration> typeDeclarations = TypeDeclarationFinder.find(compilationUnit);
         for (TypeDeclaration typeDeclaration : typeDeclarations) {
-            codeTypes.add(processTypeDeclaration(typeDeclaration));
+            codeTypes.put(typeDeclaration, processTypeDeclaration(typeDeclaration));
         }
         Set<EnumDeclaration> enumDeclarations = EnumDeclarationFinder.find(compilationUnit);
         for (EnumDeclaration enumDeclaration : enumDeclarations) {
-            codeTypes.add(processEnumDeclaration(enumDeclaration));
+            codeTypes.put(enumDeclaration, processEnumDeclaration(enumDeclaration));
         }
-        return codeTypes;
+        for (var entry : codeTypes.entrySet()) {
+            ASTNode node = entry.getKey();
+            Datatype codeType = entry.getValue();
+            if (codeTypes.containsKey(node.getParent())) {
+                codeType.setParentDatatype(codeTypes.get(node.getParent()));
+            }
+        }
+        return codeTypes.values().stream().toList();
     }
 
     private ClassUnit processEnumDeclaration(EnumDeclaration enumDeclaration) {
