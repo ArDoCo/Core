@@ -27,7 +27,7 @@ public class ReferenceInformant extends Informant {
     }
 
     @Override
-    public void run() {
+    public void process() {
         DataRepository dataRepository = getDataRepository();
         var textState = DataRepositoryHelper.getTextState(dataRepository);
         var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);

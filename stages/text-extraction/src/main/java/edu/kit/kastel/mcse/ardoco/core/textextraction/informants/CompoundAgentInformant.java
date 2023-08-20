@@ -30,7 +30,7 @@ public class CompoundAgentInformant extends Informant {
     }
 
     @Override
-    public void run() {
+    public void process() {
         var text = DataRepositoryHelper.getAnnotatedText(getDataRepository());
         var textState = getDataRepository().getData(TextState.ID, TextStateImpl.class).orElseThrow();
         for (var word : text.getWords()) {

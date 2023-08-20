@@ -1,5 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.tests.integration;
 
+import edu.kit.kastel.mcse.ardoco.core.api.InputDiagramData;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
@@ -7,7 +8,8 @@ import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.AnonymousRunner;
 import edu.kit.kastel.mcse.ardoco.core.models.agents.ModelProviderAgent;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
-import edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.DiagramRecognitionMock;
+import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognition;
+import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognitionStateImpl;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 import edu.kit.kastel.mcse.ardoco.tests.eval.GoldStandardDiagrams;
 import edu.kit.kastel.mcse.ardoco.tests.eval.StageTest;
@@ -15,34 +17,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class DiagramRecognitionMockTest extends StageTest<DiagramRecognitionMock,
-        GoldStandardDiagrams, DiagramRecognitionMockTest.DiagramRecognitionResult> {
-    public DiagramRecognitionMockTest() {
-        super(new DiagramRecognitionMock(null, Map.of(), null), DiagramProject.values());
-    }
+public class DiagramRecognitionTest extends StageTest<DiagramRecognition, GoldStandardDiagrams,
+        DiagramRecognitionTest.DiagramRecognitionResult> {
 
-    @DisplayName("Evaluate Diagram Recognition")
-    @ParameterizedTest(name = "{0}")
-    @MethodSource("edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject#getNonHistoricalProjects")
-    @Order(1)
-    void evaluateNonHistoricalDiagramRecognition(DiagramProject project) {
-        run(project);
-    }
-
-    @DisplayName("Evaluate Diagram Recognition (Historical)")
-    @ParameterizedTest(name = "{0}")
-    @MethodSource("edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject#getHistoricalProjects")
-    @Order(2)
-    void evaluateHistoricalDiagramRecognition(DiagramProject project) {
-        run(project);
+    public DiagramRecognitionTest() {
+        super(new DiagramRecognition(new DiagramRecognitionStateImpl(), new DataRepository()),
+                DiagramProject.values());
     }
 
     @Override
@@ -77,8 +58,10 @@ public class DiagramRecognitionMockTest extends StageTest<DiagramRecognitionMock
             @Override
             public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) {
                 var pipelineSteps = new ArrayList<AbstractPipelineStep>();
-                pipelineSteps.add(new DiagramRecognitionMock(project,
-                        project.getAdditionalConfigurations(), dataRepository));
+                dataRepository.addData(InputDiagramData.ID,
+                        new InputDiagramData(project.getDiagramData()));
+                pipelineSteps.add(new DiagramRecognition(new DiagramRecognitionStateImpl(),
+                        dataRepository));
                 return pipelineSteps;
             }
         }.runWithoutSaving();

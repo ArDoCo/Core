@@ -32,7 +32,7 @@ public class DiagramModelReferenceInformant extends Informant {
   }
 
   @Override
-  public void run() {
+  public void process() {
     var optModelStates = dataRepository.getData(ModelStates.ID, ModelStates.class);
     if (optModelStates.isEmpty()) {
       logger.warn(String.format("%s couldn't be found, skipping informant",

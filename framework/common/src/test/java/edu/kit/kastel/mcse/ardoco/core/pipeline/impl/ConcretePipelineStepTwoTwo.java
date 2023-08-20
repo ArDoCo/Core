@@ -1,17 +1,15 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline.impl;
 
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.data.impl.ProcessedTextData;
 import edu.kit.kastel.mcse.ardoco.core.data.impl.ResultData;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Example implementation of {@link AbstractPipelineStep}
@@ -28,19 +26,31 @@ public class ConcretePipelineStepTwoTwo extends AbstractPipelineStep {
 
     private void fetchAndInitializeData() {
         var dataRepository = getDataRepository();
-        processedTextData = dataRepository.getData("ProcessedTextData", ProcessedTextData.class).orElseThrow();
+        processedTextData =
+                dataRepository.getData("ProcessedTextData", ProcessedTextData.class).orElseThrow();
         resultData = new ResultData();
         dataRepository.addData("ResultData", resultData);
     }
 
     @Override
-    public void run() {
+    public void process() {
         fetchAndInitializeData();
         logger.info("Greetings from {} with id {}", this.getClass().getSimpleName(), getId());
         var tokens = processedTextData.getImportantTokens();
-        var tokenWithLength = tokens.stream().collect(Collectors.toMap(e -> e, String::length, (o1, o2) -> o1, TreeMap::new));
+        var tokenWithLength = tokens.stream().collect(Collectors.toMap(e -> e, String::length,
+                (o1, o2) -> o1, TreeMap::new));
         var firstEntry = tokenWithLength.firstKey();
         resultData.setResult(firstEntry);
+    }
+
+    @Override
+    protected void before() {
+        //Nothing
+    }
+
+    @Override
+    protected void after() {
+        //Nothing
     }
 
     @Override

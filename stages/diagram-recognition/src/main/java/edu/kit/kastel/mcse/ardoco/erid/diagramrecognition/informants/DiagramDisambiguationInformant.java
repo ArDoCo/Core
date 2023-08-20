@@ -21,13 +21,13 @@ public class DiagramDisambiguationInformant extends Informant {
   }
 
   @Override
-  public void run() {
+  public void process() {
     var diagramRecognitionState = DataRepositoryHelper.getDiagramRecognitionState(dataRepository);
     var boxes = Lists.mutable.fromStream(
             diagramRecognitionState.getDiagrams().stream().flatMap(d -> d.getBoxes().stream()));
     for (var box : boxes) {
       var texts = box.getTexts();
-      for (var textBox : box.getTexts()) {
+      for (var textBox : texts) {
         var text = textBox.getText();
         var abbreviations = AbbreviationDisambiguationHelper.getPossibleAbbreviations(text);
         var meaningsMap = abbreviations.stream().collect(Collectors.toMap(a -> a,

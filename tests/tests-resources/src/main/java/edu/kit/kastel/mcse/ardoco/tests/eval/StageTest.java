@@ -143,10 +143,14 @@ public abstract class StageTest<T extends AbstractExecutionStage, U extends Gold
     private static final int repetitions = 2;
 
     @BeforeAll
-    void resetAllTestDataRepositoryCaches() {
+    protected void resetAllTestDataRepositoryCaches() {
+        resetAllTestDataRepositoryCaches(false);
+    }
+
+    protected void resetAllTestDataRepositoryCaches(boolean force) {
         debugAskCache();
-        if (Boolean.parseBoolean(System.getenv().getOrDefault(ENV_DEBUG_KEEP_CACHE, "false"))) {
-            logger.warn("Keeping caches, careful! Set \"" + ENV_DEBUG_KEEP_CACHE + "=false\" to disable persistent caching");
+        if (!force && Boolean.parseBoolean(System.getenv().getOrDefault(ENV_DEBUG_KEEP_CACHE, "false"))) {
+            logger.warn("Keeping caches, careful! Set \"" + ENV_DEBUG_KEEP_CACHE + "=false\" to disable" + " persistent caching");
         } else {
             for (U d : allProjects) {
                 try (var drCache = new TestDataRepositoryCache<>(stage.getClass(), d)) {

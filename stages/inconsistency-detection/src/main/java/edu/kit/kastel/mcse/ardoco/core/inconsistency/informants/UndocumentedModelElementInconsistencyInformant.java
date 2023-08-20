@@ -36,7 +36,7 @@ public class UndocumentedModelElementInconsistencyInformant extends Informant {
     }
 
     @Override
-    public void run() {
+    public void process() {
         var dataRepository = getDataRepository();
         var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
         var connectionStates = DataRepositoryHelper.getConnectionStates(dataRepository);

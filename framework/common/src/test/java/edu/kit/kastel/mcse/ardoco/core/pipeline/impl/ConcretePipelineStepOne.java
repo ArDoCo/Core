@@ -1,17 +1,15 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline.impl;
 
+import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
+import edu.kit.kastel.mcse.ardoco.core.data.impl.TextData;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
-import edu.kit.kastel.mcse.ardoco.core.data.impl.TextData;
-import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
 
 /**
  * Example implementation of {@link AbstractPipelineStep}
@@ -31,13 +29,23 @@ public class ConcretePipelineStepOne extends AbstractPipelineStep {
     }
 
     @Override
-    public void run() {
+    public void process() {
         fetchData();
         logger.info("Greetings from {} with id {}", this.getClass().getSimpleName(), getId());
         var text = textData.getText();
         var tokens = Arrays.stream(text.split(" ")).toList();
         tokens = tokens.stream().filter(Predicate.not(stopwords::contains)).toList();
         textData.setTokens(tokens);
+    }
+
+    @Override
+    protected void before() {
+        //Nothing
+    }
+
+    @Override
+    protected void after() {
+        //Nothing
     }
 
     @Override

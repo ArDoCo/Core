@@ -10,7 +10,6 @@ import org.apache.hc.client5.http.classic.methods.HttpGet
 import org.apache.hc.client5.http.impl.classic.BasicHttpClientResponseHandler
 import org.apache.hc.client5.http.impl.classic.HttpClients
 import java.io.IOException
-import java.util.*
 import java.util.stream.IntStream
 
 abstract class DockerInformant : Informant {
@@ -21,6 +20,8 @@ abstract class DockerInformant : Informant {
 
         // E.g., 2375
         private val REMOTE_DOCKER_PORT: Int? = System.getenv("REMOTE_DOCKER_PORT")?.toIntOrNull()
+
+        private val REMOTE_URI: String? = "https://vdl-ws.kastel.kit.edu"
 
         private val REMOTE = REMOTE_DOCKER_IP != null && REMOTE_DOCKER_PORT != null
         private val dockerManagerCache: MutableMap<String, DockerManager> = mutableMapOf()
@@ -48,10 +49,10 @@ abstract class DockerInformant : Informant {
     /**
      * A configured object mapper for serialization / deserialization of objects.
      */
-    protected val oom: ObjectMapper = createObjectMapper()
     private val image: String
     private val defaultPort: Int
     private val useDocker: Boolean
+    private val endpoint: String
 
     private var dockerManager: DockerManager? = null
 
@@ -62,17 +63,20 @@ abstract class DockerInformant : Informant {
      * @param[useDocker] whether or not to use the docker image (just for debugging)
      * @param[id] the id of the informant
      * @param[dataRepository] the data repository of the informant
+     * @param[endpoint] the endpoint of the informant (e.g., "ocr" to access "http://IP:Port/ocr").
      */
     protected constructor(
         image: String,
         defaultPort: Int,
         useDocker: Boolean,
         id: String,
-        dataRepository: DataRepository
+        dataRepository: DataRepository,
+        endpoint: String
     ) : super(id, dataRepository) {
         this.image = image
         this.defaultPort = defaultPort
         this.useDocker = useDocker
+        this.endpoint = endpoint
     }
 
     /**
@@ -84,6 +88,7 @@ abstract class DockerInformant : Informant {
     /**
      * The information about the spawned container (e.g., the information about the port mapping)
      */
+    @Transient
     protected lateinit var container: ContainerResponse
 
     /**
@@ -106,6 +111,11 @@ abstract class DockerInformant : Informant {
         }
     }
 
+    protected fun getUri(): String {
+        if (REMOTE_URI != null) return "$REMOTE_URI/$endpoint/"
+        return "http://${hostIP()}:${container.apiPort}/${endpoint}/"
+    }
+
     private fun docker(): DockerManager {
         if (!useDocker) {
             error("Try to get docker while docker is disabled")
@@ -118,17 +128,17 @@ abstract class DockerInformant : Informant {
     }
 
     /**
-     * Ensure the readiness of the container or service by its entrypoint (e.g., "ocr" to access "http://IP:Port/ocr").
+     * Ensure the readiness of the container or service by its entrypoint
      * @throws[IllegalStateException] if failed after multiple retries
      */
-    protected fun ensureReadiness(entryPoint: String) {
+    protected fun ensureReadiness() {
         val tries = 15
         val waiting = 10000L
 
         HttpClients.createDefault().use { client ->
             for (currentTry in IntStream.range(0, tries)) {
                 try {
-                    val get = HttpGet("http://${hostIP()}:${container.apiPort}/$entryPoint/")
+                    val get = HttpGet(getUri())
                     val data = client.execute(get, BasicHttpClientResponseHandler())
                     if (data.startsWith("Hello from ")) return
                 } catch (e: IOException) {

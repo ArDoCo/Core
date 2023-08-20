@@ -43,10 +43,6 @@ public abstract class FileBasedCache<T> implements AutoCloseable {
         return currentState;
     }
 
-    public Optional<T> get() {
-        return Optional.ofNullable(currentState);
-    }
-
     public void cache(T cache) {
         currentState = cache;
         flagWrite = true;

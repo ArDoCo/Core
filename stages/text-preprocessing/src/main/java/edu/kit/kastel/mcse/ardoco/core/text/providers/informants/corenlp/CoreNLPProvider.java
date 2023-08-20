@@ -30,7 +30,7 @@ public class CoreNLPProvider extends NlpInformant {
     }
 
     @Override
-    public void run() {
+    public void process() {
         if (!DataRepositoryHelper.hasAnnotatedText(getDataRepository())) {
             var preprocessingData = new PreprocessingData(getAnnotatedText());
             DataRepositoryHelper.putPreprocessingData(getDataRepository(), preprocessingData);

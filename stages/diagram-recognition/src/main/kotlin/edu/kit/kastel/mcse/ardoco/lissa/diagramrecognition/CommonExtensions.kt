@@ -2,9 +2,11 @@ package edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.InjectableValues
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject
 
 fun createObjectMapper(): ObjectMapper {
     val objectMapper: ObjectMapper = ObjectMapper().configure(SerializationFeature.INDENT_OUTPUT, true)

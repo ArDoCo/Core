@@ -32,7 +32,7 @@ public class CompoundRecommendationInformant extends Informant {
     }
 
     @Override
-    public void run() {
+    public void process() {
         DataRepository dataRepository = getDataRepository();
         var modelStatesData = DataRepositoryHelper.getModelStatesData(dataRepository);
         var textState = DataRepositoryHelper.getTextState(dataRepository);

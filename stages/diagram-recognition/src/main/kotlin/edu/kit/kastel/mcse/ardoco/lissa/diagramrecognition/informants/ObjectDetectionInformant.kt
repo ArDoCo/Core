@@ -1,9 +1,12 @@
 package edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.informants
 
+import com.fasterxml.jackson.databind.InjectableValues
 import com.fasterxml.jackson.module.kotlin.readValue
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
+import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognitionStateImpl
+import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.createObjectMapper
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.executeRequest
 import org.apache.hc.client5.http.classic.methods.HttpPost
 import org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder
@@ -12,7 +15,11 @@ import org.apache.hc.core5.http.HttpEntity
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 
-class ObjectDetectionInformant(dataRepository: DataRepository) : ImageProcessingDockerInformant(
+class ObjectDetectionInformant(
+    diagramRecognitionState: DiagramRecognitionStateImpl,
+    dataRepository: DataRepository
+) : ImageProcessingDockerInformant(
+    diagramRecognitionState,
     DOCKER_SKETCH_RECOGNITION,
     DEFAULT_PORT,
     DOCKER_SKETCH_RECOGNITION_VIA_DOCKER,
@@ -23,7 +30,7 @@ class ObjectDetectionInformant(dataRepository: DataRepository) : ImageProcessing
     companion object {
         const val DOCKER_SKETCH_RECOGNITION = "ghcr.io/lissa-approach/detectron2-sr:latest"
         const val DEFAULT_PORT = 5005
-        const val DOCKER_SKETCH_RECOGNITION_VIA_DOCKER = true
+        const val DOCKER_SKETCH_RECOGNITION_VIA_DOCKER = false
 
         const val ID = "ObjectDetectionInformant"
     }
@@ -33,13 +40,20 @@ class ObjectDetectionInformant(dataRepository: DataRepository) : ImageProcessing
     }
 
     override fun processImage(diagram: Diagram, imageData: ByteArray) {
-        val boxes = detectEntities(ByteArrayInputStream(imageData))
+        val boxes = detectEntities(diagram, ByteArrayInputStream(imageData))
         boxes.forEach { diagram.addBox(it) }
     }
 
-    fun detectEntities(image: InputStream): List<Box> {
+    fun detectEntities(diagram: Diagram, image: InputStream): List<Box> {
         val sketchRecognition = sendSketchRecognitionRequest(image)
         logger.debug("Processed DiagramRecognition request")
+        val oom = createObjectMapper();
+        oom.setInjectableValues(
+            InjectableValues.Std().addValue(
+                Diagram::class.java,
+                diagram
+            )
+        )
         return oom.readValue(sketchRecognition)
     }
 
@@ -47,7 +61,7 @@ class ObjectDetectionInformant(dataRepository: DataRepository) : ImageProcessing
         // Create Request
         val builder = MultipartEntityBuilder.create()
         builder.addBinaryBody("file", image, ContentType.APPLICATION_OCTET_STREAM, "image")
-        val uploadFile = HttpPost("http://${hostIP()}:${container.apiPort}/sketches/")
+        val uploadFile = HttpPost(getUri())
         val multipart: HttpEntity = builder.build()
         uploadFile.entity = multipart
         return executeRequest(uploadFile)

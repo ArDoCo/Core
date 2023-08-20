@@ -18,18 +18,21 @@ import java.io.InputStream
 import java.io.OutputStream
 import java.lang.Double.max
 import java.lang.Double.min
-import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.imageio.ImageIO
 
-private val colors = listOf(Color.RED, Color.GREEN, Color.YELLOW, Color.BLUE, Color.BLACK, Color.ORANGE)
-private val logger: Logger = LoggerFactory.getLogger("${DiagramRecognition::class.java.packageName}.Helpers")
+private val colors =
+    listOf(Color.RED, Color.GREEN, Color.YELLOW, Color.BLUE, Color.BLACK, Color.ORANGE)
+private val logger: Logger =
+    LoggerFactory.getLogger("${DiagramRecognition::class.java.packageName}.Helpers")
+
 fun executeRequest(postRequest: HttpPost, modifyTimeout: Boolean = true): String {
     HttpClients.createDefault().use {
         try {
             if (modifyTimeout) {
                 val basicConfig = postRequest.config ?: RequestConfig.custom().build()
-                val newConfig = RequestConfig.copy(basicConfig).setResponseTimeout(5, TimeUnit.MINUTES).build()
+                val newConfig =
+                    RequestConfig.copy(basicConfig).setResponseTimeout(5, TimeUnit.MINUTES).build()
                 postRequest.config = newConfig
             }
             val content = it.execute(postRequest, BasicHttpClientResponseHandler())
@@ -51,7 +54,7 @@ fun visualize(imageStream: InputStream, diagram: Diagram, destination: OutputStr
 
     val textBoxes = diagram.textBoxes.map {
         val tb = Box(
-            UUID.randomUUID().toString(),
+            diagram,
             it.absoluteBox().map { value -> value }.toIntArray(),
             1.0,
             "TEXT",
@@ -68,7 +71,12 @@ fun visualize(imageStream: InputStream, diagram: Diagram, destination: OutputStr
         }
         g2d.color = colorMap[box.classification]
         val coordinates = box.box
-        g2d.drawRect(coordinates[0], coordinates[1], coordinates[2] - coordinates[0], coordinates[3] - coordinates[1])
+        g2d.drawRect(
+            coordinates[0],
+            coordinates[1],
+            coordinates[2] - coordinates[0],
+            coordinates[3] - coordinates[1]
+        )
         if (box.classification == Classification.TEXT) {
             g2d.drawString(
                 box.texts.joinToString { it.text },
@@ -139,5 +147,10 @@ fun IntArray.boundingBox(relative: Boolean = false): BoundingBox {
             this[3].toDouble() - this[1].toDouble()
         )
     }
-    return BoundingBox(this[0].toDouble(), this[1].toDouble(), this[2].toDouble(), this[3].toDouble())
+    return BoundingBox(
+        this[0].toDouble(),
+        this[1].toDouble(),
+        this[2].toDouble(),
+        this[3].toDouble()
+    )
 }

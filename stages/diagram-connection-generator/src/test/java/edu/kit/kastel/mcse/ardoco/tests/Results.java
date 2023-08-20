@@ -28,7 +28,7 @@ public record Results(DiagramProject project, SortedSet<DiaWordTraceLink> truePo
         goldStandard.addAll(allGoldStandardTraceLinks.getOrDefault(TraceType.ENTITY_COREFERENCE, List.of()));
 
         var totalSentences = text.getSentences().size();
-        var totalDiagramElements = project.getDiagrams().stream().flatMap(d -> d.getBoxes().stream()).toList().size();
+        var totalDiagramElements = project.getDiagramsGoldStandard().stream().flatMap(d -> d.getBoxes().stream()).toList().size();
         var total = totalSentences * totalDiagramElements;
         var traceLinks = new TreeSet<>(wordTraceLinks);
         var tpLinks = intersection(traceLinks, goldStandard);

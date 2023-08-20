@@ -1,43 +1,35 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityComparable;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
+import java.awt.*;
+import java.io.Serializable;
+import java.util.Objects;
+
 import static java.lang.Math.abs;
 
-import java.io.Serializable;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-public class TextBox implements Serializable {
-    @JsonProperty("x")
-    private int xCoordinate;
-    @JsonProperty("y")
-    private int yCoordinate;
-    @JsonProperty("w")
-    private int width;
-    @JsonProperty("h")
-    private int height;
-    @JsonProperty
+public class TextBox implements SimilarityComparable, Serializable {
+    private static final double SIMILARITY_THRESHOLD = 0.95;
+    private BoundingBox boundingBox;
     private double confidence;
-    @JsonProperty
     private String text;
-    private Integer dominatingColor;
+    private Color dominatingColor = null;
 
-    private TextBox() {
-        // Jackson JSON
-    }
-
-    public TextBox(BoundingBox boundingBox, double confidence, String text, Integer dominatingColor) {
-        this(boundingBox.minX(), boundingBox.minY(), boundingBox.maxX(), boundingBox.maxY(), confidence, text, dominatingColor);
-    }
-
-    public TextBox(int xCoordinate, int yCoordinate, int width, int height, double confidence, String text, Integer dominatingColor) {
-        this.xCoordinate = xCoordinate;
-        this.yCoordinate = yCoordinate;
-        this.width = width;
-        this.height = height;
+    public TextBox(BoundingBox boundingBox, double confidence, String text) {
+        this.boundingBox = boundingBox;
         this.confidence = confidence;
         this.text = text;
-        this.dominatingColor = dominatingColor;
+    }
+
+    @JsonCreator
+    public TextBox(@JsonProperty("x") int xCoordinate, @JsonProperty("y") int yCoordinate,
+                   @JsonProperty("w") int width, @JsonProperty("h") int height,
+                   @JsonProperty("confidence") double confidence,
+                   @JsonProperty("text") String text) {
+        this(new BoundingBox(xCoordinate, yCoordinate, xCoordinate + width, yCoordinate + height), confidence, text);
     }
 
     /**
@@ -46,7 +38,11 @@ public class TextBox implements Serializable {
      * @return the absolute coordinates of the box
      */
     public int[] absoluteBox() {
-        return new int[] { xCoordinate, yCoordinate, xCoordinate + width, yCoordinate + height };
+        return new int[]{boundingBox.minX(), boundingBox.minY(), boundingBox.maxX(), boundingBox.maxY()};
+    }
+
+    public BoundingBox getBoundingBox() {
+        return boundingBox;
     }
 
     public int area() {
@@ -55,19 +51,19 @@ public class TextBox implements Serializable {
     }
 
     public int getXCoordinate() {
-        return xCoordinate;
+        return boundingBox.minX();
     }
 
     public int getYCoordinate() {
-        return yCoordinate;
+        return boundingBox.minY();
     }
 
     public int getWidth() {
-        return width;
+        return boundingBox.width();
     }
 
     public int getHeight() {
-        return height;
+        return boundingBox.height();
     }
 
     public double getConfidence() {
@@ -78,16 +74,39 @@ public class TextBox implements Serializable {
         return text;
     }
 
-    public Integer getDominatingColor() {
+    public Color getDominatingColor() {
         return dominatingColor;
     }
 
-    public void setDominatingColor(Integer dominatingColor) {
+    public void setDominatingColor(Color dominatingColor) {
         this.dominatingColor = dominatingColor;
     }
 
     @Override
     public String toString() {
         return String.format("TextBox [text=%s]", getText());
+    }
+
+    @Override
+    public boolean similar(Object obj) {
+        if (equals(obj)) return true;
+        if (obj instanceof TextBox other) {
+            return WordSimUtils.getSimilarity(text, other.text) > SIMILARITY_THRESHOLD && boundingBox.similar(other.boundingBox);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (super.equals(obj)) return true;
+        if (obj instanceof TextBox other) {
+            return boundingBox.equals(other.boundingBox) && text.equals(other.text);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(boundingBox, text);
     }
 }

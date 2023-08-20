@@ -34,7 +34,7 @@ public class NounInformant extends Informant {
     }
 
     @Override
-    public void run() {
+    public void process() {
         ImmutableList<Word> words = DataRepositoryHelper.getAnnotatedText(getDataRepository()).getWords();
         var textState = DataRepositoryHelper.getTextState(getDataRepository());
         for (var word : words) {

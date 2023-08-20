@@ -21,7 +21,7 @@ public abstract class Filter extends Informant {
     }
 
     @Override
-    public void run() {
+    public void process() {
         var dataRepository = getDataRepository();
         var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
         var inconsistencyStates = DataRepositoryHelper.getInconsistencyStates(dataRepository);

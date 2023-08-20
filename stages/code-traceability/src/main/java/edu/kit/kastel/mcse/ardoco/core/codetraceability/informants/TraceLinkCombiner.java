@@ -25,7 +25,7 @@ public class TraceLinkCombiner extends Informant {
     }
 
     @Override
-    public void run() {
+    public void process() {
         MutableSet<SadCodeTraceLink> transitiveTraceLinks = Sets.mutable.empty();
         CodeTraceabilityState codeTraceabilityState = DataRepositoryHelper.getCodeTraceabilityState(getDataRepository());
         ModelStates modelStatesData = DataRepositoryHelper.getModelStatesData(getDataRepository());

@@ -23,7 +23,7 @@ public class LinkBetweenDeAndRiProbabilityFilter extends Informant {
     }
 
     @Override
-    public void run() {
+    public void process() {
         var dataRepository = getDataRepository();
         var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
         var diagramConnectionStates = dataRepository.getData(DiagramConnectionStates.ID, DiagramConnectionStates.class).orElseThrow();

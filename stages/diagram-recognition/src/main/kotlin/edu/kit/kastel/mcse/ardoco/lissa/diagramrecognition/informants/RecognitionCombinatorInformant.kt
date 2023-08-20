@@ -3,16 +3,24 @@ package edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.informants
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Classification
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.TextBox
-import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant
+import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognitionStateImpl
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.boundingBox
+import java.awt.Color
 import java.awt.image.BufferedImage
 import java.io.ByteArrayInputStream
 import java.util.stream.IntStream
 import javax.imageio.ImageIO
 
-class RecognitionCombinatorInformant(dataRepository: DataRepository) : Informant(ID, dataRepository) {
+class RecognitionCombinatorInformant(
+    private val diagramRecognitionState:
+    DiagramRecognitionStateImpl, dataRepository: DataRepository
+) :
+    Informant(
+        ID,
+        dataRepository
+    ) {
     companion object {
         const val ID = "RecognitionCombinatorInformant"
     }
@@ -21,9 +29,8 @@ class RecognitionCombinatorInformant(dataRepository: DataRepository) : Informant
         // Not needed
     }
 
-    override fun run() {
-        val diagramRecognitionState = DataRepositoryHelper.getDiagramRecognitionState(dataRepository)
-        for (diagram in diagramRecognitionState.diagrams) {
+    override fun process() {
+        for (diagram in diagramRecognitionState.getUnprocessedDiagrams()) {
             val entities = diagram.boxes.filter { it.classification != Classification.LABEL }
             val texts = diagram.textBoxes
             combineBoxesAndText(entities, texts)
@@ -35,7 +42,8 @@ class RecognitionCombinatorInformant(dataRepository: DataRepository) : Informant
         for (text in texts) {
             if (text.text.length < 3) continue
 
-            val intersects = entities.map { it to it.box.boundingBox().iou(text.absoluteBox().boundingBox()) }
+            val intersects =
+                entities.map { it to it.box.boundingBox().iou(text.absoluteBox().boundingBox()) }
 
             val results = intersects.filter { it.second.areaIntersect / text.area() > 0.9 }
             if (results.isEmpty()) continue
@@ -55,17 +63,21 @@ class RecognitionCombinatorInformant(dataRepository: DataRepository) : Informant
         val count = pixels.size
         if (count == 0) return
 
-        val pixelCount = pixels.groupingBy { it }.eachCount().toList().sortedByDescending { it.second }
+        val pixelCount =
+            pixels.groupingBy { it }.eachCount().toList().sortedByDescending { it.second }
         val mostPixel = pixelCount[0]
         if (mostPixel.second <= count / 2) return
 
-        box.dominatingColor = mostPixel.first
+        box.dominatingColor = Color(mostPixel.first)
         setColorsOfTexts(image, box)
     }
 
     private fun getPixels(image: BufferedImage, box: Array<Int>): List<Int> {
         val result = mutableListOf<Int>()
-        for (x in IntStream.range(box[0], box[2])) for (y in IntStream.range(box[1], box[3])) result.add(
+        for (x in IntStream.range(box[0], box[2])) for (y in IntStream.range(
+            box[1],
+            box[3]
+        )) result.add(
             image.getRGB(x, y)
         )
         return result
@@ -76,9 +88,10 @@ class RecognitionCombinatorInformant(dataRepository: DataRepository) : Informant
             val pixels = getPixels(image, text.absoluteBox().toTypedArray())
             val count = pixels.size
             if (count == 0) continue
-            val pixelCount = pixels.groupingBy { it }.eachCount().toList().sortedByDescending { it.second }
-            val textColor = pixelCount.find { (rgba, _) -> rgba != box.dominatingColor }
-            if (textColor != null) text.dominatingColor = textColor.first
+            val pixelCount =
+                pixels.groupingBy { it }.eachCount().toList().sortedByDescending { it.second }
+            val textColor = pixelCount.find { (rgb, _) -> rgb != box.dominatingColor.rgb }
+            if (textColor != null) text.dominatingColor = Color(textColor.first)
         }
     }
 }

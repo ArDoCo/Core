@@ -6,17 +6,23 @@ import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent
+import edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.agents.DiagramCleanUpAgent
 import edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.agents.DiagramDisambiguationAgent
 import edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.agents.DiagramReferenceAgent
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.agents.DiagramRecognitionAgent
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.model.DiagramImpl
 
-class DiagramRecognition(dataRepository: DataRepository) : AbstractExecutionStage(
+class DiagramRecognition(
+    private val diagramRecognitionState: DiagramRecognitionStateImpl,
+    dataRepository: DataRepository
+) : AbstractExecutionStage(
     ID,
-    dataRepository, listOf(
-        DiagramRecognitionAgent(dataRepository), DiagramDisambiguationAgent
-            (dataRepository), DiagramReferenceAgent
-            (dataRepository)
+    dataRepository,
+    listOf(
+        DiagramRecognitionAgent(diagramRecognitionState, dataRepository),
+        DiagramCleanUpAgent(dataRepository),
+        DiagramDisambiguationAgent(dataRepository),
+        DiagramReferenceAgent(dataRepository)
     )
 ) {
 
@@ -35,7 +41,10 @@ class DiagramRecognition(dataRepository: DataRepository) : AbstractExecutionStag
             additionalConfigs: Map<String?, String?>?,
             dataRepository: DataRepository?
         ): DiagramRecognition? {
-            val diagramDetection = DiagramRecognition(dataRepository!!)
+            val diagramDetection = DiagramRecognition(
+                DiagramRecognitionStateImpl(),
+                dataRepository!!
+            )
             diagramDetection.applyConfiguration(additionalConfigs)
             return diagramDetection
         }
@@ -45,19 +54,18 @@ class DiagramRecognition(dataRepository: DataRepository) : AbstractExecutionStag
     private var enabledAgents: MutableList<String> = agents.map { it.id }.toMutableList()
 
     override fun initializeState() {
+        dataRepository.addData(DiagramRecognitionState.ID, diagramRecognitionState)
+
         val inputDiagrams =
             dataRepository.getData(InputDiagramData.ID, InputDiagramData::class.java)
         if (inputDiagrams.isEmpty) {
             return
         }
-        logger.info("Creating DiagramRecognition State")
-        val diagramRecognitionState = DiagramRecognitionStateImpl()
-        for (diagramFile in inputDiagrams.get().files) {
-            val diagram = DiagramImpl(diagramFile)
-            logger.debug("Loaded Diagram {}", diagramFile)
-            diagramRecognitionState.addDiagram(diagram)
+        logger.info("Initializing DiagramRecognition State")
+        for (diagramDatum in inputDiagrams.get().diagramData) {
+            val diagram = DiagramImpl(diagramDatum.first, diagramDatum.second)
+            diagramRecognitionState.addUnprocessedDiagram(diagram)
         }
-        dataRepository.addData(DiagramRecognitionState.ID, diagramRecognitionState)
     }
 
     override fun getEnabledAgents(): MutableList<PipelineAgent> {

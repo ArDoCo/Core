@@ -1,29 +1,5 @@
 package edu.kit.kastel.mcse.ardoco.tests.integration;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
-
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import edu.kit.kastel.mcse.ardoco.core.api.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TraceType;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
@@ -35,11 +11,23 @@ import edu.kit.kastel.mcse.ardoco.tests.PreTestRunner;
 import edu.kit.kastel.mcse.ardoco.tests.Results;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 import edu.kit.kastel.mcse.ardoco.tests.eval.StageTest;
+import java.io.File;
+import java.util.*;
+import java.util.stream.Collectors;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionGenerator, DiagramProject, Results> {
-    private static final Logger logger = LoggerFactory.getLogger(DiagramConnectionGeneratorTest.class);
+public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionGenerator,
+        DiagramProject, Results> {
+    private static final Logger logger =
+            LoggerFactory.getLogger(DiagramConnectionGeneratorTest.class);
     private static final String OUTPUT_DIR = "src/test/resources/testout";
 
     public DiagramConnectionGeneratorTest() {
@@ -47,16 +35,25 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
     }
 
     @Override
-    protected Results runComparable(DiagramProject project, Map<String, String> additionalConfigurations, boolean cachePreRun) {
+    protected Results runComparable(DiagramProject project,
+                                    Map<String, String> additionalConfigurations,
+                                    boolean cachePreRun) {
         var dataRepository = run(project, additionalConfigurations, cachePreRun);
-        var text = dataRepository.getData(PreprocessingData.ID, PreprocessingData.class).orElseThrow().getText();
-        var diagramConnectionStates = dataRepository.getData(DiagramConnectionStates.ID, DiagramConnectionStates.class).orElseThrow();
+        var text =
+                dataRepository.getData(PreprocessingData.ID, PreprocessingData.class).orElseThrow().getText();
+        var diagramConnectionStates = dataRepository.getData(DiagramConnectionStates.ID,
+                DiagramConnectionStates.class).orElseThrow();
         //TODO Get Metamodel properly
-        var diagramConnectionState = diagramConnectionStates.getDiagramConnectionState(project.getMetamodel());
-        var linksBetweenDeAndRi = diagramConnectionState.getLinksBetweenDeAndRi().stream().sorted().collect(Collectors.toCollection(TreeSet::new));
-        var traceLinks = diagramConnectionState.getTraceLinks().stream().collect(Collectors.toCollection(TreeSet::new));
-        var mostSpecificTraceLinks = diagramConnectionState.getMostSpecificTraceLinks().stream().collect(Collectors.toCollection(TreeSet::new));
-        var altResult = Results.create(project, text, mostSpecificTraceLinks, project.getExpectedDiagramTraceLinkResults());
+        var diagramConnectionState =
+                diagramConnectionStates.getDiagramConnectionState(project.getMetamodel());
+        var linksBetweenDeAndRi =
+                diagramConnectionState.getLinksBetweenDeAndRi().stream().sorted().collect(Collectors.toCollection(TreeSet::new));
+        var traceLinks =
+                diagramConnectionState.getTraceLinks().stream().collect(Collectors.toCollection(TreeSet::new));
+        var mostSpecificTraceLinks =
+                diagramConnectionState.getMostSpecificTraceLinks().stream().collect(Collectors.toCollection(TreeSet::new));
+        var altResult = Results.create(project, text, mostSpecificTraceLinks,
+                project.getExpectedDiagramTraceLinkResults());
 
         var commonNoun = altResult.falsePositives().stream().filter(w -> {
             var related = w.getRelatedGSLinks();
@@ -70,11 +67,15 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
             var related = w.getRelatedGSLinks();
             return !related.isEmpty() && related.stream().allMatch(g -> g.getTraceType().equals(TraceType.OTHER_ENTITY));
         }).toList();
-        var coreference = altResult.falseNegatives().stream().filter(w -> w.getTraceType().equals(TraceType.ENTITY_COREFERENCE)).toList();
+        var coreference =
+                altResult.falseNegatives().stream().filter(w -> w.getTraceType().equals(TraceType.ENTITY_COREFERENCE)).toList();
 
         logger.debug(
-                "{} Diagram Links, {} Trace Links, {} Most Specific Trace Links, {} Common Noun FP, {} Shared Stem FP, {} Other Entity FP, {} Coreference FN",
-                linksBetweenDeAndRi.size(), traceLinks.size(), mostSpecificTraceLinks.size(), commonNoun.size(), sharedStem.size(), otherEntity.size(),
+                "{} Diagram Links, {} Trace Links, {} Most Specific Trace Links, {} Common Noun " +
+                        "FP, " +
+                        "{} Shared Stem FP, {} Other Entity FP, {} Coreference FN",
+                linksBetweenDeAndRi.size(), traceLinks.size(), mostSpecificTraceLinks.size(),
+                commonNoun.size(), sharedStem.size(), otherEntity.size(),
                 coreference.size());
 
         var cacheID = "Results-" + project.name();
@@ -103,7 +104,9 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
     }
 
     @Override
-    protected DataRepository runTestRunner(DiagramProject project, Map<String, String> additionalConfigurations, DataRepository preRunDataRepository) {
+    protected DataRepository runTestRunner(DiagramProject project,
+                                           Map<String, String> additionalConfigurations,
+                                           DataRepository preRunDataRepository) {
         logger.info("Run TestRunner for {}", project.name());
         var combinedConfigs = new HashMap<>(project.getAdditionalConfigurations());
         combinedConfigs.putAll(additionalConfigurations);
@@ -180,43 +183,43 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
 
     @Disabled
     @Test
-    void teammatesTest() {
+    protected void teammatesTest() {
         runComparable(DiagramProject.TEAMMATES, false);
     }
 
     @Disabled
     @Test
-    void teammatesHistTest() {
+    protected void teammatesHistTest() {
         runComparable(DiagramProject.TEAMMATES_HISTORICAL, false);
     }
 
     @Disabled
     @Test
-    void teastoreTest() {
+    protected void teastoreTest() {
         runComparable(DiagramProject.TEASTORE, false);
     }
 
     @Disabled
     @Test
-    void teastoreHistTest() {
+    protected void teastoreHistTest() {
         runComparable(DiagramProject.TEASTORE_HISTORICAL, false);
     }
 
     @Disabled
     @Test
-    void bbbTest() {
+    protected void bbbTest() {
         runComparable(DiagramProject.BIGBLUEBUTTON, false);
     }
 
     @Disabled
     @Test
-    void bbbHistTest() {
+    protected void bbbHistTest() {
         runComparable(DiagramProject.BIGBLUEBUTTON_HISTORICAL, false);
     }
 
     @Disabled
     @Test
-    void msTest() {
+    protected void msTest() {
         runComparable(DiagramProject.MEDIASTORE, false);
     }
 }

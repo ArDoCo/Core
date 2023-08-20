@@ -6,6 +6,8 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Classification
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.TextBox
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
+import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognitionStateImpl
+import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.createObjectMapper
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.executeRequest
 import org.apache.hc.client5.http.classic.methods.HttpPost
 import org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder
@@ -16,7 +18,11 @@ import java.io.ByteArrayInputStream
 import java.io.InputStream
 import java.net.URI
 
-class OcrInformant(dataRepository: DataRepository) : ImageProcessingDockerInformant(
+class OcrInformant(
+    diagramRecognitionState: DiagramRecognitionStateImpl,
+    dataRepository: DataRepository
+) : ImageProcessingDockerInformant(
+    diagramRecognitionState,
     DOCKER_OCR,
     DEFAULT_PORT,
     DOCKER_OCR_VIA_DOCKER,
@@ -28,7 +34,7 @@ class OcrInformant(dataRepository: DataRepository) : ImageProcessingDockerInform
         const val ID = "OCRInformant"
         const val DOCKER_OCR = "ghcr.io/lissa-approach/diagram-ocr:latest"
         const val DEFAULT_PORT = 5005
-        const val DOCKER_OCR_VIA_DOCKER = true
+        const val DOCKER_OCR_VIA_DOCKER = false
 
         const val MINIMUM_AREA_IN_PXPX = 20
         const val EXPANSION_IN_PX = 5
@@ -68,7 +74,7 @@ class OcrInformant(dataRepository: DataRepository) : ImageProcessingDockerInform
             detectedBoxesOfObjectDetection.filter { it.classification == Classification.LABEL }
         )
         logger.debug("Processed OCRService Request")
-        return oom.readValue(textRecognition)
+        return createObjectMapper().readValue(textRecognition)
     }
 
     private fun sendOCRRequest(
@@ -83,7 +89,7 @@ class OcrInformant(dataRepository: DataRepository) : ImageProcessingDockerInform
         val builder = MultipartEntityBuilder.create()
         builder.addBinaryBody("file", image, ContentType.APPLICATION_OCTET_STREAM, "image")
         val multipart: HttpEntity = builder.build()
-        val uploadFile = HttpPost("http://${hostIP()}:$port/ocr/")
+        val uploadFile = HttpPost(getUri())
         if (labels.isNotEmpty()) {
             val uri: URI =
                 URIBuilder(uploadFile.uri).addParameter("regions", boxCoordinates).build()
@@ -113,7 +119,8 @@ class OcrInformant(dataRepository: DataRepository) : ImageProcessingDockerInform
         )
         // Copy References here. No Copies!
         return Box(
-            box.uuid, newPositions.toIntArray(), box.confidence, box.classification
+            box.diagram,
+            newPositions.toIntArray(), box.confidence, box.classification
                 .classificationString, box.texts, null
         )
     }

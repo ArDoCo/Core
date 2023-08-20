@@ -40,7 +40,7 @@ public class ProjectNameInformant extends Informant {
     }
 
     @Override
-    public void run() {
+    public void process() {
         DataRepository dataRepository = getDataRepository();
         var projectName = DataRepositoryHelper.getProjectPipelineData(dataRepository).getProjectName();
         var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);

@@ -1,18 +1,6 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.List;
-import java.util.Objects;
-
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
@@ -20,6 +8,16 @@ import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.CoreSentence;
 import edu.stanford.nlp.semgraph.SemanticGraph;
 import edu.stanford.nlp.trees.Tree;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.List;
+import java.util.Objects;
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class SentenceImpl implements Sentence {
     private static final Logger logger = LoggerFactory.getLogger(SentenceImpl.class);
@@ -29,6 +27,7 @@ class SentenceImpl implements Sentence {
 
     private TextImpl parent;
     private transient CoreSentence coreSentence;
+    private SemanticGraph semanticGraph;
     private int sentenceNumber;
 
     private final String text;
@@ -48,7 +47,8 @@ class SentenceImpl implements Sentence {
     @Override
     public ImmutableList<Word> getWords() {
         if (words.isEmpty()) {
-            this.words = Lists.mutable.ofAll(parent.getWords().select(w -> w.getSentenceNo() == sentenceNumber));
+            this.words =
+                    Lists.mutable.ofAll(parent.getWords().select(w -> w.getSentenceNo() == sentenceNumber));
         }
         return words.toImmutable();
     }
@@ -65,7 +65,8 @@ class SentenceImpl implements Sentence {
             var constituencyParse = this.coreSentence.constituencyParse();
             for (var phrase : constituencyParse) {
                 if (phrase.isPhrasal()) {
-                    ImmutableList<Word> wordsForPhrase = Lists.immutable.withAll(getWordsForPhrase(phrase));
+                    ImmutableList<Word> wordsForPhrase =
+                            Lists.immutable.withAll(getWordsForPhrase(phrase));
                     Phrase currPhrase = new PhraseImpl(phrase, wordsForPhrase, this);
                     newPhrases.add(currPhrase);
                 }
@@ -93,7 +94,8 @@ class SentenceImpl implements Sentence {
         return phraseWords;
     }
 
-    private static int findIndexOfFirstWordInPhrase(CoreLabel firstWordLabel, SentenceImpl sentence) {
+    private static int findIndexOfFirstWordInPhrase(CoreLabel firstWordLabel,
+                                                    SentenceImpl sentence) {
         for (var word : sentence.getWords()) {
             if (word instanceof WordImpl sentenceWord) {
                 var wordBegin = sentenceWord.getBeginCharPosition();
@@ -122,13 +124,17 @@ class SentenceImpl implements Sentence {
     }
 
     public SemanticGraph dependencyParse() {
-        return this.coreSentence.dependencyParse();
+        if (semanticGraph == null)
+            semanticGraph = this.coreSentence.dependencyParse();
+        return semanticGraph;
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {
         getPhrases(); //Initialize before write
+        dependencyParse(); //Initialize before write
         out.defaultWriteObject();
-        /* It is a lot cheaper to serialize the phrases (up to 70x less storage space and much faster), if the coreSentence is ever made accessible, this should be uncommented
+        /* It is a lot cheaper to serialize the phrases (up to 70x less storage space and much
+        faster), if the coreSentence is ever made accessible, this should be uncommented
         out.writeObject(coreSentence.coreMap());
         ProtobufAnnotationSerializer serializer = new ProtobufAnnotationSerializer();
         serializer.writeCoreDocument(coreSentence.document(), out);
@@ -137,7 +143,8 @@ class SentenceImpl implements Sentence {
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
-        /* It is a lot cheaper to serialize the phrases (up to 70x less storage space and much faster), if the coreSentence is ever made accessible, this should be uncommented
+        /* It is a lot cheaper to serialize the phrases (up to 70x less storage space and much
+        faster), if the coreSentence is ever made accessible, this should be uncommented
         var coreMap = (CoreMap) in.readObject();
         ProtobufAnnotationSerializer serializer = new ProtobufAnnotationSerializer();
         var coreDocument = serializer.readCoreDocument(in).first;

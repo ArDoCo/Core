@@ -5,12 +5,17 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Connector
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.TextBox
 import java.io.File
+import java.util.*
 
-class DiagramImpl(private val location: File) :
+class DiagramImpl(private val resourceName: String, private val location: File) :
     Diagram {
     private val boxes: MutableList<Box> = mutableListOf()
     private val textBoxes: MutableList<TextBox> = mutableListOf()
     private val connectors: MutableList<Connector> = mutableListOf()
+    override fun getResourceName(): String {
+        return resourceName
+    }
+
     override fun getLocation(): File = location
 
     override fun addBox(box: Box) {
@@ -42,4 +47,16 @@ class DiagramImpl(private val location: File) :
     override fun getTextBoxes(): MutableList<TextBox> = textBoxes.toMutableList()
 
     override fun getConnectors(): MutableList<Connector> = connectors.toMutableList()
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other is Diagram) {
+            return boxes == other.boxes && textBoxes == other.textBoxes && connectors == other.connectors
+        }
+        return false
+    }
+
+    override fun hashCode(): Int {
+        return Objects.hash(boxes, textBoxes, connectors)
+    }
 }

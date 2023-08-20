@@ -40,7 +40,7 @@ public final class ModelProviderInformant extends Informant {
     }
 
     @Override
-    public void run() {
+    public void process() {
         if (modelConnector == null) {
             return;
         }

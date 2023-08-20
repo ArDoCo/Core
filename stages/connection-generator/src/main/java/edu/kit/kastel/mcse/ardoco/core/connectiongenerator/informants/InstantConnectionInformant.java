@@ -25,7 +25,7 @@ public class InstantConnectionInformant extends Informant {
     }
 
     @Override
-    public void run() {
+    public void process() {
         DataRepository dataRepository = getDataRepository();
         var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
         var recommendationStates = DataRepositoryHelper.getRecommendationStates(dataRepository);

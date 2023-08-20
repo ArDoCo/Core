@@ -5,7 +5,8 @@ import edu.kit.kastel.mcse.ardoco.core.configuration.AbstractConfigurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 
 /**
- * This class represents an abstract pipeline step and defines the core functionality. Together with {@link Pipeline} and concrete implementations of this class
+ * This class represents an abstract pipeline step and defines the core functionality. Together
+ * with {@link Pipeline} and concrete implementations of this class
  * represents a composite pattern.
  */
 public abstract class AbstractPipelineStep extends AbstractConfigurable {
@@ -23,13 +24,30 @@ public abstract class AbstractPipelineStep extends AbstractConfigurable {
         this.dataRepository = dataRepository;
     }
 
-    protected AbstractPipelineStep() {
+    /**
+     * Runs the pipeline step beginning with {@link #before()}, {@link #process()} and finally
+     * {@link #after()}
+     */
+    public void run() {
+        before();
+        process();
+        after();
     }
 
     /**
-     * Run the pipeline step.
+     * Processes the pipeline step
      */
-    public abstract void run();
+    protected abstract void process();
+
+    /**
+     * Called before the pipeline step
+     */
+    protected abstract void before();
+
+    /**
+     * Called after the pipeline step
+     */
+    protected abstract void after();
 
     /**
      * Returns the {@link DataRepository} that is used for saving and fetching data.

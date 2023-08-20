@@ -31,7 +31,7 @@ public class DiagramTextInformant extends Informant {
     }
 
     @Override
-    public void run() {
+    public void process() {
         var dataRepository = getDataRepository();
         this.projectName = dataRepository.getData(ProjectPipelineData.ID, ProjectPipelineData.class).orElseThrow().getProjectName();
         var diagramState = dataRepository.getData(DiagramRecognitionState.ID, DiagramRecognitionState.class).orElseThrow();

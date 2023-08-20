@@ -6,7 +6,18 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognition
 
 class DiagramRecognitionStateImpl : DiagramRecognitionState {
     private val diagrams = mutableListOf<Diagram>()
+    private val unprocessedDiagrams = mutableListOf<Diagram>()
     private val disambiguations = mutableListOf<Disambiguation>()
+
+    fun addUnprocessedDiagram(diagram: Diagram) {
+        unprocessedDiagrams.add(diagram)
+    }
+
+    fun getUnprocessedDiagrams(): MutableList<Diagram> = unprocessedDiagrams.toMutableList()
+
+    fun removeUnprocessedDiagram(diagram: Diagram): Boolean = unprocessedDiagrams
+        .remove(diagram)
+
     override fun addDiagram(diagram: Diagram) {
         diagrams.add(diagram)
     }

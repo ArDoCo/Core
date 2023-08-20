@@ -28,7 +28,7 @@ public class ArchitectureLinkToCodeLinkTransformerInformant extends Informant {
     }
 
     @Override
-    public void run() {
+    public void process() {
         MutableSet<SadCodeTraceLink> sadCodeTracelinks = Sets.mutable.empty();
 
         ModelStates modelStatesData = DataRepositoryHelper.getModelStatesData(getDataRepository());

@@ -1,8 +1,11 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
+import com.fasterxml.jackson.annotation.JacksonInject;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityComparable;
 import java.awt.*;
 import java.io.Serializable;
 import java.util.List;
@@ -17,165 +20,194 @@ import static java.lang.Math.abs;
  * This class represents a box that is detected by the image recognition.
  */
 public class Box extends DiagramElement implements Serializable {
-  @JsonProperty
-  private String uuid;
-  // the four coordinates x1,y1,x2,y2
-  @JsonProperty("box")
-  private int[] coordinates;
-  @JsonProperty
-  private double confidence;
-  @JsonProperty("class")
-  private String classification;
-  private List<TextBox> textBoxes = new ArrayList<>();
-  private Integer dominatingColor = null;
-  @JsonIgnore
-  private MutableSet<String> references = Sets.mutable.empty();
+    // the four coordinates x1,y1,x2,y2
 
-  // Jackson JSON
-  private Box() {
-    super();
-  }
+    private int[] coordinates;
+    private double confidence;
+    private String classification;
+    private List<TextBox> textBoxes = new ArrayList<>();
+    private Color dominatingColor = null;
+    @JsonIgnore
+    private MutableSet<String> references = Sets.mutable.empty();
 
-  /**
-   * Create a new box that is detected on the image.
-   *
-   * @param uuid            a unique identifier
-   * @param coordinates     the coordinates of two corners of the box in pixel. (x1,y1,x2,y2)
-   * @param confidence      a confidence value
-   * @param classification  the classification (e.g., "LABEL"), see {@link Classification} for
-   *                        further details
-   * @param textBoxes       the text boxes that are attached to this box
-   * @param dominatingColor a dominating color in the box (iff present)
-   */
-  public Box(@NotNull Diagram diagram, String uuid, int[] coordinates, double confidence,
-             String classification, List<TextBox> textBoxes,
-             Integer dominatingColor) {
-    super(diagram, uuid, dominatingColor != null ? new Color(dominatingColor) : null);
-    this.uuid = uuid;
-    this.coordinates = coordinates;
-    this.confidence = confidence;
-    this.classification = classification;
-    this.textBoxes = textBoxes;
-    this.dominatingColor = dominatingColor;
-  }
+    public static String getUUID(BoundingBox boundingBox) {
+        return getUUID(boundingBox.toCoordinates());
+    }
 
-  //TODO violates the constructor contract, for compatibility as of now
-  public Box(String uuid, int[] coordinates, double confidence, String classification,
-             List<TextBox> textBoxes, Integer dominatingColor) {
-    super();
-    this.uuid = uuid;
-    this.coordinates = coordinates;
-    this.confidence = confidence;
-    this.classification = classification;
-    this.textBoxes = textBoxes;
-    this.dominatingColor = dominatingColor;
-  }
+    public static String getUUID(int[] coordinates) {
+        return String.format("Box [%s]",
+                Arrays.stream(coordinates).mapToObj((Integer::toString)).reduce(
+                        (l, r) -> l + "-" + r).orElseThrow());
+    }
 
-  /**
-   * Calculate the area of the box in square pixel.
-   *
-   * @return the area of the box
-   */
-  public int area() {
-    return abs(coordinates[0] - coordinates[2]) * abs(coordinates[1] - coordinates[3]);
-  }
+    // Jackson JSON
+    private Box() {
+        super();
+    }
 
-  /**
-   * Get the identifier of this box
-   *
-   * @return a UUID of the box
-   */
-  public String getUUID() {
-    return uuid;
-  }
+    /**
+     * Create a new box that is detected on the image.
+     *
+     * @param coordinates     the coordinates of two corners of the box in pixel. (x1,y1,x2,y2)
+     * @param confidence      a confidence value
+     * @param classification  the classification (e.g., "LABEL"), see {@link Classification} for
+     *                        further details
+     * @param textBoxes       the text boxes that are attached to this box
+     * @param dominatingColor a dominating color in the box (iff present)
+     */
+    public Box(@NotNull Diagram diagram, int[] coordinates,
+               double confidence,
+               String classification, List<TextBox> textBoxes,
+               Color dominatingColor) {
+        super(diagram, getUUID(coordinates));
+        this.coordinates = coordinates;
+        this.confidence = confidence;
+        this.classification = classification;
+        this.textBoxes = textBoxes;
+        this.dominatingColor = dominatingColor;
+    }
 
-  /**
-   * Get the coordinates of two corners of the box in pixel. (x1,y1,x2,y2)
-   *
-   * @return the coordinates
-   */
-  public int[] getBox() {
-    return Arrays.copyOf(coordinates, coordinates.length);
-  }
+    /**
+     * Create a new box that is detected on the image.
+     *
+     * @param coordinates    the coordinates of two corners of the box in pixel. (x1,y1,x2,y2)
+     * @param confidence     a confidence value
+     * @param classification the classification (e.g., "LABEL"), see {@link Classification} for
+     *                       further details
+     */
+    @JsonCreator
+    public Box(@NotNull @JacksonInject Diagram diagram, @JsonProperty("box") int[] coordinates,
+               @JsonProperty("confidence") double confidence,
+               @JsonProperty("class") String classification) {
+        super(diagram, getUUID(coordinates));
+        this.coordinates = coordinates;
+        this.confidence = confidence;
+        this.classification = classification;
+    }
 
-  /**
-   * Get the confidence of the recognized box.
-   *
-   * @return a confidence value
-   */
-  public double getConfidence() {
-    return confidence;
-  }
+    /**
+     * Calculate the area of the box in square pixel.
+     *
+     * @return the area of the box
+     */
+    public int area() {
+        return abs(coordinates[0] - coordinates[2]) * abs(coordinates[1] - coordinates[3]);
+    }
 
-  /**
-   * Get the classification (e.g., "LABEL").
-   *
-   * @return the classification
-   */
-  public Classification getClassification() {
-    return Classification.byString(classification);
-  }
+    /**
+     * Get the identifier of this box
+     *
+     * @return a UUID of the box
+     */
+    public String getUUID() {
+        return getName();
+    }
 
-  /**
-   * Add a text box that shall be associated with the box.
-   *
-   * @param textBox the textbox
-   */
-  public void addTextBox(TextBox textBox) {
-    this.textBoxes.add(Objects.requireNonNull(textBox));
-  }
+    /**
+     * Get the coordinates of two corners of the box in pixel. (x1,y1,x2,y2)
+     *
+     * @return the coordinates
+     */
+    public int[] getBox() {
+        return Arrays.copyOf(coordinates, coordinates.length);
+    }
 
-  /**
-   * Get all text boxes that are associated with the box.
-   *
-   * @return all associated text boxes
-   */
-  public List<TextBox> getTexts() {
-    return new ArrayList<>(textBoxes);
-  }
+    /**
+     * Get the confidence of the recognized box.
+     *
+     * @return a confidence value
+     */
+    public double getConfidence() {
+        return confidence;
+    }
 
-  public Set<String> getReferences() {
-    return Collections.unmodifiableSet(references);
-  }
+    /**
+     * Get the classification (e.g., "LABEL").
+     *
+     * @return the classification
+     */
+    public Classification getClassification() {
+        return Classification.byString(classification);
+    }
 
-  public boolean addReference(String reference) {
-    return references.add(reference);
-  }
+    /**
+     * Add a text box that shall be associated with the box.
+     *
+     * @param textBox the textbox
+     */
+    public void addTextBox(TextBox textBox) {
+        this.textBoxes.add(Objects.requireNonNull(textBox));
+    }
 
-  public void setReferences(Set<String> references) {
-    this.references = Sets.mutable.ofAll(references);
-  }
+    /**
+     * Add a text box that shall be associated with the box.
+     *
+     * @param textBox the textbox
+     */
+    public void removeTextBox(TextBox textBox) {
+        this.textBoxes.remove(textBox);
+    }
 
-  public boolean removeReference(String reference) {
-    return references.remove(reference);
-  }
+    /**
+     * Get all text boxes that are associated with the box.
+     *
+     * @return all associated text boxes
+     */
+    public List<TextBox> getTexts() {
+        return new ArrayList<>(textBoxes);
+    }
 
-  /**
-   * Get the dominating color of the box (iff present)
-   *
-   * @return the dominating color or {@code null} if not present
-   */
-  public Integer getDominatingColor() {
-    return dominatingColor;
-  }
+    public Set<String> getReferences() {
+        return Collections.unmodifiableSet(references);
+    }
 
-  /**
-   * Set the dominating color of the box as RGB value.
-   *
-   * @param dominatingColor the dominating color
-   */
-  public void setDominatingColor(Integer dominatingColor) {
-    this.dominatingColor = dominatingColor;
-  }
+    public boolean addReference(String reference) {
+        return references.add(reference);
+    }
 
-  @NotNull
-  @Override
-  public BoundingBox getBoundingBox() {
-    return new BoundingBox(coordinates[0], coordinates[1], coordinates[2], coordinates[3]);
-  }
+    public void setReferences(Set<String> references) {
+        this.references = Sets.mutable.ofAll(references);
+    }
 
-  @Override
-  public String toString() {
-    return uuid;
-  }
+    public boolean removeReference(String reference) {
+        return references.remove(reference);
+    }
+
+    /**
+     * Get the dominating color of the box (iff present)
+     *
+     * @return the dominating color or {@code null} if not present
+     */
+    public Color getDominatingColor() {
+        return dominatingColor;
+    }
+
+    /**
+     * Set the dominating color of the box as RGB value.
+     *
+     * @param dominatingColor the dominating color
+     */
+    public void setDominatingColor(Color dominatingColor) {
+        this.dominatingColor = dominatingColor;
+    }
+
+    @NotNull
+    @Override
+    public BoundingBox getBoundingBox() {
+        return new BoundingBox(coordinates[0], coordinates[1], coordinates[2], coordinates[3]);
+    }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
+
+    @Override
+    public boolean similar(Object obj) {
+        if (equals(obj)) return true;
+        if (obj instanceof Box other) {
+            return super.similar(obj) && SimilarityComparable.similar(textBoxes, other.textBoxes);
+        }
+        return false;
+    }
 }

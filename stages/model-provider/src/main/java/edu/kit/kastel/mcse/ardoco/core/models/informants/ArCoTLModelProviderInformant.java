@@ -40,7 +40,7 @@ public final class ArCoTLModelProviderInformant extends Informant {
     }
 
     @Override
-    public void run() {
+    public void process() {
         if (extractor == null) {
             return;
         }

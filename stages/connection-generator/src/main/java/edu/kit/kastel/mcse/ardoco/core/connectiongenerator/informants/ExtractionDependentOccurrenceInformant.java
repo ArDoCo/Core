@@ -28,7 +28,7 @@ public class ExtractionDependentOccurrenceInformant extends Informant {
     }
 
     @Override
-    public void run() {
+    public void process() {
         DataRepository dataRepository = getDataRepository();
         var text = DataRepositoryHelper.getAnnotatedText(dataRepository);
         var textState = DataRepositoryHelper.getTextState(dataRepository);

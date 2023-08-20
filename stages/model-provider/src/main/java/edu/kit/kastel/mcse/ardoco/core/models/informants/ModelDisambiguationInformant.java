@@ -9,7 +9,7 @@ public class ModelDisambiguationInformant extends Informant {
   }
 
   @Override
-  public void run() {
+  public void process() {
 
   }
 }

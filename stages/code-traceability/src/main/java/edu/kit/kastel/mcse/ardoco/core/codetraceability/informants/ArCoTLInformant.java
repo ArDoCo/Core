@@ -20,7 +20,7 @@ public class ArCoTLInformant extends Informant {
     }
 
     @Override
-    public void run() {
+    public void process() {
         var dataRepository = getDataRepository();
         var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
         var samCodeTraceabilityState = DataRepositoryHelper.getCodeTraceabilityState(dataRepository);

@@ -29,7 +29,7 @@ public class MappingCombinerInformant extends Informant {
     }
 
     @Override
-    public void run() {
+    public void process() {
         TextState textState = DataRepositoryHelper.getTextState(getDataRepository());
         combineSimilarPhraseMappings(textState);
     }

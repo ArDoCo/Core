@@ -1,5 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency;
 
+import edu.kit.kastel.mcse.ardoco.core.api.InputDiagramData;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -81,9 +82,13 @@ public class DiagramInconsistencyCheckerTest extends StageTest<DiagramInconsiste
                 pipelineSteps.add(ModelProviderAgent.get(project.getModelFile(), project.getArchitectureModelType(), dataRepository));
 
                 if (useMockDiagrams) {
-                    pipelineSteps.add(new DiagramRecognitionMock(project, project.getAdditionalConfigurations(), dataRepository));
+                    pipelineSteps.add(new DiagramRecognitionMock(project,
+                            project.getAdditionalConfigurations(), dataRepository));
                 } else {
-                    pipelineSteps.add(DiagramRecognition.get(project.getAdditionalConfigurations(), dataRepository));
+                    dataRepository.addData(InputDiagramData.ID,
+                            new InputDiagramData(project.getDiagramData()));
+                    pipelineSteps.add(DiagramRecognition.get(project.getAdditionalConfigurations(),
+                            dataRepository));
                 }
 
                 pipelineSteps.add(TextExtraction.get(project.getAdditionalConfigurations(), dataRepository));

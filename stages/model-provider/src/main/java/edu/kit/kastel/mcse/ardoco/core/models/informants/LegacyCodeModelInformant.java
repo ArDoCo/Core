@@ -35,7 +35,7 @@ public class LegacyCodeModelInformant extends Informant {
     }
 
     @Override
-    public void run() {
+    public void process() {
         var models = DataRepositoryHelper.getModelStatesData(getDataRepository());
         var codeModel = findCodeModel(models);
         if (codeModel == null)

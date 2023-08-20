@@ -57,7 +57,7 @@ public class AbbreviationInformant extends Informant {
     }
 
     @Override
-    public void run() {
+    public void process() {
         ImmutableList<Word> words = DataRepositoryHelper.getAnnotatedText(getDataRepository()).getWords();
         ImmutableList<Phrase> phrases = DataRepositoryHelper.getAnnotatedText(dataRepository).getPhrases();
         var textState = DataRepositoryHelper.getTextState(getDataRepository());
