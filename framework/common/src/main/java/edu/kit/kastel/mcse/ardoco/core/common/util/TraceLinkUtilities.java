@@ -7,7 +7,11 @@ import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.*;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.EndpointTuple;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadCodeTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadSamTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SamCodeTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TransitiveTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 
 public class TraceLinkUtilities {

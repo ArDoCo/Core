@@ -6,7 +6,11 @@ import static edu.kit.kastel.mcse.ardoco.core.tests.eval.ProjectHelper.ANALYZE_C
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -28,7 +32,12 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.calculator.ResultCalculatorUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TestLink;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.*;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLDiffFile;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLLogFile;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLModelFile;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLPreviousFile;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLSentenceFile;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLSummaryFile;
 
 class TraceLinkEvaluationSadCodeDirectIT {
     protected static final Logger logger = LoggerFactory.getLogger(TraceLinkEvaluationIT.class);

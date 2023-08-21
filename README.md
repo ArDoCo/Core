@@ -17,7 +17,9 @@ of _[KASTEL - Institute of Information Security and Dependability](https://kaste
 the [KIT](https://www.kit.edu).
 
 ## User Interfaces
-To be able to execute the core algorithms from this repository, you can write own user interfaces that (should) use the [ArDoCoRunner](https://github.com/ArDoCo/Core/blob/main/pipeline/src/main/java/edu/kit/kastel/mcse/ardoco/core/pipeline/ArDoCoRunner.java).
+
+To be able to execute the core algorithms from this repository, you can write own user interfaces that (should) use
+the [ArDoCoRunner](https://github.com/ArDoCo/Core/blob/main/pipeline/src/main/java/edu/kit/kastel/mcse/ardoco/core/pipeline/ArDoCoRunner.java).
 
 We provide an example Command Line Interface (CLI) at [ArDoCo/CLI](https://github.com/ArDoCo/CLI).
 
@@ -49,6 +51,7 @@ To test the Core, you could use case studies and benchmarks provided in ..
 ```
 
 For snapshot releases, make sure to add the following repository
+
 ```xml
 <repositories>
 	<repository>
@@ -66,7 +69,8 @@ For snapshot releases, make sure to add the following repository
 
 ## Attribution
 
-The initial version of this project is based on the master thesis [Linking Software Architecture Documentation and Models](https://doi.org/10.5445/IR/1000126194).
+The initial version of this project is based on the master
+thesis [Linking Software Architecture Documentation and Models](https://doi.org/10.5445/IR/1000126194).
 
 ## Acknowledgements
 

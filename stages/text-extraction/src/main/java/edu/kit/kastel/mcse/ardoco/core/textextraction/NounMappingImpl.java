@@ -3,7 +3,11 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
 import static edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions.AVERAGE;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.LinkedHashSet;
+import java.util.Objects;
+import java.util.Set;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.SortedMaps;

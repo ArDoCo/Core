@@ -4,7 +4,12 @@ package edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.java.f
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jdt.core.dom.*;
+import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.ASTVisitor;
+import org.eclipse.jdt.core.dom.NameQualifiedType;
+import org.eclipse.jdt.core.dom.QualifiedType;
+import org.eclipse.jdt.core.dom.SimpleType;
+import org.eclipse.jdt.core.dom.Type;
 
 public class TypeFinder extends ASTVisitor {
 

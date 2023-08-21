@@ -15,7 +15,15 @@ import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functi
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.aggregation.MatchBest;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.aggregation.MatchSequentially;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.aggregation.Maximum;
-import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.heuristics.*;
+import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.heuristics.ComponentNameResemblance;
+import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.heuristics.ComponentNameResemblanceTest;
+import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.heuristics.InheritLinks;
+import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.heuristics.MethodResemblance;
+import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.heuristics.PackageResemblance;
+import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.heuristics.PathResemblance;
+import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.heuristics.ProvidedInterfaceCorrespondence;
+import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.heuristics.Required;
+import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.heuristics.SubpackageFilter;
 
 @UserReviewedDeterministic
 public final class TraceLinkGenerator {
