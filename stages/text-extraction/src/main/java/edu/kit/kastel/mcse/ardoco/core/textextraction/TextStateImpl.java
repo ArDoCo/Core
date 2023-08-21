@@ -268,7 +268,7 @@ public class TextStateImpl extends AbstractState implements TextState {
         var result = getNounMappings().select(nMapping -> nMapping.getWords().contains(word)).toImmutable();
 
         assert (result.size() <= 1) : "A word should only contained by one noun mapping";
-        if (result.size() == 0) {
+        if (result.isEmpty()) {
             return null;
         }
         return result.get(0);
@@ -295,8 +295,6 @@ public class TextStateImpl extends AbstractState implements TextState {
 
     void addNounMappingAddPhraseMapping(NounMapping nounMapping) {
         addNounMappingToState(nounMapping);
-
-        // TODO: Old impl uses identity hash sets .. seems to be better than equals ..
         if (phraseMappings.anySatisfy(it -> Comparators.collectionsIdentityAnyOrder(it.getPhrases(), nounMapping.getPhrases())))
             return;
         phraseMappings.add(new PhraseMappingImpl(nounMapping.getPhrases()));
