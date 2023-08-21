@@ -29,8 +29,8 @@ public class OriginalTextStateStrategy extends DefaultTextStateStrategy {
     @Override
     public NounMapping addOrExtendNounMapping(Word word, MappingKind kind, Claimant claimant, double probability, ImmutableList<String> surfaceForms) {
 
-        NounMapping disposableNounMapping = new NounMappingImpl(System.currentTimeMillis(), SortedSets.immutable.with(word), kind, claimant, probability,
-                Lists.immutable.with(word), surfaceForms);
+        NounMapping disposableNounMapping = new NounMappingImpl(NounMappingImpl.getNextCreationTime(), SortedSets.immutable.with(word), kind, claimant,
+                probability, Lists.immutable.with(word), surfaceForms);
 
         for (var existingNounMapping : super.getTextState().getNounMappings()) {
             if (SimilarityUtils.areNounMappingsSimilar(disposableNounMapping, existingNounMapping)) {

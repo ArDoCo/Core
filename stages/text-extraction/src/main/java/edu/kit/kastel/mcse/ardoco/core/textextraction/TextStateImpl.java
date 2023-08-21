@@ -47,9 +47,7 @@ public class TextStateImpl extends AbstractState implements TextState {
         int compare = Long.compare(nm1.earliestCreationTime(), nm2.earliestCreationTime());
         if (compare != 0)
             return compare;
-
-        // Not equal but at same time -> order by something .. e.g., hash ..
-        return Integer.compare(n1.hashCode(), n2.hashCode());
+        throw new IllegalStateException("NounMappings are not equal but have same creation time");
     };
 
     /**
@@ -91,8 +89,8 @@ public class TextStateImpl extends AbstractState implements TextState {
         MutableSortedMap<MappingKind, Confidence> distribution = SortedMaps.mutable.empty();
         distribution.put(MappingKind.NAME, new Confidence(DEFAULT_AGGREGATOR));
         distribution.put(MappingKind.TYPE, new Confidence(DEFAULT_AGGREGATOR));
-        NounMapping nounMapping = new NounMappingImpl(System.currentTimeMillis(), words.toSortedSet().toImmutable(), distribution.toImmutable(), referenceWords,
-                surfaceForms, reference);
+        NounMapping nounMapping = new NounMappingImpl(NounMappingImpl.getNextCreationTime(), words.toSortedSet().toImmutable(), distribution.toImmutable(),
+                referenceWords, surfaceForms, reference);
         nounMapping.addKindWithProbability(kind, claimant, probability);
         addNounMappingAddPhraseMapping(nounMapping);
         return nounMapping;
@@ -106,8 +104,8 @@ public class TextStateImpl extends AbstractState implements TextState {
             reference = calculateNounMappingReference(referenceWords);
         }
 
-        NounMapping nounMapping = new NounMappingImpl(System.currentTimeMillis(), words.toSortedSet().toImmutable(), distribution, referenceWords, surfaceForms,
-                reference);
+        NounMapping nounMapping = new NounMappingImpl(NounMappingImpl.getNextCreationTime(), words.toSortedSet().toImmutable(), distribution, referenceWords,
+                surfaceForms, reference);
         addNounMappingAddPhraseMapping(nounMapping);
         return nounMapping;
     }

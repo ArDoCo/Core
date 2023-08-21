@@ -43,7 +43,8 @@ public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy 
         if (surfaceForms == null) {
             surfaceForms = Lists.immutable.with(word.getText());
         }
-        NounMapping nounMapping = new NounMappingImpl(System.currentTimeMillis(), words, kind, claimant, probability, words.toImmutableList(), surfaceForms);
+        NounMapping nounMapping = new NounMappingImpl(NounMappingImpl.getNextCreationTime(), words, kind, claimant, probability, words.toImmutableList(),
+                surfaceForms);
         super.getTextState().addNounMappingAddPhraseMapping(nounMapping);
         return nounMapping;
     }

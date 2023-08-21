@@ -8,6 +8,7 @@ import java.util.IdentityHashMap;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.SortedMaps;
@@ -35,6 +36,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 @NoHashCodeEquals
 public final class NounMappingImpl implements NounMapping {
 
+    private static final AtomicLong CREATION_TIME_COUNTER = new AtomicLong(0);
     private static final AggregationFunctions DEFAULT_AGGREGATOR = AVERAGE;
     private final Long earliestCreationTime;
     private final ImmutableSortedSet<Word> words;
@@ -44,6 +46,10 @@ public final class NounMappingImpl implements NounMapping {
     private final String reference;
     private boolean isDefinedAsCompound;
     private final Set<NounMappingChangeListener> changeListeners;
+
+    public static long getNextCreationTime() {
+        return CREATION_TIME_COUNTER.incrementAndGet();
+    }
 
     /**
      * Constructor
