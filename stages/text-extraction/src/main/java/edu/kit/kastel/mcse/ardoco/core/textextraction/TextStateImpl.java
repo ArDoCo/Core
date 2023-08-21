@@ -4,7 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction;
 import static edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions.AVERAGE;
 
 import java.util.Comparator;
-import java.util.Map;
+import java.util.SortedMap;
 import java.util.function.Function;
 
 import org.eclipse.collections.api.block.predicate.Predicate;
@@ -350,7 +350,7 @@ public class TextStateImpl extends AbstractState implements TextState {
     }
 
     @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+    protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration) {
         // handle additional configuration
     }
 

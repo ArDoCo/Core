@@ -33,20 +33,20 @@ public abstract class AbstractConfigurable implements IConfigurable {
     }
 
     @Override
-    public final void applyConfiguration(Map<String, String> additionalConfiguration) {
+    public final void applyConfiguration(SortedMap<String, String> additionalConfiguration) {
         applyConfiguration(additionalConfiguration, this.getClass());
         delegateApplyConfigurationToInternalObjects(additionalConfiguration);
         this.lastAppliedConfiguration = new TreeMap<>(additionalConfiguration);
     }
 
     @Override
-    public Map<String, String> getLastAppliedConfiguration() {
-        return Collections.unmodifiableMap(lastAppliedConfiguration);
+    public SortedMap<String, String> getLastAppliedConfiguration() {
+        return Collections.unmodifiableSortedMap(lastAppliedConfiguration);
     }
 
-    protected abstract void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration);
+    protected abstract void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration);
 
-    private void applyConfiguration(Map<String, String> additionalConfiguration, Class<?> currentClass) {
+    private void applyConfiguration(SortedMap<String, String> additionalConfiguration, Class<?> currentClass) {
         if (currentClass == Object.class || currentClass == AbstractConfigurable.class)
             return;
 

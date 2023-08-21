@@ -8,6 +8,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.agents.DiagramRecognitionAgent
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.model.DiagramImpl
+import java.util.*
 
 class DiagramRecognition : AbstractExecutionStage {
 
@@ -22,7 +23,7 @@ class DiagramRecognition : AbstractExecutionStage {
          * @return a DiagramRecognition with the provided diagrams
          */
         @JvmStatic
-        fun get(additionalConfigs: Map<String?, String?>?, dataRepository: DataRepository?): DiagramRecognition? {
+        fun get(additionalConfigs: SortedMap<String?, String?>?, dataRepository: DataRepository?): DiagramRecognition? {
             val diagramDetection = DiagramRecognition(dataRepository!!)
             diagramDetection.applyConfiguration(additionalConfigs)
             return diagramDetection
@@ -58,7 +59,7 @@ class DiagramRecognition : AbstractExecutionStage {
         return findByClassName(enabledAgents, agents)
     }
 
-    override fun delegateApplyConfigurationToInternalObjects(additionalConfiguration: Map<String?, String?>) {
+    override fun delegateApplyConfigurationToInternalObjects(additionalConfiguration: SortedMap<String?, String?>) {
         super.delegateApplyConfigurationToInternalObjects(additionalConfiguration)
         for (agent in agents) {
             agent.applyConfiguration(additionalConfiguration)

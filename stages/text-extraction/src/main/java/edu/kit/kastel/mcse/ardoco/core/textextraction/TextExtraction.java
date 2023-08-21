@@ -2,7 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
 import java.util.List;
-import java.util.Map;
+import java.util.SortedMap;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
@@ -44,7 +44,7 @@ public class TextExtraction extends AbstractExecutionStage {
      * @param dataRepository    the data repository
      * @return an instance of InconsistencyChecker
      */
-    public static TextExtraction get(Map<String, String> additionalConfigs, DataRepository dataRepository) {
+    public static TextExtraction get(SortedMap<String, String> additionalConfigs, DataRepository dataRepository) {
         var textExtractor = new TextExtraction(dataRepository);
         textExtractor.applyConfiguration(additionalConfigs);
         return textExtractor;
@@ -66,7 +66,7 @@ public class TextExtraction extends AbstractExecutionStage {
     }
 
     @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+    protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration) {
         super.delegateApplyConfigurationToInternalObjects(additionalConfiguration);
         for (var agent : agents) {
             agent.applyConfiguration(additionalConfiguration);

@@ -2,7 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.api.output;
 
 import java.util.Comparator;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,11 +19,7 @@ import org.slf4j.LoggerFactory;
 import edu.kit.kastel.mcse.ardoco.core.api.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.codetraceability.CodeTraceabilityState;
 import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.Inconsistency;
-import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistencyState;
-import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistentSentence;
-import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.ModelInconsistency;
-import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.TextInconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.*;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
@@ -207,7 +203,7 @@ public record ArDoCoResult(DataRepository dataRepository) {
      * @return all InconsistentSentences
      */
     public ImmutableList<InconsistentSentence> getInconsistentSentences() {
-        Map<Integer, InconsistentSentence> incSentenceMap = new HashMap<>();
+        Map<Integer, InconsistentSentence> incSentenceMap = new LinkedHashMap<>();
 
         var inconsistencies = getAllTextInconsistencies();
         for (var inconsistency : inconsistencies) {

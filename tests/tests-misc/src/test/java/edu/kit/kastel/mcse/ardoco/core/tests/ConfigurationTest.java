@@ -1,7 +1,10 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.tests;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -44,7 +47,7 @@ class ConfigurationTest extends ConfigurationTestBase {
 
     @Test
     void testBasicConfigurable() throws Exception {
-        Map<String, String> configs = new TreeMap<>();
+        SortedMap<String, String> configs = new TreeMap<>();
         processConfigurationOfClass(configs, TestConfigurable.class);
         Assertions.assertEquals(5, configs.size());
 
@@ -62,7 +65,7 @@ class ConfigurationTest extends ConfigurationTestBase {
         Assertions.assertEquals(TestConfigurable.MyEnum.B, t.testEnumNo);
 
         //@formatter:off
-        configs = Map.of(//
+        configs = new TreeMap<>(Map.of(//
                 TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testInt", "42", //
                 TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testIntNo", "42", //
                 TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testDouble", "48", //
@@ -74,7 +77,7 @@ class ConfigurationTest extends ConfigurationTestBase {
                 TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testEnum", TestConfigurable.MyEnum.C.name(), //
                 TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testEnumNo", TestConfigurable.MyEnum.C.name()
 
-        );
+        ));
         //@formatter:on
 
         t.applyConfiguration(configs);
@@ -115,7 +118,7 @@ class ConfigurationTest extends ConfigurationTestBase {
         }
 
         @Override
-        protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+        protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration) {
         }
 
         private enum MyEnum {

@@ -2,8 +2,6 @@
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
 import java.util.Arrays;
-import java.util.Objects;
-import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -24,10 +22,6 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy {
 
-    private static final Function<NounMapping, Integer> NOUN_MAPPING_HASH = nm -> Objects.hash(nm.getReference(), nm.getPhrases());
-    private static final BiPredicate<NounMapping, NounMapping> NOUN_MAPPING_EQUALS = (nm1, nm2) -> (Objects.equals(nm1.getPhrases(), nm2
-            .getPhrases()) && Objects.equals(nm1.getReference(), nm2.getReference()));
-
     public PhraseConcerningTextStateStrategy(TextStateImpl textState) {
         super.setTextState(textState);
     }
@@ -36,7 +30,7 @@ public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy 
     public NounMapping addOrExtendNounMapping(Word word, MappingKind kind, Claimant claimant, double probability, ImmutableList<String> surfaceForms) {
         var nounMappingsWithWord = super.getTextState().getNounMappings().select(nm -> nm.getWords().contains(word));
 
-        if (nounMappingsWithWord.size() > 0) {
+        if (!nounMappingsWithWord.isEmpty()) {
             NounMapping nounMapping = nounMappingsWithWord.get(0);
             if (surfaceForms == null || surfaceForms.equals(nounMapping.getSurfaceForms())) {
                 nounMapping.addKindWithProbability(kind, claimant, probability);

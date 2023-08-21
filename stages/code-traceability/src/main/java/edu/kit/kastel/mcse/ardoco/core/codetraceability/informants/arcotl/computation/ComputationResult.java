@@ -1,8 +1,7 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.computation;
 
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -27,7 +26,7 @@ public class ComputationResult {
      * still need to be added after they have been calculated.
      */
     public ComputationResult() {
-        resultMap = new HashMap<>();
+        resultMap = new LinkedHashMap<>();
     }
 
     /**
@@ -75,7 +74,7 @@ public class ComputationResult {
      */
     public Set<SamCodeTraceLink> getTraceLinks(Node node) {
         if (!exists(node)) {
-            return new HashSet<>();
+            return new java.util.LinkedHashSet<>();
         }
         NodeResult nodeResult = resultMap.get(node);
         return nodeResult.getTraceLinks();
@@ -132,7 +131,7 @@ public class ComputationResult {
     }
 
     private Map<String, Integer> getConfidenceStringsToLevelMap(Node node, EndpointTuple endpointTuple, int level) {
-        Map<String, Integer> confidenceToLevel = new HashMap<>();
+        Map<String, Integer> confidenceToLevel = new LinkedHashMap<>();
         Confidence confidence = getNodeResult(node).getConfidence(endpointTuple);
         String confidenceString = "Level " + level + ": " + node.toString() + ", Confidence: " + confidence;
         confidenceToLevel.put(confidenceString, level);

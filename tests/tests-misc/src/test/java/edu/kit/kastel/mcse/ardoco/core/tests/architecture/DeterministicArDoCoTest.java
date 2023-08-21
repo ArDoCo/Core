@@ -3,12 +3,8 @@ package edu.kit.kastel.mcse.ardoco.core.tests.architecture;
 
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.*;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.SortedSet;
+import java.lang.annotation.Annotation;
+import java.util.*;
 
 import org.eclipse.collections.api.factory.Maps;
 import org.eclipse.collections.api.factory.Sets;
@@ -24,11 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.tngtech.archunit.base.DescribedPredicate;
-import com.tngtech.archunit.core.domain.JavaClass;
-import com.tngtech.archunit.core.domain.JavaField;
-import com.tngtech.archunit.core.domain.JavaMethod;
-import com.tngtech.archunit.core.domain.JavaParameterizedType;
-import com.tngtech.archunit.core.domain.JavaWildcardType;
+import com.tngtech.archunit.core.domain.*;
 import com.tngtech.archunit.junit.AnalyzeClasses;
 import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchCondition;
@@ -47,18 +39,48 @@ public class DeterministicArDoCoTest {
     @ArchTest
     public static final ArchRule forbidUnorderedSetsAndMaps = noClasses().that()
             .resideOutsideOfPackages("..tests..")
-            .and()
-            .areNotAnnotatedWith(UserReviewedDeterministic.class)
+            .and(areNotDirectlyAnnotatedWith(UserReviewedDeterministic.class))
             .should()
-            .accessClassesThat()
-            .haveNameMatching(forbidden());
+            .accessClassesThat(forbidden())
+            .orShould()
+            .dependOnClassesThat(forbidden());
 
-    private static String forbidden() {
+    private static DescribedPredicate<? super JavaClass> areNotDirectlyAnnotatedWith(Class<? extends Annotation> targetAnnotation) {
+        return new DescribedPredicate<>("not directly annotated with " + targetAnnotation.getName()) {
+            @Override
+            public boolean test(JavaClass javaClass) {
+                var annotations = javaClass.getAnnotations();
+                for (var annotation : annotations) {
+                    if (annotation.getRawType().getFullName().equals(targetAnnotation.getName())) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        };
+    }
+
+    private static DescribedPredicate<? super JavaClass> forbidden() {
         Set<Class<?>> forbiddenClasses = Set.of(Set.class, HashSet.class, MutableSet.class, ImmutableSet.class, Sets.class, //
                 Map.class, HashMap.class, MutableMap.class, ImmutableMap.class, Maps.class //
         );
-        return forbiddenClasses.stream().map(Class::getName).reduce((a, b) -> a + "|" + b).orElseThrow();
+        return new DescribedPredicate<>("forbidden classes") {
+            @Override
+            public boolean test(JavaClass javaClass) {
+                return forbiddenClasses.stream().map(Class::getName).anyMatch(it -> it.equals(javaClass.getFullName()));
+            }
+        };
     }
+
+    @ArchTest
+    public static final ArchRule forbidHashMapAndHashSetInFavorOfLinkedVersions = noClasses().that()
+            .doNotHaveFullyQualifiedName(DeterministicArDoCoTest.class.getName())
+            .should()
+            .accessClassesThat()
+            .haveNameMatching(HashMap.class.getName() + "|" + HashSet.class.getName())
+            .orShould()
+            .dependOnClassesThat()
+            .haveNameMatching(HashMap.class.getName() + "|" + HashSet.class.getName());
 
     @ArchTest
     public static final ArchRule forbidEqualsAndHashCodeInCertainClasses = noClasses().that()
@@ -140,20 +162,17 @@ public class DeterministicArDoCoTest {
 
     @ArchTest
     public static final ArchRule ensureSortedCollectionsOnlyForComparableTypes = fields().that()
-            .haveRawType(SortedSet.class)
-            .or()
-            .haveRawType(ImmutableSortedSet.class)
-            .or()
-            .haveRawType(MutableSortedSet.class)
-            .should(haveComparableGenericType());
-
-    @ArchTest
-    public static final ArchRule ensureSortedMapOnlyForComparableTypes = fields().that()
             .haveRawType(SortedMap.class)
             .or()
             .haveRawType(ImmutableSortedMap.class)
             .or()
             .haveRawType(MutableSortedMap.class)
+            .or()
+            .haveRawType(SortedSet.class)
+            .or()
+            .haveRawType(ImmutableSortedSet.class)
+            .or()
+            .haveRawType(MutableSortedSet.class)
             .should(haveComparableGenericType());
 
     @ArchTest

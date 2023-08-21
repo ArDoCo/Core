@@ -1,7 +1,6 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl;
 
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -113,7 +112,7 @@ public final class TraceLinkGenerator {
 
     public static Set<SamCodeTraceLink> generateTraceLinks(Node root, ArchitectureModel archModel, CodeModel codeModel) {
         if (archModel == null || codeModel == null) {
-            return new HashSet<>();
+            return new java.util.LinkedHashSet<>();
         }
         if (root == null) {
             root = getRoot();

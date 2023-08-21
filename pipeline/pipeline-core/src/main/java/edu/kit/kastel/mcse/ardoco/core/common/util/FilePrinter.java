@@ -4,18 +4,13 @@ package edu.kit.kastel.mcse.ardoco.core.common.util;
 import static edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper.*;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -336,7 +331,7 @@ public final class FilePrinter {
         dataLines.add(new String[] { "" });
         dataLines.add(new String[] { "modelElementID", "sentence", "confidence" });
 
-        Set<SadSamTraceLink> tracelinks = new HashSet<>(connectionState.getTraceLinks().castToCollection());
+        Set<SadSamTraceLink> tracelinks = new java.util.LinkedHashSet<>(connectionState.getTraceLinks().castToCollection());
         for (var tracelink : tracelinks) {
             var modelElementUid = tracelink.getModelElementUid();
             // sentence offset is 1 because real sentences are 1-indexed

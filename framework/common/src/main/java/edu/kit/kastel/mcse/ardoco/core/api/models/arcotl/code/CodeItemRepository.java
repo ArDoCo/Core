@@ -2,7 +2,6 @@
 package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.SortedMap;
 
@@ -15,7 +14,7 @@ public class CodeItemRepository {
     @JsonProperty
     private final SortedMap<String, CodeItem> repository = SortedMaps.mutable.empty();
 
-    public Map<String, CodeItem> getRepository() {
+    public SortedMap<String, CodeItem> getRepository() {
         return repository;
     }
 

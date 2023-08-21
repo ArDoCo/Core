@@ -2,16 +2,20 @@
 package edu.kit.kastel.mcse.ardoco.core.codetraceability;
 
 import java.util.Collection;
+import java.util.LinkedHashSet;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.set.ImmutableSet;
+import org.eclipse.collections.impl.factory.Sets;
 
 import edu.kit.kastel.mcse.ardoco.core.api.codetraceability.CodeTraceabilityState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadCodeTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SamCodeTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
 import edu.kit.kastel.mcse.ardoco.core.data.AbstractState;
 
+@UserReviewedDeterministic
 public class CodeTraceabilityStateImpl extends AbstractState implements CodeTraceabilityState {
 
     private transient MutableList<SamCodeTraceLink> samCodeTraceLinks = Lists.mutable.empty();
@@ -29,7 +33,7 @@ public class CodeTraceabilityStateImpl extends AbstractState implements CodeTrac
 
     @Override
     public ImmutableSet<SamCodeTraceLink> getSamCodeTraceLinks() {
-        return this.samCodeTraceLinks.toImmutableSet();
+        return Sets.immutable.withAll(new LinkedHashSet<>(this.samCodeTraceLinks));
     }
 
     @Override

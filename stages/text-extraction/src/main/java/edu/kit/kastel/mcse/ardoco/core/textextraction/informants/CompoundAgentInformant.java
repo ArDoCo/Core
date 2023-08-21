@@ -1,7 +1,7 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction.informants;
 
-import java.util.Map;
+import java.util.SortedMap;
 import java.util.StringJoiner;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -107,7 +107,7 @@ public class CompoundAgentInformant extends Informant {
     }
 
     @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> map) {
+    protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> map) {
         // none
     }
 }

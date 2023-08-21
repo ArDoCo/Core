@@ -1,7 +1,7 @@
 /* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction.informants;
 
-import java.util.Map;
+import java.util.SortedMap;
 
 import org.eclipse.collections.api.list.ImmutableList;
 
@@ -61,7 +61,7 @@ public class NounInformant extends Informant {
     }
 
     @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+    protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration) {
         // empty
     }
 }

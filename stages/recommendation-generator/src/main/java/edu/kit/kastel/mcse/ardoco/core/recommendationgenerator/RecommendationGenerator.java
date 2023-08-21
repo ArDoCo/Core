@@ -2,7 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator;
 
 import java.util.List;
-import java.util.Map;
+import java.util.SortedMap;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
@@ -48,7 +48,7 @@ public class RecommendationGenerator extends AbstractExecutionStage {
      * @param dataRepository    the data repository
      * @return an instance of {@link RecommendationGenerator}
      */
-    public static RecommendationGenerator get(Map<String, String> additionalConfigs, DataRepository dataRepository) {
+    public static RecommendationGenerator get(SortedMap<String, String> additionalConfigs, DataRepository dataRepository) {
         var recommendationGenerator = new RecommendationGenerator(dataRepository);
         recommendationGenerator.applyConfiguration(additionalConfigs);
         return recommendationGenerator;
@@ -66,7 +66,7 @@ public class RecommendationGenerator extends AbstractExecutionStage {
     }
 
     @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+    protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration) {
         super.delegateApplyConfigurationToInternalObjects(additionalConfiguration);
         for (var agent : agents) {
             agent.applyConfiguration(additionalConfiguration);

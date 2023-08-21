@@ -2,8 +2,6 @@
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
 import java.util.Arrays;
-import java.util.Objects;
-import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -23,11 +21,6 @@ import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 public class OriginalTextStateStrategy extends DefaultTextStateStrategy {
-
-    private static final Function<NounMapping, Integer> NOUN_MAPPING_HASH = nm -> Objects.hash(nm.getReferenceWords().toSet(), nm.getWords());
-    private static final BiPredicate<NounMapping, NounMapping> NOUN_MAPPING_EQUALS = (nm1, nm2) -> Objects.equals(nm1.getReferenceWords().toSet(), nm2
-            .getReferenceWords()
-            .toSet()) && Objects.equals(nm1.getWords(), nm2.getWords());
 
     OriginalTextStateStrategy(TextStateImpl textState) {
         super.setTextState(textState);

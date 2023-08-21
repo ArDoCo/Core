@@ -1,13 +1,7 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.computation;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
@@ -37,7 +31,7 @@ public class NodeResult {
     }
 
     public NodeResult(ArchitectureModel archModel, CodeModel codeModel) {
-        confidenceMap = new HashMap<>();
+        confidenceMap = new LinkedHashMap<>();
         EndpointTupleRepo endpointTupleRepo = new EndpointTupleRepo(archModel, codeModel);
         for (SamCodeEndpointTuple endpointTuple : endpointTupleRepo.getEndpointTuples()) {
             add(endpointTuple, new Confidence());
@@ -102,7 +96,7 @@ public class NodeResult {
      * @return trace links for every endpoint tuple whose confidence has a value
      */
     public Set<SamCodeTraceLink> getTraceLinks() {
-        Set<SamCodeTraceLink> traceLinks = new HashSet<>();
+        Set<SamCodeTraceLink> traceLinks = new LinkedHashSet<>();
         for (var entry : confidenceMap.entrySet()) {
             Confidence confidence = entry.getValue();
             if (confidence.hasValue()) {

@@ -1,12 +1,7 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -58,7 +53,7 @@ public class Datatype extends CodeItem {
         }).filter(Objects::nonNull).collect(Collectors.toCollection(TreeSet::new));
     }
 
-    public Set<Datatype> getImplementedTypes() {
+    public SortedSet<Datatype> getImplementedTypes() {
         return implementedDataTypesIds.stream().map(id -> {
             CodeItem codeItem = codeItemRepository.getCodeItem(id);
             if (codeItem instanceof Datatype datatype) {
@@ -66,7 +61,7 @@ public class Datatype extends CodeItem {
             } else {
                 return null;
             }
-        }).filter(Objects::nonNull).collect(Collectors.toSet());
+        }).filter(Objects::nonNull).collect(Collectors.toCollection(TreeSet::new));
     }
 
     public void setCompilationUnit(CodeCompilationUnit compilationUnit) {

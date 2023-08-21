@@ -4,11 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 import static java.lang.Math.abs;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

@@ -8,8 +8,10 @@ import org.eclipse.collections.api.set.ImmutableSet;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadCodeTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SamCodeTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TransitiveTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
 import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
 
+@UserReviewedDeterministic
 public interface CodeTraceabilityState extends PipelineStepData {
     String ID = "CodeTraceabilityState";
 

@@ -1,7 +1,6 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code;
 
-import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -22,7 +21,7 @@ public class CodePackage extends CodeModule {
         super(codeItemRepository, name, content);
     }
 
-    public Set<CodePackage> getSubpackages() {
+    public SortedSet<CodePackage> getSubpackages() {
         SortedSet<CodePackage> codePackages = new TreeSet<>();
         for (CodeItem packageElement : getContent()) {
             if (packageElement instanceof CodePackage codePackage) {

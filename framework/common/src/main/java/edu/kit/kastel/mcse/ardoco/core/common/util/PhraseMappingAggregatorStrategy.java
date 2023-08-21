@@ -12,17 +12,17 @@ import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
 @UserReviewedDeterministic
 public enum PhraseMappingAggregatorStrategy implements ToDoubleBiFunction<PhraseMapping, PhraseMapping> {
     MAX_SIMILARITY((a, b) -> uniqueDot(a.getPhrases(), b.getPhrases()).stream()
-            .mapToDouble(p -> cosineSimilarity(p.first().getPhraseVector().toMap(), p.second().getPhraseVector().toMap()))
+            .mapToDouble(p -> cosineSimilarity(p.first().getPhraseVector().toSortedMap(), p.second().getPhraseVector().toSortedMap()))
             .max()
             .orElse(Double.NaN)), //
 
     MIN_SIMILARITY((a, b) -> uniqueDot(a.getPhrases(), b.getPhrases()).stream()
-            .mapToDouble(p -> cosineSimilarity(p.first().getPhraseVector().toMap(), p.second().getPhraseVector().toMap()))
+            .mapToDouble(p -> cosineSimilarity(p.first().getPhraseVector().toSortedMap(), p.second().getPhraseVector().toSortedMap()))
             .min()
             .orElse(Double.NaN)), //
 
     AVG_SIMILARITY((a, b) -> uniqueDot(a.getPhrases(), b.getPhrases()).stream()
-            .mapToDouble(p -> cosineSimilarity(p.first().getPhraseVector().toMap(), p.second().getPhraseVector().toMap()))
+            .mapToDouble(p -> cosineSimilarity(p.first().getPhraseVector().toSortedMap(), p.second().getPhraseVector().toSortedMap()))
             .average()
             .orElse(Double.NaN));
 
