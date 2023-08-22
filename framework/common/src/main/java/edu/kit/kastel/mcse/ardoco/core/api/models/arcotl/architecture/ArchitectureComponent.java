@@ -1,7 +1,7 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture;
 
-import java.util.Set;
+import java.util.SortedSet;
 
 /**
  * A representation of the model object <i>Component</i> from AMTL. Components
@@ -12,13 +12,13 @@ import java.util.Set;
  */
 public class ArchitectureComponent extends ArchitectureItem {
 
-    private final Set<ArchitectureComponent> subcomponents;
-    private final Set<ArchitectureInterface> providedInterfaces;
+    private final SortedSet<ArchitectureComponent> subcomponents;
+    private final SortedSet<ArchitectureInterface> providedInterfaces;
 
-    private final Set<ArchitectureInterface> requiredInterfaces;
+    private final SortedSet<ArchitectureInterface> requiredInterfaces;
 
-    public ArchitectureComponent(String name, String id, Set<ArchitectureComponent> subcomponents, Set<ArchitectureInterface> providedInterfaces,
-            Set<ArchitectureInterface> requiredInterfaces) {
+    public ArchitectureComponent(String name, String id, SortedSet<ArchitectureComponent> subcomponents, SortedSet<ArchitectureInterface> providedInterfaces,
+            SortedSet<ArchitectureInterface> requiredInterfaces) {
         super(name, id);
         this.subcomponents = subcomponents;
         this.providedInterfaces = providedInterfaces;
@@ -30,7 +30,7 @@ public class ArchitectureComponent extends ArchitectureItem {
      *
      * @return the subcomponents of this component
      */
-    public Set<ArchitectureComponent> getSubcomponents() {
+    public SortedSet<ArchitectureComponent> getSubcomponents() {
         return subcomponents;
     }
 
@@ -40,7 +40,7 @@ public class ArchitectureComponent extends ArchitectureItem {
      *
      * @return the provided interfaces of this component
      */
-    public Set<ArchitectureInterface> getProvidedInterfaces() {
+    public SortedSet<ArchitectureInterface> getProvidedInterfaces() {
         return providedInterfaces;
     }
 
@@ -50,7 +50,7 @@ public class ArchitectureComponent extends ArchitectureItem {
      *
      * @return the required interfaces of this component
      */
-    public Set<ArchitectureInterface> getRequiredInterfaces() {
+    public SortedSet<ArchitectureInterface> getRequiredInterfaces() {
         return requiredInterfaces;
     }
 

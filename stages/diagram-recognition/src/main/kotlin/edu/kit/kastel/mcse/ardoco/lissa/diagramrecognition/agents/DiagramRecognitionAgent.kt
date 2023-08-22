@@ -8,6 +8,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.informants.ObjectDetectionInformant
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.informants.OcrInformant
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.informants.RecognitionCombinatorInformant
+import java.util.*
 
 /**
  * This agent uses the [DiagramRecognitionState] to extract the diagrams and sketches from images.
@@ -29,7 +30,7 @@ class DiagramRecognitionAgent(dataRepository: DataRepository) : PipelineAgent(ID
 
     override fun getEnabledPipelineSteps(): MutableList<Informant> = findByClassName(enabledInformants, informants)
 
-    override fun delegateApplyConfigurationToInternalObjects(additionalConfiguration: Map<String?, String?>?) {
+    override fun delegateApplyConfigurationToInternalObjects(additionalConfiguration: SortedMap<String?, String?>?) {
         informants.forEach { it.applyConfiguration(additionalConfiguration) }
     }
 }

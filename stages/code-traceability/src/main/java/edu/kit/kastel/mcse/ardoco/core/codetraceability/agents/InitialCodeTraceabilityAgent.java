@@ -2,7 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.codetraceability.agents;
 
 import java.util.List;
-import java.util.Map;
+import java.util.SortedMap;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
@@ -37,7 +37,7 @@ public class InitialCodeTraceabilityAgent extends PipelineAgent {
     }
 
     @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+    protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration) {
         informants.forEach(filter -> filter.applyConfiguration(additionalConfiguration));
     }
 }

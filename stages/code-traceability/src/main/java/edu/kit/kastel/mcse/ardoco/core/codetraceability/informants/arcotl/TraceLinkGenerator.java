@@ -1,22 +1,31 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl;
 
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SamCodeTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.computation.Computation;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.computation.computationtree.Node;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.aggregation.Filter;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.aggregation.MatchBest;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.aggregation.MatchSequentially;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.aggregation.Maximum;
-import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.heuristics.*;
+import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.heuristics.ComponentNameResemblance;
+import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.heuristics.ComponentNameResemblanceTest;
+import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.heuristics.InheritLinks;
+import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.heuristics.MethodResemblance;
+import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.heuristics.PackageResemblance;
+import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.heuristics.PathResemblance;
+import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.heuristics.ProvidedInterfaceCorrespondence;
+import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.heuristics.Required;
+import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.heuristics.SubpackageFilter;
 
+@Deterministic
 public final class TraceLinkGenerator {
 
     private static final Node interfaceName = new ComponentNameResemblance(ComponentNameResemblance.NameConfig.INTERFACE,
@@ -48,7 +57,7 @@ public final class TraceLinkGenerator {
 
     private static final Node root = Filter.getFilterArchNode(maxCompInterface, new ProvidedInterfaceCorrespondence().getNode(maxCompInterface));
 
-    private static final Map<Node, String> treeConfigs = new HashMap<>();
+    private static final Map<Node, String> treeConfigs = new LinkedHashMap<>();
 
     static {
         treeConfigs.put(interfaceName, "interfaceName");
@@ -111,7 +120,7 @@ public final class TraceLinkGenerator {
 
     public static Set<SamCodeTraceLink> generateTraceLinks(Node root, ArchitectureModel archModel, CodeModel codeModel) {
         if (archModel == null || codeModel == null) {
-            return new HashSet<>();
+            return new java.util.LinkedHashSet<>();
         }
         if (root == null) {
             root = getRoot();

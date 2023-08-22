@@ -1,19 +1,16 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.IdentityHashMap;
-import java.util.Objects;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.factory.Maps;
-import org.eclipse.collections.api.factory.Sets;
+import org.eclipse.collections.api.factory.SortedMaps;
+import org.eclipse.collections.api.factory.SortedSets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.map.ImmutableMap;
-import org.eclipse.collections.api.map.MutableMap;
+import org.eclipse.collections.api.map.sorted.ImmutableSortedMap;
+import org.eclipse.collections.api.map.sorted.MutableSortedMap;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.PhraseType;
@@ -22,25 +19,27 @@ import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.PhraseMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.PhraseMappingChangeListener;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
+import edu.kit.kastel.mcse.ardoco.core.architecture.NoHashCodeEquals;
 
+@Deterministic
+@NoHashCodeEquals
 public final class PhraseMappingImpl implements PhraseMapping {
-
     /**
      * Phrases encapsulated in the mapping.
      */
-    private final Set<Phrase> phrases;
+    private final MutableList<Phrase> phrases;
 
-    private final Set<PhraseMappingChangeListener> changeListeners = Collections.newSetFromMap(new IdentityHashMap<>());
+    private final Set<PhraseMappingChangeListener> changeListeners = new LinkedHashSet<>();
 
-    public PhraseMappingImpl(Collection<Phrase> phrases) {
-        this.phrases = Collections.newSetFromMap(new IdentityHashMap<>());
-        this.phrases.addAll(phrases);
+    public PhraseMappingImpl(ImmutableList<Phrase> phrases) {
+        this.phrases = Lists.mutable.withAll(phrases);
     }
 
     @Override
     public ImmutableList<NounMapping> getNounMappings(TextState textState) {
-        var allContainedWords = Sets.mutable.fromStream(phrases.stream().flatMap(phrase -> phrase.getContainedWords().stream()));
-        return textState.getNounMappings().select(nm -> Sets.mutable.withAll(nm.getWords()).equals(allContainedWords));
+        var allContainedWords = SortedSets.mutable.withAll(phrases.stream().flatMap(phrase -> phrase.getContainedWords().stream()).toList());
+        return textState.getNounMappings().select(nm -> SortedSets.mutable.withAll(nm.getWords()).equals(allContainedWords));
     }
 
     @Override
@@ -63,33 +62,18 @@ public final class PhraseMappingImpl implements PhraseMapping {
     }
 
     @Override
-    public ImmutableMap<Word, Integer> getPhraseVector() {
+    public ImmutableSortedMap<Word, Integer> getPhraseVector() {
         MutableList<Word> words = Lists.mutable.empty();
 
         for (Phrase phrase : phrases) {
             words.addAllIterable(phrase.getContainedWords());
         }
 
-        MutableMap<Word, Integer> phraseVector = Maps.mutable.empty();
+        MutableSortedMap<Word, Integer> phraseVector = SortedMaps.mutable.empty();
         var grouped = words.groupBy(Word::getText).toMap();
         grouped.forEach((key, value) -> phraseVector.put(value.getAny(), value.size()));
 
         return phraseVector.toImmutable();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-        PhraseMappingImpl that = (PhraseMappingImpl) o;
-        return Objects.equals(phrases, that.phrases);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(phrases);
     }
 
     @Override

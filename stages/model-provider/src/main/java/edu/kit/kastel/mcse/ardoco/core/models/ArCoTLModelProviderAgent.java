@@ -4,7 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.models;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.SortedMap;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItemRepository;
@@ -42,7 +42,7 @@ public class ArCoTLModelProviderAgent extends PipelineAgent {
     }
 
     public static ArCoTLModelProviderAgent get(File inputArchitectureModel, ArchitectureModelType architectureModelType, File inputCode,
-            Map<String, String> additionalConfigs, DataRepository dataRepository) {
+            SortedMap<String, String> additionalConfigs, DataRepository dataRepository) {
         ArchitectureExtractor architectureExtractor = switch (architectureModelType) {
         case PCM -> new PcmExtractor(inputArchitectureModel.getAbsolutePath());
         case UML -> new UmlExtractor(inputArchitectureModel.getAbsolutePath());
@@ -55,7 +55,7 @@ public class ArCoTLModelProviderAgent extends PipelineAgent {
     }
 
     @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+    protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration) {
         // empty
     }
 

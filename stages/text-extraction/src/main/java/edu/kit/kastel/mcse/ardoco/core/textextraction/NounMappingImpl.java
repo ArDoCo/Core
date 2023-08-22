@@ -5,19 +5,17 @@ import static edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions.AVERAG
 
 import java.util.Collections;
 import java.util.IdentityHashMap;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.factory.Maps;
-import org.eclipse.collections.api.factory.Sets;
+import org.eclipse.collections.api.factory.SortedMaps;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.map.ImmutableMap;
-import org.eclipse.collections.api.map.MutableMap;
-import org.eclipse.collections.api.set.ImmutableSet;
-import org.eclipse.collections.api.set.MutableSet;
+import org.eclipse.collections.api.map.sorted.ImmutableSortedMap;
+import org.eclipse.collections.api.map.sorted.MutableSortedMap;
 import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
@@ -25,6 +23,8 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMappingChangeListener;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
+import edu.kit.kastel.mcse.ardoco.core.architecture.NoHashCodeEquals;
 import edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions;
 import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
@@ -32,17 +32,50 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 /**
  * The Class NounMapping is a basic realization of {@link NounMapping}.
  */
-public final class NounMappingImpl implements NounMapping, Comparable<NounMappingImpl> {
+@Deterministic
+@NoHashCodeEquals
+public final class NounMappingImpl implements NounMapping {
 
+    private static final AtomicLong CREATION_TIME_COUNTER = new AtomicLong(0);
     private static final AggregationFunctions DEFAULT_AGGREGATOR = AVERAGE;
     private final Long earliestCreationTime;
     private final ImmutableSortedSet<Word> words;
-    private final MutableMap<MappingKind, Confidence> distribution;
+    private final MutableSortedMap<MappingKind, Confidence> distribution;
     private final ImmutableList<Word> referenceWords;
     private final ImmutableList<String> surfaceForms;
     private final String reference;
     private boolean isDefinedAsCompound;
     private final Set<NounMappingChangeListener> changeListeners;
+
+    /**
+     * Instantiates a new noun mapping. A new creation time will be generated.
+     *
+     * @param words          the list of words for this nounmapping
+     * @param kind           the kind of mapping
+     * @param claimant       the claimant that created this mapping
+     * @param probability    the confidence
+     * @param referenceWords the reference words
+     * @param surfaceForms   the surface forms
+     */
+    public NounMappingImpl(ImmutableSortedSet<Word> words, MappingKind kind, Claimant claimant, double probability, ImmutableList<Word> referenceWords,
+            ImmutableList<String> surfaceForms) {
+        this(CREATION_TIME_COUNTER.incrementAndGet(), words, kind, claimant, probability, referenceWords, surfaceForms);
+    }
+
+    /**
+     * Constructor. A new creation time will be generated.
+     *
+     * @param words          the words
+     * @param distribution   the distribution map (kind to confidence)
+     * @param referenceWords the reference words
+     * @param surfaceForms   the surface forms
+     * @param reference      the String reference
+     */
+
+    public NounMappingImpl(ImmutableSortedSet<Word> words, ImmutableSortedMap<MappingKind, Confidence> distribution, ImmutableList<Word> referenceWords,
+            ImmutableList<String> surfaceForms, String reference) {
+        this(CREATION_TIME_COUNTER.incrementAndGet(), words, distribution, referenceWords, surfaceForms, reference);
+    }
 
     /**
      * Constructor
@@ -55,11 +88,11 @@ public final class NounMappingImpl implements NounMapping, Comparable<NounMappin
      * @param reference            the String reference
      */
 
-    public NounMappingImpl(Long earliestCreationTime, ImmutableSortedSet<Word> words, MutableMap<MappingKind, Confidence> distribution,
+    public NounMappingImpl(Long earliestCreationTime, ImmutableSortedSet<Word> words, ImmutableSortedMap<MappingKind, Confidence> distribution,
             ImmutableList<Word> referenceWords, ImmutableList<String> surfaceForms, String reference) {
         this.earliestCreationTime = earliestCreationTime;
         this.words = words;
-        this.distribution = distribution;
+        this.distribution = distribution.toSortedMap();
         this.referenceWords = referenceWords;
         this.surfaceForms = surfaceForms;
         this.reference = reference;
@@ -78,9 +111,10 @@ public final class NounMappingImpl implements NounMapping, Comparable<NounMappin
      * @param referenceWords       the reference words
      * @param surfaceForms         the surface forms
      */
-    public NounMappingImpl(Long earliestCreationTime, ImmutableSet<Word> words, MappingKind kind, Claimant claimant, double probability,
+    public NounMappingImpl(Long earliestCreationTime, ImmutableSortedSet<Word> words, MappingKind kind, Claimant claimant, double probability,
             ImmutableList<Word> referenceWords, ImmutableList<String> surfaceForms) {
-        this(earliestCreationTime, words.toSortedSet().toImmutable(), Maps.mutable.empty(), referenceWords, surfaceForms, calculateReference(referenceWords));
+        this(earliestCreationTime, words.toSortedSet().toImmutable(), SortedMaps.immutable.empty(), referenceWords, surfaceForms, calculateReference(
+                referenceWords));
 
         Objects.requireNonNull(claimant);
         this.distribution.putIfAbsent(MappingKind.NAME, new Confidence(DEFAULT_AGGREGATOR));
@@ -127,9 +161,11 @@ public final class NounMappingImpl implements NounMapping, Comparable<NounMappin
     }
 
     @Override
-    public ImmutableSet<Phrase> getPhrases() {
-        MutableSet<Phrase> phrases = Sets.mutable.empty();
+    public ImmutableList<Phrase> getPhrases() {
+        MutableList<Phrase> phrases = Lists.mutable.empty();
         for (Word word : this.words) {
+            if (phrases.contains(word.getPhrase()))
+                continue;
             phrases.add(word.getPhrase());
         }
         return phrases.toImmutable();
@@ -143,7 +179,7 @@ public final class NounMappingImpl implements NounMapping, Comparable<NounMappin
     }
 
     @Override
-    public ImmutableMap<MappingKind, Confidence> getDistribution() {
+    public ImmutableSortedMap<MappingKind, Confidence> getDistribution() {
         return distribution.toImmutable();
     }
 
@@ -169,31 +205,11 @@ public final class NounMappingImpl implements NounMapping, Comparable<NounMappin
 
     @Override
     public String toString() {
-        return "NounMapping [" + "distribution=" + distribution.entrySet()
-                .stream()
-                .map(entry -> entry.getKey() + ":" + entry.getValue())
-                .collect(Collectors.joining(",")) + //
+        return "NounMapping [" + "distribution=" + distribution.keyValuesView().collect(entry -> entry.getOne() + ":" + entry.getTwo()).makeString(",") + //
                 ", reference=" + getReference() + //
                 ", node=" + String.join(", ", surfaceForms) + //
                 ", position=" + String.join(", ", getWords().collect(word -> String.valueOf(word.getPosition()))) + //
                 ", probability=" + getProbability() + ", isCompound=" + isCompound() + "]";
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getReference());
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!(obj instanceof NounMappingImpl)) {
-            return false;
-        }
-        var other = (NounMapping) obj;
-        return Objects.equals(getReference(), other.getReference());
     }
 
     @Override
@@ -207,8 +223,11 @@ public final class NounMappingImpl implements NounMapping, Comparable<NounMappin
     }
 
     @Override
-    public ImmutableSet<Claimant> getClaimants() {
-        return this.distribution.valuesView().flatCollect(Confidence::getClaimants).toImmutableSet();
+    public ImmutableList<Claimant> getClaimants() {
+        Set<Claimant> identitySet = new LinkedHashSet<>();
+        for (var claimant : this.distribution.valuesView().flatCollect(Confidence::getClaimants))
+            identitySet.add(claimant);
+        return Lists.immutable.withAll(identitySet);
     }
 
     public static Long earliestCreationTime(NounMapping... nounMappings) {
@@ -220,11 +239,6 @@ public final class NounMappingImpl implements NounMapping, Comparable<NounMappin
         return earliest == Long.MAX_VALUE ? null : earliest;
     }
 
-    @Override
-    public int compareTo(NounMappingImpl o) {
-        return Long.compare(this.earliestCreationTime, o.earliestCreationTime);
-    }
-
     public Long earliestCreationTime() {
         return earliestCreationTime;
     }
@@ -233,7 +247,7 @@ public final class NounMappingImpl implements NounMapping, Comparable<NounMappin
         return words;
     }
 
-    public MutableMap<MappingKind, Confidence> distribution() {
+    public MutableSortedMap<MappingKind, Confidence> distribution() {
         return distribution;
     }
 

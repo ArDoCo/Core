@@ -2,10 +2,10 @@
 package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
@@ -60,14 +60,14 @@ public abstract class CodeItem extends Entity {
         return new ArrayList<>();
     }
 
-    public Set<CodeItem> getAllDataTypesAndSelf() {
-        Set<CodeItem> result = new HashSet<>(getAllDataTypes());
+    public SortedSet<CodeItem> getAllDataTypesAndSelf() {
+        SortedSet<CodeItem> result = new TreeSet<>(getAllDataTypes());
         result.add(this);
         return result;
     }
 
-    public Set<ControlElement> getDeclaredMethods() {
-        Set<ControlElement> methods = new HashSet<>();
+    public SortedSet<ControlElement> getDeclaredMethods() {
+        SortedSet<ControlElement> methods = new TreeSet<>();
         for (CodeItem codeItem : getContent()) {
             if (codeItem instanceof ControlElement codeMethod) {
                 methods.add(codeMethod);
@@ -76,11 +76,11 @@ public abstract class CodeItem extends Entity {
         return methods;
     }
 
-    public Set<CodeCompilationUnit> getAllCompilationUnits() {
-        return new HashSet<>();
+    public SortedSet<CodeCompilationUnit> getAllCompilationUnits() {
+        return new TreeSet<>();
     }
 
-    public Set<? extends CodePackage> getAllPackages() {
-        return new HashSet<>();
+    public SortedSet<? extends CodePackage> getAllPackages() {
+        return new TreeSet<>();
     }
 }

@@ -2,7 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.inconsistency;
 
 import java.util.List;
-import java.util.Map;
+import java.util.SortedMap;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
@@ -39,7 +39,7 @@ public class InconsistencyChecker extends AbstractExecutionStage {
      * @param dataRepository    the data repository
      * @return an instance of InconsistencyChecker
      */
-    public static InconsistencyChecker get(Map<String, String> additionalConfigs, DataRepository dataRepository) {
+    public static InconsistencyChecker get(SortedMap<String, String> additionalConfigs, DataRepository dataRepository) {
         var inconsistencyChecker = new InconsistencyChecker(dataRepository);
         inconsistencyChecker.applyConfiguration(additionalConfigs);
         return inconsistencyChecker;
@@ -57,7 +57,7 @@ public class InconsistencyChecker extends AbstractExecutionStage {
     }
 
     @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+    protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration) {
         super.delegateApplyConfigurationToInternalObjects(additionalConfiguration);
         for (var agent : agents) {
             agent.applyConfiguration(additionalConfiguration);

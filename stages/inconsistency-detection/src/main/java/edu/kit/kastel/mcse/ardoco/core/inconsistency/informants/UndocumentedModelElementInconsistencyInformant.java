@@ -2,7 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.informants;
 
 import java.util.List;
-import java.util.Map;
+import java.util.SortedMap;
 import java.util.regex.Pattern;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -110,7 +110,7 @@ public class UndocumentedModelElementInconsistencyInformant extends Informant {
     }
 
     @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> map) {
+    protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> map) {
         // empty
     }
 }

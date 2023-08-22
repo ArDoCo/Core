@@ -3,9 +3,9 @@ package edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architectur
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelType;
@@ -14,6 +14,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.Architectu
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureMethod;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureModel;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.ArchitectureExtractor;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.uml.parser.UmlComponent;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.uml.parser.UmlInterface;
@@ -23,6 +24,7 @@ import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture
 /**
  * An extractor for UML. Extracts an AMTL instance.
  */
+@Deterministic
 public final class UmlExtractor extends ArchitectureExtractor {
 
     public UmlExtractor(String path) {
@@ -53,7 +55,7 @@ public final class UmlExtractor extends ArchitectureExtractor {
     private static List<ArchitectureInterface> extractInterfaces(UmlModel originalModel) {
         List<ArchitectureInterface> interfaces = new ArrayList<>();
         for (UmlInterface originalInterface : originalModel.getModel().getInterfaces()) {
-            Set<ArchitectureMethod> signatures = new HashSet<>();
+            SortedSet<ArchitectureMethod> signatures = new TreeSet<>();
             for (OwnedOperation originalMethod : originalInterface.getOperations()) {
                 ArchitectureMethod signature = new ArchitectureMethod(originalMethod.getName());
                 signatures.add(signature);
@@ -67,9 +69,9 @@ public final class UmlExtractor extends ArchitectureExtractor {
     private static List<ArchitectureComponent> extractComponents(UmlModel originalModel, List<ArchitectureInterface> interfaces) {
         List<ArchitectureComponent> components = new ArrayList<>();
         for (UmlComponent originalComponent : originalModel.getModel().getComponents()) {
-            Set<ArchitectureComponent> subcomponents = new HashSet<>();
-            Set<ArchitectureInterface> providedInterfaces = new HashSet<>();
-            Set<ArchitectureInterface> requiredInterfaces = new HashSet<>();
+            SortedSet<ArchitectureComponent> subcomponents = new TreeSet<>();
+            SortedSet<ArchitectureInterface> providedInterfaces = new TreeSet<>();
+            SortedSet<ArchitectureInterface> requiredInterfaces = new TreeSet<>();
             for (UmlInterface providedInterface : originalComponent.getProvided()) {
                 ArchitectureInterface modelInterface = findInterface(providedInterface.getId(), interfaces);
                 providedInterfaces.add(modelInterface);

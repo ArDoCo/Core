@@ -2,10 +2,10 @@
 package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
@@ -29,8 +29,8 @@ public class CodeCompilationUnit extends CodeModule {
         // Jackson
     }
 
-    public CodeCompilationUnit(CodeItemRepository codeItemRepository, String name, Set<? extends CodeItem> content, List<String> pathElements, String extension,
-            ProgrammingLanguage language) {
+    public CodeCompilationUnit(CodeItemRepository codeItemRepository, String name, SortedSet<? extends CodeItem> content, List<String> pathElements,
+            String extension, ProgrammingLanguage language) {
         super(codeItemRepository, name, content);
         this.pathElements = new ArrayList<>(pathElements);
         this.extension = extension;
@@ -49,8 +49,8 @@ public class CodeCompilationUnit extends CodeModule {
     }
 
     @Override
-    public Set<CodeCompilationUnit> getAllCompilationUnits() {
-        Set<CodeCompilationUnit> result = new HashSet<>();
+    public SortedSet<CodeCompilationUnit> getAllCompilationUnits() {
+        SortedSet<CodeCompilationUnit> result = new TreeSet<>();
         result.add(this);
         return result;
     }

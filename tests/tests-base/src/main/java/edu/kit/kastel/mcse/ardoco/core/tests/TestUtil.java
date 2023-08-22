@@ -1,7 +1,6 @@
 /* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.tests;
 
-import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -35,8 +34,8 @@ public class TestUtil {
      */
     public static <T> EvaluationResults<T> compareTLR(ArDoCoResult arDoCoResult, ImmutableCollection<T> results, ImmutableCollection<T> goldStandard) {
 
-        Set<T> distinctTraceLinks = new HashSet<>(results.castToCollection());
-        Set<T> distinctGoldStandard = new HashSet<>(goldStandard.castToCollection());
+        Set<T> distinctTraceLinks = new java.util.LinkedHashSet<>(results.castToCollection());
+        Set<T> distinctGoldStandard = new java.util.LinkedHashSet<>(goldStandard.castToCollection());
 
         // True Positives are the trace links that are contained on both lists
         Set<T> truePositives = distinctTraceLinks.stream().filter(distinctGoldStandard::contains).collect(Collectors.toSet());
@@ -65,8 +64,8 @@ public class TestUtil {
     public static <T> EvaluationResults<T> compareInconsistencies(ArDoCoResult arDoCoResult, ImmutableCollection<T> results,
             ImmutableCollection<T> goldStandard) {
 
-        Set<T> distinctTraceLinks = new HashSet<>(results.castToCollection());
-        Set<T> distinctGoldStandard = new HashSet<>(goldStandard.castToCollection());
+        Set<T> distinctTraceLinks = new java.util.LinkedHashSet<>(results.castToCollection());
+        Set<T> distinctGoldStandard = new java.util.LinkedHashSet<>(goldStandard.castToCollection());
 
         // True Positives are the trace links that are contained on both lists
         Set<T> truePositives = distinctTraceLinks.stream().filter(distinctGoldStandard::contains).collect(Collectors.toSet());
