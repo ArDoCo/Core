@@ -2,7 +2,6 @@
 package edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator;
 
 import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
@@ -108,5 +107,5 @@ public abstract class RecommendedInstance extends Entity {
 
     public abstract ImmutableSortedSet<Integer> getSentenceNumbers();
 
-    public abstract ImmutableSet<Claimant> getClaimants();
+    public abstract ImmutableList<Claimant> getClaimants();
 }

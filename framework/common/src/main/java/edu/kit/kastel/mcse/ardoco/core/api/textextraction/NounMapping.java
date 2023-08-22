@@ -2,8 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.api.textextraction;
 
 import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.map.ImmutableMap;
-import org.eclipse.collections.api.set.ImmutableSet;
+import org.eclipse.collections.api.map.sorted.ImmutableSortedMap;
 import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
@@ -65,7 +64,7 @@ public interface NounMapping {
      */
     ImmutableList<Integer> getMappingSentenceNo();
 
-    ImmutableSet<Phrase> getPhrases();
+    ImmutableList<Phrase> getPhrases();
 
     /**
      * Gets the probability for name.
@@ -80,9 +79,9 @@ public interface NounMapping {
      *
      * @return the distribution
      */
-    ImmutableMap<MappingKind, Confidence> getDistribution();
+    ImmutableSortedMap<MappingKind, Confidence> getDistribution();
 
-    ImmutableSet<Claimant> getClaimants();
+    ImmutableList<Claimant> getClaimants();
 
     /**
      * Adds the kind with probability.

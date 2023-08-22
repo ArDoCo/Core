@@ -2,10 +2,8 @@
 package edu.kit.kastel.mcse.ardoco.core.execution.runner;
 
 import java.io.File;
-import java.util.Map;
+import java.util.SortedMap;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
-import edu.kit.kastel.mcse.ardoco.core.codetraceability.SadCodeTraceabilityLinkRecovery;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.SadSamCodeTraceabilityLinkRecovery;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.SamCodeTraceabilityLinkRecovery;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
@@ -24,21 +22,18 @@ public class ArDoCoSadDiagramCodeTraceabilityLinkRecovery extends ArDoCoRunner {
         super(projectName);
     }
 
-    public void setUp(String inputText, String inputDiagramDirectory, String inputCode,
-            Map<String, String> additionalConfigs, String outputDir) {
+    public void setUp(String inputText, String inputDiagramDirectory, String inputCode, SortedMap<String, String> additionalConfigs, String outputDir) {
         setUp(new File(inputText), new File(inputDiagramDirectory), new File(inputCode), additionalConfigs, new File(outputDir));
     }
 
-    public void setUp(File inputText, File inputDiagramDirectory, File inputCode,
-            Map<String, String> additionalConfigs, File outputDir) {
+    public void setUp(File inputText, File inputDiagramDirectory, File inputCode, SortedMap<String, String> additionalConfigs, File outputDir) {
 
         definePipeline(inputText, inputDiagramDirectory, inputCode, additionalConfigs);
         setOutputDirectory(outputDir);
         isSetUp = true;
     }
 
-    private void definePipeline(File inputText, File inputDiagramDirectory, File inputCode,
-            Map<String, String> additionalConfigs) {
+    private void definePipeline(File inputText, File inputDiagramDirectory, File inputCode, SortedMap<String, String> additionalConfigs) {
         ArDoCo arDoCo = this.getArDoCo();
         var dataRepository = arDoCo.getDataRepository();
 
@@ -58,8 +53,7 @@ public class ArDoCoSadDiagramCodeTraceabilityLinkRecovery extends ArDoCoRunner {
         arDoCo.addPipelineStep(RecommendationGenerator.get(additionalConfigs, dataRepository));
         arDoCo.addPipelineStep(ConnectionGenerator.get(additionalConfigs, dataRepository));
 
-        ArCoTLModelProviderAgent arCoTLModelProviderAgent = ArCoTLModelProviderAgent.get(inputCode,
-                additionalConfigs, dataRepository);
+        ArCoTLModelProviderAgent arCoTLModelProviderAgent = ArCoTLModelProviderAgent.getOnlyCode(inputCode, additionalConfigs, dataRepository);
         arDoCo.addPipelineStep(arCoTLModelProviderAgent);
         arDoCo.addPipelineStep(SamCodeTraceabilityLinkRecovery.get(additionalConfigs, dataRepository));
 

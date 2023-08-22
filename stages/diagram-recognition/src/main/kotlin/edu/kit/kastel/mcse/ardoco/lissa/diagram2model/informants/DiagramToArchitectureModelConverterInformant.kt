@@ -12,13 +12,14 @@ import edu.kit.kastel.mcse.ardoco.core.models.ModelExtractionStateImpl
 import edu.kit.kastel.mcse.ardoco.core.models.ModelInstanceImpl
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant
 import org.eclipse.collections.api.factory.Lists
+import java.util.SortedMap
 
 class DiagramToArchitectureModelConverterInformant(dataRepository: DataRepository) : Informant(ID, dataRepository) {
     companion object {
         const val ID = "DiagramToArchitectureModelConverterInformant"
     }
 
-    override fun delegateApplyConfigurationToInternalObjects(additionalConfiguration: MutableMap<String, String>?) {
+    override fun delegateApplyConfigurationToInternalObjects(additionalConfiguration: SortedMap<String, String>?) {
         // Not needed
     }
 
@@ -35,7 +36,7 @@ class DiagramToArchitectureModelConverterInformant(dataRepository: DataRepositor
         val architecture = ModelExtractionStateImpl("diagram-architecture", Metamodel.ARCHITECTURE, Lists.immutable.withAll(diagramElements))
         architectureState.addModelExtractionState(architecture.modelId, architecture)
 
-        val architectureModel = ArchitectureModel(diagramElements.map { ArchitectureComponent(it.name, it.id, emptySet(), emptySet(), emptySet()) })
+        val architectureModel = ArchitectureModel(diagramElements.map { ArchitectureComponent(it.name, it.id, sortedSetOf(), sortedSetOf(), sortedSetOf()) })
         architectureState.addModel("PCM", architectureModel)
     }
 

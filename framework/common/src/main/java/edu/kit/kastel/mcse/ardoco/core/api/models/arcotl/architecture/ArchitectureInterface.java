@@ -2,18 +2,18 @@
 package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture;
 
 import java.util.Objects;
-import java.util.Set;
+import java.util.SortedSet;
 
 public class ArchitectureInterface extends ArchitectureItem {
 
-    private final Set<ArchitectureMethod> signatures;
+    private final SortedSet<ArchitectureMethod> signatures;
 
-    public ArchitectureInterface(String name, String id, Set<ArchitectureMethod> signatures) {
+    public ArchitectureInterface(String name, String id, SortedSet<ArchitectureMethod> signatures) {
         super(name, id);
         this.signatures = signatures;
     }
 
-    public Set<ArchitectureMethod> getSignatures() {
+    public SortedSet<ArchitectureMethod> getSignatures() {
         return signatures;
     }
 

@@ -3,15 +3,10 @@ package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
 import static edu.kit.kastel.mcse.ardoco.core.tests.eval.ProjectHelper.ANALYZE_CODE_DIRECTLY;
 
-import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
-import edu.kit.kastel.mcse.ardoco.core.tests.DiagramProject;
-import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.CodeProject;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.calculator.ResultCalculatorUtil;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TestLink;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.*;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.*;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
@@ -22,15 +17,17 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.*;
-import java.util.function.Predicate;
+import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
+import edu.kit.kastel.mcse.ardoco.core.tests.DiagramProject;
+import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.calculator.ResultCalculatorUtil;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TestLink;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.*;
 
 class TraceLinkEvaluationSadDiagramCodeIT {
     protected static final Logger logger = LoggerFactory.getLogger(TraceLinkEvaluationIT.class);

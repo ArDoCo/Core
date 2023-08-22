@@ -2,10 +2,10 @@
 package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
@@ -82,7 +82,7 @@ public class NameComparisonUtils {
 
     //
 
-    public static List<String> removeWords(Entity namedEntity, Set<String> wordsToRemove) {
+    public static List<String> removeWords(Entity namedEntity, SortedSet<String> wordsToRemove) {
         List<String> words = NameComparisonUtils.getProcessedSplit(namedEntity.getName());
         for (String word : wordsToRemove) {
             words.remove(NameComparisonUtils.preprocess(word));
@@ -90,8 +90,8 @@ public class NameComparisonUtils {
         return words;
     }
 
-    public static Set<String> removeWords(Set<String> words, Entity namedEntity) {
-        Set<String> result = new HashSet<>();
+    public static SortedSet<String> removeWords(SortedSet<String> words, Entity namedEntity) {
+        SortedSet<String> result = new TreeSet<>();
         List<String> wordsToRemove = NameComparisonUtils.getProcessedSplit(namedEntity.getName());
         for (String word : words) {
             word = preprocess(word);

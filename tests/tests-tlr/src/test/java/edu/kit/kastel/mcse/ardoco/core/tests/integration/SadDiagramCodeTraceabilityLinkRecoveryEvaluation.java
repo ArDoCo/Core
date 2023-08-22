@@ -3,7 +3,13 @@ package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
 import static edu.kit.kastel.mcse.ardoco.core.tests.integration.TraceLinkEvaluationIT.OUTPUT;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+
 import edu.kit.kastel.mcse.ardoco.core.api.models.CodeModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
@@ -12,7 +18,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.TraceLinkUtilities;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
-import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCoForSadCodeTraceabilityLinkRecovery;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.ArDoCoRunner;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.ArDoCoSadDiagramCodeTraceabilityLinkRecovery;
 import edu.kit.kastel.mcse.ardoco.core.tests.DiagramProject;
@@ -20,13 +25,6 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.CodeProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
-
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
-
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 class SadDiagramCodeTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryEvaluation {
 

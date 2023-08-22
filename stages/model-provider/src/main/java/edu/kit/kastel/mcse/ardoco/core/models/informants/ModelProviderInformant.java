@@ -1,7 +1,7 @@
 /* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.models.informants;
 
-import java.util.Map;
+import java.util.SortedMap;
 
 import org.eclipse.collections.api.list.ImmutableList;
 
@@ -60,7 +60,7 @@ public final class ModelProviderInformant extends Informant {
     }
 
     @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> map) {
+    protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> map) {
         // empty
     }
 }

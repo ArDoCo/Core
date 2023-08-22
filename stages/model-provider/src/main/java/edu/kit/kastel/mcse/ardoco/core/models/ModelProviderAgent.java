@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.SortedMap;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelConnector;
@@ -68,7 +68,7 @@ public class ModelProviderAgent extends PipelineAgent {
     }
 
     @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+    protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration) {
         informants.forEach(e -> e.applyConfiguration(additionalConfiguration));
     }
 

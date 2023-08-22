@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.execution.runner;
 
 import java.io.File;
@@ -28,7 +29,7 @@ class ArDoCoSadDiagramCodeTraceabilityLinkRecoveryTest extends RunnerBaseTest {
         assumeDocker();
         var runner = new ArDoCoSadDiagramCodeTraceabilityLinkRecovery(PROJECT_NAME);
         var additionalConfigsMap = ConfigurationHelper.loadAdditionalConfigs(new File(ADDITIONAL_CONFIGS));
-        runner.setUp(INPUT_TEXT, DIAGRAM_DIRECTORY,CODE_DIRECTORY, additionalConfigsMap, OUTPUT_DIR);
+        runner.setUp(INPUT_TEXT, DIAGRAM_DIRECTORY, CODE_DIRECTORY, additionalConfigsMap, OUTPUT_DIR);
 
         testRunnerAssertions(runner);
 

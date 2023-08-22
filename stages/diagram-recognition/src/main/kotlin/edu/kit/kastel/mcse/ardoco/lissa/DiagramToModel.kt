@@ -7,6 +7,7 @@ import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent
 import edu.kit.kastel.mcse.ardoco.lissa.diagram2model.agents.DiagramToArchitectureModelConverterAgent
+import java.util.SortedMap
 
 class DiagramToModel : AbstractExecutionStage {
 
@@ -21,7 +22,7 @@ class DiagramToModel : AbstractExecutionStage {
          * @return a DiagramToModel processing with the provided diagrams
          */
         @JvmStatic
-        fun get(additionalConfigs: Map<String?, String?>?, dataRepository: DataRepository?): DiagramToModel? {
+        fun get(additionalConfigs: SortedMap<String?, String?>?, dataRepository: DataRepository?): DiagramToModel? {
             val diagramToModel = DiagramToModel(dataRepository!!)
             diagramToModel.applyConfiguration(additionalConfigs)
             return diagramToModel
@@ -48,7 +49,7 @@ class DiagramToModel : AbstractExecutionStage {
         return findByClassName(enabledAgents, agents)
     }
 
-    override fun delegateApplyConfigurationToInternalObjects(additionalConfiguration: Map<String?, String?>) {
+    override fun delegateApplyConfigurationToInternalObjects(additionalConfiguration: SortedMap<String?, String?>) {
         super.delegateApplyConfigurationToInternalObjects(additionalConfiguration)
         for (agent in agents) {
             agent.applyConfiguration(additionalConfiguration)

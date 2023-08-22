@@ -5,6 +5,7 @@ import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent
 import edu.kit.kastel.mcse.ardoco.lissa.diagram2model.informants.DiagramToArchitectureModelConverterInformant
+import java.util.SortedMap
 
 class DiagramToArchitectureModelConverterAgent(dataRepository: DataRepository) : PipelineAgent(ID, dataRepository) {
     companion object {
@@ -21,7 +22,7 @@ class DiagramToArchitectureModelConverterAgent(dataRepository: DataRepository) :
 
     override fun getEnabledPipelineSteps(): MutableList<Informant> = findByClassName(enabledInformants, informants)
 
-    override fun delegateApplyConfigurationToInternalObjects(additionalConfiguration: Map<String?, String?>?) {
+    override fun delegateApplyConfigurationToInternalObjects(additionalConfiguration: SortedMap<String?, String?>?) {
         informants.forEach { it.applyConfiguration(additionalConfiguration) }
     }
 }

@@ -1,7 +1,10 @@
 /* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
-import static edu.kit.kastel.mcse.ardoco.core.tests.integration.TraceLinkEvaluationIT.*;
+import static edu.kit.kastel.mcse.ardoco.core.tests.integration.TraceLinkEvaluationIT.DATA_MAP;
+import static edu.kit.kastel.mcse.ardoco.core.tests.integration.TraceLinkEvaluationIT.OUTPUT;
+import static edu.kit.kastel.mcse.ardoco.core.tests.integration.TraceLinkEvaluationIT.PROJECT_RESULTS;
+import static edu.kit.kastel.mcse.ardoco.core.tests.integration.TraceLinkEvaluationIT.RESULTS;
 
 import java.io.File;
 import java.io.IOException;

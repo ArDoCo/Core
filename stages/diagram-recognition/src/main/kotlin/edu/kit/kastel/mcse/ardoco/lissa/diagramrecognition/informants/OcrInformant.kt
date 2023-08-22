@@ -15,6 +15,7 @@ import org.apache.hc.core5.net.URIBuilder
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 import java.net.URI
+import java.util.*
 
 class OcrInformant(dataRepository: DataRepository) : ImageProcessingDockerInformant(
     DOCKER_OCR,
@@ -34,7 +35,7 @@ class OcrInformant(dataRepository: DataRepository) : ImageProcessingDockerInform
         const val EXPANSION_IN_PX = 5
     }
 
-    override fun delegateApplyConfigurationToInternalObjects(additionalConfiguration: MutableMap<String, String>?) {
+    override fun delegateApplyConfigurationToInternalObjects(additionalConfiguration: SortedMap<String, String>?) {
         // Not needed
     }
 

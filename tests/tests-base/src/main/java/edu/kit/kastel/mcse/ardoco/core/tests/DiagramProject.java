@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.tests;
 
 import java.io.File;
@@ -10,6 +11,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.ProjectHelper;
 
 public enum DiagramProject {
     TEASTORE(CodeProject.TEASTORE, "/diagrams/teastore/teastore-paper.png");
+
     private final CodeProject codeProject;
     private final String architectureDiagram;
 
