@@ -34,14 +34,14 @@ public class TextProcessor {
             logger.warn("Could not check if CoreNLP microservice is available. ", e);
         }
         if (ConfigManager.getInstance().getNlpProviderSource().equals("microservice") && microserviceAvailable) {
-            int k = 0;
-            while (k < MAX_FAILED_SERVICE_REQUESTS) {
+            int numberOfTry = 0;
+            while (numberOfTry < MAX_FAILED_SERVICE_REQUESTS) {
                 try {
                     Text processedText = processService(inputText);
                     logger.info("Processed text with CoreNLP microservice.");
                     return processedText;
                 } catch (IOException e) {
-                    k++;
+                    numberOfTry++;
                     logger.warn("Could not process text with CoreNLP microservice. Trying again. ", e);
                 } catch (NotConvertableException | InvalidJsonException e) {
                     logger.warn("Could not process text with CoreNLP microservice. Text not convertable. ", e);
