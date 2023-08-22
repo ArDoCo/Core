@@ -71,7 +71,7 @@
   </distributionManagement>
 
   <properties>
-    <revision>0.20.0-SNAPSHOT</revision>
+    <revision>0.21.0-SNAPSHOT</revision>
     <ardoco.version>${revision}</ardoco.version>
 
     <project.source.encoding>UTF-8</project.source.encoding>
@@ -564,10 +564,10 @@
         <configuration>
           <ruleSet>
             <rule>
-              <groupId>org.jetbrains.kotlin</groupId>
+              <groupId>*</groupId>
               <ignoreVersion>
                 <type>regex</type>
-                <version>.+-(alpha|Alpha|beta|Beta).*</version>
+                <version>.+-(alpha|Alpha|beta|Beta|RC).*</version>
               </ignoreVersion>
             </rule>
           </ruleSet>
