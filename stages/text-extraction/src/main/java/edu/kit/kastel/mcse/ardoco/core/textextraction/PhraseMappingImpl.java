@@ -19,10 +19,10 @@ import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.PhraseMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.PhraseMappingChangeListener;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.architecture.NoHashCodeEquals;
-import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
 
-@UserReviewedDeterministic
+@Deterministic
 @NoHashCodeEquals
 public final class PhraseMappingImpl implements PhraseMapping {
     /**

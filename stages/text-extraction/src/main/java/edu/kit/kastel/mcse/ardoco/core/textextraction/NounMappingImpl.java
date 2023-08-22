@@ -23,8 +23,8 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMappingChangeListener;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.architecture.NoHashCodeEquals;
-import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
 import edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions;
 import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
@@ -32,7 +32,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 /**
  * The Class NounMapping is a basic realization of {@link NounMapping}.
  */
-@UserReviewedDeterministic
+@Deterministic
 @NoHashCodeEquals
 public final class NounMappingImpl implements NounMapping {
 
@@ -47,8 +47,34 @@ public final class NounMappingImpl implements NounMapping {
     private boolean isDefinedAsCompound;
     private final Set<NounMappingChangeListener> changeListeners;
 
-    public static long getNextCreationTime() {
-        return CREATION_TIME_COUNTER.incrementAndGet();
+    /**
+     * Instantiates a new noun mapping. A new creation time will be generated.
+     *
+     * @param words          the list of words for this nounmapping
+     * @param kind           the kind of mapping
+     * @param claimant       the claimant that created this mapping
+     * @param probability    the confidence
+     * @param referenceWords the reference words
+     * @param surfaceForms   the surface forms
+     */
+    public NounMappingImpl(ImmutableSortedSet<Word> words, MappingKind kind, Claimant claimant, double probability, ImmutableList<Word> referenceWords,
+            ImmutableList<String> surfaceForms) {
+        this(CREATION_TIME_COUNTER.incrementAndGet(), words, kind, claimant, probability, referenceWords, surfaceForms);
+    }
+
+    /**
+     * Constructor. A new creation time will be generated.
+     *
+     * @param words          the words
+     * @param distribution   the distribution map (kind to confidence)
+     * @param referenceWords the reference words
+     * @param surfaceForms   the surface forms
+     * @param reference      the String reference
+     */
+
+    public NounMappingImpl(ImmutableSortedSet<Word> words, ImmutableSortedMap<MappingKind, Confidence> distribution, ImmutableList<Word> referenceWords,
+            ImmutableList<String> surfaceForms, String reference) {
+        this(CREATION_TIME_COUNTER.incrementAndGet(), words, distribution, referenceWords, surfaceForms, reference);
     }
 
     /**

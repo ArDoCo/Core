@@ -35,7 +35,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.Recommendatio
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
-import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 
@@ -43,7 +43,7 @@ import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
  * This record represents the result of running ArDoCo. It is backed by a {@link DataRepository} and grabs data from it. Besides accessing all data from the
  * calculation steps, this record also provides some convenience methods to directly access results such as found trace links and detected inconsistencies.
  */
-@UserReviewedDeterministic
+@Deterministic
 public record ArDoCoResult(DataRepository dataRepository) {
     private static final Logger logger = LoggerFactory.getLogger(ArDoCoResult.class);
 

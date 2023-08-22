@@ -12,7 +12,7 @@ import org.eclipse.collections.api.list.MutableList;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
-import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions;
 import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
@@ -20,7 +20,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 /**
  * An InstanceLink defines a link between an {@link RecommendedInstance} and an {@link ModelInstance}.
  */
-@UserReviewedDeterministic
+@Deterministic
 public class InstanceLink extends EndpointTuple {
 
     private final RecommendedInstance textualInstance;

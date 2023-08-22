@@ -19,14 +19,14 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.PhraseMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
-import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 
 /**
  * This class is a utility class.
  */
-@UserReviewedDeterministic
+@Deterministic
 public final class SimilarityUtils {
 
     private SimilarityUtils() {

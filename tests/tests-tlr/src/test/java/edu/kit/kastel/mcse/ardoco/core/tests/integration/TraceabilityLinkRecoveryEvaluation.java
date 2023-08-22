@@ -3,6 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
 import java.io.File;
 import java.util.EnumMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -158,8 +159,8 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
         ImmutableList<String> results = createTraceLinkStringList(arDoCoResult);
         Assertions.assertFalse(results.isEmpty());
 
-        Set<String> distinctTraceLinks = new java.util.LinkedHashSet<>(results.castToCollection());
-        Set<String> distinctGoldStandard = new java.util.LinkedHashSet<>(goldStandard.castToCollection());
+        Set<String> distinctTraceLinks = new LinkedHashSet<>(results.castToCollection());
+        Set<String> distinctGoldStandard = new LinkedHashSet<>(goldStandard.castToCollection());
 
         // True Positives are the trace links that are contained on both lists
         Set<String> truePositives = distinctTraceLinks.stream()

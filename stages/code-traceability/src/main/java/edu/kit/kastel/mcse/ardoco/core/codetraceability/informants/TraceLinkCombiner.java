@@ -14,12 +14,12 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadCodeTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadSamTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SamCodeTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TransitiveTraceLink;
-import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 
-@UserReviewedDeterministic
+@Deterministic
 public class TraceLinkCombiner extends Informant {
 
     public TraceLinkCombiner(DataRepository dataRepository) {

@@ -40,8 +40,8 @@ import com.tngtech.archunit.lang.ArchRule;
 import com.tngtech.archunit.lang.ConditionEvents;
 import com.tngtech.archunit.lang.SimpleConditionEvent;
 
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.architecture.NoHashCodeEquals;
-import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
 
 @AnalyzeClasses(packages = "edu.kit.kastel.mcse.ardoco.core")
 public class DeterministicArDoCoTest {
@@ -51,11 +51,11 @@ public class DeterministicArDoCoTest {
     @ArchTest
     public static final ArchRule forbidUnorderedSetsAndMaps = noClasses().that()
             .resideOutsideOfPackages("..tests..")
-            .and(areNotDirectlyAnnotatedWith(UserReviewedDeterministic.class))
+            .and(areNotDirectlyAnnotatedWith(Deterministic.class))
             .should()
-            .accessClassesThat(forbidden())
+            .accessClassesThat(areForbiddenClasses())
             .orShould()
-            .dependOnClassesThat(forbidden());
+            .dependOnClassesThat(areForbiddenClasses());
 
     private static DescribedPredicate<? super JavaClass> areNotDirectlyAnnotatedWith(Class<? extends Annotation> targetAnnotation) {
         return new DescribedPredicate<>("not directly annotated with " + targetAnnotation.getName()) {
@@ -72,7 +72,7 @@ public class DeterministicArDoCoTest {
         };
     }
 
-    private static DescribedPredicate<? super JavaClass> forbidden() {
+    private static DescribedPredicate<? super JavaClass> areForbiddenClasses() {
         Set<Class<?>> forbiddenClasses = Set.of(Set.class, HashSet.class, MutableSet.class, ImmutableSet.class, Sets.class, //
                 Map.class, HashMap.class, MutableMap.class, ImmutableMap.class, Maps.class //
         );
@@ -108,7 +108,7 @@ public class DeterministicArDoCoTest {
                     if (!method.getFullName().contains(javaClass.getFullName()))
                         continue;
                     if (method.getName().equals("hashCode") || method.getName().equals("equals")) {
-                        conditionEvents.add(new SimpleConditionEvent(method, true, "Class " + javaClass.getName() + " implements " + method.getFullName()));
+                        satisfied(conditionEvents, javaClass, "Class " + javaClass.getName() + " implements " + method.getFullName());
                     }
                 }
             }
@@ -126,8 +126,7 @@ public class DeterministicArDoCoTest {
             .should(implementEqualsAndHashCode());
 
     private static DescribedPredicate<? super JavaClass> directlyImplement(Class<?> targetClass) {
-        // TODO We have to walk the hierarchy to find out if a class implements an interface and if there is a direct implementation of hashCode and equals
-        return new DescribedPredicate<JavaClass>("directly implement " + targetClass.getName()) {
+        return new DescribedPredicate<>("directly implement " + targetClass.getName()) {
             @Override
             public boolean test(JavaClass javaClass) {
                 var directInterfaces = javaClass.getRawInterfaces();
@@ -160,13 +159,13 @@ public class DeterministicArDoCoTest {
                 }
 
                 if (equals && hashCode) {
-                    conditionEvents.add(new SimpleConditionEvent(javaClass, true, "Class " + javaClass.getName() + " implements equals and hashCode"));
+                    satisfied(conditionEvents, javaClass, "Class " + javaClass.getName() + " implements equals and hashCode");
                 } else if (equals) {
-                    conditionEvents.add(new SimpleConditionEvent(javaClass, false, "Class " + javaClass.getName() + " implements equals but not hashCode"));
+                    violated(conditionEvents, javaClass, "Class " + javaClass.getName() + " implements equals but not hashCode");
                 } else if (hashCode) {
-                    conditionEvents.add(new SimpleConditionEvent(javaClass, false, "Class " + javaClass.getName() + " implements hashCode but not equals"));
+                    violated(conditionEvents, javaClass, "Class " + javaClass.getName() + " implements hashCode but not equals");
                 } else {
-                    conditionEvents.add(new SimpleConditionEvent(javaClass, false, "Class " + javaClass.getName() + " implements neither equals nor hashCode"));
+                    violated(conditionEvents, javaClass, "Class " + javaClass.getName() + " implements neither equals nor hashCode");
                 }
             }
         };
@@ -215,16 +214,16 @@ public class DeterministicArDoCoTest {
                     if ((typeParameter instanceof JavaClass typeParameterClass) && typeParameterClass.getAllRawInterfaces()
                             .stream()
                             .anyMatch(i -> i.getFullName().equals(Comparable.class.getName()))) {
-                        conditionEvents.add(new SimpleConditionEvent(javaField, true, "Field " + javaField.getFullName() + " has a Comparable generic type"));
+
+                        satisfied(conditionEvents, javaField, "Field " + javaField.getFullName() + " has a Comparable generic type");
                     } else {
-                        conditionEvents.add(new SimpleConditionEvent(javaField, false, "Field " + javaField
-                                .getFullName() + " has a non-Comparable generic type"));
+                        violated(conditionEvents, javaField, "Field " + javaField.getFullName() + " has a non-Comparable generic type");
                     }
                 } else if (type instanceof JavaClass) {
                     // Classes generated from lambdas cannot be checked :(
                     logger.debug("Skipping field {}", javaField.getFullName());
                 } else {
-                    conditionEvents.add(new SimpleConditionEvent(javaField, false, "Field " + javaField.getFullName() + " is not a parameterized type"));
+                    violated(conditionEvents, javaField, "Field " + javaField.getFullName() + " is not a parameterized type");
                 }
             }
         };
@@ -235,35 +234,43 @@ public class DeterministicArDoCoTest {
             @Override
             public void check(JavaMethod javaMethod, ConditionEvents conditionEvents) {
                 var type = javaMethod.getReturnType();
-                if (type instanceof JavaParameterizedType parameterizedType) {
-                    var typeParameter = parameterizedType.getActualTypeArguments().get(0);
-                    if ((typeParameter instanceof JavaClass typeParameterClass) && typeParameterClass.getAllRawInterfaces()
+                if (!(type instanceof JavaParameterizedType parameterizedType)) {
+                    violated(conditionEvents, javaMethod, "Method " + javaMethod.getFullName() + " is not a parameterized type");
+                    return;
+                }
+
+                var typeParameter = parameterizedType.getActualTypeArguments().get(0);
+                if ((typeParameter instanceof JavaClass typeParameterClass) && typeParameterClass.getAllRawInterfaces()
+                        .stream()
+                        .anyMatch(i -> i.getFullName().equals(Comparable.class.getName()))) {
+
+                    satisfied(conditionEvents, javaMethod, "Method " + javaMethod.getFullName() + " has a Comparable generic type");
+                } else if ((typeParameter instanceof JavaWildcardType typeParameterWildCard)) {
+                    var upperBound = typeParameterWildCard.getUpperBounds().get(0);
+
+                    if (!(upperBound instanceof JavaClass upperBoundClass) || upperBoundClass.getAllRawInterfaces()
                             .stream()
-                            .anyMatch(i -> i.getFullName().equals(Comparable.class.getName()))) {
-                        conditionEvents.add(new SimpleConditionEvent(javaMethod, true, "Method " + javaMethod
-                                .getFullName() + " has a Comparable generic type"));
-                    } else if ((typeParameter instanceof JavaWildcardType typeParameterWildCard)) {
-                        var upperBound = typeParameterWildCard.getUpperBounds().get(0);
-
-                        if (!(upperBound instanceof JavaClass upperBoundClass) || upperBoundClass.getAllRawInterfaces()
-                                .stream()
-                                .noneMatch(i -> i.getFullName().equals(Comparable.class.getName()))) {
-                            conditionEvents.add(new SimpleConditionEvent(javaMethod, false, "Method " + javaMethod
-                                    .getFullName() + " has a non-Comparable generic type"));
-                            return;
-                        }
-
-                        conditionEvents.add(new SimpleConditionEvent(javaMethod, true, "Method " + javaMethod
-                                .getFullName() + " has a Comparable generic type"));
-                    } else {
-                        conditionEvents.add(new SimpleConditionEvent(javaMethod, false, "Method " + javaMethod
-                                .getFullName() + " has a non-Comparable generic type"));
+                            .noneMatch(i -> i.getFullName().equals(Comparable.class.getName()))) {
+                        violated(conditionEvents, javaMethod, "Method " + javaMethod.getFullName() + " has a non-Comparable generic type");
+                        return;
                     }
+
+                    satisfied(conditionEvents, javaMethod, "Method " + javaMethod.getFullName() + " has a Comparable generic type");
                 } else {
-                    conditionEvents.add(new SimpleConditionEvent(javaMethod, false, "Method " + javaMethod.getFullName() + " is not a parameterized type"));
+                    violated(conditionEvents, javaMethod, "Method " + javaMethod.getFullName() + " has a non-Comparable generic type");
                 }
             }
         };
+    }
+
+    private static void satisfied(ConditionEvents events, Object location, String message) {
+        var event = new SimpleConditionEvent(location, true, message);
+        events.add(event);
+    }
+
+    private static void violated(ConditionEvents events, Object location, String message) {
+        var event = new SimpleConditionEvent(location, false, message);
+        events.add(event);
     }
 
 }

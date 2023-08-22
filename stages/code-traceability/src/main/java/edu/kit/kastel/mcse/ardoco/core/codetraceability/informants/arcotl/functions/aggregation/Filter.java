@@ -5,13 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
-import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.computation.NodeResult;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.computation.computationtree.AggregationNode;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.computation.computationtree.Node;
 
 // filter every node after the first from the first
-@UserReviewedDeterministic
+@Deterministic
 public class Filter extends Matcher {
 
     private boolean filterAlways;

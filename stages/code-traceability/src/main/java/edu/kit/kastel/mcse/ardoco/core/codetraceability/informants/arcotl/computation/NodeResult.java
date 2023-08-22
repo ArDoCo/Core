@@ -15,13 +15,13 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUni
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.EndpointTuple;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SamCodeTraceLink;
-import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 
 /**
  * The result of a computation node. A computation node's final result are the
  * calculated {@link Confidence confidences} of every endpoint tuple.
  */
-@UserReviewedDeterministic
+@Deterministic
 public class NodeResult {
 
     private final Map<SamCodeEndpointTuple, Confidence> confidenceMap;

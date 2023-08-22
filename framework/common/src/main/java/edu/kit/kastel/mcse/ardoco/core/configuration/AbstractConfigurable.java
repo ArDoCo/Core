@@ -13,9 +13,9 @@ import java.util.TreeMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 
-@UserReviewedDeterministic
+@Deterministic
 public abstract class AbstractConfigurable implements IConfigurable {
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 

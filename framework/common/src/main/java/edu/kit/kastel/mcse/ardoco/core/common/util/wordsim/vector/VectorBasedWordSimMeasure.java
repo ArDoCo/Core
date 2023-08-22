@@ -5,7 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
 
 /**
@@ -13,7 +13,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
  * embeddings of passed words, a {@link WordVectorDataSource} is required. Instances of this class additionally manage a
  * cache to improve lookup speeds.
  */
-@UserReviewedDeterministic
+@Deterministic
 public abstract class VectorBasedWordSimMeasure implements WordSimMeasure {
 
     private static final float[] ZERO_VECTOR = new float[0];

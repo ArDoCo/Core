@@ -8,7 +8,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions;
 import edu.kit.kastel.mcse.ardoco.core.common.ICopyable;
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Triple;
@@ -18,7 +18,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
  * This class represents a confidence for a certain (intermediate) result.
  * Different {@link Claimant Claimants} can add their confidences that get aggregated via one of the {@link AggregationFunctions} to a single confidence value.
  */
-@UserReviewedDeterministic
+@Deterministic
 public final class Confidence implements Comparable<Confidence>, ICopyable<Confidence> {
 
     private final AggregationFunctions confidenceAggregator;

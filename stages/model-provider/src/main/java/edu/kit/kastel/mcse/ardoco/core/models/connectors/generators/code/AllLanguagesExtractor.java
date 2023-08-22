@@ -11,11 +11,11 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItem;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItemRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.ProgrammingLanguage;
-import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.java.JavaExtractor;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.shell.ShellExtractor;
 
-@UserReviewedDeterministic
+@Deterministic
 public final class AllLanguagesExtractor extends CodeExtractor {
 
     private final Map<ProgrammingLanguage, CodeExtractor> codeExtractors;

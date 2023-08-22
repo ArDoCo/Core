@@ -39,13 +39,13 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.ControlElement;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.Datatype;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.InterfaceUnit;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.ProgrammingLanguage;
-import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.java.finder.EnumDeclarationFinder;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.java.finder.MethodDeclarationFinder;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.java.finder.TypeDeclarationFinder;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.java.finder.TypeFinder;
 
-@UserReviewedDeterministic
+@Deterministic
 public final class JavaModel {
 
     private final CodeItemRepository codeItemRepository;

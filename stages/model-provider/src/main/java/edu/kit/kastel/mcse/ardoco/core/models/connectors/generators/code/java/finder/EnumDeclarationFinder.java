@@ -8,9 +8,9 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.EnumDeclaration;
 
-import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 
-@UserReviewedDeterministic
+@Deterministic
 public class EnumDeclarationFinder extends ASTVisitor {
 
     private Set<EnumDeclaration> enumDeclarations = new LinkedHashSet<>();

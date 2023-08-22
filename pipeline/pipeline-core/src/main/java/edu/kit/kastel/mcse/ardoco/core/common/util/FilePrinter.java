@@ -49,12 +49,12 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
-import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 
 /**
  * The Class FilePrinter contains some helpers for stats.
  */
-@UserReviewedDeterministic
+@Deterministic
 public final class FilePrinter {
     private static final String DELIMITER = ",";
 

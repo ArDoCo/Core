@@ -23,13 +23,13 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.CodeModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItemRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModel;
-import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.CodeExtractor;
 
 /**
  * An extractor for Java. Extracts a CMTL instance.
  */
-@UserReviewedDeterministic
+@Deterministic
 public final class JavaExtractor extends CodeExtractor {
 
     private CodeModel extractedModel = null;

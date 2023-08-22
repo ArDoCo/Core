@@ -12,10 +12,10 @@ import org.eclipse.collections.impl.factory.Sets;
 import edu.kit.kastel.mcse.ardoco.core.api.codetraceability.CodeTraceabilityState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadCodeTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SamCodeTraceLink;
-import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.data.AbstractState;
 
-@UserReviewedDeterministic
+@Deterministic
 public class CodeTraceabilityStateImpl extends AbstractState implements CodeTraceabilityState {
 
     private transient MutableList<SamCodeTraceLink> samCodeTraceLinks = Lists.mutable.empty();

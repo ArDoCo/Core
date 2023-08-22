@@ -20,12 +20,12 @@ import org.reflections.Reflections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.configuration.AbstractConfigurable;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.configuration.ConfigurationInstantiatorUtils;
 
-@UserReviewedDeterministic
+@Deterministic
 public class ConfigurationHelper {
     private static final Logger logger = LoggerFactory.getLogger(ConfigurationHelper.class);
 

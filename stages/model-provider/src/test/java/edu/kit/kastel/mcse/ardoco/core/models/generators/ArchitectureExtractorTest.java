@@ -14,9 +14,9 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.Architectu
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureInterface;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureModel;
-import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 
-@UserReviewedDeterministic
+@Deterministic
 public class ArchitectureExtractorTest {
 
     private static final Logger logger = LoggerFactory.getLogger(ArchitectureExtractorTest.class);

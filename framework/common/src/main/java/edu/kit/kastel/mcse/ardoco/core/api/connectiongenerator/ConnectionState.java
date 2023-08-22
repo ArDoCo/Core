@@ -1,23 +1,23 @@
 /* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator;
 
-import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.set.ImmutableSet;
+import org.eclipse.collections.api.set.MutableSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.InstanceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadSamTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.configuration.IConfigurable;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 /**
  * The Interface IConnectionState.
  */
-@UserReviewedDeterministic
+@Deterministic
 public interface ConnectionState extends IConfigurable {
 
     /**
@@ -66,7 +66,7 @@ public interface ConnectionState extends IConfigurable {
      * @return list of tracelinks within this connection state
      */
     default ImmutableSet<SadSamTraceLink> getTraceLinks() {
-        MutableList<SadSamTraceLink> traceLinks = Lists.mutable.empty();
+        MutableSet<SadSamTraceLink> traceLinks = Sets.mutable.empty();
         for (var instanceLink : getInstanceLinks()) {
             var textualInstance = instanceLink.getTextualInstance();
             for (var nm : textualInstance.getNameMappings()) {
@@ -76,7 +76,7 @@ public interface ConnectionState extends IConfigurable {
                 }
             }
         }
-        return traceLinks.toImmutableSet();
+        return traceLinks.toImmutable();
     }
 
     /**

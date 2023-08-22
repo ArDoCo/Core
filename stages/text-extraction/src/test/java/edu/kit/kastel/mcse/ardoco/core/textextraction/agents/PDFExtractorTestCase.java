@@ -16,13 +16,13 @@ import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 
 /**
  * Not a test, but it extracts the data from the downloaded pdfs.
  */
 @EnabledIfEnvironmentVariable(matches = "true", named = "ExtractPDF")
-@UserReviewedDeterministic
+@Deterministic
 class PDFExtractorTestCase {
 
     @Test

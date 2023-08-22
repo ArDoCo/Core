@@ -14,7 +14,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.Architectu
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureMethod;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureModel;
-import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.ArchitectureExtractor;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.pcm.parser.PcmComponent;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.pcm.parser.PcmInterface;
@@ -26,7 +26,7 @@ import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture
 /**
  * An extractor for PCM. Extracts an AMTL instance.
  */
-@UserReviewedDeterministic
+@Deterministic
 public final class PcmExtractor extends ArchitectureExtractor {
 
     public PcmExtractor(String path) {

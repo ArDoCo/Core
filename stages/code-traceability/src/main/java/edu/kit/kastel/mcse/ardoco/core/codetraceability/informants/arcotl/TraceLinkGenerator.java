@@ -8,7 +8,7 @@ import java.util.Set;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SamCodeTraceLink;
-import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.computation.Computation;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.computation.computationtree.Node;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.aggregation.Filter;
@@ -25,7 +25,7 @@ import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functi
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.heuristics.Required;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.heuristics.SubpackageFilter;
 
-@UserReviewedDeterministic
+@Deterministic
 public final class TraceLinkGenerator {
 
     private static final Node interfaceName = new ComponentNameResemblance(ComponentNameResemblance.NameConfig.INTERFACE,

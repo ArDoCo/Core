@@ -16,13 +16,13 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUni
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.EndpointTuple;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadCodeTraceLink;
-import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.CodeTraceabilityStateImpl;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 
-@UserReviewedDeterministic
+@Deterministic
 public class ArchitectureLinkToCodeLinkTransformerInformant extends Informant {
 
     public ArchitectureLinkToCodeLinkTransformerInformant(DataRepository dataRepository) {

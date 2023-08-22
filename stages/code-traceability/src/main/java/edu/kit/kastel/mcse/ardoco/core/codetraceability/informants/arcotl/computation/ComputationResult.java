@@ -8,7 +8,7 @@ import java.util.Set;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.EndpointTuple;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SamCodeTraceLink;
-import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.computation.computationtree.Node;
 
 /**
@@ -16,7 +16,7 @@ import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.comput
  * combination of computation node and endpoint tuple to exactly one
  * {@link Confidence confidence}.
  */
-@UserReviewedDeterministic
+@Deterministic
 public class ComputationResult {
 
     private final Map<Node, NodeResult> resultMap;

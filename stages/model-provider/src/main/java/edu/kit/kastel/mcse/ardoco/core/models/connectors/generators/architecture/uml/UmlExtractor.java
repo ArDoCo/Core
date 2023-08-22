@@ -14,7 +14,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.Architectu
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureMethod;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureModel;
-import edu.kit.kastel.mcse.ardoco.core.architecture.UserReviewedDeterministic;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.ArchitectureExtractor;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.uml.parser.UmlComponent;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.uml.parser.UmlInterface;
@@ -24,7 +24,7 @@ import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture
 /**
  * An extractor for UML. Extracts an AMTL instance.
  */
-@UserReviewedDeterministic
+@Deterministic
 public final class UmlExtractor extends ArchitectureExtractor {
 
     public UmlExtractor(String path) {
