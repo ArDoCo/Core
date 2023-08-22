@@ -11,7 +11,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
  * Inconsistency-Checker.
  * <p>
  * Implementing classes need to implement {@link #initializeState()} that cares for setting up the state for processing.
- * Additionally, implementing classes need to implement {@link #getEnabledAgents()} that returns the listof enabled {@link PipelineAgent pipeline agents}
+ * Additionally, implementing classes need to implement {@link #getEnabledAgentIds()}} and {@link #getAllAgents()}.
  */
 public abstract class AbstractExecutionStage extends Pipeline {
 
@@ -37,8 +37,11 @@ public abstract class AbstractExecutionStage extends Pipeline {
     protected final void initialize() {
         initializeState();
 
-        for (var agent : getEnabledAgents()) {
-            this.addPipelineStep(agent);
+        var enabledAgentsIds = getEnabledAgentIds();
+        for (var agent : getAllAgents()) {
+            if (enabledAgentsIds.contains(agent.getId())) {
+                this.addPipelineStep(agent);
+            }
         }
     }
 
@@ -50,7 +53,14 @@ public abstract class AbstractExecutionStage extends Pipeline {
     /**
      * Return the enabled {@link PipelineAgent agents}
      *
+     * @return the list of agents ids
+     */
+    protected abstract List<String> getEnabledAgentIds();
+
+    /**
+     * Return the list of {@link PipelineAgent agents} that can be executed by this pipeline
+     *
      * @return the list of agents
      */
-    protected abstract List<PipelineAgent> getEnabledAgents();
+    protected abstract List<PipelineAgent> getAllAgents();
 }

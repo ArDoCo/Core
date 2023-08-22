@@ -25,18 +25,6 @@ public abstract class AbstractConfigurable implements IConfigurable {
 
     private SortedMap<String, String> lastAppliedConfiguration = new TreeMap<>();
 
-    protected final <E> List<E> findByClassName(List<String> selected, List<E> instances) {
-        List<E> target = new ArrayList<>(0);
-        for (var clazz : selected) {
-            var elem = instances.stream()
-                    .filter(e -> e.getClass().getSimpleName().equals(clazz))
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalArgumentException("Could not find " + clazz));
-            target.add(elem);
-        }
-        return target;
-    }
-
     @Override
     public final void applyConfiguration(SortedMap<String, String> additionalConfiguration) {
         applyConfiguration(additionalConfiguration, this.getClass());

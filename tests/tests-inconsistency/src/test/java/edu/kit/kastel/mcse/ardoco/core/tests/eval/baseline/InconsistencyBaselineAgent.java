@@ -17,7 +17,12 @@ public class InconsistencyBaselineAgent extends PipelineAgent {
     }
 
     @Override
-    protected List<Informant> getEnabledPipelineSteps() {
+    protected List<String> getEnabledPipelineStepIds() {
+        return List.of(InconsistencyBaselineInformant.class.getSimpleName());
+    }
+
+    @Override
+    protected List<Informant> getAllPipelineSteps() {
         return List.of(new InconsistencyBaselineInformant(getDataRepository()));
     }
 }

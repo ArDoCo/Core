@@ -73,7 +73,12 @@ public class ModelProviderAgent extends PipelineAgent {
     }
 
     @Override
-    protected List<Informant> getEnabledPipelineSteps() {
-        return new ArrayList<>(informants);
+    protected List<String> getEnabledPipelineStepIds() {
+        return informants.stream().map(Informant::getId).toList();
+    }
+
+    @Override
+    protected List<Informant> getAllPipelineSteps() {
+        return informants;
     }
 }

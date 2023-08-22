@@ -16,6 +16,7 @@ import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.AllLanguagesExtractor;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.CodeExtractor;
 import edu.kit.kastel.mcse.ardoco.core.models.informants.ArCoTLModelProviderInformant;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
 
@@ -60,7 +61,12 @@ public class ArCoTLModelProviderAgent extends PipelineAgent {
     }
 
     @Override
-    protected List<Informant> getEnabledPipelineSteps() {
-        return new ArrayList<>(informants);
+    protected List<Informant> getAllPipelineSteps() {
+        return informants;
+    }
+
+    @Override
+    protected List<String> getEnabledPipelineStepIds() {
+        return informants.stream().map(AbstractPipelineStep::getId).toList();
     }
 }

@@ -46,8 +46,13 @@ public class SadCodeTraceabilityLinkRecovery extends AbstractExecutionStage {
     }
 
     @Override
-    protected List<PipelineAgent> getEnabledAgents() {
-        return findByClassName(enabledAgents, agents);
+    public List<String> getEnabledAgentIds() {
+        return enabledAgents;
+    }
+
+    @Override
+    protected List<PipelineAgent> getAllAgents() {
+        return this.agents;
     }
 
     @Override

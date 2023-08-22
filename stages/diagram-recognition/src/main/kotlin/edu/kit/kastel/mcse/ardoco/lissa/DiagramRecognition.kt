@@ -8,7 +8,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.agents.DiagramRecognitionAgent
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.model.DiagramImpl
-import java.util.*
+import java.util.SortedMap
 
 class DiagramRecognition : AbstractExecutionStage {
 
@@ -55,9 +55,9 @@ class DiagramRecognition : AbstractExecutionStage {
         dataRepository.addData(DiagramRecognitionState.ID, diagramRecognitionState)
     }
 
-    override fun getEnabledAgents(): MutableList<PipelineAgent> {
-        return findByClassName(enabledAgents, agents)
-    }
+    public override fun getEnabledAgentIds(): List<String> = enabledAgents
+
+    override fun getAllAgents(): List<PipelineAgent> = agents
 
     override fun delegateApplyConfigurationToInternalObjects(additionalConfiguration: SortedMap<String?, String?>) {
         super.delegateApplyConfigurationToInternalObjects(additionalConfiguration)

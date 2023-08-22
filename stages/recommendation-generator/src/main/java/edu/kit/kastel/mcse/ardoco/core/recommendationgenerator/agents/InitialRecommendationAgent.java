@@ -27,8 +27,13 @@ public class InitialRecommendationAgent extends PipelineAgent {
     }
 
     @Override
-    protected List<Informant> getEnabledPipelineSteps() {
-        return findByClassName(enabledInformants, informants);
+    protected List<String> getEnabledPipelineStepIds() {
+        return enabledInformants;
+    }
+
+    @Override
+    protected List<Informant> getAllPipelineSteps() {
+        return informants;
     }
 
     @Override

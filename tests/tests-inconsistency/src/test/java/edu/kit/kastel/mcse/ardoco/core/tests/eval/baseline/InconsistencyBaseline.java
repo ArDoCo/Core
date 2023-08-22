@@ -22,7 +22,12 @@ public class InconsistencyBaseline extends AbstractExecutionStage {
     }
 
     @Override
-    protected List<PipelineAgent> getEnabledAgents() {
+    public List<String> getEnabledAgentIds() {
+        return List.of(InconsistencyBaselineAgent.class.getSimpleName());
+    }
+
+    @Override
+    protected List<PipelineAgent> getAllAgents() {
         return List.of(new InconsistencyBaselineAgent(getDataRepository()));
     }
 }

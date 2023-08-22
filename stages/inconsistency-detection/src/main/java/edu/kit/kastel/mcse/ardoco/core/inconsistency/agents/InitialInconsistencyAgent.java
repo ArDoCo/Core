@@ -48,8 +48,13 @@ public class InitialInconsistencyAgent extends PipelineAgent {
     }
 
     @Override
-    protected List<Informant> getEnabledPipelineSteps() {
-        return findByClassName(enabledFilters, filters);
+    protected List<String> getEnabledPipelineStepIds() {
+        return enabledFilters;
+    }
+
+    @Override
+    protected List<Informant> getAllPipelineSteps() {
+        return filters;
     }
 
     @Override
