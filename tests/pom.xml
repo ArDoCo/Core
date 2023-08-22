@@ -29,7 +29,7 @@
     <dependency>
       <groupId>com.tngtech.archunit</groupId>
       <artifactId>archunit-junit5</artifactId>
-      <version>1.0.1</version>
+      <version>1.1.0</version>
       <scope>test</scope>
     </dependency>
 
@@ -85,6 +85,15 @@
       </modules>
     </profile>
 
+    <profile>
+      <id>deployment</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <modules>
+        <module>tests-base</module>
+      </modules>
+    </profile>
     <profile>
       <!-- Traceability Link Recovery -->
       <id>tlr</id>

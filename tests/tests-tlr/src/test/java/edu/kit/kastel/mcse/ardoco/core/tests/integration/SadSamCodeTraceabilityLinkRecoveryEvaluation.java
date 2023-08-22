@@ -4,27 +4,23 @@ package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 import static edu.kit.kastel.mcse.ardoco.core.tests.integration.TraceLinkEvaluationIT.OUTPUT;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.CodeModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.EndpointTuple;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadSamTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
+import edu.kit.kastel.mcse.ardoco.core.common.util.TraceLinkUtilities;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCoForSadSamCodeTraceabilityLinkRecovery;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.ArDoCoRunner;
-import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.CodeProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
@@ -33,7 +29,7 @@ class SadSamCodeTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecov
 
     @Override
     protected boolean resultHasRequiredData(ArDoCoResult arDoCoResult) {
-        var traceLinks = arDoCoResult.getTransitiveTraceLinks();
+        var traceLinks = arDoCoResult.getSadCodeTraceLinks();
         return !traceLinks.isEmpty();
     }
 
@@ -44,7 +40,7 @@ class SadSamCodeTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecov
         File textInput = textProject.getTextFile();
         File inputArchitectureModel = codeProject.getProject().getModelFile();
         File inputCode = getInputCode(codeProject);
-        Map<String, String> additionalConfigsMap = new HashMap<>();
+        SortedMap<String, String> additionalConfigsMap = new TreeMap<>();
         File outputDir = new File(OUTPUT);
 
         var runner = new ArDoCoForSadSamCodeTraceabilityLinkRecovery(name);
@@ -54,43 +50,19 @@ class SadSamCodeTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecov
 
     @Override
     protected ImmutableList<String> createTraceLinkStringList(ArDoCoResult arDoCoResult) {
-        var traceLinks = arDoCoResult.getTransitiveTraceLinks();
+        var traceLinks = arDoCoResult.getSadCodeTraceLinks();
 
-        MutableList<String> resultsMut = Lists.mutable.empty();
-        for (var traceLink : traceLinks) {
-            EndpointTuple endpointTuple = traceLink.getEndpointTuple();
-            var codeElement = (CodeCompilationUnit) endpointTuple.secondEndpoint();
-            String codeElementString = codeElement.toString() + "#" + codeElement.getName();
-
-            String sentenceNumber = String.valueOf(((SadSamTraceLink) traceLink.getFirstTraceLink()).getSentenceNumber() + 1);
-
-            String traceLinkString = TestUtil.createTraceLinkString(sentenceNumber, codeElementString);
-            resultsMut.add(traceLinkString);
-        }
-        return resultsMut.toImmutable();
+        return TraceLinkUtilities.getSadCodeTraceLinksAsStringList(Lists.immutable.ofAll(traceLinks));
     }
 
     @Override
     protected ImmutableList<String> getGoldStandard(CodeProject codeProject) {
-        MutableList<String> goldStandard = Lists.mutable.empty();
+        return codeProject.getSadCodeGoldStandard();
+    }
 
-        ImmutableList<String> samCodeGoldStandard = codeProject.getSamCodeGoldStandard();
-        ImmutableList<String> sadSamGoldStandard = codeProject.getProject().getTlrGoldStandard();
-
-        var samCodeGoldStandardMultiMap = samCodeGoldStandard.collect(tl -> tl.split(",")).groupBy(tl -> tl[0]).collectValues(tl -> tl[1]);
-        var sadSamGoldStandardMultiMap = sadSamGoldStandard.collect(tl -> tl.split(",")).groupBy(tl -> tl[0]).collectValues(tl -> tl[1]);
-
-        for (var modelId : sadSamGoldStandardMultiMap.keysView()) {
-            var sentenceNumbers = sadSamGoldStandardMultiMap.get(modelId);
-            for (var codeId : samCodeGoldStandardMultiMap.get(modelId)) {
-                for (var sentenceNumber : sentenceNumbers) {
-                    String traceLink = TestUtil.createTraceLinkString(String.valueOf(sentenceNumber), codeId);
-                    goldStandard.add(traceLink);
-                }
-            }
-        }
-
-        return goldStandard.sortThis().toImmutable();
+    @Override
+    protected ImmutableList<String> enrollGoldStandard(ImmutableList<String> goldStandard, ArDoCoResult result) {
+        return enrollGoldStandardForCode(goldStandard, result);
     }
 
     @Override

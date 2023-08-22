@@ -2,7 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator;
 
 import java.util.List;
-import java.util.Map;
+import java.util.SortedMap;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
@@ -50,7 +50,7 @@ public class ConnectionGenerator extends AbstractExecutionStage {
      * @param dataRepository    the data repository
      * @return an instance of connectionGenerator
      */
-    public static ConnectionGenerator get(Map<String, String> additionalConfigs, DataRepository dataRepository) {
+    public static ConnectionGenerator get(SortedMap<String, String> additionalConfigs, DataRepository dataRepository) {
         var connectionGenerator = new ConnectionGenerator(dataRepository);
         connectionGenerator.applyConfiguration(additionalConfigs);
         return connectionGenerator;
@@ -68,7 +68,7 @@ public class ConnectionGenerator extends AbstractExecutionStage {
     }
 
     @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+    protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration) {
         super.delegateApplyConfigurationToInternalObjects(additionalConfiguration);
         for (var agent : agents) {
             agent.applyConfiguration(additionalConfiguration);

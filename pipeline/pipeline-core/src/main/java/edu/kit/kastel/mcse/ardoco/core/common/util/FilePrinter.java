@@ -1,7 +1,11 @@
 /* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
-import static edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper.*;
+import static edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper.getConnectionStates;
+import static edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper.getInconsistencyStates;
+import static edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper.getModelStatesData;
+import static edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper.getRecommendationStates;
+import static edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper.getTextState;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.io.BufferedWriter;
@@ -13,8 +17,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -45,10 +49,12 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 
 /**
  * The Class FilePrinter contains some helpers for stats.
  */
+@Deterministic
 public final class FilePrinter {
     private static final String DELIMITER = ",";
 
@@ -65,9 +71,8 @@ public final class FilePrinter {
     }
 
     /**
-     * Prints details of the {@link ArDoCoResult results} of a run into files within the given directory (path).
-     * Writes out detailed info about model instances, noun mappings, trace links, all states, and inconsistencies.
-     * Uses the provided (project) name as part of the file names.
+     * Prints details of the {@link ArDoCoResult results} of a run into files within the given directory (path). Writes out detailed info about model instances,
+     * noun mappings, trace links, all states, and inconsistencies. Uses the provided (project) name as part of the file names.
      *
      * @param path         the directory where the files should be written
      * @param name         name of the project
@@ -225,10 +230,8 @@ public final class FilePrinter {
      *
      * @param resultFile          the result file
      * @param extractionState     the extraction state, containing the extracted elements of the model
-     * @param ntrState            the name type relation state, containing the mappings found in the text, sorted in
-     *                            name, type or name_or_type
-     * @param recommendationState the supposing state, containing the supposing mappings for instances, as well as
-     *                            relations
+     * @param ntrState            the name type relation state, containing the mappings found in the text, sorted in name, type or name_or_type
+     * @param recommendationState the supposing state, containing the supposing mappings for instances, as well as relations
      * @param connectionState     containing all instances and relations, matched by supposed mappings
      */
     public static void writeStatesToFile(File resultFile, ModelExtractionState extractionState, TextState ntrState, //
@@ -336,7 +339,7 @@ public final class FilePrinter {
         dataLines.add(new String[] { "" });
         dataLines.add(new String[] { "modelElementID", "sentence", "confidence" });
 
-        Set<SadSamTraceLink> tracelinks = new HashSet<>(connectionState.getTraceLinks().castToCollection());
+        Set<SadSamTraceLink> tracelinks = new java.util.LinkedHashSet<>(connectionState.getTraceLinks().castToCollection());
         for (var tracelink : tracelinks) {
             var modelElementUid = tracelink.getModelElementUid();
             // sentence offset is 1 because real sentences are 1-indexed
@@ -372,8 +375,7 @@ public final class FilePrinter {
     }
 
     /**
-     * Writes the given text to the file with the given name/path.
-     * Truncates existing files, creates the file if not existent and writes in UTF-8.
+     * Writes the given text to the file with the given name/path. Truncates existing files, creates the file if not existent and writes in UTF-8.
      *
      * @param filename the name/path of the file
      * @param text     the text to write
@@ -384,8 +386,7 @@ public final class FilePrinter {
     }
 
     /**
-     * Writes the given text to the given file (as path).
-     * Truncates existing files, creates the file if not existent and writes in UTF-8.
+     * Writes the given text to the given file (as path). Truncates existing files, creates the file if not existent and writes in UTF-8.
      *
      * @param file the path of the file
      * @param text the text to write
@@ -496,6 +497,50 @@ public final class FilePrinter {
         }
 
         writeToFile(file.toPath(), outputBuilder.toString());
+    }
+
+    public static void writeTraceLinksAsCsv(ArDoCoResult arDoCoResult, File outputDir) {
+        String name = arDoCoResult.getProjectName();
+        String header;
+
+        var sadSamTls = Lists.immutable.ofAll(arDoCoResult.getAllTraceLinks());
+        if (!sadSamTls.isEmpty()) {
+            var sadSamTlr = outputDir.toPath().resolve("sadSamTlr_" + name + ".csv");
+            header = "modelElementID,sentence";
+            var traceLinkStrings = TraceLinkUtilities.getSadSamTraceLinksAsStringList(sadSamTls);
+            writeTraceLinksToCsv(sadSamTlr, header, traceLinkStrings);
+        }
+
+        var samCodeTls = Lists.immutable.ofAll(arDoCoResult.getSamCodeTraceLinks());
+        if (!samCodeTls.isEmpty()) {
+            var samCodeTlr = outputDir.toPath().resolve("samCodeTlr_" + name + ".csv");
+            header = "sentenceID,codeID";
+            var traceLinkStrings = TraceLinkUtilities.getSamCodeTraceLinksAsStringList(samCodeTls);
+            writeTraceLinksToCsv(samCodeTlr, header, traceLinkStrings);
+        }
+
+        var sadCodeTls = Lists.immutable.ofAll(arDoCoResult.getSadCodeTraceLinks());
+        if (!sadCodeTls.isEmpty()) {
+            var sadCodeTlr = outputDir.toPath().resolve("sadCodeTlr_" + name + ".csv");
+            header = "modelElementID,codeId";
+            var traceLinkStrings = TraceLinkUtilities.getSadCodeTraceLinksAsStringList(sadCodeTls);
+            writeTraceLinksToCsv(sadCodeTlr, header, traceLinkStrings);
+        }
+
+    }
+
+    private static void writeTraceLinksToCsv(Path filePath, String header, ImmutableList<String> traceLinks) {
+        try {
+            Files.deleteIfExists(filePath);
+            Files.createFile(filePath);
+
+            Files.writeString(filePath, header + System.lineSeparator(), StandardOpenOption.APPEND);
+            for (String traceLink : traceLinks) {
+                Files.writeString(filePath, traceLink + System.lineSeparator(), StandardOpenOption.APPEND);
+            }
+        } catch (IOException e) {
+            logger.warn("An exception occurred when writing trace links to CSV file.", e);
+        }
     }
 
 }

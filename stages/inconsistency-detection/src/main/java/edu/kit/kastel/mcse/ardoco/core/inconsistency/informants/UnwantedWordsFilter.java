@@ -4,7 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.inconsistency.informants;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
+import java.util.SortedMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -111,7 +111,7 @@ public class UnwantedWordsFilter extends Filter {
     }
 
     @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> map) {
+    protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> map) {
         // nothing
     }
 

@@ -6,12 +6,14 @@ import java.util.Set;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SamCodeTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.computation.computationtree.Node;
 
 /**
  * A computation. Calculates the {@link Confidence confidences} and trace links
  * for a computation tree.
  */
+@Deterministic
 public class Computation {
 
     private final Node root;

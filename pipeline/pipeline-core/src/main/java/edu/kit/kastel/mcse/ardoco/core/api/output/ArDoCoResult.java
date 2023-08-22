@@ -1,7 +1,8 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.output;
 
-import java.util.HashMap;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +12,7 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.MutableSet;
+import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +27,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.TextInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadCodeTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadSamTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SamCodeTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TransitiveTraceLink;
@@ -32,14 +35,15 @@ import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.Recommendatio
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 
 /**
- * This record represents the result of running ArDoCo. It is backed by a {@link DataRepository} and grabs data from it.
- * Besides accessing all data from the calculation steps, this record also provides some convenience methods to directly
- * access results such as found trace links and detected inconsistencies.
+ * This record represents the result of running ArDoCo. It is backed by a {@link DataRepository} and grabs data from it. Besides accessing all data from the
+ * calculation steps, this record also provides some convenience methods to directly access results such as found trace links and detected inconsistencies.
  */
+@Deterministic
 public record ArDoCoResult(DataRepository dataRepository) {
     private static final Logger logger = LoggerFactory.getLogger(ArDoCoResult.class);
 
@@ -67,15 +71,15 @@ public record ArDoCoResult(DataRepository dataRepository) {
     }
 
     /**
-     * Returns the set of {@link SadSamTraceLink}s that were found for the Model with the given ID as strings in the format
-     * "ModelElementId,SentenceNo".
+     * Returns the set of {@link SadSamTraceLink}s that were found for the Model with the given ID as strings in the format "ModelElementId,SentenceNo".
      *
      * @param modelId the ID of the model that should be traced
      * @return Trace links for the model with the given id as Strings
      */
-    public ImmutableSet<String> getTraceLinksForModelAsStrings(String modelId) {
+    public ImmutableSortedSet<String> getTraceLinksForModelAsStrings(String modelId) {
         var formatString = "%s,%d";
-        return getTraceLinksForModel(modelId).collect(tl -> String.format(formatString, tl.getModelElementUid(), tl.getSentenceNumber() + 1));
+        return getTraceLinksForModel(modelId).collect(tl -> String.format(formatString, tl.getModelElementUid(), tl.getSentenceNumber() + 1))
+                .toImmutableSortedSet();
     }
 
     /**
@@ -93,12 +97,13 @@ public record ArDoCoResult(DataRepository dataRepository) {
     }
 
     /**
-     * Returns the set of {@link SadSamTraceLink}s as strings. The strings are beautified to have a human-readable format
+     * Returns the set of {@link SadSamTraceLink SadSamTraceLinks} as strings. The strings are beautified to have a human-readable format
      *
      * @return Trace links as Strings
      */
     public List<String> getAllTraceLinksAsBeautifiedStrings() {
-        return getAllTraceLinks().toSortedList(SadSamTraceLink::compareTo).collect(ArDoCoResult::formatTraceLinksHumanReadable);
+        return getAllTraceLinks().toSortedList(Comparator.comparingInt(SadSamTraceLink::getSentenceNumber))
+                .collect(ArDoCoResult::formatTraceLinksHumanReadable);
     }
 
     private static String formatTraceLinksHumanReadable(SadSamTraceLink traceLink) {
@@ -130,10 +135,10 @@ public record ArDoCoResult(DataRepository dataRepository) {
      *
      * @return the list of {@link TransitiveTraceLink TransitiveTraceLinks}.
      */
-    public List<TransitiveTraceLink> getTransitiveTraceLinks() {
+    public List<SadCodeTraceLink> getSadCodeTraceLinks() {
         var samCodeTraceabilityState = getCodeTraceabilityState();
         if (samCodeTraceabilityState != null)
-            return samCodeTraceabilityState.getTransitiveTraceLinks().toList();
+            return samCodeTraceabilityState.getSadCodeTraceLinks().toList();
         return List.of();
     }
 
@@ -152,8 +157,7 @@ public record ArDoCoResult(DataRepository dataRepository) {
     }
 
     /**
-     * Returns a list of {@link Inconsistency inconsistencies} that were found for the model with the given ID and that
-     * are of the given Inconsistency class.
+     * Returns a list of {@link Inconsistency inconsistencies} that were found for the model with the given ID and that are of the given Inconsistency class.
      *
      * @param modelId           the ID of the model
      * @param inconsistencyType type of the Inconsistency that should be returned
@@ -203,7 +207,7 @@ public record ArDoCoResult(DataRepository dataRepository) {
      * @return all InconsistentSentences
      */
     public ImmutableList<InconsistentSentence> getInconsistentSentences() {
-        Map<Integer, InconsistentSentence> incSentenceMap = new HashMap<>();
+        Map<Integer, InconsistentSentence> incSentenceMap = new LinkedHashMap<>();
 
         var inconsistencies = getAllTextInconsistencies();
         for (var inconsistency : inconsistencies) {

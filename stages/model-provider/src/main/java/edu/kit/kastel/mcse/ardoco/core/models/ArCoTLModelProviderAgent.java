@@ -4,9 +4,10 @@ package edu.kit.kastel.mcse.ardoco.core.models;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.SortedMap;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItemRepository;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.Extractor;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.ArchitectureExtractor;
@@ -41,19 +42,20 @@ public class ArCoTLModelProviderAgent extends PipelineAgent {
     }
 
     public static ArCoTLModelProviderAgent get(File inputArchitectureModel, ArchitectureModelType architectureModelType, File inputCode,
-            Map<String, String> additionalConfigs, DataRepository dataRepository) {
+            SortedMap<String, String> additionalConfigs, DataRepository dataRepository) {
         ArchitectureExtractor architectureExtractor = switch (architectureModelType) {
         case PCM -> new PcmExtractor(inputArchitectureModel.getAbsolutePath());
         case UML -> new UmlExtractor(inputArchitectureModel.getAbsolutePath());
         };
-        CodeExtractor codeExtractor = new AllLanguagesExtractor(inputCode.getAbsolutePath());
+        CodeItemRepository codeItemRepository = new CodeItemRepository();
+        CodeExtractor codeExtractor = new AllLanguagesExtractor(codeItemRepository, inputCode.getAbsolutePath());
         ArCoTLModelProviderAgent agent = new ArCoTLModelProviderAgent(dataRepository, List.of(architectureExtractor, codeExtractor));
         agent.applyConfiguration(additionalConfigs);
         return agent;
     }
 
     @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+    protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration) {
         // empty
     }
 

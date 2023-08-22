@@ -12,8 +12,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
-import java.util.Set;
+import java.util.SortedSet;
 import java.util.StringJoiner;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -232,14 +233,14 @@ public final class CommonUtilities {
      * @param modelState the model state
      * @return Set of identifiers for existing types
      */
-    public static Set<String> getTypeIdentifiers(ModelExtractionState modelState) {
-        Set<String> identifiers = modelState.getInstanceTypes()
+    public static SortedSet<String> getTypeIdentifiers(ModelExtractionState modelState) {
+        SortedSet<String> identifiers = modelState.getInstanceTypes()
                 .stream()
                 .map(CommonUtilities::splitSnakeAndKebabCase)
                 .map(CommonUtilities::splitCamelCase)
                 .map(type -> type.split(" "))
                 .flatMap(Arrays::stream)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toCollection(TreeSet::new));
         identifiers.addAll(modelState.getInstanceTypes().toSet());
         return identifiers;
     }

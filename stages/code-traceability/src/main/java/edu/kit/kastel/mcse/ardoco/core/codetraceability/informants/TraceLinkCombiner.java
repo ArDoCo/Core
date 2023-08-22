@@ -1,7 +1,7 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants;
 
-import java.util.Map;
+import java.util.SortedMap;
 
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.set.ImmutableSet;
@@ -10,13 +10,16 @@ import org.eclipse.collections.api.set.MutableSet;
 import edu.kit.kastel.mcse.ardoco.core.api.codetraceability.CodeTraceabilityState;
 import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadCodeTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadSamTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SamCodeTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TransitiveTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 
+@Deterministic
 public class TraceLinkCombiner extends Informant {
 
     public TraceLinkCombiner(DataRepository dataRepository) {
@@ -25,7 +28,7 @@ public class TraceLinkCombiner extends Informant {
 
     @Override
     public void run() {
-        MutableSet<TransitiveTraceLink> transitiveTraceLinks = Sets.mutable.empty();
+        MutableSet<SadCodeTraceLink> transitiveTraceLinks = Sets.mutable.empty();
         CodeTraceabilityState codeTraceabilityState = DataRepositoryHelper.getCodeTraceabilityState(getDataRepository());
         ModelStates modelStatesData = DataRepositoryHelper.getModelStatesData(getDataRepository());
         ConnectionStates connectionStates = DataRepositoryHelper.getConnectionStates(getDataRepository());
@@ -43,12 +46,12 @@ public class TraceLinkCombiner extends Informant {
             transitiveTraceLinks.addAll(combinedLinks.toList());
         }
 
-        codeTraceabilityState.addTransitiveTraceLinks(transitiveTraceLinks);
+        codeTraceabilityState.addSadCodeTraceLinks(transitiveTraceLinks);
     }
 
-    private ImmutableSet<TransitiveTraceLink> combineToTransitiveTraceLinks(ImmutableSet<SadSamTraceLink> sadSamTraceLinks,
+    private ImmutableSet<SadCodeTraceLink> combineToTransitiveTraceLinks(ImmutableSet<SadSamTraceLink> sadSamTraceLinks,
             ImmutableSet<SamCodeTraceLink> samCodeTraceLinks) {
-        MutableSet<TransitiveTraceLink> transitiveTraceLinks = Sets.mutable.empty();
+        MutableSet<SadCodeTraceLink> transitiveTraceLinks = Sets.mutable.empty();
         for (var sadSamTraceLink : sadSamTraceLinks) {
             String modelElementUid = sadSamTraceLink.getModelElementUid();
             for (var samCodeTraceLink : samCodeTraceLinks) {
@@ -63,7 +66,7 @@ public class TraceLinkCombiner extends Informant {
     }
 
     @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+    protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration) {
         // empty
     }
 }

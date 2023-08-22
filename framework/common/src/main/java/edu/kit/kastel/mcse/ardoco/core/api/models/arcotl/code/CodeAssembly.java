@@ -1,7 +1,7 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code;
 
-import java.util.Set;
+import java.util.SortedSet;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
@@ -12,7 +12,7 @@ public class CodeAssembly extends CodeModule {
         // Jackson
     }
 
-    public CodeAssembly(String name, Set<? extends CodeItem> content) {
-        super(name, content);
+    public CodeAssembly(CodeItemRepository codeItemRepository, String name, SortedSet<? extends CodeItem> content) {
+        super(codeItemRepository, name, content);
     }
 }

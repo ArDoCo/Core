@@ -18,8 +18,9 @@ jobs:
     with:
       deploy: false
       with-submodules: true
+      runs-on: self-hosted
     secrets:
       OSSRH_USER: ""
       OSSRH_TOKEN: ""
-      GPG_KEY: ${{secrets.GPG_KEY}}
+      GPG_KEY: ""
 

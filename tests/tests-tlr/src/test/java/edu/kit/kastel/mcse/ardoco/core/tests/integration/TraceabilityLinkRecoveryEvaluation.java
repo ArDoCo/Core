@@ -3,20 +3,28 @@ package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
 import java.io.File;
 import java.util.EnumMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.collection.ImmutableCollection;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
 import org.junit.jupiter.api.Assertions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.kit.kastel.mcse.ardoco.core.api.models.CodeModelType;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.common.RepositoryHandler;
+import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
+import edu.kit.kastel.mcse.ardoco.core.common.util.TraceLinkUtilities;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.ArDoCoRunner;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.CodeProject;
@@ -26,7 +34,11 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ResultMatrix;
 
 public abstract class TraceabilityLinkRecoveryEvaluation {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    protected static final Logger logger = LoggerFactory.getLogger(TraceabilityLinkRecoveryEvaluation.class);
+    private static final String WARNING_NO_CODE_MODEL = "Could not get code model to enroll gold standard. Using not enrolled gold standard!";
+    // The path separator is to show that a code entry is not a class but rather a directory that ends with, currently, a "/" (unix style)
+    // If the path separator in the gold standards are changed, this needs to update
+    public static final String GOLD_STANDARD_PATH_SEPARATOR = "/";
 
     protected static Map<Project, ArDoCoResult> resultMap = new EnumMap<>(Project.class);
 
@@ -40,10 +52,11 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
         Assertions.assertNotNull(result);
 
         var goldStandard = getGoldStandard(codeProject);
+        goldStandard = enrollGoldStandard(goldStandard, result);
         var evaluationResults = calculateEvaluationResults(result, goldStandard);
 
         ExpectedResults expectedResults = getExpectedResults(codeProject);
-        TestUtil.logExtendedResultsWithExpected(logger, codeProject.name(), evaluationResults, expectedResults);
+        TestUtil.logExtendedResultsWithExpected(logger, this, codeProject.name(), evaluationResults, expectedResults);
         compareResults(evaluationResults, expectedResults);
         return result;
     }
@@ -52,11 +65,11 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
 
     protected File getInputCode(CodeProject codeProject) {
         File inputCode;
-        if (TraceLinkEvaluationIT.analyzeCodeDirectly) {
+        if (TraceLinkEvaluationIT.analyzeCodeDirectly.get()) {
             prepareCode(codeProject);
             inputCode = new File(codeProject.getCodeLocation());
         } else {
-            inputCode = new File(codeProject.getCodeModelLocation());
+            inputCode = new File(codeProject.getCodeModelDirectory());
         }
         return inputCode;
     }
@@ -66,14 +79,60 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
     private void prepareCode(CodeProject codeProject) {
         File codeLocation = new File(codeProject.getCodeLocation());
 
-        if (!codeLocation.exists()) {
-            RepositoryHandler.shallowCloneRepository(codeProject.getCodeRepository(), codeProject.getCodeLocation());
+        if (!codeLocation.exists() || Objects.requireNonNull(codeLocation.listFiles()).length == 0) {
+            RepositoryHandler.shallowCloneRepository(codeProject.getCodeRepository(), codeProject.getCodeLocation(), codeProject.getCommitHash());
         }
     }
 
     protected abstract ExpectedResults getExpectedResults(CodeProject codeProject);
 
     protected abstract ImmutableList<String> getGoldStandard(CodeProject codeProject);
+
+    protected abstract ImmutableList<String> enrollGoldStandard(ImmutableList<String> goldStandard, ArDoCoResult result);
+
+    protected static ImmutableList<String> enrollGoldStandardForCode(ImmutableList<String> goldStandard, ArDoCoResult result) {
+        MutableList<String> enrolledGoldStandard = Lists.mutable.empty();
+
+        Model codeModel;
+        try {
+            codeModel = DataRepositoryHelper.getModelStatesData(result.dataRepository()).getModel(CodeModelType.CODE_MODEL.getModelId());
+            if (codeModel == null) {
+                logger.warn(WARNING_NO_CODE_MODEL);
+                return goldStandard;
+            }
+        } catch (NoSuchElementException e) {
+            logger.warn(WARNING_NO_CODE_MODEL);
+            return goldStandard;
+        }
+
+        for (String traceLink : goldStandard) {
+            enrolledGoldStandard.addAll(enrollTraceLink(codeModel, traceLink));
+        }
+
+        return enrolledGoldStandard.toImmutable();
+    }
+
+    // This private method is currently only used to enroll the gold standard. If you decide to use it for enrolling something else, make sure that the assumptions hold
+    // The main assumption currently is: Paths to directories end with a "/".
+    private static List<String> enrollTraceLink(Model codeModel, String traceLink) {
+        MutableList<String> enrolledTraceLink = Lists.mutable.empty();
+
+        var splitTraceLink = traceLink.split(",");
+        var codeEntry = splitTraceLink[1].strip();
+        if (codeEntry.endsWith(GOLD_STANDARD_PATH_SEPARATOR)) {
+            for (var endpoint : codeModel.getEndpoints()) {
+                var endpointPath = endpoint.toString();
+                if (endpointPath.startsWith(codeEntry)) {
+                    var firstEntry = splitTraceLink[0].strip();
+                    String newTraceLink = TraceLinkUtilities.createTraceLinkString(firstEntry, endpointPath);
+                    enrolledTraceLink.add(newTraceLink);
+                }
+            }
+        } else {
+            enrolledTraceLink.add(traceLink);
+        }
+        return enrolledTraceLink;
+    }
 
     protected void compareResults(EvaluationResults<String> results, ExpectedResults expectedResults) {
         Assertions.assertAll(//
@@ -82,10 +141,9 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
                 () -> Assertions.assertTrue(results.recall() >= expectedResults.recall(), "Recall " + results
                         .recall() + " is below the expected minimum value " + expectedResults.recall()), //
                 () -> Assertions.assertTrue(results.f1() >= expectedResults.f1(), "F1 " + results
-                        .f1() + " is below the expected minimum value " + expectedResults.f1()));
-        Assertions.assertAll(//
-                () -> Assertions.assertTrue(results.accuracy() >= expectedResults.accuracy(), "Accuracy " + results
-                        .accuracy() + " is below the expected minimum value " + expectedResults.accuracy()), //
+                        .f1() + " is below the expected minimum value " + expectedResults.f1()), () -> Assertions.assertTrue(results
+                                .accuracy() >= expectedResults.accuracy(), "Accuracy " + results
+                                        .accuracy() + " is below the expected minimum value " + expectedResults.accuracy()), //
                 () -> Assertions.assertTrue(results.phiCoefficient() >= expectedResults.phiCoefficient(), "Phi coefficient " + results
                         .phiCoefficient() + " is below the expected minimum value " + expectedResults.phiCoefficient()));
     }
@@ -101,8 +159,8 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
         ImmutableList<String> results = createTraceLinkStringList(arDoCoResult);
         Assertions.assertFalse(results.isEmpty());
 
-        Set<String> distinctTraceLinks = new HashSet<>(results.castToCollection());
-        Set<String> distinctGoldStandard = new HashSet<>(goldStandard.castToCollection());
+        Set<String> distinctTraceLinks = new LinkedHashSet<>(results.castToCollection());
+        Set<String> distinctGoldStandard = new LinkedHashSet<>(goldStandard.castToCollection());
 
         // True Positives are the trace links that are contained on both lists
         Set<String> truePositives = distinctTraceLinks.stream()
@@ -131,7 +189,9 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
     protected abstract int getConfusionMatrixSum(ArDoCoResult arDoCoResult);
 
     private static boolean areTraceLinksMatching(String goldStandardTraceLink, String traceLink) {
-        return goldStandardTraceLink.equals(traceLink) || traceLink.startsWith(goldStandardTraceLink);
+        traceLink = traceLink.strip();
+        goldStandardTraceLink = goldStandardTraceLink.strip();
+        return (goldStandardTraceLink.equals(traceLink));
     }
 
     private static boolean isTraceLinkContainedInGoldStandard(String traceLink, Set<String> goldStandard) {

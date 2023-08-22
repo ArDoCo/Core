@@ -1,7 +1,10 @@
 /* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
-import static edu.kit.kastel.mcse.ardoco.core.tests.integration.TraceLinkEvaluationIT.*;
+import static edu.kit.kastel.mcse.ardoco.core.tests.integration.TraceLinkEvaluationIT.DATA_MAP;
+import static edu.kit.kastel.mcse.ardoco.core.tests.integration.TraceLinkEvaluationIT.OUTPUT;
+import static edu.kit.kastel.mcse.ardoco.core.tests.integration.TraceLinkEvaluationIT.PROJECT_RESULTS;
+import static edu.kit.kastel.mcse.ardoco.core.tests.integration.TraceLinkEvaluationIT.RESULTS;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +28,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.common.util.FilePrinter;
+import edu.kit.kastel.mcse.ardoco.core.common.util.TraceLinkUtilities;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCoForSadSamTraceabilityLinkRecovery;
 import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
@@ -38,8 +42,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TLRUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLGoldStandardFile;
 
 /**
- * Integration test that evaluates the traceability link recovery capabilities of ArDoCo. Runs on the projects that are
- * defined in the enum {@link Project}.
+ * Integration test that evaluates the traceability link recovery capabilities of ArDoCo. Runs on the projects that are defined in the enum {@link Project}.
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class SadSamTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryEvaluation {
@@ -85,10 +88,14 @@ class SadSamTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryE
     }
 
     @Override
+    protected ImmutableList<String> enrollGoldStandard(ImmutableList<String> goldStandard, ArDoCoResult result) {
+        return goldStandard;
+    }
+
+    @Override
     protected ImmutableList<String> createTraceLinkStringList(ArDoCoResult arDoCoResult) {
-        var modelIds = arDoCoResult.getModelIds();
-        var modelId = modelIds.stream().findFirst().orElseThrow();
-        return arDoCoResult.getTraceLinksForModelAsStrings(modelId).toImmutableList();
+        var sadSamTls = Lists.immutable.ofAll(arDoCoResult.getAllTraceLinks());
+        return TraceLinkUtilities.getSadSamTraceLinksAsStringList(sadSamTls);
     }
 
     @Override

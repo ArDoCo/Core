@@ -5,10 +5,13 @@ import java.util.Collection;
 
 import org.eclipse.collections.api.set.ImmutableSet;
 
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadCodeTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SamCodeTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TransitiveTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
 
+@Deterministic
 public interface CodeTraceabilityState extends PipelineStepData {
     String ID = "CodeTraceabilityState";
 
@@ -41,20 +44,20 @@ public interface CodeTraceabilityState extends PipelineStepData {
      * @param traceLink the trace link to add
      * @return whether the operation was successful
      */
-    boolean addTransitiveTraceLinks(TransitiveTraceLink traceLink);
+    boolean addSadCodeTraceLink(SadCodeTraceLink traceLink);
 
     /**
-     * Add a collection of {@link TransitiveTraceLink TransitiveTraceLinks} to this state.
+     * Add a collection of {@link SadCodeTraceLink SadCodeTraceLinks} to this state.
      *
      * @param traceLinks the trace links to add
      * @return whether the operation was successful
      */
-    boolean addTransitiveTraceLinks(Collection<TransitiveTraceLink> traceLinks);
+    boolean addSadCodeTraceLinks(Collection<SadCodeTraceLink> traceLinks);
 
     /**
      * Return a set of stored {@link TransitiveTraceLink TransitiveTraceLinks}.
      *
      * @return set of stored {@link TransitiveTraceLink TransitiveTraceLinks}
      */
-    ImmutableSet<TransitiveTraceLink> getTransitiveTraceLinks();
+    ImmutableSet<SadCodeTraceLink> getSadCodeTraceLinks();
 }

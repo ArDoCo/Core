@@ -2,7 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.codetraceability;
 
 import java.util.List;
-import java.util.Map;
+import java.util.SortedMap;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
@@ -30,7 +30,7 @@ public class SamCodeTraceabilityLinkRecovery extends AbstractExecutionStage {
         enabledAgents = agents.collect(Agent::getId);
     }
 
-    public static SamCodeTraceabilityLinkRecovery get(Map<String, String> additionalConfigs, DataRepository dataRepository) {
+    public static SamCodeTraceabilityLinkRecovery get(SortedMap<String, String> additionalConfigs, DataRepository dataRepository) {
         var samCodeTraceabilityLinkRecovery = new SamCodeTraceabilityLinkRecovery(dataRepository);
         samCodeTraceabilityLinkRecovery.applyConfiguration(additionalConfigs);
         return samCodeTraceabilityLinkRecovery;
@@ -51,7 +51,7 @@ public class SamCodeTraceabilityLinkRecovery extends AbstractExecutionStage {
     }
 
     @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+    protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration) {
         super.delegateApplyConfigurationToInternalObjects(additionalConfiguration);
         for (var agent : agents) {
             agent.applyConfiguration(additionalConfiguration);

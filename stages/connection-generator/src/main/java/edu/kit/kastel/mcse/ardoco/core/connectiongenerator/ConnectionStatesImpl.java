@@ -2,13 +2,12 @@
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator;
 
 import java.util.EnumMap;
-import java.util.Map;
 
 import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 
 public class ConnectionStatesImpl implements ConnectionStates {
-    private Map<Metamodel, ConnectionStateImpl> connectionStates;
+    private final EnumMap<Metamodel, ConnectionStateImpl> connectionStates;
 
     private ConnectionStatesImpl() {
         connectionStates = new EnumMap<>(Metamodel.class);

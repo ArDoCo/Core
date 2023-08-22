@@ -1,16 +1,19 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.java.finder;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
+
+@Deterministic
 public class MethodDeclarationFinder extends ASTVisitor {
 
-    private Set<MethodDeclaration> methodDeclarations = new HashSet<>();
+    private Set<MethodDeclaration> methodDeclarations = new LinkedHashSet<>();
 
     public static Set<MethodDeclaration> find(ASTNode node) {
         MethodDeclarationFinder finder = new MethodDeclarationFinder();

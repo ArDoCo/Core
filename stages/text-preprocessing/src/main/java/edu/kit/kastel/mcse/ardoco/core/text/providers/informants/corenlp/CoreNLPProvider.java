@@ -1,7 +1,7 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp;
 
-import java.util.Map;
+import java.util.SortedMap;
 
 import edu.kit.kastel.mcse.ardoco.core.api.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.text.NlpInformant;
@@ -57,7 +57,7 @@ public class CoreNLPProvider extends NlpInformant {
     }
 
     @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> map) {
+    protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> map) {
         // empty
     }
 }
