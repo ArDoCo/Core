@@ -2,33 +2,21 @@
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.agents;
 
 import java.util.List;
-import java.util.SortedMap;
-
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
-import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.informants.OccasionFilter;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.informants.RecommendedInstanceProbabilityFilter;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.informants.UnwantedWordsFilter;
-import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
 
 public class InitialInconsistencyAgent extends PipelineAgent {
-    private final MutableList<Informant> filters;
-
-    @Configurable
-    private List<String> enabledFilters;
 
     public InitialInconsistencyAgent(DataRepository dataRepository) {
-        super(InitialInconsistencyAgent.class.getSimpleName(), dataRepository);
+        super(List.of(new RecommendedInstanceProbabilityFilter(dataRepository), new OccasionFilter(dataRepository), new UnwantedWordsFilter(dataRepository)),
+                InitialInconsistencyAgent.class.getSimpleName(), dataRepository);
 
-        filters = Lists.mutable.of(new RecommendedInstanceProbabilityFilter(dataRepository), new OccasionFilter(dataRepository), new UnwantedWordsFilter(
-                dataRepository));
-        enabledFilters = filters.collect(Informant::getId);
     }
 
     @Override
@@ -45,20 +33,5 @@ public class InitialInconsistencyAgent extends PipelineAgent {
 
             inconsistencyState.addRecommendedInstances(recommendationState.getRecommendedInstances().toList());
         }
-    }
-
-    @Override
-    protected List<String> getEnabledPipelineStepIds() {
-        return enabledFilters;
-    }
-
-    @Override
-    protected List<Informant> getAllPipelineSteps() {
-        return filters;
-    }
-
-    @Override
-    protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration) {
-        filters.forEach(filter -> filter.applyConfiguration(additionalConfiguration));
     }
 }

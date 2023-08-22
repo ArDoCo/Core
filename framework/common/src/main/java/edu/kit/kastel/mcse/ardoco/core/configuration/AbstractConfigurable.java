@@ -27,7 +27,7 @@ public abstract class AbstractConfigurable implements IConfigurable {
 
     @Override
     public final void applyConfiguration(SortedMap<String, String> additionalConfiguration) {
-        applyConfiguration(additionalConfiguration, this.getClass());
+        applyConfiguration(additionalConfiguration, this, this.getClass());
         delegateApplyConfigurationToInternalObjects(additionalConfiguration);
         this.lastAppliedConfiguration = new TreeMap<>(additionalConfiguration);
     }
@@ -39,23 +39,40 @@ public abstract class AbstractConfigurable implements IConfigurable {
 
     protected abstract void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration);
 
-    private void applyConfiguration(SortedMap<String, String> additionalConfiguration, Class<?> currentClass) {
-        if (currentClass == Object.class || currentClass == AbstractConfigurable.class)
+    private void applyConfiguration(SortedMap<String, String> additionalConfiguration, AbstractConfigurable configurable, Class<?> currentClassInHierarchy) {
+        if (currentClassInHierarchy == Object.class || currentClassInHierarchy == AbstractConfigurable.class)
             return;
 
-        var fields = currentClass.getDeclaredFields();
+        if (currentClassInHierarchy.getAnnotation(NoConfiguration.class) != null) {
+            logger.debug("Skipping configuration for class {}", currentClassInHierarchy.getSimpleName());
+            return;
+        }
+
+        var fields = currentClassInHierarchy.getDeclaredFields();
         for (Field field : fields) {
             if (!field.isAnnotationPresent(Configurable.class)) {
                 continue;
             }
-            Configurable c = field.getAnnotation(Configurable.class);
-            String key = c.key().isBlank() ? (currentClass.getSimpleName() + CLASS_ATTRIBUTE_CONNECTOR + field.getName()) : c.key();
+            String key = getKeyOfField(configurable, currentClassInHierarchy, field);
             if (additionalConfiguration.containsKey(key)) {
                 setValue(field, additionalConfiguration.get(key));
             }
         }
 
-        applyConfiguration(additionalConfiguration, currentClass.getSuperclass());
+        applyConfiguration(additionalConfiguration, configurable, currentClassInHierarchy.getSuperclass());
+    }
+
+    public static String getKeyOfField(AbstractConfigurable configurable, Class<?> currentClassInHierarchy, Field field) {
+        Configurable c = field.getAnnotation(Configurable.class);
+        ChildClassConfigurable ccc = field.getAnnotation(ChildClassConfigurable.class);
+
+        if (ccc != null && !c.key().isBlank()) {
+            throw new IllegalStateException("You cannot define a key for a field that is marked as ChildClassConfigurable.");
+        }
+
+        String classOfDefinition = ccc == null ? currentClassInHierarchy.getSimpleName() : configurable.getClass().getSimpleName();
+
+        return c.key().isBlank() ? (classOfDefinition + CLASS_ATTRIBUTE_CONNECTOR + field.getName()) : c.key();
     }
 
     private void setValue(Field field, String value) {

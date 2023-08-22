@@ -2,7 +2,6 @@
 package edu.kit.kastel.mcse.ardoco.core.models;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
 
@@ -16,7 +15,6 @@ import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.AllLanguagesExtractor;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.CodeExtractor;
 import edu.kit.kastel.mcse.ardoco.core.models.informants.ArCoTLModelProviderInformant;
-import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
 
@@ -24,8 +22,6 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
  * Agent that provides information from models.
  */
 public class ArCoTLModelProviderAgent extends PipelineAgent {
-
-    private final List<Informant> informants;
 
     /**
      * Instantiates a new model provider agent.
@@ -35,11 +31,11 @@ public class ArCoTLModelProviderAgent extends PipelineAgent {
      * @param extractors the list of ModelConnectors that should be used
      */
     public ArCoTLModelProviderAgent(DataRepository data, List<Extractor> extractors) {
-        super(ArCoTLModelProviderAgent.class.getSimpleName(), data);
-        informants = new ArrayList<>();
-        for (var extractor : extractors) {
-            informants.add(new ArCoTLModelProviderInformant(data, extractor));
-        }
+        super(informants(data, extractors), ArCoTLModelProviderAgent.class.getSimpleName(), data);
+    }
+
+    private static List<? extends Informant> informants(DataRepository data, List<Extractor> extractors) {
+        return extractors.stream().map(e -> new ArCoTLModelProviderInformant(data, e)).toList();
     }
 
     public static ArCoTLModelProviderAgent get(File inputArchitectureModel, ArchitectureModelType architectureModelType, File inputCode,
@@ -58,15 +54,5 @@ public class ArCoTLModelProviderAgent extends PipelineAgent {
     @Override
     protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration) {
         // empty
-    }
-
-    @Override
-    protected List<Informant> getAllPipelineSteps() {
-        return informants;
-    }
-
-    @Override
-    protected List<String> getEnabledPipelineStepIds() {
-        return informants.stream().map(AbstractPipelineStep::getId).toList();
     }
 }

@@ -2,13 +2,10 @@
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents;
 
 import java.util.List;
-import java.util.SortedMap;
 
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.informants.ProjectNameInformant;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
-import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
 
 /**
@@ -17,10 +14,6 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
  * {@link RecommendedInstance} extremely improbable.
  */
 public class ProjectNameFilterAgent extends PipelineAgent {
-    private final List<Informant> informants;
-
-    @Configurable
-    private List<String> enabledInformants;
 
     /**
      * Create the agent.
@@ -28,24 +21,6 @@ public class ProjectNameFilterAgent extends PipelineAgent {
      * @param dataRepository the {@link DataRepository}
      */
     public ProjectNameFilterAgent(DataRepository dataRepository) {
-        super("ProjectNameFilterAgent", dataRepository);
-
-        informants = List.of(new ProjectNameInformant(dataRepository));
-        enabledInformants = informants.stream().map(e -> e.getClass().getSimpleName()).toList();
-    }
-
-    @Override
-    protected List<String> getEnabledPipelineStepIds() {
-        return enabledInformants;
-    }
-
-    @Override
-    protected List<Informant> getAllPipelineSteps() {
-        return informants;
-    }
-
-    @Override
-    protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration) {
-        informants.forEach(e -> e.applyConfiguration(additionalConfiguration));
+        super(List.of(new ProjectNameInformant(dataRepository)), "ProjectNameFilterAgent", dataRepository);
     }
 }

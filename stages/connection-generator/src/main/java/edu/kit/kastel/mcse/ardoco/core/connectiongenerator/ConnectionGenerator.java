@@ -4,19 +4,13 @@ package edu.kit.kastel.mcse.ardoco.core.connectiongenerator;
 import java.util.List;
 import java.util.SortedMap;
 
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.MutableList;
-
 import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionStates;
-import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents.InitialConnectionAgent;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents.InstanceConnectionAgent;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents.ProjectNameFilterAgent;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents.ReferenceAgent;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage;
-import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Agent;
-import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
 
 /**
  * The ModelConnectionAgent runs different analyzers and solvers. This agent creates recommendations as well as
@@ -25,22 +19,14 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
  */
 public class ConnectionGenerator extends AbstractExecutionStage {
 
-    private final MutableList<PipelineAgent> agents;
-
-    @Configurable
-    private List<String> enabledAgents;
-
     /**
      * Create the module.
      *
      * @param dataRepository the {@link DataRepository}
      */
     public ConnectionGenerator(DataRepository dataRepository) {
-        super("ConnectionGenerator", dataRepository);
-
-        agents = Lists.mutable.of(new InitialConnectionAgent(dataRepository), new ReferenceAgent(dataRepository), new ProjectNameFilterAgent(dataRepository),
-                new InstanceConnectionAgent(dataRepository));
-        enabledAgents = agents.collect(Agent::getId);
+        super(List.of(new InitialConnectionAgent(dataRepository), new ReferenceAgent(dataRepository), new ProjectNameFilterAgent(dataRepository),
+                new InstanceConnectionAgent(dataRepository)), "ConnectionGenerator", dataRepository);
     }
 
     /**
@@ -61,23 +47,4 @@ public class ConnectionGenerator extends AbstractExecutionStage {
         var connectionStates = ConnectionStatesImpl.build();
         getDataRepository().addData(ConnectionStates.ID, connectionStates);
     }
-
-    @Override
-    public List<String> getEnabledAgentIds() {
-        return enabledAgents;
-    }
-
-    @Override
-    protected List<PipelineAgent> getAllAgents() {
-        return this.agents;
-    }
-
-    @Override
-    protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration) {
-        super.delegateApplyConfigurationToInternalObjects(additionalConfiguration);
-        for (var agent : agents) {
-            agent.applyConfiguration(additionalConfiguration);
-        }
-    }
-
 }
