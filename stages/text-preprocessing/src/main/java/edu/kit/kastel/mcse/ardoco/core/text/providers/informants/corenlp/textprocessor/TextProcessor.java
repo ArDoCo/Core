@@ -33,7 +33,7 @@ public class TextProcessor {
             microserviceAvailable = false;
             logger.warn("Could not check if CoreNLP microservice is available. ", e);
         }
-        if (ConfigManager.getInstance().getProperty("nlpProviderSource").equals("microservice") && microserviceAvailable) {
+        if (ConfigManager.getInstance().getNlpProviderSource().equals("microservice") && microserviceAvailable) {
             int k = 0;
             while (k < MAX_FAILED_SERVICE_REQUESTS) {
                 try {

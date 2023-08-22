@@ -18,6 +18,10 @@ public class ConfigManager {
     private static ConfigManager instance;
     private final Properties properties;
     private static final String FILE_PATH = "config.properties";
+    private static final String PROPERTY_MICROSERVICE_URL = "microserviceUrl";
+    private static final String PROPERTY_NLP_PROVIDER_SOURCE = "nlpProviderSource";
+    private static final String PROPERTY_CORENLP_SERVICE = "corenlpService";
+    private static final String PROPERTY_HEALTH_SERVICE = "healthService";
 
     private ConfigManager() {
         properties = new Properties();
@@ -25,16 +29,16 @@ public class ConfigManager {
             properties.load(fileInputStream);
         } catch (IOException e) {
             logger.warn("Could not load config file. ", e);
-            properties.setProperty("microserviceUrl", "http://localhost:8080");
-            properties.setProperty("nlpProviderSource", "local");
-            properties.setProperty("corenlpService", "/stanfordnlp?text=");
-            properties.setProperty("healthService", "/stanfordnlp/health");
+            properties.setProperty(PROPERTY_MICROSERVICE_URL, "http://localhost:8080");
+            properties.setProperty(PROPERTY_NLP_PROVIDER_SOURCE, "local");
+            properties.setProperty(PROPERTY_CORENLP_SERVICE, "/stanfordnlp?text=");
+            properties.setProperty(PROPERTY_HEALTH_SERVICE, "/stanfordnlp/health");
         }
         if (System.getenv("MICROSERVICE_URL") != null) {
-            properties.setProperty("microserviceUrl", System.getenv("MICROSERVICE_URL"));
+            properties.setProperty(PROPERTY_MICROSERVICE_URL, System.getenv("MICROSERVICE_URL"));
         }
         if (System.getenv("NLP_PROVIDER_SOURCE") != null) {
-            properties.setProperty("nlpProviderSource", System.getenv("NLP_PROVIDER_SOURCE"));
+            properties.setProperty(PROPERTY_NLP_PROVIDER_SOURCE, System.getenv("NLP_PROVIDER_SOURCE"));
         }
     }
 
@@ -45,23 +49,20 @@ public class ConfigManager {
         return instance;
     }
 
-    /**
-     * gets the value of the given key in the config file
-     * 
-     * @param key the key
-     * @return the value
-     */
-    public String getProperty(String key) {
-        return properties.getProperty(key);
+    public String getMicroserviceUrl() {
+        return properties.getProperty(PROPERTY_MICROSERVICE_URL);
     }
 
-    /**
-     * sets the value of the given key in the config file
-     * 
-     * @param key   the key
-     * @param value the new value
-     */
-    public void setProperty(String key, String value) {
-        properties.setProperty(key, value);
+    public String getNlpProviderSource() {
+        return properties.getProperty(PROPERTY_NLP_PROVIDER_SOURCE);
     }
+
+    public String getCorenlpService() {
+        return properties.getProperty(PROPERTY_CORENLP_SERVICE);
+    }
+
+    public String getHealthService() {
+        return properties.getProperty(PROPERTY_HEALTH_SERVICE);
+    }
+
 }

@@ -38,7 +38,7 @@ public class TextProcessorService {
 
     private String sendCorenlpRequest(String inputText) throws IOException {
         inputText = URLEncoder.encode(inputText, StandardCharsets.UTF_8);
-        String requestUrl = ConfigManager.getInstance().getProperty("microserviceUrl") + ConfigManager.getInstance().getProperty("corenlpService") + inputText;
+        String requestUrl = ConfigManager.getInstance().getMicroserviceUrl() + ConfigManager.getInstance().getCorenlpService() + inputText;
         return sendAuthenticatedGetRequest(requestUrl);
     }
 

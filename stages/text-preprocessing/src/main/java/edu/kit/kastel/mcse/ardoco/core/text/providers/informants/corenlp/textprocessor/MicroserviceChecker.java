@@ -22,7 +22,7 @@ public final class MicroserviceChecker {
      * @return whether the microservice is available
      */
     public static boolean isMicroserviceAvailable() throws IOException {
-        String requestUrl = ConfigManager.getInstance().getProperty("microserviceUrl") + ConfigManager.getInstance().getProperty("healthService");
+        String requestUrl = ConfigManager.getInstance().getMicroserviceUrl() + ConfigManager.getInstance().getHealthService();
 
         String username = System.getenv("USERNAME");
         String password = System.getenv("PASSWORD");
