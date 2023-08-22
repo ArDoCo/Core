@@ -1,8 +1,8 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.heuristics;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureComponent;
@@ -22,8 +22,8 @@ public class Required extends DependentHeuristic {
         if (!getNodeResult().getConfidence(new EndpointTuple(archEndpoint, compUnit)).hasValue()) {
             return new Confidence();
         }
-        Set<ArchitectureComponent> allLinks = new HashSet<>();
-        Set<Entity> linkedEndpoints = getNodeResult().getLinkedEndpoints(compUnit);
+        SortedSet<ArchitectureComponent> allLinks = new TreeSet<>();
+        SortedSet<Entity> linkedEndpoints = getNodeResult().getLinkedEndpoints(compUnit);
         for (Entity linkedEndpoint : linkedEndpoints) {
             if (linkedEndpoint instanceof ArchitectureComponent comp) {
                 allLinks.add(comp);
@@ -39,7 +39,7 @@ public class Required extends DependentHeuristic {
     }
 
     // requiresComp requires (at least one of) providesComp
-    private static boolean hasRequired(ArchitectureComponent requiresComp, Set<ArchitectureComponent> providesComps) {
+    private static boolean hasRequired(ArchitectureComponent requiresComp, SortedSet<ArchitectureComponent> providesComps) {
         for (ArchitectureComponent providesComp : providesComps) {
             if (isRequired(requiresComp, providesComp)) {
                 return true;

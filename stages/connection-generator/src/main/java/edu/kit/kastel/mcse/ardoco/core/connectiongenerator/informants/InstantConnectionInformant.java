@@ -1,7 +1,7 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.informants;
 
-import java.util.Map;
+import java.util.SortedMap;
 
 import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
@@ -68,7 +68,7 @@ public class InstantConnectionInformant extends Informant {
     }
 
     @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> map) {
+    protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> map) {
         // empty
     }
 }

@@ -1,7 +1,7 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.heuristics;
 
-import java.util.Set;
+import java.util.SortedSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureComponent;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureInterface;
@@ -41,7 +41,7 @@ public class InheritLinks extends DependentHeuristic {
     }
 
     private Confidence inheritLinks(ArchitectureItem archEndpoint, Datatype codeType) {
-        Set<Datatype> extendedTypes = MethodResemblance.getAllExtendedTypes(codeType);
+        SortedSet<Datatype> extendedTypes = MethodResemblance.getAllExtendedTypes(codeType);
         MethodResemblance.getAllImplementedInterfaces(codeType).forEach(i -> extendedTypes.addAll(MethodResemblance.getAllExtendedTypes(i)));
 
         Confidence maxConfidence = new Confidence();

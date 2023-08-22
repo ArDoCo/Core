@@ -7,8 +7,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.stream.Stream;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -22,11 +23,13 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.CodeModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItemRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModel;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.CodeExtractor;
 
 /**
  * An extractor for Java. Extracts a CMTL instance.
  */
+@Deterministic
 public final class JavaExtractor extends CodeExtractor {
 
     private CodeModel extractedModel = null;
@@ -44,7 +47,7 @@ public final class JavaExtractor extends CodeExtractor {
     public synchronized CodeModel extractModel() {
         if (extractedModel == null) {
             Path directoryPath = Path.of(path);
-            Map<String, CompilationUnit> compUnitMap = parseDirectory(directoryPath);
+            SortedMap<String, CompilationUnit> compUnitMap = parseDirectory(directoryPath);
             JavaModel javaModel = new JavaModel(codeItemRepository, compUnitMap);
             this.extractedModel = javaModel.getCodeModel();
         }
@@ -56,12 +59,12 @@ public final class JavaExtractor extends CodeExtractor {
         return CodeModelType.CODE_MODEL;
     }
 
-    private static Map<String, CompilationUnit> parseDirectory(Path dir) {
+    private static SortedMap<String, CompilationUnit> parseDirectory(Path dir) {
         ASTParser parser = getJavaParser();
         final String[] sources = getEntries(dir, ".java");
         final String[] encodings = new String[sources.length];
         Arrays.fill(encodings, StandardCharsets.UTF_8.toString());
-        final Map<String, CompilationUnit> compilationUnits = new HashMap<>();
+        final SortedMap<String, CompilationUnit> compilationUnits = new TreeMap<>();
         parser.setEnvironment(new String[0], new String[0], new String[0], false);
         parser.createASTs(sources, encodings, new String[0], new FileASTRequestor() {
             @Override

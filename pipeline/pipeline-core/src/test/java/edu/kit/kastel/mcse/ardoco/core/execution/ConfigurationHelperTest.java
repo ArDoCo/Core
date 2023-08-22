@@ -3,14 +3,17 @@ package edu.kit.kastel.mcse.ardoco.core.execution;
 
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.configuration.AbstractConfigurable;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 
+@Deterministic
 class ConfigurationHelperTest {
 
     @Test
@@ -27,7 +30,7 @@ class ConfigurationHelperTest {
 
     @Test
     void testBasicConfigurable() throws Exception {
-        Map<String, String> configs = new TreeMap<>();
+        SortedMap<String, String> configs = new TreeMap<>();
         ConfigurationHelper.processConfigurationOfClass(configs, TestConfigurable.class);
         Assertions.assertEquals(5, configs.size());
 
@@ -45,7 +48,7 @@ class ConfigurationHelperTest {
         Assertions.assertEquals(TestConfigurable.MyEnum.B, t.testEnumNo);
 
         //@formatter:off
-        configs = Map.of(//
+        configs = new TreeMap<>(Map.of(//
                 TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testInt", "42", //
                 TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testIntNo", "42", //
                 TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testDouble", "48", //
@@ -57,7 +60,7 @@ class ConfigurationHelperTest {
                 TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testEnum", TestConfigurable.MyEnum.C.name(), //
                 TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testEnumNo", TestConfigurable.MyEnum.C.name()
 
-        );
+        ));
         //@formatter:on
 
         t.applyConfiguration(configs);
@@ -98,7 +101,7 @@ class ConfigurationHelperTest {
         }
 
         @Override
-        protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+        protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration) {
         }
 
         private enum MyEnum {

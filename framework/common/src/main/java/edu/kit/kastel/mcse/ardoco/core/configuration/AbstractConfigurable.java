@@ -6,13 +6,16 @@ import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
+
+@Deterministic
 public abstract class AbstractConfigurable implements IConfigurable {
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -20,7 +23,7 @@ public abstract class AbstractConfigurable implements IConfigurable {
     public static final String KEY_VALUE_CONNECTOR = "=";
     public static final String LIST_SEPARATOR = ",";
 
-    private Map<String, String> lastAppliedConfiguration = new HashMap<>();
+    private SortedMap<String, String> lastAppliedConfiguration = new TreeMap<>();
 
     protected final <E> List<E> findByClassName(List<String> selected, List<E> instances) {
         List<E> target = new ArrayList<>(0);
@@ -35,20 +38,20 @@ public abstract class AbstractConfigurable implements IConfigurable {
     }
 
     @Override
-    public final void applyConfiguration(Map<String, String> additionalConfiguration) {
+    public final void applyConfiguration(SortedMap<String, String> additionalConfiguration) {
         applyConfiguration(additionalConfiguration, this.getClass());
         delegateApplyConfigurationToInternalObjects(additionalConfiguration);
-        this.lastAppliedConfiguration = new HashMap<>(additionalConfiguration);
+        this.lastAppliedConfiguration = new TreeMap<>(additionalConfiguration);
     }
 
     @Override
-    public Map<String, String> getLastAppliedConfiguration() {
-        return Collections.unmodifiableMap(lastAppliedConfiguration);
+    public SortedMap<String, String> getLastAppliedConfiguration() {
+        return Collections.unmodifiableSortedMap(lastAppliedConfiguration);
     }
 
-    protected abstract void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration);
+    protected abstract void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration);
 
-    private void applyConfiguration(Map<String, String> additionalConfiguration, Class<?> currentClass) {
+    private void applyConfiguration(SortedMap<String, String> additionalConfiguration, Class<?> currentClass) {
         if (currentClass == Object.class || currentClass == AbstractConfigurable.class)
             return;
 

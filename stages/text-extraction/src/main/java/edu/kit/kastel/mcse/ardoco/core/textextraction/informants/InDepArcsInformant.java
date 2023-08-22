@@ -1,7 +1,7 @@
 /* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction.informants;
 
-import java.util.Map;
+import java.util.SortedMap;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.DependencyTag;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
@@ -81,7 +81,7 @@ public class InDepArcsInformant extends Informant {
     }
 
     @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+    protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration) {
         // emtpy
     }
 }

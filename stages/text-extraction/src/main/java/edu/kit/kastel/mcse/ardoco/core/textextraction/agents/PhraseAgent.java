@@ -2,7 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.textextraction.agents;
 
 import java.util.List;
-import java.util.Map;
+import java.util.SortedMap;
 
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
@@ -39,7 +39,7 @@ public class PhraseAgent extends PipelineAgent {
     }
 
     @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+    protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration) {
         informants.forEach(e -> e.applyConfiguration(additionalConfiguration));
     }
 

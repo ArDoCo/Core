@@ -1,10 +1,11 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
 
 /**
@@ -12,12 +13,13 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
  * embeddings of passed words, a {@link WordVectorDataSource} is required. Instances of this class additionally manage a
  * cache to improve lookup speeds.
  */
+@Deterministic
 public abstract class VectorBasedWordSimMeasure implements WordSimMeasure {
 
     private static final float[] ZERO_VECTOR = new float[0];
 
     private final WordVectorDataSource vectorDataSource;
-    private final Map<String, float[]> vectorCache = new HashMap<>();
+    private final Map<String, float[]> vectorCache = new LinkedHashMap<>();
 
     /**
      * Constructs a new {@link VectorBasedWordSimMeasure} instance

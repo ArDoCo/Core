@@ -6,8 +6,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
@@ -35,7 +36,7 @@ public class ChangedStatesTest {
 
     private static final String OUTPUT = "src/test/resources/testout";
     private static final Path OUTPUT_PATH = Path.of(OUTPUT);
-    private static final Map<Project, ArDoCoResult> DATA_MAP = new HashMap<>();
+    private static final Map<Project, ArDoCoResult> DATA_MAP = new LinkedHashMap<>();
     private static final String LOGGING_ARDOCO_CORE = "org.slf4j.simpleLogger.log.edu.kit.kastel.mcse.ardoco.core";
 
     @BeforeAll
@@ -60,7 +61,7 @@ public class ChangedStatesTest {
 
     private static ArDoCoResult getArDoCoResult(String name, File inputText, File inputModel) {
         var runner = new ArDoCoForInconsistencyDetection(name);
-        runner.setUp(inputText, inputModel, ArchitectureModelType.PCM, Map.of(), new File(OUTPUT));
+        runner.setUp(inputText, inputModel, ArchitectureModelType.PCM, new TreeMap<>(), new File(OUTPUT));
         return runner.run();
     }
 

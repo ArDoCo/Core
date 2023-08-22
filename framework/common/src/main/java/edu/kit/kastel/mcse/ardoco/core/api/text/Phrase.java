@@ -2,7 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.api.text;
 
 import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.map.ImmutableMap;
+import org.eclipse.collections.api.map.sorted.ImmutableSortedMap;
 
 public interface Phrase {
     int getSentenceNo();
@@ -19,5 +19,5 @@ public interface Phrase {
 
     boolean isSubPhraseOf(Phrase other);
 
-    ImmutableMap<Word, Integer> getPhraseVector();
+    ImmutableSortedMap<Word, Integer> getPhraseVector();
 }

@@ -1,9 +1,9 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.heuristics;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureComponent;
@@ -31,31 +31,31 @@ public class ProvidedInterfaceCorrespondence extends DependentHeuristic {
             return new Confidence();
         }
 
-        Set<Entity> interfaceLinks = new HashSet<>();
+        SortedSet<Entity> interfaceLinks = new TreeSet<>();
         for (ArchitectureInterface providedInterface : archComponent.getProvidedInterfaces()) {
             interfaceLinks.addAll(getLinks(providedInterface));
         }
 
-        Set<CodeModule> componentPackage = getPackage(archComponent, compUnit);
+        SortedSet<CodeModule> componentPackage = getPackage(archComponent, compUnit);
         if (containsAny(interfaceLinks, componentPackage)) {
             return new Confidence();
         }
 
-        Set<CodeModule> allPackages = getPackages(archComponent, getLinks(archComponent));
+        SortedSet<CodeModule> allPackages = getPackages(archComponent, getLinks(archComponent));
         if (containsAny(interfaceLinks, allPackages)) {
             return new Confidence(1.0);
         }
         return new Confidence();
     }
 
-    private boolean containsAny(Set<Entity> interfaces, Set<CodeModule> componentPackages) {
+    private boolean containsAny(SortedSet<Entity> interfaces, SortedSet<CodeModule> componentPackages) {
         if (componentPackages.isEmpty() || interfaces.isEmpty()) {
             return false;
         }
         return interfaces.stream().anyMatch(i -> componentPackages.stream().anyMatch(p -> overrides(p.getAllCompilationUnits(), i)));
     }
 
-    private boolean overrides(Set<CodeCompilationUnit> ces, Entity i) {
+    private boolean overrides(SortedSet<CodeCompilationUnit> ces, Entity i) {
         for (CodeCompilationUnit ce : ces) {
             if (getAllOverridenTypes(ce).contains(i)) {
                 return true;
@@ -64,9 +64,9 @@ public class ProvidedInterfaceCorrespondence extends DependentHeuristic {
         return false;
     }
 
-    private Set<CodeCompilationUnit> getAllOverridenTypes(CodeCompilationUnit ce) {
-        Set<CodeCompilationUnit> overridenCompUnits = new HashSet<>();
-        Set<Datatype> overridenTypes = new HashSet<>();
+    private SortedSet<CodeCompilationUnit> getAllOverridenTypes(CodeCompilationUnit ce) {
+        SortedSet<CodeCompilationUnit> overridenCompUnits = new TreeSet<>();
+        SortedSet<Datatype> overridenTypes = new TreeSet<>();
         for (Datatype codeType : ce.getAllDataTypes()) {
             overridenTypes.addAll(MethodResemblance.getAllExtendedTypes(codeType));
             MethodResemblance.getAllImplementedInterfaces(codeType).forEach(i -> overridenTypes.addAll(MethodResemblance.getAllExtendedTypes(i)));
@@ -75,30 +75,30 @@ public class ProvidedInterfaceCorrespondence extends DependentHeuristic {
         return overridenCompUnits;
     }
 
-    private Set<CodeCompilationUnit> getLinks(Entity ae) {
-        Set<CodeCompilationUnit> ces = new HashSet<>();
-        Set<Entity> endpoints = getNodeResult().getLinkedEndpoints(ae);
+    private SortedSet<CodeCompilationUnit> getLinks(Entity ae) {
+        SortedSet<CodeCompilationUnit> ces = new TreeSet<>();
+        SortedSet<Entity> endpoints = getNodeResult().getLinkedEndpoints(ae);
         endpoints.forEach(endpoint -> ces.add((CodeCompilationUnit) endpoint));
         return ces;
     }
 
-    private Set<CodeModule> getPackages(Entity ae, Set<CodeCompilationUnit> ces) {
-        Set<CodeModule> packages = new HashSet<>();
+    private SortedSet<CodeModule> getPackages(Entity ae, SortedSet<CodeCompilationUnit> ces) {
+        SortedSet<CodeModule> packages = new TreeSet<>();
         for (CodeCompilationUnit ce : ces) {
             packages.addAll(getPackage(ae, ce));
         }
         return packages;
     }
 
-    private Set<CodeModule> getPackage(Entity ae, CodeCompilationUnit ce) {
+    private SortedSet<CodeModule> getPackage(Entity ae, CodeCompilationUnit ce) {
         List<CodePackage> cePackages = NameComparisonUtils.getMatchedPackages(ae, ce);
         if (!cePackages.isEmpty()) {
-            return Set.of(cePackages.get(cePackages.size() - 1));
+            return new TreeSet<>(List.of(cePackages.get(cePackages.size() - 1)));
         }
         if (ce.hasParent()) {
-            return Set.of(ce.getParent());
+            return new TreeSet<>(List.of(ce.getParent()));
         }
-        return Set.of();
+        return new TreeSet<>(List.of());
     }
 
     @Override

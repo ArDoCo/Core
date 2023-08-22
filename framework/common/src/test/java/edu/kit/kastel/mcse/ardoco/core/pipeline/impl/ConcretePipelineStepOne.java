@@ -3,7 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.pipeline.impl;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+import java.util.SortedMap;
 import java.util.function.Predicate;
 
 import org.slf4j.Logger;
@@ -41,7 +41,7 @@ public class ConcretePipelineStepOne extends AbstractPipelineStep {
     }
 
     @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+    protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration) {
         // NOP
     }
 }

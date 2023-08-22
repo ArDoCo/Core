@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.set.ImmutableSet;
+import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
@@ -132,7 +132,9 @@ public class RecommendationStateFile {
                         .toSortedList()
                         .collect(no -> Integer.toString(no))
                         .toImmutable();
-                ImmutableSet<String> claimants = currentRecommendedInstance.getClaimants().collect(c -> c.getClass().getSimpleName());
+                ImmutableSortedSet<String> claimants = currentRecommendedInstance.getClaimants()
+                        .collect(c -> c.getClass().getSimpleName())
+                        .toImmutableSortedSet();
 
                 String currentLine = String.join(VALUE_SEPARATOR, name, type, probability, String.join(LIST_SEPARATOR, names), String.join(LIST_SEPARATOR,
                         types), String.join(LIST_SEPARATOR, sentences), String.join(LIST_SEPARATOR, claimants));

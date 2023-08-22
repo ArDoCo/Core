@@ -2,7 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.api.textextraction;
 
 import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.map.ImmutableMap;
+import org.eclipse.collections.api.map.sorted.ImmutableSortedMap;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.PhraseType;
@@ -16,7 +16,7 @@ public interface PhraseMapping {
 
     PhraseType getPhraseType();
 
-    ImmutableMap<Word, Integer> getPhraseVector();
+    ImmutableSortedMap<Word, Integer> getPhraseVector();
 
     void removePhrase(Phrase phrase);
 

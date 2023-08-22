@@ -2,10 +2,10 @@
 package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -31,7 +31,7 @@ public class CodeModule extends CodeItem {
         // Jackson
     }
 
-    public CodeModule(CodeItemRepository codeItemRepository, String name, Set<? extends CodeItem> content) {
+    public CodeModule(CodeItemRepository codeItemRepository, String name, SortedSet<? extends CodeItem> content) {
         super(codeItemRepository, name);
         this.content = new ArrayList<>();
         for (var codeItem : content) {
@@ -85,15 +85,15 @@ public class CodeModule extends CodeItem {
     }
 
     @Override
-    public Set<CodeCompilationUnit> getAllCompilationUnits() {
-        Set<CodeCompilationUnit> result = new HashSet<>();
+    public SortedSet<CodeCompilationUnit> getAllCompilationUnits() {
+        SortedSet<CodeCompilationUnit> result = new TreeSet<>();
         getContent().forEach(c -> result.addAll(c.getAllCompilationUnits()));
         return result;
     }
 
     @Override
-    public Set<? extends CodePackage> getAllPackages() {
-        Set<CodePackage> result = new HashSet<>();
+    public SortedSet<? extends CodePackage> getAllPackages() {
+        SortedSet<CodePackage> result = new TreeSet<>();
         getContent().forEach(c -> result.addAll(c.getAllPackages()));
         return result;
     }

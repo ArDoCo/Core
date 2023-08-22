@@ -4,20 +4,19 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction;
 import static edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions.AVERAGE;
 
 import java.util.Comparator;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.SortedMap;
 import java.util.function.Function;
 
 import org.eclipse.collections.api.block.predicate.Predicate;
 import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.factory.Maps;
-import org.eclipse.collections.api.factory.Sets;
+import org.eclipse.collections.api.factory.SortedMaps;
+import org.eclipse.collections.api.factory.SortedSets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.map.MutableMap;
-import org.eclipse.collections.api.set.ImmutableSet;
-import org.eclipse.collections.api.set.MutableSet;
+import org.eclipse.collections.api.map.sorted.ImmutableSortedMap;
+import org.eclipse.collections.api.map.sorted.MutableSortedMap;
+import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
+import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
@@ -27,7 +26,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.textextraction.PhraseMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions;
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
-import edu.kit.kastel.mcse.ardoco.core.common.util.ElementWrapper;
+import edu.kit.kastel.mcse.ardoco.core.common.util.Comparators;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.data.AbstractState;
 import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
@@ -40,17 +39,15 @@ public class TextStateImpl extends AbstractState implements TextState {
 
     private static final AggregationFunctions DEFAULT_AGGREGATOR = AVERAGE;
 
-    private static final Comparator<ElementWrapper<NounMapping>> ORDER_NOUNMAPPING = (n1, n2) -> {
+    private static final Comparator<NounMapping> ORDER_NOUNMAPPING = (n1, n2) -> {
         if (n1.equals(n2))
             return 0;
-        var nm1 = (NounMappingImpl) n1.getElement();
-        var nm2 = (NounMappingImpl) n2.getElement();
+        var nm1 = (NounMappingImpl) n1;
+        var nm2 = (NounMappingImpl) n2;
         int compare = Long.compare(nm1.earliestCreationTime(), nm2.earliestCreationTime());
         if (compare != 0)
             return compare;
-
-        // Not equal but at same time -> order by something .. e.g., hash ..
-        return Integer.compare(n1.hashCode(), n2.hashCode());
+        throw new IllegalStateException("NounMappings are not equal but have same creation time");
     };
 
     /**
@@ -59,8 +56,8 @@ public class TextStateImpl extends AbstractState implements TextState {
      * @see #getMappingsThatCouldBeOfKind(Word, MappingKind)
      */
     private static final double MAPPING_KIND_MAX_DIFF = 0.1;
-    private MutableList<ElementWrapper<NounMapping>> nounMappings;
-    private MutableSet<PhraseMapping> phraseMappings;
+    private MutableList<NounMapping> nounMappings;
+    private MutableList<PhraseMapping> phraseMappings;
     private final transient TextStateStrategy strategy;
 
     /**
@@ -72,7 +69,7 @@ public class TextStateImpl extends AbstractState implements TextState {
 
     public TextStateImpl(Function<TextStateImpl, TextStateStrategy> constructor) {
         nounMappings = Lists.mutable.empty();
-        phraseMappings = Sets.mutable.empty();
+        phraseMappings = Lists.mutable.empty();
         strategy = constructor.apply(this);
     }
 
@@ -87,35 +84,33 @@ public class TextStateImpl extends AbstractState implements TextState {
     }
 
     @Override
-    public NounMapping addNounMapping(ImmutableSet<Word> words, MappingKind kind, Claimant claimant, double probability, ImmutableList<Word> referenceWords,
-            ImmutableList<String> surfaceForms, String reference) {
-        MutableMap<MappingKind, Confidence> distribution = Maps.mutable.empty();
+    public NounMapping addNounMapping(ImmutableSortedSet<Word> words, MappingKind kind, Claimant claimant, double probability,
+            ImmutableList<Word> referenceWords, ImmutableList<String> surfaceForms, String reference) {
+        MutableSortedMap<MappingKind, Confidence> distribution = SortedMaps.mutable.empty();
         distribution.put(MappingKind.NAME, new Confidence(DEFAULT_AGGREGATOR));
         distribution.put(MappingKind.TYPE, new Confidence(DEFAULT_AGGREGATOR));
-        NounMapping nounMapping = new NounMappingImpl(System.currentTimeMillis(), words.toSortedSet().toImmutable(), distribution, referenceWords, surfaceForms,
-                reference);
+        NounMapping nounMapping = new NounMappingImpl(words.toSortedSet().toImmutable(), distribution.toImmutable(), referenceWords, surfaceForms, reference);
         nounMapping.addKindWithProbability(kind, claimant, probability);
         addNounMappingAddPhraseMapping(nounMapping);
         return nounMapping;
     }
 
     @Override
-    public NounMapping addNounMapping(ImmutableSet<Word> words, MutableMap<MappingKind, Confidence> distribution, ImmutableList<Word> referenceWords,
-            ImmutableList<String> surfaceForms, String reference) {
+    public NounMapping addNounMapping(ImmutableSortedSet<Word> words, ImmutableSortedMap<MappingKind, Confidence> distribution,
+            ImmutableList<Word> referenceWords, ImmutableList<String> surfaceForms, String reference) {
 
         if (reference == null) {
             reference = calculateNounMappingReference(referenceWords);
         }
 
-        NounMapping nounMapping = new NounMappingImpl(System.currentTimeMillis(), words.toSortedSet().toImmutable(), distribution, referenceWords, surfaceForms,
-                reference);
+        NounMapping nounMapping = new NounMappingImpl(words.toSortedSet().toImmutable(), distribution, referenceWords, surfaceForms, reference);
         addNounMappingAddPhraseMapping(nounMapping);
         return nounMapping;
     }
 
     @Override
     public ImmutableList<NounMapping> getNounMappings() {
-        return this.nounMappings.toImmutableList().collect(ElementWrapper::getElement);
+        return this.nounMappings.toImmutableList();
 
     }
 
@@ -138,14 +133,14 @@ public class TextStateImpl extends AbstractState implements TextState {
     @Override
     public PhraseMapping getPhraseMappingByNounMapping(NounMapping nounMapping) {
         ImmutableList<PhraseMapping> phraseMappingsByNounMapping = getPhraseMappingsByNounMapping(nounMapping);
-        assert (phraseMappingsByNounMapping.size() >= 1) : "Every noun mapping should be connected to a phrase mapping";
+        assert (!phraseMappingsByNounMapping.isEmpty()) : "Every noun mapping should be connected to a phrase mapping";
         return phraseMappingsByNounMapping.get(0);
 
     }
 
     @Override
     public ImmutableList<NounMapping> getNounMappingsByPhraseMapping(PhraseMapping phraseMapping) {
-        return getNounMappings().select(nm -> phraseMapping.getPhrases().toImmutableSet().equals(nm.getPhrases()));
+        return getNounMappings().select(nm -> Comparators.collectionsEqualsAnyOrder(phraseMapping.getPhrases().castToList(), nm.getPhrases().castToList()));
     }
 
     /**
@@ -174,8 +169,8 @@ public class TextStateImpl extends AbstractState implements TextState {
     @Override
     public NounMapping setReferenceOfNounMapping(NounMapping nounMapping, ImmutableList<Word> referenceWords, String reference) {
 
-        return this.addNounMapping(nounMapping.getWords().toImmutableSet(), nounMapping.getDistribution().toMap(), referenceWords, nounMapping
-                .getSurfaceForms(), reference);
+        return this.addNounMapping(nounMapping.getWords().toImmutableSortedSet(), nounMapping.getDistribution(), referenceWords, nounMapping.getSurfaceForms(),
+                reference);
 
     }
 
@@ -252,10 +247,10 @@ public class TextStateImpl extends AbstractState implements TextState {
     @Override
     public PhraseMapping mergePhraseMappings(PhraseMapping phraseMapping, PhraseMapping similarPhraseMapping) {
 
-        MutableSet<Phrase> mergedPhrases = phraseMapping.getPhrases().toSet();
+        MutableList<Phrase> mergedPhrases = phraseMapping.getPhrases().toList();
         mergedPhrases.addAll(similarPhraseMapping.getPhrases().toList());
 
-        PhraseMapping mergedPhraseMapping = new PhraseMappingImpl(mergedPhrases);
+        PhraseMapping mergedPhraseMapping = new PhraseMappingImpl(mergedPhrases.toImmutable());
 
         this.phraseMappings.add(mergedPhraseMapping);
 
@@ -269,7 +264,7 @@ public class TextStateImpl extends AbstractState implements TextState {
         var result = getNounMappings().select(nMapping -> nMapping.getWords().contains(word)).toImmutable();
 
         assert (result.size() <= 1) : "A word should only contained by one noun mapping";
-        if (result.size() == 0) {
+        if (result.isEmpty()) {
             return null;
         }
         return result.get(0);
@@ -282,7 +277,7 @@ public class TextStateImpl extends AbstractState implements TextState {
      */
     @Override
     public ImmutableList<String> getListOfReferences(MappingKind kind) {
-        Set<String> referencesOfKind = new HashSet<>();
+        MutableSortedSet<String> referencesOfKind = SortedSets.mutable.empty();
         var kindMappings = getNounMappingsOfKind(kind);
         for (NounMapping nnm : kindMappings) {
             referencesOfKind.add(nnm.getReference());
@@ -296,7 +291,9 @@ public class TextStateImpl extends AbstractState implements TextState {
 
     void addNounMappingAddPhraseMapping(NounMapping nounMapping) {
         addNounMappingToState(nounMapping);
-        phraseMappings.add(new PhraseMappingImpl(nounMapping.getPhrases().castToSet()));
+        if (phraseMappings.anySatisfy(it -> Comparators.collectionsIdentityAnyOrder(it.getPhrases(), nounMapping.getPhrases())))
+            return;
+        phraseMappings.add(new PhraseMappingImpl(nounMapping.getPhrases()));
     }
 
     @Override
@@ -305,7 +302,6 @@ public class TextStateImpl extends AbstractState implements TextState {
 
         var otherNounMappings = getNounMappingsThatBelongToTheSamePhraseMapping(nounMapping);
         if (!otherNounMappings.isEmpty()) {
-
             var phrases = nounMapping.getPhrases().select(p -> !otherNounMappings.flatCollect(NounMapping::getPhrases).contains(p));
             phrases.forEach(phraseMapping::removePhrase);
         }
@@ -325,10 +321,10 @@ public class TextStateImpl extends AbstractState implements TextState {
     }
 
     private void addNounMappingToState(NounMapping nounMapping) {
-        if (this.nounMappings.contains(wrap(nounMapping))) {
+        if (this.nounMappings.contains(nounMapping)) {
             throw new IllegalArgumentException("Nounmapping was already in state");
         }
-        this.nounMappings.add(wrap(nounMapping));
+        this.nounMappings.add(nounMapping);
         this.nounMappings.sortThis(ORDER_NOUNMAPPING);
     }
 
@@ -338,12 +334,8 @@ public class TextStateImpl extends AbstractState implements TextState {
     }
 
     void removeNounMappingFromState(NounMapping nounMapping, NounMapping replacement) {
-        this.nounMappings.remove(wrap(nounMapping));
+        this.nounMappings.remove(nounMapping);
         nounMapping.onDelete(replacement);
-    }
-
-    private ElementWrapper<NounMapping> wrap(NounMapping nounMapping) {
-        return strategy.wrap(nounMapping);
     }
 
     @Override
@@ -352,7 +344,7 @@ public class TextStateImpl extends AbstractState implements TextState {
     }
 
     @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+    protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration) {
         // handle additional configuration
     }
 
