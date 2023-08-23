@@ -3,12 +3,11 @@ package edu.kit.kastel.mcse.ardoco.core.models;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.SortedMap;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.configuration.NoConfiguration;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.PcmXmlModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.UmlModelConnector;
@@ -20,9 +19,8 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
 /**
  * Agent that provides information from models.
  */
+@NoConfiguration
 public class ModelProviderAgent extends PipelineAgent {
-
-    private final List<Informant> informants;
 
     /**
      * Instantiates a new model provider agent.
@@ -32,17 +30,15 @@ public class ModelProviderAgent extends PipelineAgent {
      * @param modelConnectors the list of ModelConnectors that should be used
      */
     public ModelProviderAgent(DataRepository data, List<ModelConnector> modelConnectors) {
-        super(ModelProviderAgent.class.getSimpleName(), data);
-        informants = new ArrayList<>();
-        for (var modelConnector : modelConnectors) {
-            informants.add(new ModelProviderInformant(data, modelConnector));
-        }
+        super(informants(modelConnectors, data), ModelProviderAgent.class.getSimpleName(), data);
+    }
+
+    private static List<? extends Informant> informants(List<ModelConnector> modelConnectors, DataRepository data) {
+        return modelConnectors.stream().map(e -> new ModelProviderInformant(data, e)).toList();
     }
 
     private ModelProviderAgent(DataRepository data, LegacyCodeModelInformant codeModelInformant) {
-        super(ModelProviderAgent.class.getSimpleName(), data);
-        informants = new ArrayList<>();
-        informants.add(codeModelInformant);
+        super(List.of(codeModelInformant), ModelProviderAgent.class.getSimpleName(), data);
     }
 
     /**
@@ -65,15 +61,5 @@ public class ModelProviderAgent extends PipelineAgent {
 
     public static ModelProviderAgent getCodeProvider(DataRepository dataRepository) {
         return new ModelProviderAgent(dataRepository, new LegacyCodeModelInformant(dataRepository));
-    }
-
-    @Override
-    protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration) {
-        informants.forEach(e -> e.applyConfiguration(additionalConfiguration));
-    }
-
-    @Override
-    protected List<Informant> getEnabledPipelineSteps() {
-        return new ArrayList<>(informants);
     }
 }
