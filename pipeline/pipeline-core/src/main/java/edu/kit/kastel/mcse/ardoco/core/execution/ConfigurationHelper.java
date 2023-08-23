@@ -100,7 +100,7 @@ public class ConfigurationHelper {
     private static void fillConfigs(AbstractConfigurable object, List<Field> fields, Map<String, String> configs) throws IllegalAccessException {
         for (Field f : fields) {
             f.setAccessible(true);
-            var key = f.getDeclaringClass().getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + f.getName();
+            var key = AbstractConfigurable.getKeyOfField(object, f.getDeclaringClass(), f);
             var rawValue = f.get(object);
             var value = getValue(rawValue);
             if (configs.containsKey(key)) {
