@@ -6,8 +6,6 @@ import java.net.HttpURLConnection;
 
 import edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.config.ConfigManager;
 
-import org.apache.http.client.methods.CloseableHttpResponse;
-
 /**
  * This utility class provides methods to check whether the microservice is available.
  */
@@ -23,9 +21,8 @@ public final class MicroserviceChecker {
      */
     public static boolean isMicroserviceAvailable() throws IOException {
         String requestUrl = ConfigManager.getInstance().getMicroserviceUrl() + ConfigManager.getInstance().getHealthService();
-        CloseableHttpResponse response = new HttpCommunicator().sendAuthenticatedGetRequest(requestUrl);
-        response.close();
-        return response.getStatusLine().getStatusCode() == HttpURLConnection.HTTP_OK;
+        CustomHttpResponse response = new HttpCommunicator().sendAuthenticatedGetRequest(requestUrl);
+        return response.statusCode() == HttpURLConnection.HTTP_OK;
     }
 
 }

@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
-import org.apache.http.client.methods.CloseableHttpResponse;
-
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.config.ConfigManager;
 import io.github.ardoco.textproviderjson.converter.DtoToObjectConverter;
@@ -41,9 +39,7 @@ public class TextProcessorService {
 
     private String sendAuthenticatedGetRequest(String requestUrl) throws IOException {
         HttpCommunicator httpCommunicator = new HttpCommunicator();
-        CloseableHttpResponse response = httpCommunicator.sendAuthenticatedGetRequest(requestUrl);
-        String responseString = httpCommunicator.readGetResponse(response);
-        response.close();
-        return responseString;
+        CustomHttpResponse response = httpCommunicator.sendAuthenticatedGetRequest(requestUrl);
+        return response.responseBody();
     }
 }
