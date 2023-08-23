@@ -170,6 +170,11 @@
         <artifactId>eclipse-collections</artifactId>
         <version>${eclipse-collections.version}</version>
       </dependency>
+      <dependency>
+        <groupId>io.github.ardoco</groupId>
+        <artifactId>text-provider-json</artifactId>
+        <version>0.8.0</version>
+      </dependency>
 
       <!-- Eclipse collections -->
       <dependency>
