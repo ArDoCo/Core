@@ -62,17 +62,26 @@ public abstract class AbstractConfigurable implements IConfigurable {
         applyConfiguration(additionalConfiguration, configurable, currentClassInHierarchy.getSuperclass());
     }
 
+    /**
+     * Returns the key (for the configuration file) of a field. If the field is marked as ChildClassConfigurable, the key is based on the class of the
+     * configurable object. Otherwise, the key is based on the class where the field is defined.
+     * 
+     * @param configurable            the configurable object
+     * @param currentClassInHierarchy the class where the field is defined
+     * @param field                   the field
+     * @return the key of the field
+     */
     public static String getKeyOfField(AbstractConfigurable configurable, Class<?> currentClassInHierarchy, Field field) {
-        Configurable c = field.getAnnotation(Configurable.class);
-        ChildClassConfigurable ccc = field.getAnnotation(ChildClassConfigurable.class);
+        Configurable configurableAnnotation = field.getAnnotation(Configurable.class);
+        ChildClassConfigurable childClassConfigurableAnnotation = field.getAnnotation(ChildClassConfigurable.class);
 
-        if (ccc != null && !c.key().isBlank()) {
+        if (childClassConfigurableAnnotation != null && !configurableAnnotation.key().isBlank()) {
             throw new IllegalStateException("You cannot define a key for a field that is marked as ChildClassConfigurable.");
         }
 
-        String classOfDefinition = ccc == null ? currentClassInHierarchy.getSimpleName() : configurable.getClass().getSimpleName();
+        String classOfDefinition = childClassConfigurableAnnotation == null ? currentClassInHierarchy.getSimpleName() : configurable.getClass().getSimpleName();
 
-        return c.key().isBlank() ? (classOfDefinition + CLASS_ATTRIBUTE_CONNECTOR + field.getName()) : c.key();
+        return configurableAnnotation.key().isBlank() ? (classOfDefinition + CLASS_ATTRIBUTE_CONNECTOR + field.getName()) : configurableAnnotation.key();
     }
 
     private void setValue(Field field, String value) {
