@@ -106,6 +106,16 @@ public final class Box implements Serializable {
     }
 
     /**
+     * Remove a text box that is associated with the box.
+     * 
+     * @param textBox the textbox
+     */
+    public void removeTextBox(TextBox textBox) {
+        Objects.requireNonNull(textBox);
+        this.textBoxes.removeIf(it -> it == textBox);
+    }
+
+    /**
      * Get all text boxes that are associated with the box.
      *
      * @return all associated text boxes
