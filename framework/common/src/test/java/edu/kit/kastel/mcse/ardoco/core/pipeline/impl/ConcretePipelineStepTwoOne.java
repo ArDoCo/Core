@@ -7,7 +7,8 @@ import edu.kit.kastel.mcse.ardoco.core.data.impl.TextData;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.SortedMap;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,7 +78,7 @@ public class ConcretePipelineStepTwoOne extends AbstractPipelineStep {
     }
 
     @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+    protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration) {
         // NOP
     }
 }

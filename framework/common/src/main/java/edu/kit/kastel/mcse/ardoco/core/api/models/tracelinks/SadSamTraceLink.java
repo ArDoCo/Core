@@ -11,7 +11,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
  * Represents a trace link. This is a convenience data class that takes the necessary info from {@link InstanceLink} and
  * the specific {@link ModelInstance} and {@link Word} that are used in this trace link.
  */
-public class SadSamTraceLink extends TraceLink implements Comparable<SadSamTraceLink> {
+public class SadSamTraceLink extends TraceLink {
     private final InstanceLink instanceLink;
     private final Word word;
 
@@ -91,8 +91,4 @@ public class SadSamTraceLink extends TraceLink implements Comparable<SadSamTrace
         return Objects.hash(getModelElementUid(), getSentenceNumber());
     }
 
-    @Override
-    public int compareTo(SadSamTraceLink o) {
-        return Integer.compare(this.getSentenceNumber(), o.getSentenceNumber());
-    }
 }

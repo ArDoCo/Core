@@ -146,6 +146,18 @@ public abstract class AbstractInconsistencyTypeTest {
 
             return getPosition() == other.getPosition() && getSentenceNo() == other.getSentenceNo() && Objects.equals(getText(), other.getText());
         }
+
+        @Override
+        public int compareTo(Word o) {
+            if (this.equals(o))
+                return 0;
+
+            int compareSentences = Integer.compare(this.getSentenceNo(), o.getSentenceNo());
+            if (compareSentences != 0) {
+                return compareSentences;
+            }
+            return Integer.compare(this.getPosition(), o.getPosition());
+        }
     }
 
 }

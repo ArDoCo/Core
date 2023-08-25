@@ -2,6 +2,7 @@ package edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.informants
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Classification
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.TextBox
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant
@@ -10,6 +11,7 @@ import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.boundingBox
 import java.awt.Color
 import java.awt.image.BufferedImage
 import java.io.ByteArrayInputStream
+import java.util.*
 import java.util.stream.IntStream
 import javax.imageio.ImageIO
 
@@ -25,7 +27,7 @@ class RecognitionCombinatorInformant(
         const val ID = "RecognitionCombinatorInformant"
     }
 
-    override fun delegateApplyConfigurationToInternalObjects(additionalConfiguration: MutableMap<String, String>?) {
+    override fun delegateApplyConfigurationToInternalObjects(additionalConfiguration: SortedMap<String, String>?) {
         // Not needed
     }
 
@@ -35,6 +37,7 @@ class RecognitionCombinatorInformant(
             val texts = diagram.textBoxes
             combineBoxesAndText(entities, texts)
             calculateDominatingColors(diagram.location.readBytes(), entities)
+            combineTextBoxesInBoxes(diagram)
         }
     }
 
@@ -92,6 +95,32 @@ class RecognitionCombinatorInformant(
                 pixels.groupingBy { it }.eachCount().toList().sortedByDescending { it.second }
             val textColor = pixelCount.find { (rgb, _) -> rgb != box.dominatingColor.rgb }
             if (textColor != null) text.dominatingColor = Color(textColor.first)
+        }
+    }
+
+    private fun combineTextBoxesInBoxes(diagram: Diagram) {
+        val boxes = diagram.boxes.filter { it.classification != Classification.LABEL }
+        for (box in boxes) {
+            if (box.texts.size <= 1) continue
+
+            // Use ARGB(0,0,0,0) as replacement for null
+            val textGroups = box.texts.sortedBy { it.xCoordinate }.sortedBy { it.yCoordinate }.groupBy { it.dominatingColor ?: 0 }
+
+            for ((_, texts) in textGroups) {
+                val text = texts.joinToString(" ") { it.text }.replace(Regex("\\s+"), " ")
+                val x1 = texts.map { it.xCoordinate }.min()
+                val y1 = texts.map { it.yCoordinate }.min()
+                val x2 = texts.map { it.xCoordinate + it.width }.max()
+                val y2 = texts.map { it.yCoordinate + it.height }.max()
+                val width = x2 - x1
+                val height = y2 - y1
+                val confidence = texts.map { it.confidence }.average()
+                val dominantColor = texts.firstNotNullOfOrNull { it.dominatingColor }
+
+                val textBox = TextBox(x1, y1, width, height, confidence, text, dominantColor)
+                texts.forEach { box.removeTextBox(it) }
+                box.addTextBox(textBox)
+            }
         }
     }
 }

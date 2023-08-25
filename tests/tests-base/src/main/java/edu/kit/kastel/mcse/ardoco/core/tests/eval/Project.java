@@ -8,6 +8,8 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Optional;
+import java.util.SortedMap;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -177,8 +179,12 @@ public enum Project implements GoldStandardProject {
         return textFile;
     }
 
-    @Override
-    public Map<String, String> getAdditionalConfigurations() {
+    /**
+     * Return the map of additional configuration options
+     *
+     * @return the map of additional configuration options
+     */
+    public SortedMap<String, String> getAdditionalConfigurations() {
         return ConfigurationHelper.loadAdditionalConfigs(getAdditionalConfigurationsFile());
     }
 

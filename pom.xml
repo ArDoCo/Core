@@ -72,7 +72,7 @@
   </distributionManagement>
 
   <properties>
-    <revision>0.18.0-SNAPSHOT</revision>
+    <revision>0.22.0-SNAPSHOT</revision>
     <ardoco.version>${revision}</ardoco.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -579,10 +579,10 @@
         <configuration>
           <ruleSet>
             <rule>
-              <groupId>org.jetbrains.kotlin</groupId>
+              <groupId>*</groupId>
               <ignoreVersion>
                 <type>regex</type>
-                <version>.+-(alpha|Alpha|beta|Beta).*</version>
+                <version>.+-(alpha|Alpha|beta|Beta|RC).*</version>
               </ignoreVersion>
             </rule>
           </ruleSet>

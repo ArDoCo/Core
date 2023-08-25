@@ -2,7 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.execution;
 
 import java.io.File;
-import java.util.Map;
+import java.util.SortedMap;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.SadCodeTraceabilityLinkRecovery;
@@ -23,7 +23,7 @@ public class ArDoCoForSadCodeTraceabilityLinkRecovery extends ArDoCoRunner {
     }
 
     public void setUp(File inputText, File inputArchitectureModel, ArchitectureModelType architectureModelType, File inputCode,
-            Map<String, String> additionalConfigs, File outputDir) {
+            SortedMap<String, String> additionalConfigs, File outputDir) {
 
         definePipeline(inputText, inputArchitectureModel, architectureModelType, inputCode, additionalConfigs);
         setOutputDirectory(outputDir);
@@ -31,7 +31,7 @@ public class ArDoCoForSadCodeTraceabilityLinkRecovery extends ArDoCoRunner {
     }
 
     private void definePipeline(File inputText, File inputArchitectureModel, ArchitectureModelType architectureModelType, File inputCode,
-            Map<String, String> additionalConfigs) {
+            SortedMap<String, String> additionalConfigs) {
         ArDoCo arDoCo = this.getArDoCo();
         var dataRepository = arDoCo.getDataRepository();
 

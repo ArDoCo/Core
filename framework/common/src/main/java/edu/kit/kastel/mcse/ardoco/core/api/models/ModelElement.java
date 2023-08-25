@@ -8,7 +8,7 @@ import java.util.UUID;
 /**
  * A model element. Has an identifier. Two model elements are equal if and only if they have the same identifier.
  */
-public abstract class ModelElement implements Serializable {
+public abstract class ModelElement implements Comparable<ModelElement>, Serializable {
 
     private final String id;
 
@@ -38,5 +38,12 @@ public abstract class ModelElement implements Serializable {
             return false;
         }
         return Objects.equals(id, other.id);
+    }
+
+    @Override
+    public int compareTo(ModelElement o) {
+        if (this.equals(o))
+            return 0;
+        return this.id.compareTo(o.id);
     }
 }

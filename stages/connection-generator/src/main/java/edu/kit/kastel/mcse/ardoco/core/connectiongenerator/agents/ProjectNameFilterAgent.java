@@ -4,10 +4,8 @@ package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents;
 import java.util.List;
 
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
-import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.informants.ProjectNameInformant;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
-import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
 
 /**
@@ -15,8 +13,6 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
  * probability, thus making the {@link RecommendedInstance} extremely improbable.
  */
 public class ProjectNameFilterAgent extends PipelineAgent {
-    @Configurable
-    private List<String> enabledInformants;
 
     /**
      * Create the agent.
@@ -24,12 +20,6 @@ public class ProjectNameFilterAgent extends PipelineAgent {
      * @param dataRepository the {@link DataRepository}
      */
     public ProjectNameFilterAgent(DataRepository dataRepository) {
-        super("ProjectNameFilterAgent", dataRepository, List.of(new ProjectNameInformant(dataRepository)));
-        enabledInformants = getInformantClassNames();
-    }
-
-    @Override
-    protected List<Informant> getEnabledPipelineSteps() {
-        return findByClassName(enabledInformants, getInformants());
+        super(List.of(new ProjectNameInformant(dataRepository)), "ProjectNameFilterAgent", dataRepository);
     }
 }

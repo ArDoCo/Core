@@ -1,18 +1,20 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityComparable;
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
+import static java.lang.Math.abs;
+
 import java.awt.*;
 import java.io.Serializable;
 import java.util.Objects;
 
-import static java.lang.Math.abs;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class TextBox implements SimilarityComparable, Serializable {
-    private static final double SIMILARITY_THRESHOLD = 0.95;
+import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityComparable;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
+
+public class TextBox implements SimilarityComparable<TextBox>, Serializable {
+    private static final double SIMILARITY_THRESHOLD = 0.85;
     private BoundingBox boundingBox;
     private double confidence;
     private String text;
@@ -25,10 +27,8 @@ public class TextBox implements SimilarityComparable, Serializable {
     }
 
     @JsonCreator
-    public TextBox(@JsonProperty("x") int xCoordinate, @JsonProperty("y") int yCoordinate,
-                   @JsonProperty("w") int width, @JsonProperty("h") int height,
-                   @JsonProperty("confidence") double confidence,
-                   @JsonProperty("text") String text) {
+    public TextBox(@JsonProperty("x") int xCoordinate, @JsonProperty("y") int yCoordinate, @JsonProperty("w") int width, @JsonProperty("h") int height,
+            @JsonProperty("confidence") double confidence, @JsonProperty("text") String text) {
         this(new BoundingBox(xCoordinate, yCoordinate, xCoordinate + width, yCoordinate + height), confidence, text);
     }
 
@@ -38,7 +38,7 @@ public class TextBox implements SimilarityComparable, Serializable {
      * @return the absolute coordinates of the box
      */
     public int[] absoluteBox() {
-        return new int[]{boundingBox.minX(), boundingBox.minY(), boundingBox.maxX(), boundingBox.maxY()};
+        return new int[] { boundingBox.minX(), boundingBox.minY(), boundingBox.maxX(), boundingBox.maxY() };
     }
 
     public BoundingBox getBoundingBox() {
@@ -46,8 +46,7 @@ public class TextBox implements SimilarityComparable, Serializable {
     }
 
     public int area() {
-        int[] box = absoluteBox();
-        return abs(box[0] - box[2]) * abs(box[1] - box[3]);
+        return width * height;
     }
 
     public int getXCoordinate() {
@@ -88,17 +87,16 @@ public class TextBox implements SimilarityComparable, Serializable {
     }
 
     @Override
-    public boolean similar(Object obj) {
-        if (equals(obj)) return true;
-        if (obj instanceof TextBox other) {
-            return WordSimUtils.getSimilarity(text, other.text) > SIMILARITY_THRESHOLD && boundingBox.similar(other.boundingBox);
-        }
-        return false;
+    public boolean similar(TextBox obj) {
+        if (equals(obj))
+            return true;
+        return WordSimUtils.getSimilarity(text, obj.text) > SIMILARITY_THRESHOLD && boundingBox.similar(obj.boundingBox);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (super.equals(obj)) return true;
+        if (super.equals(obj))
+            return true;
         if (obj instanceof TextBox other) {
             return boundingBox.equals(other.boundingBox) && text.equals(other.text);
         }

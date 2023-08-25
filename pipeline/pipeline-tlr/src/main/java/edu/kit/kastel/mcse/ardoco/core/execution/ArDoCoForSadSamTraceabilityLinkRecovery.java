@@ -3,7 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.execution;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
+import java.util.SortedMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +25,7 @@ public class ArDoCoForSadSamTraceabilityLinkRecovery extends ArDoCoRunner {
         super(projectName);
     }
 
-    public void setUp(File inputText, File inputArchitectureModel, ArchitectureModelType architectureModelType, Map<String, String> additionalConfigs,
+    public void setUp(File inputText, File inputArchitectureModel, ArchitectureModelType architectureModelType, SortedMap<String, String> additionalConfigs,
             File outputDir) {
         try {
             definePipeline(inputText, inputArchitectureModel, architectureModelType, additionalConfigs);
@@ -39,12 +39,12 @@ public class ArDoCoForSadSamTraceabilityLinkRecovery extends ArDoCoRunner {
     }
 
     public void setUp(String inputTextLocation, String inputArchitectureModelLocation, ArchitectureModelType architectureModelType,
-            Map<String, String> additionalConfigs, String outputDirectory) {
+            SortedMap<String, String> additionalConfigs, String outputDirectory) {
         setUp(new File(inputTextLocation), new File(inputArchitectureModelLocation), architectureModelType, additionalConfigs, new File(outputDirectory));
     }
 
-    private void definePipeline(File inputText, File inputArchitectureModel, ArchitectureModelType architectureModelType, Map<String, String> additionalConfigs)
-            throws IOException {
+    private void definePipeline(File inputText, File inputArchitectureModel, ArchitectureModelType architectureModelType,
+            SortedMap<String, String> additionalConfigs) throws IOException {
         var dataRepository = this.getArDoCo().getDataRepository();
         var text = CommonUtilities.readInputText(inputText);
         if (text.isBlank()) {

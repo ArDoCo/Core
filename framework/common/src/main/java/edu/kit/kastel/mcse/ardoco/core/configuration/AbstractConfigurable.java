@@ -7,13 +7,14 @@ import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Deterministic
 public abstract class AbstractConfigurable implements IConfigurable, Serializable {
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -21,51 +22,65 @@ public abstract class AbstractConfigurable implements IConfigurable, Serializabl
     public static final String KEY_VALUE_CONNECTOR = "=";
     public static final String LIST_SEPARATOR = ",";
 
-    private Map<String, String> lastAppliedConfiguration = new HashMap<>();
-
-    protected final <E> List<E> findByClassName(List<String> selected, List<E> instances) {
-        List<E> target = new ArrayList<>(0);
-        for (var clazz : selected) {
-            var elem = instances.stream()
-                    .filter(e -> e.getClass().getSimpleName().equals(clazz))
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalArgumentException("Could not find " + clazz));
-            target.add(elem);
-        }
-        return target;
-    }
+    private SortedMap<String, String> lastAppliedConfiguration = new TreeMap<>();
 
     @Override
-    public final void applyConfiguration(Map<String, String> additionalConfiguration) {
-        applyConfiguration(additionalConfiguration, this.getClass());
+    public final void applyConfiguration(SortedMap<String, String> additionalConfiguration) {
+        applyConfiguration(additionalConfiguration, this, this.getClass());
         delegateApplyConfigurationToInternalObjects(additionalConfiguration);
-        this.lastAppliedConfiguration = new HashMap<>(additionalConfiguration);
+        this.lastAppliedConfiguration = new TreeMap<>(additionalConfiguration);
     }
 
     @Override
-    public Map<String, String> getLastAppliedConfiguration() {
-        return Collections.unmodifiableMap(lastAppliedConfiguration);
+    public SortedMap<String, String> getLastAppliedConfiguration() {
+        return Collections.unmodifiableSortedMap(lastAppliedConfiguration);
     }
 
-    protected abstract void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration);
+    protected abstract void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration);
 
-    private void applyConfiguration(Map<String, String> additionalConfiguration, Class<?> currentClass) {
-        if (currentClass == Object.class || currentClass == AbstractConfigurable.class)
+    private void applyConfiguration(SortedMap<String, String> additionalConfiguration, AbstractConfigurable configurable, Class<?> currentClassInHierarchy) {
+        if (currentClassInHierarchy == Object.class || currentClassInHierarchy == AbstractConfigurable.class)
             return;
 
-        var fields = currentClass.getDeclaredFields();
+        if (currentClassInHierarchy.getAnnotation(NoConfiguration.class) != null) {
+            logger.debug("Skipping configuration for class {}", currentClassInHierarchy.getSimpleName());
+            return;
+        }
+
+        var fields = currentClassInHierarchy.getDeclaredFields();
         for (Field field : fields) {
             if (!field.isAnnotationPresent(Configurable.class)) {
                 continue;
             }
-            Configurable c = field.getAnnotation(Configurable.class);
-            String key = c.key().isBlank() ? (currentClass.getSimpleName() + CLASS_ATTRIBUTE_CONNECTOR + field.getName()) : c.key();
+            String key = getKeyOfField(configurable, currentClassInHierarchy, field);
             if (additionalConfiguration.containsKey(key)) {
                 setValue(field, additionalConfiguration.get(key));
             }
         }
 
-        applyConfiguration(additionalConfiguration, currentClass.getSuperclass());
+        applyConfiguration(additionalConfiguration, configurable, currentClassInHierarchy.getSuperclass());
+    }
+
+    /**
+     * Returns the key (for the configuration file) of a field. If the field is marked as ChildClassConfigurable, the key is based on the class of the
+     * configurable object. Otherwise, the key is based on the class where the field is defined.
+     * 
+     * @param configurable            the configurable object
+     * @param currentClassInHierarchy the class where the field is defined
+     * @param field                   the field
+     * @return the key of the field
+     */
+    public static String getKeyOfField(AbstractConfigurable configurable, Class<?> currentClassInHierarchy, Field field) {
+        Configurable configurableAnnotation = field.getAnnotation(Configurable.class);
+        ChildClassConfigurable childClassConfigurableAnnotation = field.getAnnotation(ChildClassConfigurable.class);
+
+        if (childClassConfigurableAnnotation != null && !configurableAnnotation.key().isBlank()) {
+            throw new IllegalStateException("You cannot define a key for a field that is marked as ChildClassConfigurable.");
+        }
+
+        String classOfDefinition = childClassConfigurableAnnotation == null ? currentClassInHierarchy.getSimpleName() : configurable.getClass().getSimpleName();
+
+        return configurableAnnotation.key().isBlank() ? (classOfDefinition + CLASS_ATTRIBUTE_CONNECTOR + field.getName()) : configurableAnnotation.key();
     }
 
     private void setValue(Field field, String value) {

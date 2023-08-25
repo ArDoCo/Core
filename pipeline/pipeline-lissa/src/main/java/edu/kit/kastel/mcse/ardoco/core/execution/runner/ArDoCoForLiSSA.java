@@ -3,7 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.execution.runner;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
+import java.util.SortedMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +31,7 @@ public class ArDoCoForLiSSA extends ArDoCoRunner {
     }
 
     public void setUp(File diagramDirectory, File inputText, File inputModelArchitecture, ArchitectureModelType inputArchitectureModelType,
-            Map<String, String> additionalConfigs, File outputDir) {
+            SortedMap<String, String> additionalConfigs, File outputDir) {
         try {
             definePipeline(diagramDirectory, inputText, inputModelArchitecture, inputArchitectureModelType, additionalConfigs);
         } catch (IOException e) {
@@ -44,7 +44,7 @@ public class ArDoCoForLiSSA extends ArDoCoRunner {
     }
 
     public void setUp(String diagramDirectory, String inputTextLocation, String inputArchitectureModelLocation, ArchitectureModelType architectureModelType,
-            Map<String, String> additionalConfigs, String outputDirectory) {
+            SortedMap<String, String> additionalConfigs, String outputDirectory) {
         setUp(new File(diagramDirectory), new File(inputTextLocation), new File(inputArchitectureModelLocation), architectureModelType, additionalConfigs,
                 new File(outputDirectory));
     }
@@ -60,7 +60,7 @@ public class ArDoCoForLiSSA extends ArDoCoRunner {
      * @throws IOException When one of the input files cannot be accessed/loaded
      */
     private void definePipeline(File diagramDirectory, File inputText, File inputArchitectureModel, ArchitectureModelType architectureModelType,
-            Map<String, String> additionalConfigs) throws IOException {
+            SortedMap<String, String> additionalConfigs) throws IOException {
         ArDoCo arDoCo = getArDoCo();
         var dataRepository = arDoCo.getDataRepository();
         var text = CommonUtilities.readInputText(inputText);

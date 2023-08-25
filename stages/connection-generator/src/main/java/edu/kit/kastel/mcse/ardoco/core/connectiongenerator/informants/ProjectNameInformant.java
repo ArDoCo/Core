@@ -1,8 +1,8 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.informants;
 
-import java.util.Map;
 import java.util.Objects;
+import java.util.SortedMap;
 import java.util.function.BinaryOperator;
 import java.util.function.UnaryOperator;
 
@@ -144,7 +144,7 @@ public class ProjectNameInformant extends Informant {
     }
 
     @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> map) {
+    protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> map) {
         // handle additional configuration
     }
 }

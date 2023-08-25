@@ -2,13 +2,12 @@
 package edu.kit.kastel.mcse.ardoco.core.models;
 
 import java.util.Objects;
-import java.util.Set;
 
 import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.factory.Sets;
+import org.eclipse.collections.api.factory.SortedSets;
 import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.set.ImmutableSet;
-import org.eclipse.collections.api.set.MutableSet;
+import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
+import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelExtractionState;
@@ -23,9 +22,9 @@ public class ModelExtractionStateImpl extends AbstractState implements ModelExtr
 
     private final String modelId;
     private final Metamodel metamodelType;
-    private final MutableSet<String> instanceTypes;
-    private final MutableSet<String> names;
-    private ImmutableList<ModelInstance> instances;
+    private final MutableSortedSet<String> instanceTypes;
+    private final MutableSortedSet<String> names;
+    private transient ImmutableList<ModelInstance> instances;
 
     // For generation of configuration
     private ModelExtractionStateImpl() {
@@ -46,8 +45,8 @@ public class ModelExtractionStateImpl extends AbstractState implements ModelExtr
         this.modelId = Objects.requireNonNull(modelId);
         this.metamodelType = metamodelType;
         this.instances = instances;
-        instanceTypes = Sets.mutable.empty();
-        names = Sets.mutable.empty();
+        instanceTypes = SortedSets.mutable.empty();
+        names = SortedSets.mutable.empty();
         collectTypesAndNames();
     }
 
@@ -88,7 +87,7 @@ public class ModelExtractionStateImpl extends AbstractState implements ModelExtr
      * @return all instance types of this state
      */
     @Override
-    public ImmutableSet<String> getInstanceTypes() {
+    public ImmutableSortedSet<String> getInstanceTypes() {
         return instanceTypes.toImmutable();
     }
 
@@ -98,8 +97,8 @@ public class ModelExtractionStateImpl extends AbstractState implements ModelExtr
      * @return all names of this state
      */
     @Override
-    public Set<String> getNames() {
-        return names;
+    public ImmutableSortedSet<String> getNames() {
+        return names.toImmutable();
     }
 
     /**
@@ -115,7 +114,7 @@ public class ModelExtractionStateImpl extends AbstractState implements ModelExtr
     @Override
     public void addAllOf(ModelExtractionState other) {
         instanceTypes.addAll(other.getInstanceTypes().toSet());
-        names.addAll(other.getNames());
+        names.addAll(other.getNames().castToCollection());
 
         var mergedInstances = Lists.mutable.ofAll(instances);
         mergedInstances.addAll(other.getInstances().toList());

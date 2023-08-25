@@ -5,7 +5,6 @@ import java.util.List;
 
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage;
-import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
 
 /**
  * Baseline approach for inconsistency detection
@@ -14,16 +13,11 @@ public class InconsistencyBaseline extends AbstractExecutionStage {
     private PipelineAgent agent;
 
     public InconsistencyBaseline(DataRepository dataRepository) {
-        super("InconsistencyBaseline", dataRepository, List.of(new InconsistencyBaselineAgent(dataRepository)));
+        super(List.of(new InconsistencyBaselineAgent(dataRepository)), "InconsistencyBaseline", dataRepository);
     }
 
     @Override
     protected void initializeState() {
         // do nothing
-    }
-
-    @Override
-    protected List<PipelineAgent> getEnabledAgents() {
-        return List.of(agent);
     }
 }

@@ -2,7 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks;
 
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -12,6 +12,7 @@ import org.eclipse.collections.api.list.MutableList;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions;
 import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
@@ -19,6 +20,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 /**
  * An InstanceLink defines a link between an {@link RecommendedInstance} and an {@link ModelInstance}.
  */
+@Deterministic
 public class InstanceLink extends EndpointTuple {
 
     private final RecommendedInstance textualInstance;
@@ -96,9 +98,9 @@ public class InstanceLink extends EndpointTuple {
 
     @Override
     public String toString() {
-        Set<String> names = new HashSet<>();
+        Set<String> names = new LinkedHashSet<>();
         MutableList<Integer> namePositions = Lists.mutable.empty();
-        Set<String> types = new HashSet<>();
+        Set<String> types = new LinkedHashSet<>();
         MutableList<Integer> typePositions = Lists.mutable.empty();
 
         for (NounMapping nameMapping : textualInstance.getNameMappings()) {

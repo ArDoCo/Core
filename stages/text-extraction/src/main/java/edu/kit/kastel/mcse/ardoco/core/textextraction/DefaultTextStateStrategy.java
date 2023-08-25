@@ -4,6 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction;
 import org.eclipse.collections.api.factory.Maps;
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.factory.SortedSets;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.api.set.ImmutableSet;
@@ -85,7 +86,7 @@ public abstract class DefaultTextStateStrategy implements TextStateStrategy {
             references.addAllIterable(nounMappingToMerge.getReferenceWords());
             textState.mergeNounMappings(nounMapping, nounMappingToMerge, claimant, references.toImmutable());
 
-            var mergedWords = Sets.mutable.empty();
+            var mergedWords = SortedSets.mutable.empty();
             mergedWords.addAllIterable(nounMapping.getWords());
             mergedWords.addAllIterable(nounMappingToMerge.getWords());
 

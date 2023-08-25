@@ -2,9 +2,7 @@ package edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.agents
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState
 import edu.kit.kastel.mcse.ardoco.core.common.util.SerializableFileBasedCache
-import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
-import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent
 import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognitionStateImpl
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.informants.ObjectDetectionInformant
@@ -30,13 +28,6 @@ class DiagramRecognitionAgent(
     companion object {
         const val ID = "DiagramRecognitionAgent"
     }
-
-    @Configurable
-    private var enabledInformants: MutableList<String> =
-        informants.map { e: Informant -> e.javaClass.simpleName }.toMutableList()
-
-    override fun getEnabledPipelineSteps(): MutableList<Informant> =
-        findByClassName(enabledInformants, informants)
 
     override fun before() {
         for (diagram in diagramRecognitionState.getUnprocessedDiagrams()) {

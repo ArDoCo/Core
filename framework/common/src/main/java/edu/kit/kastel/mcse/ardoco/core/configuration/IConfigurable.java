@@ -1,10 +1,10 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.configuration;
 
-import java.util.Map;
+import java.util.SortedMap;
 
 public interface IConfigurable {
-    void applyConfiguration(Map<String, String> additionalConfiguration);
+    void applyConfiguration(SortedMap<String, String> additionalConfiguration);
 
-    Map<String, String> getLastAppliedConfiguration();
+    SortedMap<String, String> getLastAppliedConfiguration();
 }

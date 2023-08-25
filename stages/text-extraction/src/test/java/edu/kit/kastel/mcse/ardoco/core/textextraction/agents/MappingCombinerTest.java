@@ -4,7 +4,6 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction.agents;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.set.MutableSet;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +16,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.PhraseMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
-import edu.kit.kastel.mcse.ardoco.core.common.util.ElementWrapper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.PhraseMappingAggregatorStrategy;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
@@ -449,11 +447,11 @@ class MappingCombinerTest implements Claimant {
     private TextState createCopy(TextState textState) {
         TextStateImpl newTextState = new TextStateImpl();
 
-        MutableList<ElementWrapper<NounMapping>> nounMappings = getField(textState, "nounMappings");
-        MutableSet<PhraseMapping> phraseMappings = getField(textState, "phraseMappings");
+        MutableList<NounMapping> nounMappings = getField(textState, "nounMappings");
+        MutableList<PhraseMapping> phraseMappings = getField(textState, "phraseMappings");
 
-        MutableList<ElementWrapper<NounMapping>> newNounMappings = getField(newTextState, "nounMappings");
-        MutableSet<PhraseMapping> newPhraseMappings = getField(newTextState, "phraseMappings");
+        MutableList<NounMapping> newNounMappings = getField(newTextState, "nounMappings");
+        MutableList<PhraseMapping> newPhraseMappings = getField(newTextState, "phraseMappings");
 
         newNounMappings.addAll(nounMappings);
         newPhraseMappings.addAll(phraseMappings);

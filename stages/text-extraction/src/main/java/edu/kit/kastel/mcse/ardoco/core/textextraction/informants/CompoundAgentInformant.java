@@ -1,7 +1,7 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction.informants;
 
-import java.util.Map;
+import java.util.SortedMap;
 import java.util.StringJoiner;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -71,7 +71,7 @@ public class CompoundAgentInformant extends Informant {
         var similarReferenceNounMappings = textState.getNounMappingsWithSimilarReference(reference);
         if (similarReferenceNounMappings.isEmpty()) {
 
-            var nounMapping = textState.addNounMapping(compoundWords.toImmutableSet(), MappingKind.NAME, this, compoundConfidence, compoundWords
+            var nounMapping = textState.addNounMapping(compoundWords.toImmutableSortedSet(), MappingKind.NAME, this, compoundConfidence, compoundWords
                     .toImmutableList(), compoundWords.collect(Word::getText).toImmutableList(), createReferenceForCompound(compoundWords));
             ((NounMappingImpl) nounMapping).setIsDefinedAsCompound(true);
         } else {
@@ -79,10 +79,10 @@ public class CompoundAgentInformant extends Informant {
 
                 textState.removeNounMapping(nounMapping, null);
 
-                var newWords = nounMapping.getWords().toSet();
+                var newWords = nounMapping.getWords().toSortedSet();
                 newWords.addAllIterable(compoundWords);
 
-                var compoundMapping = textState.addNounMapping(newWords.toImmutable(), nounMapping.getDistribution().toMap(), nounMapping.getReferenceWords(),
+                var compoundMapping = textState.addNounMapping(newWords.toImmutable(), nounMapping.getDistribution(), nounMapping.getReferenceWords(),
                         nounMapping.getSurfaceForms(), nounMapping.getReference());
                 nounMapping.onDelete(compoundMapping);
                 ((NounMappingImpl) compoundMapping).setIsDefinedAsCompound(true);
@@ -107,7 +107,7 @@ public class CompoundAgentInformant extends Informant {
     }
 
     @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> map) {
+    protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> map) {
         // none
     }
 }

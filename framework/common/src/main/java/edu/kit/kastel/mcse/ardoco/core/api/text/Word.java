@@ -87,6 +87,9 @@ public interface Word extends Comparable<Word>, Serializable {
 
     @Override
     default int compareTo(Word o) {
+        if (this.equals(o))
+            return 0;
+
         int compareSentences = Integer.compare(this.getSentenceNo(), o.getSentenceNo());
         if (compareSentences != 0) {
             return compareSentences;

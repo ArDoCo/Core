@@ -1,20 +1,24 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
+import static java.lang.Math.abs;
+
+import java.awt.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+
+import org.eclipse.collections.api.set.MutableSet;
+import org.eclipse.collections.impl.factory.Sets;
+import org.jetbrains.annotations.NotNull;
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityComparable;
-import java.awt.*;
-import java.io.Serializable;
-import java.util.List;
-import java.util.*;
-import org.eclipse.collections.api.set.MutableSet;
-import org.eclipse.collections.impl.factory.Sets;
-import org.jetbrains.annotations.NotNull;
-
-import static java.lang.Math.abs;
 
 /**
  * This class represents a box that is detected by the image recognition.
@@ -35,9 +39,7 @@ public class Box extends DiagramElement implements Serializable {
     }
 
     public static String getUUID(int[] coordinates) {
-        return String.format("Box [%s]",
-                Arrays.stream(coordinates).mapToObj((Integer::toString)).reduce(
-                        (l, r) -> l + "-" + r).orElseThrow());
+        return String.format("Box [%s]", Arrays.stream(coordinates).mapToObj((Integer::toString)).reduce((l, r) -> l + "-" + r).orElseThrow());
     }
 
     // Jackson JSON
@@ -50,15 +52,11 @@ public class Box extends DiagramElement implements Serializable {
      *
      * @param coordinates     the coordinates of two corners of the box in pixel. (x1,y1,x2,y2)
      * @param confidence      a confidence value
-     * @param classification  the classification (e.g., "LABEL"), see {@link Classification} for
-     *                        further details
+     * @param classification  the classification (e.g., "LABEL"), see {@link Classification} for further details
      * @param textBoxes       the text boxes that are attached to this box
      * @param dominatingColor a dominating color in the box (iff present)
      */
-    public Box(@NotNull Diagram diagram, int[] coordinates,
-               double confidence,
-               String classification, List<TextBox> textBoxes,
-               Color dominatingColor) {
+    public Box(@NotNull Diagram diagram, int[] coordinates, double confidence, String classification, List<TextBox> textBoxes, Color dominatingColor) {
         super(diagram, getUUID(coordinates));
         this.coordinates = coordinates;
         this.confidence = confidence;
@@ -72,13 +70,11 @@ public class Box extends DiagramElement implements Serializable {
      *
      * @param coordinates    the coordinates of two corners of the box in pixel. (x1,y1,x2,y2)
      * @param confidence     a confidence value
-     * @param classification the classification (e.g., "LABEL"), see {@link Classification} for
-     *                       further details
+     * @param classification the classification (e.g., "LABEL"), see {@link Classification} for further details
      */
     @JsonCreator
-    public Box(@NotNull @JacksonInject Diagram diagram, @JsonProperty("box") int[] coordinates,
-               @JsonProperty("confidence") double confidence,
-               @JsonProperty("class") String classification) {
+    public Box(@NotNull @JacksonInject Diagram diagram, @JsonProperty("box") int[] coordinates, @JsonProperty("confidence") double confidence,
+            @JsonProperty("class") String classification) {
         super(diagram, getUUID(coordinates));
         this.coordinates = coordinates;
         this.confidence = confidence;
@@ -140,12 +136,13 @@ public class Box extends DiagramElement implements Serializable {
     }
 
     /**
-     * Add a text box that shall be associated with the box.
-     *
+     * Remove a text box that is associated with the box.
+     * 
      * @param textBox the textbox
      */
     public void removeTextBox(TextBox textBox) {
-        this.textBoxes.remove(textBox);
+        Objects.requireNonNull(textBox);
+        this.textBoxes.removeIf(it -> it == textBox);
     }
 
     /**
@@ -200,14 +197,5 @@ public class Box extends DiagramElement implements Serializable {
     @Override
     public String toString() {
         return getName();
-    }
-
-    @Override
-    public boolean similar(Object obj) {
-        if (equals(obj)) return true;
-        if (obj instanceof Box other) {
-            return super.similar(obj) && SimilarityComparable.similar(textBoxes, other.textBoxes);
-        }
-        return false;
     }
 }

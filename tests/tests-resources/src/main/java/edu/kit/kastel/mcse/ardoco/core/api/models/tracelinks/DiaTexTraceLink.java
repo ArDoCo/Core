@@ -8,8 +8,9 @@ import org.jetbrains.annotations.NotNull;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
+import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityComparable;
 
-public class DiaTexTraceLink implements Comparable<DiaTexTraceLink>, Serializable {
+public class DiaTexTraceLink implements SimilarityComparable<DiaTexTraceLink>, Comparable<DiaTexTraceLink>, Serializable {
     protected final DiagramElement diagramElement;
     protected final Sentence sentence;
     protected final String projectName;
@@ -40,10 +41,6 @@ public class DiaTexTraceLink implements Comparable<DiaTexTraceLink>, Serializabl
         return sentence.getSentenceNumberForOutput();
     }
 
-    public final boolean equalDEAndSentence(DiaTexTraceLink other) {
-        return Objects.equals(getDiagramElement(), other.getDiagramElement()) && Objects.equals(getSentenceNo(), other.getSentenceNo());
-    }
-
     @Override
     public String toString() {
         return toString(true);
@@ -65,7 +62,7 @@ public class DiaTexTraceLink implements Comparable<DiaTexTraceLink>, Serializabl
         if (this == obj)
             return true;
         else if (obj instanceof DiaTexTraceLink other) {
-            return equalDEAndSentence(other);
+            return Objects.equals(getSentenceNo(), other.getSentenceNo()) && Objects.equals(getDiagramElement(), other.getDiagramElement());
         }
         return false;
     }
@@ -83,5 +80,12 @@ public class DiaTexTraceLink implements Comparable<DiaTexTraceLink>, Serializabl
         if (comp == 0)
             return getSentenceNo() - o.getSentenceNo();
         return comp;
+    }
+
+    @Override
+    public boolean similar(DiaTexTraceLink obj) {
+        if (equals(obj))
+            return true;
+        return getDiagramElement().getBoundingBox().similar(obj.getDiagramElement().getBoundingBox()) && Objects.equals(getSentenceNo(), obj.getSentenceNo());
     }
 }

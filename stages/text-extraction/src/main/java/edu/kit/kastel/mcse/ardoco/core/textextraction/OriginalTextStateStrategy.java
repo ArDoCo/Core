@@ -3,18 +3,16 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.Objects;
-import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.factory.Maps;
-import org.eclipse.collections.api.factory.Sets;
+import org.eclipse.collections.api.factory.SortedMaps;
+import org.eclipse.collections.api.factory.SortedSets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.map.MutableMap;
-import org.eclipse.collections.api.set.MutableSet;
+import org.eclipse.collections.api.map.sorted.MutableSortedMap;
+import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
@@ -27,19 +25,15 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 public class OriginalTextStateStrategy extends DefaultTextStateStrategy implements Serializable {
 
-    private static final Function<NounMapping, Integer> NOUN_MAPPING_HASH = (Function<NounMapping, Integer> & Serializable) (nm) -> Objects.hash(
-            nm.getReferenceWords().toSet(), nm.getWords());
-    private static final BiPredicate<NounMapping, NounMapping> NOUN_MAPPING_EQUALS = (BiPredicate<NounMapping, NounMapping> & Serializable) (nm1, nm2) -> Objects.equals(
-            nm1.getReferenceWords().toSet(), nm2.getReferenceWords().toSet()) && Objects.equals(nm1.getWords(), nm2.getWords());
-
     OriginalTextStateStrategy(TextStateImpl textState) {
         super.setTextState(textState);
     }
 
     @Override
     public NounMapping addOrExtendNounMapping(Word word, MappingKind kind, Claimant claimant, double probability, ImmutableList<String> surfaceForms) {
-        NounMapping disposableNounMapping = new NounMappingImpl(System.currentTimeMillis(), Sets.immutable.with(word), kind, claimant, probability,
-                Lists.immutable.with(word), surfaceForms);
+
+        NounMapping disposableNounMapping = new NounMappingImpl(SortedSets.immutable.with(word), kind, claimant, probability, Lists.immutable.with(word),
+                surfaceForms);
 
         for (var existingNounMapping : super.getTextState().getNounMappings()) {
             if (SimilarityUtils.areNounMappingsSimilar(disposableNounMapping, existingNounMapping)) {
@@ -54,26 +48,21 @@ public class OriginalTextStateStrategy extends DefaultTextStateStrategy implemen
     }
 
     @Override
-    public ElementWrapper<NounMapping> wrap(NounMapping nounMapping) {
-
-        return new ElementWrapper<>(NounMapping.class, nounMapping, NOUN_MAPPING_HASH, NOUN_MAPPING_EQUALS);
-    }
-
-    @Override
     public NounMappingImpl mergeNounMappingsStateless(NounMapping firstNounMapping, NounMapping secondNounMapping, ImmutableList<Word> referenceWords,
             String reference, MappingKind mappingKind, Claimant claimant, double probability) {
 
-        MutableSet<Word> mergedWords = firstNounMapping.getWords().toSet();
+        MutableSortedSet<Word> mergedWords = firstNounMapping.getWords().toSortedSet();
         mergedWords.add(secondNounMapping.getReferenceWords().get(0));
         //This makes only sense under specific conditions, since it is sequentially dependent. It might be fixed in future versions
 
-        var existingNounMappingDistribution = firstNounMapping.getDistribution().toMap();
-        var disposableNounMappingDistribution = secondNounMapping.getDistribution().toMap();
-        var mergedRawMap = Arrays.stream(MappingKind.values()).collect(Collectors.toMap( //
-                kind -> kind, //
-                kind -> putAllConfidencesTogether(existingNounMappingDistribution.get(kind), disposableNounMappingDistribution.get(kind)) //
-        ));
-        MutableMap<MappingKind, Confidence> mergedDistribution = Maps.mutable.withMap(mergedRawMap);
+        var existingNounMappingDistribution = firstNounMapping.getDistribution();
+        var disposableNounMappingDistribution = secondNounMapping.getDistribution();
+        var mergedRawMap = Arrays.stream(MappingKind.values())
+                .collect(Collectors.toMap( //
+                        kind -> kind, //
+                        kind -> putAllConfidencesTogether(existingNounMappingDistribution.get(kind), disposableNounMappingDistribution.get(kind)) //
+                ));
+        MutableSortedMap<MappingKind, Confidence> mergedDistribution = SortedMaps.mutable.withSortedMap(mergedRawMap);
 
         MutableList<String> mergedSurfaceForms = firstNounMapping.getSurfaceForms().toList();
         for (var surface : secondNounMapping.getSurfaceForms()) {

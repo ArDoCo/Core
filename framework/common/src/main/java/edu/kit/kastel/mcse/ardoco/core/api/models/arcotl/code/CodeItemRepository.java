@@ -2,19 +2,19 @@
 package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
+import java.util.SortedMap;
 
-import org.eclipse.collections.api.factory.Maps;
+import org.eclipse.collections.api.factory.SortedMaps;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class CodeItemRepository {
 
     @JsonProperty
-    private final Map<String, CodeItem> repository = Maps.mutable.empty();
+    private final SortedMap<String, CodeItem> repository = SortedMaps.mutable.empty();
 
-    public Map<String, CodeItem> getRepository() {
+    public SortedMap<String, CodeItem> getRepository() {
         return repository;
     }
 
@@ -27,6 +27,8 @@ public class CodeItemRepository {
     }
 
     CodeItem getCodeItem(String id) {
+        if (id == null)
+            return null;
         return repository.get(id);
     }
 

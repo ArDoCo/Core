@@ -2,10 +2,9 @@
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
 import java.util.List;
-import java.util.Map;
+import java.util.SortedMap;
 
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
-import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Agent;
@@ -18,8 +17,6 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.agents.PhraseAgent;
  * The Class TextExtractor.
  */
 public class TextExtraction extends AbstractExecutionStage {
-    @Configurable
-    private List<String> enabledAgents;
 
     /**
      * Instantiates a new text extractor.
@@ -29,7 +26,6 @@ public class TextExtraction extends AbstractExecutionStage {
                 new InitialTextAgent(dataRepository),//
                 new PhraseAgent(dataRepository),//
                 new AbbreviationAgent(dataRepository)));
-        this.enabledAgents = getAgents().stream().map(Agent::getId).toList();
     }
 
     /**
@@ -39,7 +35,7 @@ public class TextExtraction extends AbstractExecutionStage {
      * @param dataRepository    the data repository
      * @return an instance of InconsistencyChecker
      */
-    public static TextExtraction get(Map<String, String> additionalConfigs, DataRepository dataRepository) {
+    public static TextExtraction get(SortedMap<String, String> additionalConfigs, DataRepository dataRepository) {
         var textExtractor = new TextExtraction(dataRepository);
         textExtractor.applyConfiguration(additionalConfigs);
         return textExtractor;
@@ -54,10 +50,5 @@ public class TextExtraction extends AbstractExecutionStage {
             var textState = new TextStateImpl();
             dataRepository.addData(TextState.ID, textState);
         }
-    }
-
-    @Override
-    protected List<PipelineAgent> getEnabledAgents() {
-        return findByClassName(enabledAgents, getAgents());
     }
 }

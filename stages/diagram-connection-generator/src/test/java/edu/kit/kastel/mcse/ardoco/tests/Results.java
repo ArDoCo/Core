@@ -33,7 +33,7 @@ public record Results(DiagramProject project, SortedSet<DiaWordTraceLink> truePo
         var traceLinks = new TreeSet<>(wordTraceLinks);
         var tpLinks = intersection(traceLinks, goldStandard);
         var fpLinks = difference(traceLinks, goldStandard);
-        fpLinks.forEach(fp -> fp.addRelated(allGoldStandardTraceLinks.values().stream().flatMap(Collection::stream).filter(fp::equalDEAndSentence).toList()));
+        fpLinks.forEach(fp -> fp.addRelated(allGoldStandardTraceLinks.values().stream().flatMap(Collection::stream).filter(fp::similar).toList()));
         var fnLinks = difference(goldStandard, traceLinks);
         var TP = tpLinks.size();
         var FP = fpLinks.size();
@@ -50,11 +50,11 @@ public record Results(DiagramProject project, SortedSet<DiaWordTraceLink> truePo
     }
 
     public static <T extends DiaTexTraceLink> TreeSet<T> intersection(Set<T> a, Set<? extends DiaTexTraceLink> b) {
-        return a.stream().filter(fromA -> b.stream().anyMatch(fromB -> fromB.equalDEAndSentence(fromA))).collect(Collectors.toCollection(TreeSet::new));
+        return a.stream().filter(fromA -> b.stream().anyMatch(fromB -> fromB.similar(fromA))).collect(Collectors.toCollection(TreeSet::new));
     }
 
     public static <T extends DiaTexTraceLink> TreeSet<T> difference(Set<T> a, Set<? extends DiaTexTraceLink> b) {
-        return a.stream().filter(fromA -> b.stream().noneMatch(fromB -> fromB.equalDEAndSentence(fromA))).collect(Collectors.toCollection(TreeSet::new));
+        return a.stream().filter(fromA -> b.stream().noneMatch(fromB -> fromB.similar(fromA))).collect(Collectors.toCollection(TreeSet::new));
     }
 
     public double precision() {

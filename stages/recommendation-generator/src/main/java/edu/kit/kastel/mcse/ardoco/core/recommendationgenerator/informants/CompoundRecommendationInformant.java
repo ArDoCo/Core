@@ -1,13 +1,13 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.informants;
 
-import java.util.Map;
+import java.util.SortedMap;
 
 import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.factory.Sets;
+import org.eclipse.collections.api.factory.SortedSets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.set.MutableSet;
+import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
@@ -110,7 +110,7 @@ public class CompoundRecommendationInformant extends Informant {
     }
 
     private ImmutableList<String> getSimilarModelTypes(ImmutableList<NounMapping> typeMappings, ModelExtractionState modelState) {
-        MutableSet<String> similarModelTypes = Sets.mutable.empty();
+        MutableSortedSet<String> similarModelTypes = SortedSets.mutable.empty();
         var typeIdentifiers = CommonUtilities.getTypeIdentifiers(modelState);
         for (var typeMapping : typeMappings) {
             var currSimilarTypes = Lists.immutable.fromStream(
@@ -161,7 +161,7 @@ public class CompoundRecommendationInformant extends Informant {
     }
 
     @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> map) {
+    protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> map) {
         // empty
     }
 }

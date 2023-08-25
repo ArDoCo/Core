@@ -10,6 +10,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,10 +23,10 @@ import org.slf4j.LoggerFactory;
 public class DataRepository implements Serializable {
     private static final Logger logger = LoggerFactory.getLogger(DataRepository.class);
 
-    private final Map<String, PipelineStepData> data;
+    private final SortedMap<String, PipelineStepData> data;
 
     public DataRepository() {
-        this.data = new HashMap<>();
+        this.data = new TreeMap<>();
     }
 
     /**

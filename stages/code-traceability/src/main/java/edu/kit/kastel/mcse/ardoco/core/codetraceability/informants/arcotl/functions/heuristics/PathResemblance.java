@@ -1,9 +1,10 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.heuristics;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureComponent;
@@ -41,9 +42,9 @@ public class PathResemblance extends StandaloneHeuristic {
         return new Confidence(similarity);
     }
 
-    private Set<String> getAllPackageNames() {
-        Set<? extends CodePackage> packages = getCodeModel().getAllPackages();
-        Set<String> allPackageNames = new HashSet<>();
+    private SortedSet<String> getAllPackageNames() {
+        List<? extends CodePackage> packages = getCodeModel().getAllPackages();
+        SortedSet<String> allPackageNames = new TreeSet<>();
         for (CodePackage codePackage : packages) {
             allPackageNames.add(codePackage.getName());
         }

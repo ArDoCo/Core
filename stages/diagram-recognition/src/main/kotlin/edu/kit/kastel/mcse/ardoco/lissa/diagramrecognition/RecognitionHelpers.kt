@@ -3,6 +3,7 @@ package edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Classification
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.TextBox
 import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognition
 import org.apache.hc.client5.http.classic.methods.HttpPost
 import org.apache.hc.client5.http.config.RequestConfig
@@ -52,32 +53,15 @@ fun visualize(imageStream: InputStream, diagram: Diagram, destination: OutputStr
     val colorMap = mutableMapOf<Classification, Color>()
     var currentColor = 0
 
-    val textBoxes = diagram.textBoxes.map {
-        val tb = Box(
-            diagram,
-            it.absoluteBox().map { value -> value }.toIntArray(),
-            1.0,
-            "TEXT",
-            mutableListOf(it),
-            null
-        )
-        tb
-    }
-
-    for (box in diagram.boxes + textBoxes) {
+    for (box in diagram.boxes + diagram.textBoxes.map { it.toBox(true) } + diagram.boxes.flatMap { it.texts.map { tb -> tb.toBox(false) } }) {
         if (!colorMap.containsKey(box.classification)) {
             colorMap[box.classification] = colors[currentColor]!!
             currentColor++
         }
         g2d.color = colorMap[box.classification]
         val coordinates = box.box
-        g2d.drawRect(
-            coordinates[0],
-            coordinates[1],
-            coordinates[2] - coordinates[0],
-            coordinates[3] - coordinates[1]
-        )
-        if (box.classification == Classification.TEXT) {
+        g2d.drawRect(coordinates[0], coordinates[1], coordinates[2] - coordinates[0], coordinates[3] - coordinates[1])
+        if (box.classification == Classification.TEXT || box.classification == Classification.RAWTEXT) {
             g2d.drawString(
                 box.texts.joinToString { it.text },
                 coordinates[0],
@@ -88,6 +72,15 @@ fun visualize(imageStream: InputStream, diagram: Diagram, destination: OutputStr
     g2d.dispose()
     ImageIO.write(image, "png", destination)
 }
+
+private fun TextBox.toBox(rawBox: Boolean): Box = Box(
+    UUID.randomUUID().toString(),
+    this.absoluteBox().map { value -> value }.toIntArray(),
+    1.0,
+    if (rawBox) "RAWTEXT" else "TEXT",
+    mutableListOf(this),
+    null
+)
 
 data class BoundingBox(val x1: Double, val y1: Double, val x2: Double, val y2: Double) {
     fun iou(bb: BoundingBox) = intersectionOverUnion(this, bb)

@@ -2,7 +2,7 @@
     "$schema": "../../DiagramSchema.json",
     "diagrams": [
         {
-            "path": "benchmark/mediastore/diagrams_2016/ArchitectureWithCache.png",
+            "path": "/benchmark/mediastore/diagrams_2016/ArchitectureWithCache.png",
             "boxes": [
                 {
                     "boundingBox": {

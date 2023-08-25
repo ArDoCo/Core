@@ -2,7 +2,7 @@
     "$schema": "../../DiagramSchema.json",
     "diagrams": [
         {
-            "path": "benchmark/teammates/diagrams_2015/highlevelArchitecture.png",
+            "path": "/benchmark/teammates/diagrams_2015/highlevelArchitecture.png",
             "boxes": [
                 {
                     "boundingBox": {
@@ -485,7 +485,7 @@
             ]
         },
         {
-            "path": "benchmark/teammates/diagrams_2015/packageDiagram.png",
+            "path": "/benchmark/teammates/diagrams_2015/packageDiagram.png",
             "boxes": [
                 {
                     "boundingBox": {

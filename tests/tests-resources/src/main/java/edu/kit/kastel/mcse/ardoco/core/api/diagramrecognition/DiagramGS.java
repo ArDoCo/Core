@@ -2,6 +2,7 @@ package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -20,6 +21,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaGSTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 
 public class DiagramGS implements Diagram, Comparable<DiagramGS> {
@@ -38,8 +40,18 @@ public class DiagramGS implements Diagram, Comparable<DiagramGS> {
         objectMapper.registerModule(module);
         objectMapper.setInjectableValues(new InjectableValues.Std().addValue(DiagramGS.class, this));
         var boxes = objectMapper.treeToValue(boxesNode, BoxGS[].class);
-
         this.project = project;
+
+        if (!project.getDiagramResourceNames().contains(resourceName)) {
+            var closest = project.getDiagramResourceNames()
+                    .stream()
+                    .max(Comparator.comparingDouble(a -> WordSimUtils.getSimilarity(a, resourceName)))
+                    .orElse("NONE");
+            throw new IllegalArgumentException(
+                    String.format("The resource name \"%s\" doesn't match any known resource of \"%s\". Did you mean \"%s\"?", resourceName,
+                            project.getProjectName(), closest));
+        }
+
         this.resourceName = resourceName;
         addBoxes(boxes);
     }

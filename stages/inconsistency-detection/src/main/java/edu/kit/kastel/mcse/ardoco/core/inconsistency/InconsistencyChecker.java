@@ -2,27 +2,20 @@
 package edu.kit.kastel.mcse.ardoco.core.inconsistency;
 
 import java.util.List;
-import java.util.Map;
+import java.util.SortedMap;
 
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistencyStates;
-import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.agents.InitialInconsistencyAgent;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.agents.MissingModelElementInconsistencyAgent;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.agents.UndocumentedModelElementInconsistencyAgent;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage;
-import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Agent;
-import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
 
 public class InconsistencyChecker extends AbstractExecutionStage {
-    @Configurable
-    private List<String> enabledAgents;
 
     public InconsistencyChecker(DataRepository dataRepository) {
-        super("InconsistencyChecker", dataRepository,
-                List.of(new InitialInconsistencyAgent(dataRepository), new MissingModelElementInconsistencyAgent(dataRepository),
-                        new UndocumentedModelElementInconsistencyAgent(dataRepository)));
-        enabledAgents = getAgents().stream().map(Agent::getId).toList();
+        super(List.of(new InitialInconsistencyAgent(dataRepository), new MissingModelElementInconsistencyAgent(dataRepository),
+                new UndocumentedModelElementInconsistencyAgent(dataRepository)), "InconsistencyChecker", dataRepository);
     }
 
     /**
@@ -32,7 +25,7 @@ public class InconsistencyChecker extends AbstractExecutionStage {
      * @param dataRepository    the data repository
      * @return an instance of InconsistencyChecker
      */
-    public static InconsistencyChecker get(Map<String, String> additionalConfigs, DataRepository dataRepository) {
+    public static InconsistencyChecker get(SortedMap<String, String> additionalConfigs, DataRepository dataRepository) {
         var inconsistencyChecker = new InconsistencyChecker(dataRepository);
         inconsistencyChecker.applyConfiguration(additionalConfigs);
         return inconsistencyChecker;
@@ -44,8 +37,4 @@ public class InconsistencyChecker extends AbstractExecutionStage {
         getDataRepository().addData(InconsistencyStates.ID, inconsistencyStates);
     }
 
-    @Override
-    protected List<PipelineAgent> getEnabledAgents() {
-        return findByClassName(enabledAgents, getAgents());
-    }
 }

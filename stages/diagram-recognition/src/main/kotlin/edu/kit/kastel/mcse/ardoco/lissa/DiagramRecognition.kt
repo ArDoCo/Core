@@ -2,7 +2,6 @@ package edu.kit.kastel.mcse.ardoco.lissa
 
 import edu.kit.kastel.mcse.ardoco.core.api.InputDiagramData
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState
-import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent
@@ -11,6 +10,7 @@ import edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.agents.DiagramDisambig
 import edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.agents.DiagramReferenceAgent
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.agents.DiagramRecognitionAgent
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.model.DiagramImpl
+import java.util.SortedMap
 
 class DiagramRecognition(
     private val diagramRecognitionState: DiagramRecognitionStateImpl,
@@ -38,7 +38,7 @@ class DiagramRecognition(
          */
         @JvmStatic
         fun get(
-            additionalConfigs: Map<String?, String?>?,
+            additionalConfigs: SortedMap<String?, String?>?,
             dataRepository: DataRepository?
         ): DiagramRecognition? {
             val diagramDetection = DiagramRecognition(
@@ -49,9 +49,6 @@ class DiagramRecognition(
             return diagramDetection
         }
     }
-
-    @Configurable
-    private var enabledAgents: MutableList<String> = agents.map { it.id }.toMutableList()
 
     override fun initializeState() {
         dataRepository.addData(DiagramRecognitionState.ID, diagramRecognitionState)
@@ -66,9 +63,5 @@ class DiagramRecognition(
             val diagram = DiagramImpl(diagramDatum.first, diagramDatum.second)
             diagramRecognitionState.addUnprocessedDiagram(diagram)
         }
-    }
-
-    override fun getEnabledAgents(): MutableList<PipelineAgent> {
-        return findByClassName(enabledAgents, agents)
     }
 }

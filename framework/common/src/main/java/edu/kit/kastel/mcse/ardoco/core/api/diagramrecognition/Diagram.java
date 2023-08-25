@@ -1,12 +1,13 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
-import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityComparable;
 import java.io.File;
 import java.io.Serializable;
 import java.util.List;
 
-public interface Diagram extends SimilarityComparable, Serializable {
+import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityComparable;
+
+public interface Diagram extends SimilarityComparable<Diagram>, Serializable {
     String getResourceName();
 
     File getLocation();
@@ -21,6 +22,11 @@ public interface Diagram extends SimilarityComparable, Serializable {
 
     boolean removeTextBox(TextBox textBox);
 
+    /**
+     * Returns the raw text boxes that are attached to this diagram. This method does not return the text boxes that are attached to the boxes of this diagram.
+     * 
+     * @return the raw text boxes that are attached to this diagram
+     */
     List<TextBox> getTextBoxes();
 
     void addConnector(Connector connector);
@@ -30,10 +36,11 @@ public interface Diagram extends SimilarityComparable, Serializable {
     List<Connector> getConnectors();
 
     @Override
-    default boolean similar(Object obj) {
-        if (equals(obj)) return true;
-        if (obj instanceof Diagram other) {
-            return SimilarityComparable.similar(getBoxes(), other.getBoxes());
+    default boolean similar(Diagram obj) {
+        if (equals(obj))
+            return true;
+        if (getResourceName().equals(obj.getResourceName())) {
+            return SimilarityComparable.similar(getBoxes(), obj.getBoxes());
         }
         return false;
     }

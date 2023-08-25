@@ -2,7 +2,7 @@
     "$schema": "../../DiagramSchema.json",
     "diagrams": [
         {
-            "path": "benchmark/bigbluebutton/diagrams_2015/bbb-arch-overview.png",
+            "path": "/benchmark/bigbluebutton/diagrams_2015/bbb-arch-overview.png",
             "boxes": [
                 {
                     "boundingBox": {

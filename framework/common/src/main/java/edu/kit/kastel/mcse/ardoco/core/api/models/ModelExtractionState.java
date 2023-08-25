@@ -1,10 +1,8 @@
 /* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.models;
 
-import java.util.Set;
-
 import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.set.ImmutableSet;
+import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 
 import edu.kit.kastel.mcse.ardoco.core.configuration.IConfigurable;
 
@@ -39,14 +37,14 @@ public interface ModelExtractionState extends IConfigurable {
      *
      * @return all instance types of this state
      */
-    ImmutableSet<String> getInstanceTypes();
+    ImmutableSortedSet<String> getInstanceTypes();
 
     /**
      * Returns all names that are contained by this state.
      *
      * @return all names of this state
      */
-    Set<String> getNames();
+    ImmutableSortedSet<String> getNames();
 
     /**
      * Returns all instances that are contained by this state.

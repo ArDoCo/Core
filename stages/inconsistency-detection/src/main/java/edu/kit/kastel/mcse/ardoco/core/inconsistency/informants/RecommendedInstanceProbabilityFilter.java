@@ -1,7 +1,7 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.informants;
 
-import java.util.Map;
+import java.util.SortedMap;
 
 import org.eclipse.collections.api.bag.sorted.MutableSortedBag;
 import org.eclipse.collections.api.factory.Lists;
@@ -77,8 +77,8 @@ public class RecommendedInstanceProbabilityFilter extends Filter {
         }
 
         if (logger.isDebugEnabled()) {
-            for (var prob : probabilities.toMapOfItemToCount().entrySet()) {
-                logger.debug("{}: {}", prob.getKey(), prob.getValue());
+            for (var prob : probabilities.toMapOfItemToCount().keyValuesView()) {
+                logger.debug("{}: {}", prob.getOne(), prob.getOne());
             }
             logger.debug("Highest probability: {}", highestProbability);
         }
@@ -127,7 +127,7 @@ public class RecommendedInstanceProbabilityFilter extends Filter {
     }
 
     @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+    protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration) {
         // handle additional config
     }
 

@@ -1,8 +1,10 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
@@ -10,6 +12,7 @@ import org.sqlite.SQLiteConfig;
 import org.sqlite.SQLiteOpenMode;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.equality.EqualityMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.strategy.ComparisonStrategy;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.strategy.SimilarityStrategy;
 
@@ -175,16 +178,44 @@ public class WordSimUtils {
         return areWordsSimilar(new ComparisonContext(firstWord, secondWord.getText(), null, secondWord, false), strategy);
     }
 
+    /**
+     * Evaluates the similarity of the given words using the specified similarity strategy.
+     *
+     * @param firstWord  the first word
+     * @param secondWord the second word
+     * @param strategy   the strategy to use
+     * @param ignoreCase whether to ignore the case during comparison
+     * @return Returns similarity in range [0,1]
+     */
     public static double getSimilarity(String firstWord, String secondWord, SimilarityStrategy strategy, boolean ignoreCase) {
+        var measures = WordSimUtils.measures.stream().filter(m -> !(m instanceof EqualityMeasure)).collect(Collectors.toCollection(ArrayList::new));
+        if (measures.isEmpty())
+            measures.add(new EqualityMeasure());
+
         return strategy.getSimilarity(
                 new ComparisonContext(ignoreCase ? firstWord.toLowerCase() : firstWord, ignoreCase ? secondWord.toLowerCase() : secondWord, null, null, false),
-                measures.toList());
+                measures);
     }
 
+    /**
+     * Evaluates the similarity of the given words.
+     *
+     * @param firstWord  the first word
+     * @param secondWord the second word
+     * @return Returns similarity in range [0,1]
+     */
     public static double getSimilarity(String firstWord, String secondWord) {
         return getSimilarity(firstWord, secondWord, false);
     }
 
+    /**
+     * Evaluates the similarity of the given words.
+     *
+     * @param firstWord  the first word
+     * @param secondWord the second word
+     * @param ignoreCase whether to ignore the case during comparison
+     * @return Returns similarity in range [0,1]
+     */
     public static double getSimilarity(String firstWord, String secondWord, boolean ignoreCase) {
         return getSimilarity(firstWord, secondWord, similarityStrategy, ignoreCase);
     }

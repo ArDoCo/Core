@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityComparable;
 
-public abstract class DiagramElement extends Entity implements SimilarityComparable, Comparable<DiagramElement> {
+public abstract class DiagramElement extends Entity implements SimilarityComparable<DiagramElement>, Comparable<DiagramElement> {
     private Diagram diagram;
 
     protected DiagramElement(@NotNull Diagram diagram, @NotNull String uuid) {
@@ -70,12 +70,11 @@ public abstract class DiagramElement extends Entity implements SimilarityCompara
     }
 
     @Override
-    public boolean similar(Object obj) {
+    public boolean similar(DiagramElement obj) {
         if (equals(obj))
             return true;
-        if (obj instanceof DiagramElement other) {
-            return diagram.getResourceName().equals(other.diagram.getResourceName()) && getBoundingBox().similar(other);
-        }
+        if (diagram.getResourceName().equals(obj.diagram.getResourceName()))
+            return getBoundingBox().similar(obj.getBoundingBox());
         return false;
     }
 }

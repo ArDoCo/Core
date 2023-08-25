@@ -3,11 +3,13 @@ package edu.kit.kastel.mcse.ardoco.core.data;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions;
 import edu.kit.kastel.mcse.ardoco.core.common.ICopyable;
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Triple;
@@ -17,6 +19,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
  * This class represents a confidence for a certain (intermediate) result. Different {@link Claimant Claimants} can add their confidences that get aggregated
  * via one of the {@link AggregationFunctions} to a single confidence value.
  */
+ @Deterministic
 public final class Confidence implements Comparable<Confidence>, ICopyable<Confidence>, Serializable {
 
     private final AggregationFunctions confidenceAggregator;
@@ -57,7 +60,10 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
      * @return the claimants
      */
     public Set<Claimant> getClaimants() {
-        return this.agentConfidences.stream().map(Triple::first).collect(Collectors.toUnmodifiableSet());
+        Set<Claimant> identitySet = new LinkedHashSet<>();
+        for (var confidence : this.agentConfidences)
+            identitySet.add(confidence.first());
+        return identitySet;
     }
 
     @Override
@@ -88,6 +94,8 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
 
     @Override
     public int compareTo(Confidence o) {
+        if (this.equals(o))
+            return 0;
         return Double.compare(this.getConfidence(), o.getConfidence());
     }
 

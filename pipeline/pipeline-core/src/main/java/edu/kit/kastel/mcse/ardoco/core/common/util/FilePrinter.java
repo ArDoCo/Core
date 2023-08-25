@@ -1,7 +1,11 @@
 /* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
-import static edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper.*;
+import static edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper.getConnectionStates;
+import static edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper.getInconsistencyStates;
+import static edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper.getModelStatesData;
+import static edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper.getRecommendationStates;
+import static edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper.getTextState;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.io.BufferedWriter;
@@ -15,7 +19,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -46,10 +49,12 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 
 /**
  * The Class FilePrinter contains some helpers for stats.
  */
+@Deterministic
 public final class FilePrinter {
     private static final String DELIMITER = ",";
 
@@ -334,7 +339,7 @@ public final class FilePrinter {
         dataLines.add(new String[] { "" });
         dataLines.add(new String[] { "modelElementID", "sentence", "confidence" });
 
-        Set<SadSamTraceLink> tracelinks = new HashSet<>(connectionState.getTraceLinks().castToCollection());
+        Set<SadSamTraceLink> tracelinks = new java.util.LinkedHashSet<>(connectionState.getTraceLinks().castToCollection());
         for (var tracelink : tracelinks) {
             var modelElementUid = tracelink.getModelElementUid();
             // sentence offset is 1 because real sentences are 1-indexed

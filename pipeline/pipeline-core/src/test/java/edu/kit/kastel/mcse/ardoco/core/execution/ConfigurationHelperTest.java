@@ -3,14 +3,18 @@ package edu.kit.kastel.mcse.ardoco.core.execution;
 
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.configuration.AbstractConfigurable;
+import edu.kit.kastel.mcse.ardoco.core.configuration.ChildClassConfigurable;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 
+@Deterministic
 class ConfigurationHelperTest {
 
     @Test
@@ -27,7 +31,7 @@ class ConfigurationHelperTest {
 
     @Test
     void testBasicConfigurable() throws Exception {
-        Map<String, String> configs = new TreeMap<>();
+        SortedMap<String, String> configs = new TreeMap<>();
         ConfigurationHelper.processConfigurationOfClass(configs, TestConfigurable.class);
         Assertions.assertEquals(5, configs.size());
 
@@ -45,7 +49,7 @@ class ConfigurationHelperTest {
         Assertions.assertEquals(TestConfigurable.MyEnum.B, t.testEnumNo);
 
         //@formatter:off
-        configs = Map.of(//
+        configs = new TreeMap<>(Map.of(//
                 TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testInt", "42", //
                 TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testIntNo", "42", //
                 TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testDouble", "48", //
@@ -57,7 +61,7 @@ class ConfigurationHelperTest {
                 TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testEnum", TestConfigurable.MyEnum.C.name(), //
                 TestConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "testEnumNo", TestConfigurable.MyEnum.C.name()
 
-        );
+        ));
         //@formatter:on
 
         t.applyConfiguration(configs);
@@ -72,6 +76,54 @@ class ConfigurationHelperTest {
         Assertions.assertEquals(TestConfigurable.MyEnum.C, t.testEnum);
         Assertions.assertEquals(TestConfigurable.MyEnum.B, t.testEnumNo);
 
+    }
+
+    @Test
+    void testBaseAndChildConfigurable() throws Exception {
+        SortedMap<String, String> configs = new TreeMap<>();
+        ConfigurationHelper.processConfigurationOfClass(configs, TestBaseConfigurable.class);
+        Assertions.assertEquals(1, configs.size());
+        Assertions.assertEquals("1", configs.get(TestBaseConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "value"));
+
+        configs = new TreeMap<>();
+        ConfigurationHelper.processConfigurationOfClass(configs, TestChildConfigurable.class);
+        Assertions.assertEquals(1, configs.size());
+        Assertions.assertEquals("2", configs.get(TestChildConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "value"));
+
+        configs = new TreeMap<>(Map.of(//
+                TestBaseConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "value", "42", //
+                TestChildConfigurable.class.getSimpleName() + AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR + "value", "43" //
+        ));
+
+        var t1 = new TestBaseConfigurable();
+        t1.applyConfiguration(configs);
+        Assertions.assertEquals(42, t1.value);
+
+        var t2 = new TestChildConfigurable();
+        t2.applyConfiguration(configs);
+        Assertions.assertEquals(43, t2.value);
+    }
+
+    private static class TestBaseConfigurable extends AbstractConfigurable {
+        @Configurable
+        @ChildClassConfigurable
+        public int value;
+
+        public TestBaseConfigurable() {
+            value = 1;
+        }
+
+        @Override
+        protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration) {
+            // NOP
+        }
+    }
+
+    private static final class TestChildConfigurable extends TestBaseConfigurable {
+        public TestChildConfigurable() {
+            super();
+            value = 2;
+        }
     }
 
     private static final class TestConfigurable extends AbstractConfigurable {
@@ -98,7 +150,7 @@ class ConfigurationHelperTest {
         }
 
         @Override
-        protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+        protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration) {
         }
 
         private enum MyEnum {

@@ -1,8 +1,8 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.heuristics;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureInterface;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureMethod;
@@ -21,7 +21,7 @@ public class MethodResemblance extends StandaloneHeuristic {
             return new Confidence();
         }
 
-        Set<ControlElement> firstMethods = compUnit.getDeclaredMethods();
+        SortedSet<ControlElement> firstMethods = compUnit.getDeclaredMethods();
         for (Datatype datatype : compUnit.getAllDataTypes()) {
             for (ControlElement codeMethod : datatype.getDeclaredMethods()) {
                 if (!isImplementedMethod(codeMethod, datatype) && !isExtendedMethod(codeMethod, datatype)) {
@@ -53,22 +53,22 @@ public class MethodResemblance extends StandaloneHeuristic {
     }
 
     private boolean isImplementedMethod(ControlElement codeMethod, Datatype codeType) {
-        Set<ControlElement> implMethods = new HashSet<>();
+        SortedSet<ControlElement> implMethods = new TreeSet<>();
         getAllImplementedInterfaces(codeType).forEach(i -> getAllExtendedTypes(i).forEach(j -> implMethods.addAll(j.getDeclaredMethods())));
         return implMethods.stream().anyMatch(implMethod -> implMethod.getName().equalsIgnoreCase(codeMethod.getName()));
     }
 
     private boolean isExtendedMethod(ControlElement codeMethod, Datatype codeType) {
-        Set<ControlElement> extendedMethods = new HashSet<>();
-        Set<Datatype> extendedTypes = getAllExtendedTypes(codeType);
+        SortedSet<ControlElement> extendedMethods = new TreeSet<>();
+        SortedSet<Datatype> extendedTypes = getAllExtendedTypes(codeType);
         extendedTypes.remove(codeType);
         extendedTypes.forEach(i -> extendedMethods.addAll(i.getDeclaredMethods()));
         return extendedMethods.stream().anyMatch(i -> i.getName().equalsIgnoreCase(codeMethod.getName()));
     }
 
     // returns extended types + type itself
-    public static Set<Datatype> getAllExtendedTypes(Datatype codeType) {
-        Set<Datatype> allExtendedTypes = new HashSet<>();
+    public static SortedSet<Datatype> getAllExtendedTypes(Datatype codeType) {
+        SortedSet<Datatype> allExtendedTypes = new TreeSet<>();
         allExtendedTypes.add(codeType);
         for (Datatype extendedType : codeType.getExtendedTypes()) {
             allExtendedTypes.add(extendedType);
@@ -77,8 +77,8 @@ public class MethodResemblance extends StandaloneHeuristic {
         return allExtendedTypes;
     }
 
-    public static Set<Datatype> getAllImplementedInterfaces(Datatype codeType) {
-        Set<Datatype> allImplementedInterfaces = new HashSet<>();
+    public static SortedSet<Datatype> getAllImplementedInterfaces(Datatype codeType) {
+        SortedSet<Datatype> allImplementedInterfaces = new TreeSet<>();
         for (Datatype extendedType : getAllExtendedTypes(codeType)) {
             allImplementedInterfaces.addAll(extendedType.getImplementedTypes());
         }

@@ -5,9 +5,11 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Classification
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.TextBox
+import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
 import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognitionStateImpl
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.createObjectMapper
+import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.boundingBox
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.executeRequest
 import org.apache.hc.client5.http.classic.methods.HttpPost
 import org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder
@@ -17,6 +19,7 @@ import org.apache.hc.core5.net.URIBuilder
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 import java.net.URI
+import java.util.*
 
 class OcrInformant(
     diagramRecognitionState: DiagramRecognitionStateImpl,
@@ -40,7 +43,16 @@ class OcrInformant(
         const val EXPANSION_IN_PX = 5
     }
 
-    override fun delegateApplyConfigurationToInternalObjects(additionalConfiguration: MutableMap<String, String>?) {
+    @Configurable
+    private var detectionWithHintThreshold: Double = 0.6
+
+    @Configurable
+    private var detectionWithoutHintThreshold: Double = 0.4
+
+    @Configurable
+    private var iouThreshold: Double = 0.6
+
+    override fun delegateApplyConfigurationToInternalObjects(additionalConfiguration: SortedMap<String, String>?) {
         // Not needed
     }
 
@@ -58,8 +70,20 @@ class OcrInformant(
         textsWithoutHints: List<TextBox>
     ): List<TextBox> {
         logger.debug("Merging ${textsWithHints.size} TextsWithHint and ${textsWithoutHints.size} TextsWithoutHint")
-        // TODO Impl
-        return textsWithHints
+
+        val filteredWithHint = textsWithHints.filter { it.confidence > detectionWithHintThreshold }.sortedByDescending { it.confidence }
+        val filteredWithoutHint = textsWithoutHints.filter { it.confidence > detectionWithoutHintThreshold }.sortedByDescending { it.confidence }
+
+        val result = mutableListOf<TextBox>()
+        for (textBox in filteredWithHint + filteredWithoutHint) {
+            val intersections = result.map { it to it.absoluteBox().boundingBox().iou(textBox.absoluteBox().boundingBox()) }
+            val filteredIntersections = intersections.filter { it.second.iou > iouThreshold }
+            if (filteredIntersections.isEmpty()) {
+                result.add(textBox)
+            }
+        }
+
+        return result
     }
 
     private fun detectTextBoxes(

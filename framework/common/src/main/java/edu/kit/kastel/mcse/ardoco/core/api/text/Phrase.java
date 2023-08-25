@@ -4,7 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.api.text;
 import java.io.Serializable;
 
 import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.map.ImmutableMap;
+import org.eclipse.collections.api.map.sorted.ImmutableSortedMap;
 
 public interface Phrase extends Serializable {
     int getSentenceNo();
@@ -21,5 +21,5 @@ public interface Phrase extends Serializable {
 
     boolean isSubPhraseOf(Phrase other);
 
-    ImmutableMap<Word, Integer> getPhraseVector();
+    ImmutableSortedMap<Word, Integer> getPhraseVector();
 }
