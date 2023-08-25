@@ -2,6 +2,7 @@ package edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.informants
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Classification
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.TextBox
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
@@ -29,6 +30,7 @@ class RecognitionCombinatorInformant(dataRepository: DataRepository) : Informant
             val texts = diagram.textBoxes
             combineBoxesAndText(entities, texts)
             calculateDominatingColors(diagram.location.readBytes(), entities)
+            combineTextBoxesInBoxes(diagram)
         }
     }
 
@@ -80,6 +82,32 @@ class RecognitionCombinatorInformant(dataRepository: DataRepository) : Informant
             val pixelCount = pixels.groupingBy { it }.eachCount().toList().sortedByDescending { it.second }
             val textColor = pixelCount.find { (rgba, _) -> rgba != box.dominatingColor }
             if (textColor != null) text.dominatingColor = textColor.first
+        }
+    }
+
+    private fun combineTextBoxesInBoxes(diagram: Diagram) {
+        val boxes = diagram.boxes.filter { it.classification != Classification.LABEL }
+        for (box in boxes) {
+            if (box.texts.size <= 1) continue
+
+            // Use ARGB(0,0,0,0) as replacement for null
+            val textGroups = box.texts.sortedBy { it.xCoordinate }.sortedBy { it.yCoordinate }.groupBy { it.dominatingColor ?: 0 }
+
+            for ((_, texts) in textGroups) {
+                val text = texts.joinToString(" ") { it.text }.replace(Regex("\\s+"), " ")
+                val x1 = texts.map { it.xCoordinate }.min()
+                val y1 = texts.map { it.yCoordinate }.min()
+                val x2 = texts.map { it.xCoordinate + it.width }.max()
+                val y2 = texts.map { it.yCoordinate + it.height }.max()
+                val width = x2 - x1
+                val height = y2 - y1
+                val confidence = texts.map { it.confidence }.average()
+                val dominantColor = texts.firstNotNullOfOrNull { it.dominatingColor }
+
+                val textBox = TextBox(x1, y1, width, height, confidence, text, dominantColor)
+                texts.forEach { box.removeTextBox(it) }
+                box.addTextBox(textBox)
+            }
         }
     }
 }
