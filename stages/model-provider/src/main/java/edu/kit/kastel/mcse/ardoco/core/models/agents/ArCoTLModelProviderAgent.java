@@ -1,5 +1,5 @@
 /* Licensed under MIT 2023. */
-package edu.kit.kastel.mcse.ardoco.core.models;
+package edu.kit.kastel.mcse.ardoco.core.models.agents;
 
 import java.io.File;
 import java.util.List;

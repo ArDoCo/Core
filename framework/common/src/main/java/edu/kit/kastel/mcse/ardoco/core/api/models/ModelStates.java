@@ -12,8 +12,8 @@ import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
 public class ModelStates implements PipelineStepData {
     public static final String ID = "ModelStatesData";
 
-    private transient SortedMap<String, ModelExtractionState> modelExtractionStates = new TreeMap<>();
-    private transient SortedMap<String, Model> models = new TreeMap<>();
+    private SortedMap<String, ModelExtractionState> modelExtractionStates = new TreeMap<>();
+    private SortedMap<String, Model> models = new TreeMap<>();
 
     /**
      * Constructor to create a {@link ModelStates} object that holds all {@link ModelExtractionState}s

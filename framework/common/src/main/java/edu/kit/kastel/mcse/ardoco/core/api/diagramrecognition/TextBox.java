@@ -1,8 +1,6 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
-import static java.lang.Math.abs;
-
 import java.awt.*;
 import java.io.Serializable;
 import java.util.Objects;
@@ -15,9 +13,9 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 
 public class TextBox implements SimilarityComparable<TextBox>, Serializable {
     private static final double SIMILARITY_THRESHOLD = 0.85;
-    private BoundingBox boundingBox;
-    private double confidence;
-    private String text;
+    private final BoundingBox boundingBox;
+    private final double confidence;
+    private final String text;
     private Color dominatingColor = null;
 
     public TextBox(BoundingBox boundingBox, double confidence, String text) {
@@ -30,6 +28,11 @@ public class TextBox implements SimilarityComparable<TextBox>, Serializable {
     public TextBox(@JsonProperty("x") int xCoordinate, @JsonProperty("y") int yCoordinate, @JsonProperty("w") int width, @JsonProperty("h") int height,
             @JsonProperty("confidence") double confidence, @JsonProperty("text") String text) {
         this(new BoundingBox(xCoordinate, yCoordinate, xCoordinate + width, yCoordinate + height), confidence, text);
+    }
+
+    public TextBox(int x, int y, int w, int h, double confidence, String text, Color dominatingColor) {
+        this(x, y, w, h, confidence, text);
+        this.setDominatingColor(dominatingColor);
     }
 
     /**
@@ -46,7 +49,7 @@ public class TextBox implements SimilarityComparable<TextBox>, Serializable {
     }
 
     public int area() {
-        return width * height;
+        return getWidth() * getHeight();
     }
 
     public int getXCoordinate() {

@@ -24,7 +24,7 @@ public class ModelExtractionStateImpl extends AbstractState implements ModelExtr
     private final Metamodel metamodelType;
     private final MutableSortedSet<String> instanceTypes;
     private final MutableSortedSet<String> names;
-    private transient ImmutableList<ModelInstance> instances;
+    private ImmutableList<ModelInstance> instances;
 
     // For generation of configuration
     private ModelExtractionStateImpl() {

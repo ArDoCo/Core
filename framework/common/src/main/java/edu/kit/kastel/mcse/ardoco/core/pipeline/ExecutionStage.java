@@ -1,12 +1,13 @@
 package edu.kit.kastel.mcse.ardoco.core.pipeline;
 
+import java.util.List;
+import java.util.SortedMap;
+
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
-import java.util.List;
-import java.util.Map;
 
 public abstract class ExecutionStage extends AbstractExecutionStage {
-    private Map<String, String> additionalConfigs;
+    private SortedMap<String, String> additionalConfigs;
 
     /**
      * Creates an {@link ExecutionStage} and applies the additional configuration to it
@@ -16,9 +17,8 @@ public abstract class ExecutionStage extends AbstractExecutionStage {
      * @param agents            the pipeline agents this stage supports
      * @param additionalConfigs the additional configuration
      */
-    protected ExecutionStage(String id, DataRepository dataRepository, List<PipelineAgent> agents
-            , Map<String, String> additionalConfigs) {
-        super(id, dataRepository, agents);
+    protected ExecutionStage(List<PipelineAgent> agents, String id, DataRepository dataRepository, SortedMap<String, String> additionalConfigs) {
+        super(agents, id, dataRepository);
         this.additionalConfigs = additionalConfigs;
     }
 

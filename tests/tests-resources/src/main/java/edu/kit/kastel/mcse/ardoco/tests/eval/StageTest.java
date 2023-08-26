@@ -1,15 +1,10 @@
 package edu.kit.kastel.mcse.ardoco.tests.eval;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
+import org.eclipse.collections.impl.factory.SortedMaps;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -52,11 +47,11 @@ public abstract class StageTest<T extends AbstractExecutionStage, U extends Gold
         return preRunDataRepository;
     }
 
-    protected DataRepository run(U project, Map<String, String> additionalConfigurations) {
+    protected DataRepository run(U project, SortedMap<String, String> additionalConfigurations) {
         return run(project, additionalConfigurations, true);
     }
 
-    protected DataRepository run(U project, Map<String, String> additionalConfigurations, boolean cachePreRun) {
+    protected DataRepository run(U project, SortedMap<String, String> additionalConfigurations, boolean cachePreRun) {
         var preRunDataRepository = getDataRepository(project, cachePreRun);
         logger.info("Run TestRunner for {}", project.getProjectName());
         var dataRepository = runTestRunner(project, additionalConfigurations, preRunDataRepository);
@@ -119,26 +114,26 @@ public abstract class StageTest<T extends AbstractExecutionStage, U extends Gold
     }
 
     protected DataRepository run(U project) {
-        return run(project, Map.of());
+        return run(project, SortedMaps.mutable.empty());
     }
 
-    protected abstract V runComparable(U project, Map<String, String> additionalConfigurations, boolean cachePreRun);
+    protected abstract V runComparable(U project, SortedMap<String, String> additionalConfigurations, boolean cachePreRun);
 
-    protected V runComparable(U project, Map<String, String> additionalConfigurations) {
+    protected V runComparable(U project, SortedMap<String, String> additionalConfigurations) {
         return runComparable(project, additionalConfigurations, true);
     }
 
     protected V runComparable(U project, boolean cachePreRun) {
-        return runComparable(project, Map.of(), cachePreRun);
+        return runComparable(project, SortedMaps.mutable.empty(), cachePreRun);
     }
 
     protected V runComparable(U project) {
-        return runComparable(project, Map.of(), true);
+        return runComparable(project, SortedMaps.mutable.empty(), true);
     }
 
     protected abstract DataRepository runPreTestRunner(U project);
 
-    protected abstract DataRepository runTestRunner(U project, Map<String, String> additionalConfigurations, DataRepository preRunDataRepository);
+    protected abstract DataRepository runTestRunner(U project, SortedMap<String, String> additionalConfigurations, DataRepository preRunDataRepository);
 
     private static final int repetitions = 2;
 

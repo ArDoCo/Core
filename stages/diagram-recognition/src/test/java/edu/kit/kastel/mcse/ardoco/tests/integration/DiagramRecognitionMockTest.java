@@ -1,5 +1,18 @@
 package edu.kit.kastel.mcse.ardoco.tests.integration;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.SortedMap;
+
+import org.eclipse.collections.impl.factory.SortedMaps;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
@@ -11,22 +24,11 @@ import edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.DiagramRecognitionMock
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 import edu.kit.kastel.mcse.ardoco.tests.eval.GoldStandardDiagrams;
 import edu.kit.kastel.mcse.ardoco.tests.eval.StageTest;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class DiagramRecognitionMockTest extends StageTest<DiagramRecognitionMock,
-        GoldStandardDiagrams, DiagramRecognitionMockTest.DiagramRecognitionResult> {
+public class DiagramRecognitionMockTest extends StageTest<DiagramRecognitionMock, GoldStandardDiagrams, DiagramRecognitionMockTest.DiagramRecognitionResult> {
     public DiagramRecognitionMockTest() {
-        super(new DiagramRecognitionMock(null, Map.of(), null), DiagramProject.values());
+        super(new DiagramRecognitionMock(null, SortedMaps.mutable.empty(), null), DiagramProject.values());
     }
 
     @DisplayName("Evaluate Diagram Recognition")
@@ -46,11 +48,9 @@ public class DiagramRecognitionMockTest extends StageTest<DiagramRecognitionMock
     }
 
     @Override
-    protected DiagramRecognitionResult runComparable(GoldStandardDiagrams project, Map<String,
-            String> additionalConfigurations, boolean cachePreRun) {
+    protected DiagramRecognitionResult runComparable(GoldStandardDiagrams project, SortedMap<String, String> additionalConfigurations, boolean cachePreRun) {
         var result = run(project, additionalConfigurations, cachePreRun);
-        var diagramRecognition = result.getData(DiagramRecognitionState.ID,
-                DiagramRecognitionState.class).orElseThrow();
+        var diagramRecognition = result.getData(DiagramRecognitionState.ID, DiagramRecognitionState.class).orElseThrow();
         var diagrams = diagramRecognition.getDiagrams();
         return new DiagramRecognitionResult(diagrams);
     }
@@ -61,24 +61,20 @@ public class DiagramRecognitionMockTest extends StageTest<DiagramRecognitionMock
             @Override
             public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) throws IOException {
                 var pipelineSteps = new ArrayList<AbstractPipelineStep>();
-                pipelineSteps.add(ModelProviderAgent.get(project.getModelFile(),
-                        ArchitectureModelType.PCM,
-                        dataRepository));
+                pipelineSteps.add(ModelProviderAgent.get(project.getModelFile(), ArchitectureModelType.PCM, dataRepository));
                 return pipelineSteps;
             }
         }.runWithoutSaving();
     }
 
     @Override
-    protected DataRepository runTestRunner(GoldStandardDiagrams project,
-                                           Map<String, String> additionalConfigurations,
-                                           DataRepository preRunDataRepository) {
+    protected DataRepository runTestRunner(GoldStandardDiagrams project, SortedMap<String, String> additionalConfigurations,
+            DataRepository preRunDataRepository) {
         return new AnonymousRunner(project.getProjectName(), preRunDataRepository) {
             @Override
             public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) {
                 var pipelineSteps = new ArrayList<AbstractPipelineStep>();
-                pipelineSteps.add(new DiagramRecognitionMock(project,
-                        project.getAdditionalConfigurations(), dataRepository));
+                pipelineSteps.add(new DiagramRecognitionMock(project, project.getAdditionalConfigurations(), dataRepository));
                 return pipelineSteps;
             }
         }.runWithoutSaving();

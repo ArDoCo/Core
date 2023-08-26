@@ -8,9 +8,10 @@ import java.util.UUID;
 import org.jetbrains.annotations.NotNull;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelElement;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityComparable;
 
-public abstract class DiagramElement extends Entity implements SimilarityComparable<DiagramElement>, Comparable<DiagramElement> {
+public abstract class DiagramElement extends Entity implements SimilarityComparable<DiagramElement> {
     private Diagram diagram;
 
     protected DiagramElement(@NotNull Diagram diagram, @NotNull String uuid) {
@@ -63,10 +64,13 @@ public abstract class DiagramElement extends Entity implements SimilarityCompara
     }
 
     @Override
-    public int compareTo(@NotNull DiagramElement o) {
+    public int compareTo(@NotNull ModelElement o) {
         if (equals(o))
             return 0;
-        return hashCode() - o.hashCode();
+        if (o instanceof DiagramElement other) {
+            return hashCode() - other.hashCode();
+        }
+        return super.compareTo(o);
     }
 
     @Override

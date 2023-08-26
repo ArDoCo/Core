@@ -92,7 +92,7 @@ public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy 
             }
         }
 
-        NounMapping mergedNounMapping = new NounMappingImpl(NounMappingImpl.earliestCreationTime(firstNounMapping, secondNounMapping), mergedWords
+        NounMappingImpl mergedNounMapping = new NounMappingImpl(NounMappingImpl.earliestCreationTime(firstNounMapping, secondNounMapping), mergedWords
                 .toImmutableSortedSet(), mergedDistribution.toImmutable(), mergedReferenceWords.toImmutable(), mergedSurfaceForms.toImmutable(),
                 mergedReference);
         mergedNounMapping.addKindWithProbability(mappingKind, claimant, probability);

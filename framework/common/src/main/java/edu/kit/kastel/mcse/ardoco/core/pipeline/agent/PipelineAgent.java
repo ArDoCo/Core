@@ -10,20 +10,15 @@ import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
-import java.util.List;
-import java.util.Map;
 
 /**
- * This class represents a pipeline agent that calculates some results for an {@link AbstractExecutionStage} execution
- * stage}.
+ * This class represents a pipeline agent that calculates some results for an {@link AbstractExecutionStage} execution stage}.
  *
- * Implementing classes need to override.
- * Additionally, sub-classes are free to override {@link #initializeState()} to execute code at the beginning of the initialization before the main processing.
+ * Implementing classes need to override. Additionally, sub-classes are free to override {@link #initializeState()} to execute code at the beginning of the
+ * initialization before the main processing.
  */
 public abstract class PipelineAgent extends Pipeline implements Agent {
     private final List<? extends Informant> informants;
-
-    private final List<Informant> informants;
 
     @Configurable
     @ChildClassConfigurable
@@ -75,26 +70,12 @@ public abstract class PipelineAgent extends Pipeline implements Agent {
     }
 
     /**
-     * Return the enabled pipeline steps (informants)
-     *
-     * @return the list of Informants
-    protected abstract List<Informant> getEnabledPipelineSteps();
-     */
-
-    /**
      * {@return the informants including disabled}
      */
-        return List.copyOf(informants);
     public List<Informant> getInformants() {
+        return List.copyOf(informants);
     }
 
-    /**
-     * {@return the class names of all informants including disabled}
-     */
-    public List<String> getInformantClassNames() {
-        return informants.stream().map(Informant::getClass).map(Class::getSimpleName).toList();
-    }
-    
     @Override
     protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration) {
         super.delegateApplyConfigurationToInternalObjects(additionalConfiguration);

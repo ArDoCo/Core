@@ -6,7 +6,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.factory.Sets;
+import org.eclipse.collections.api.factory.SortedSets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +47,7 @@ public class DiagramBackedTextStateStrategy extends OriginalTextStateStrategy {
             logger.info("Loaded {} Boxes", boxes.size());
         }
 
-        var disposableNounMapping = new NounMappingImpl(System.currentTimeMillis(), Sets.immutable.with(word), kind, claimant, probability,
+        var disposableNounMapping = new NounMappingImpl(System.currentTimeMillis(), SortedSets.immutable.with(word), kind, claimant, probability,
                 Lists.immutable.with(word), surfaceForms);
 
         var relatedToWordUnboxed = getMostSimilar(boxes, word).orElse(null);

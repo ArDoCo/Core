@@ -2,7 +2,6 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
 import java.util.Optional;
 
-import org.eclipse.collections.impl.factory.Maps;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,7 +11,7 @@ public class DiagramBackedNounMappingImpl extends NounMappingImpl {
     private final DiagramElement diagramElement;
 
     public DiagramBackedNounMappingImpl(@NotNull NounMappingImpl nounMapping, @Nullable DiagramElement diagramElement) {
-        super(NounMappingImpl.earliestCreationTime(nounMapping), nounMapping.getWords(), Maps.mutable.ofMapIterable(nounMapping.getDistribution()),
+        super(NounMappingImpl.earliestCreationTime(nounMapping), nounMapping.getWords(), nounMapping.getDistribution().toSortedMap().toImmutable(),
                 nounMapping.getReferenceWords(), nounMapping.getSurfaceForms(), nounMapping.getReference());
         this.diagramElement = diagramElement;
     }

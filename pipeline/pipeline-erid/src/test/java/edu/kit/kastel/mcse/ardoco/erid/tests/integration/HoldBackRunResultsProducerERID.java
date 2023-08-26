@@ -16,10 +16,12 @@ import edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.DiagramInconsistency
 import edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.DiagramRecognitionMock;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 
+import java.util.SortedMap;
+
 public class HoldBackRunResultsProducerERID extends HoldBackRunResultsProducer {
     @Override
     protected void addMiddleSteps(GoldStandardProject goldStandardProject, HoldElementsBackModelConnector holdElementsBackModelConnector, ArDoCo arDoCo,
-            DataRepository dataRepository, Map<String, String> additionalConfigs) {
+            DataRepository dataRepository, SortedMap<String, String> additionalConfigs) {
         arDoCo.addPipelineStep(new ModelProviderInformant(dataRepository, holdElementsBackModelConnector));
         arDoCo.addPipelineStep(
                 new DiagramRecognitionMock(DiagramProject.getFromName(goldStandardProject.getProjectName()).orElseThrow(), additionalConfigs, dataRepository));

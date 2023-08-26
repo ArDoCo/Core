@@ -6,7 +6,12 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognition
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
 import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognition
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.visualize
-import org.junit.jupiter.api.*
+import org.eclipse.collections.api.factory.SortedMaps
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assumptions
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -36,7 +41,7 @@ class SketchRecognitionServiceTest {
         assumeDocker()
         dataRepository = DataRepository()
         dataRepository.addData(InputDiagramData.ID, InputDiagramData("src/test/resources/"))
-        val stage = DiagramRecognition.get(mutableMapOf(), dataRepository)!!
+        val stage = DiagramRecognition.get(SortedMaps.mutable.empty(), dataRepository)!!
         stage.run()
         assertNotNull(getState())
         File("target/testout").mkdirs()

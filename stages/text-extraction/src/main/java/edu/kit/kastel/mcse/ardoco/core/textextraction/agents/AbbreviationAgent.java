@@ -9,16 +9,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.informants.AbbreviationInformant;
 
 public class AbbreviationAgent extends PipelineAgent {
-    @Configurable
-    private List<String> enabledInformants;
-
     public AbbreviationAgent(DataRepository dataRepository) {
-        super(AbbreviationAgent.class.getSimpleName(), dataRepository, List.of(new AbbreviationInformant(dataRepository)));
-        enabledInformants = getInformantClassNames();
-    }
-
-    @Override
-    protected List<Informant> getEnabledPipelineSteps() {
-        return findByClassName(enabledInformants, getInformants());
+        super(List.of(new AbbreviationInformant(dataRepository)), AbbreviationAgent.class.getSimpleName(), dataRepository);
     }
 }

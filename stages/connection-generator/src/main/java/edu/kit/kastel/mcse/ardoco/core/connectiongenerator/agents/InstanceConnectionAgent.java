@@ -1,6 +1,8 @@
 /* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents;
 
+import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.informants.AmbiguationConnectionInformant;
+
 import java.util.List;
 
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.informants.InstantConnectionInformant;

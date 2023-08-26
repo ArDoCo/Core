@@ -18,7 +18,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextStateStrategy;
-import edu.kit.kastel.mcse.ardoco.core.common.util.ElementWrapper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
@@ -57,11 +56,10 @@ public class OriginalTextStateStrategy extends DefaultTextStateStrategy implemen
 
         var existingNounMappingDistribution = firstNounMapping.getDistribution();
         var disposableNounMappingDistribution = secondNounMapping.getDistribution();
-        var mergedRawMap = Arrays.stream(MappingKind.values())
-                .collect(Collectors.toMap( //
-                        kind -> kind, //
-                        kind -> putAllConfidencesTogether(existingNounMappingDistribution.get(kind), disposableNounMappingDistribution.get(kind)) //
-                ));
+        var mergedRawMap = Arrays.stream(MappingKind.values()).collect(Collectors.toMap( //
+                kind -> kind, //
+                kind -> putAllConfidencesTogether(existingNounMappingDistribution.get(kind), disposableNounMappingDistribution.get(kind)) //
+        ));
         MutableSortedMap<MappingKind, Confidence> mergedDistribution = SortedMaps.mutable.withSortedMap(mergedRawMap);
 
         MutableList<String> mergedSurfaceForms = firstNounMapping.getSurfaceForms().toList();
@@ -76,7 +74,7 @@ public class OriginalTextStateStrategy extends DefaultTextStateStrategy implemen
         String mergedReference = mergedReferenceWords.collect(Word::getText).makeString(" ");
 
         return new NounMappingImpl(NounMappingImpl.earliestCreationTime(firstNounMapping, secondNounMapping), mergedWords.toSortedSet().toImmutable(),
-                mergedDistribution, mergedReferenceWords.toImmutable(), mergedSurfaceForms.toImmutable(), mergedReference);
+                mergedDistribution.toImmutable(), mergedReferenceWords.toImmutable(), mergedSurfaceForms.toImmutable(), mergedReference);
     }
 
     @Override

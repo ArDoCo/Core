@@ -127,7 +127,7 @@ public class HoldBackRunResultsProducer {
     }
 
     protected void addPreSteps(File inputText, GoldStandardProject goldStandardProject, ArDoCo arDoCo, DataRepository dataRepository,
-            Map<String, String> additionalConfigs) {
+            SortedMap<String, String> additionalConfigs) {
         String text = CommonUtilities.readInputText(inputText);
         DataRepositoryHelper.putInputText(dataRepository, text);
 

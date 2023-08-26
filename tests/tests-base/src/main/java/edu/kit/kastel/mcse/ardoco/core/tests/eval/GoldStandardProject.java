@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.SortedMap;
 import java.util.prefs.Preferences;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -131,7 +132,7 @@ public interface GoldStandardProject extends Serializable {
      *
      * @return the map of additional configuration options
      */
-    default Map<String, String> getAdditionalConfigurations() {
+    default SortedMap<String, String> getAdditionalConfigurations() {
         return getProjectOrThrow().getAdditionalConfigurations();
     }
 

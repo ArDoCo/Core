@@ -53,7 +53,7 @@ fun visualize(imageStream: InputStream, diagram: Diagram, destination: OutputStr
     val colorMap = mutableMapOf<Classification, Color>()
     var currentColor = 0
 
-    for (box in diagram.boxes + diagram.textBoxes.map { it.toBox(true) } + diagram.boxes.flatMap { it.texts.map { tb -> tb.toBox(false) } }) {
+    for (box in diagram.boxes + diagram.textBoxes.map { it.toBox(diagram, true) } + diagram.boxes.flatMap { it.texts.map { tb -> tb.toBox(diagram, false) } }) {
         if (!colorMap.containsKey(box.classification)) {
             colorMap[box.classification] = colors[currentColor]!!
             currentColor++
@@ -73,8 +73,8 @@ fun visualize(imageStream: InputStream, diagram: Diagram, destination: OutputStr
     ImageIO.write(image, "png", destination)
 }
 
-private fun TextBox.toBox(rawBox: Boolean): Box = Box(
-    UUID.randomUUID().toString(),
+private fun TextBox.toBox(diagram: Diagram, rawBox: Boolean): Box = Box(
+    diagram,
     this.absoluteBox().map { value -> value }.toIntArray(),
     1.0,
     if (rawBox) "RAWTEXT" else "TEXT",

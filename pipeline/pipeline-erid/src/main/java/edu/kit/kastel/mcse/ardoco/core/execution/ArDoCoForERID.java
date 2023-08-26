@@ -25,9 +25,11 @@ import edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.DiagramInconsistency
 import edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.DiagramRecognitionMock;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 
+import java.util.SortedMap;
+
 public class ArDoCoForERID extends ParameterizedRunner<ArDoCoForERID.Parameters> {
     public record Parameters(DiagramProject diagramProject, File inputText, File inputModelArchitecture, ArchitectureModelType inputArchitectureModelType,
-                             Map<String, String> additionalConfigs, File outputDir) {
+                             SortedMap<String, String> additionalConfigs, File outputDir) {
     }
 
     public ArDoCoForERID(String projectName, Parameters parameters) {

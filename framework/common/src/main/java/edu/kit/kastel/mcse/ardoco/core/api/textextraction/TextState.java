@@ -4,11 +4,11 @@ package edu.kit.kastel.mcse.ardoco.core.api.textextraction;
 import java.util.Optional;
 
 import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.factory.SortedSets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.map.MutableSortedMap;
-import org.eclipse.collections.api.set.ImmutableSortedSet;
-import org.eclipse.collections.impl.factory.Sets;
+import org.eclipse.collections.api.map.sorted.ImmutableSortedMap;
+import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,13 +63,13 @@ public interface TextState extends IConfigurable, PipelineStepData {
         return getTextStateStrategy().addOrExtendNounMapping(word, kind, claimant, probability, surfaceForms);
     }
 
-    default NounMapping addNounMapping(ImmutableSortedSet<Word> words, MappingKind kind, Claimant claimant, double probability, ImmutableList<Word> referenceWords,
-            ImmutableList<String> surfaceForms, String reference) {
+    default NounMapping addNounMapping(ImmutableSortedSet<Word> words, MappingKind kind, Claimant claimant, double probability,
+            ImmutableList<Word> referenceWords, ImmutableList<String> surfaceForms, String reference) {
         return getTextStateStrategy().addNounMapping(words, kind, claimant, probability, referenceWords, surfaceForms, reference);
     }
 
-    default NounMapping addNounMapping(ImmutableSortedSet<Word> words, MutableSortedMap<MappingKind, Confidence> distribution, ImmutableList<Word> referenceWords,
-            ImmutableList<String> surfaceForms, String reference) {
+    default NounMapping addNounMapping(ImmutableSortedSet<Word> words, ImmutableSortedMap<MappingKind, Confidence> distribution,
+            ImmutableList<Word> referenceWords, ImmutableList<String> surfaceForms, String reference) {
         return getTextStateStrategy().addNounMapping(words, distribution, referenceWords, surfaceForms, reference);
     }
 
@@ -152,20 +152,20 @@ public interface TextState extends IConfigurable, PipelineStepData {
         return getTextStateStrategy().addOrExtendPhraseAbbreviation(abbreviation, phrase);
     }
 
-    ImmutableSet<WordAbbreviation> getWordAbbreviations();
+    ImmutableSortedSet<WordAbbreviation> getWordAbbreviations();
 
-    default ImmutableSet<WordAbbreviation> getWordAbbreviations(Word word) {
-        return Sets.immutable.fromStream(getWordAbbreviations().stream().filter(w -> w.getWords().contains(word)));
+    default ImmutableSortedSet<WordAbbreviation> getWordAbbreviations(Word word) {
+        return SortedSets.immutable.ofAll(getWordAbbreviations().stream().filter(w -> w.getWords().contains(word)).toList());
     }
 
     default Optional<WordAbbreviation> getWordAbbreviation(String abbreviation) {
         return getWordAbbreviations().stream().filter(w -> w.getAbbreviation().equals(abbreviation)).findFirst();
     }
 
-    ImmutableSet<PhraseAbbreviation> getPhraseAbbreviations();
+    ImmutableSortedSet<PhraseAbbreviation> getPhraseAbbreviations();
 
-    default ImmutableSet<PhraseAbbreviation> getPhraseAbbreviations(Phrase phrase) {
-        return Sets.immutable.fromStream(getPhraseAbbreviations().stream().filter(p -> p.getPhrases().contains(phrase)));
+    default ImmutableSortedSet<PhraseAbbreviation> getPhraseAbbreviations(Phrase phrase) {
+        return SortedSets.immutable.ofAll(getPhraseAbbreviations().stream().filter(p -> p.getPhrases().contains(phrase)).toList());
     }
 
     default Optional<PhraseAbbreviation> getPhraseAbbreviation(String abbreviation) {

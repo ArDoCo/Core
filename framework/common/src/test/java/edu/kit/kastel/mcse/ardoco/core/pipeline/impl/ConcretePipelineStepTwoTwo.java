@@ -1,6 +1,12 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline.impl;
 
+import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
+
+import edu.kit.kastel.mcse.ardoco.core.data.impl.ProcessedTextData;
+import edu.kit.kastel.mcse.ardoco.core.data.impl.ResultData;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
+
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.stream.Collectors;

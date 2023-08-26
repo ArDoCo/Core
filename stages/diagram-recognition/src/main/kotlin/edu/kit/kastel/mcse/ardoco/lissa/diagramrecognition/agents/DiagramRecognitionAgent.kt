@@ -17,13 +17,13 @@ class DiagramRecognitionAgent(
     val diagramRecognitionState:
     DiagramRecognitionStateImpl, dataRepository: DataRepository
 ) : PipelineAgent(
-    ID,
-    dataRepository,
     listOf(
         ObjectDetectionInformant(diagramRecognitionState, dataRepository),
         OcrInformant(diagramRecognitionState, dataRepository),
         RecognitionCombinatorInformant(diagramRecognitionState, dataRepository)
-    )
+    ),
+    ID,
+    dataRepository
 ) {
     companion object {
         const val ID = "DiagramRecognitionAgent"

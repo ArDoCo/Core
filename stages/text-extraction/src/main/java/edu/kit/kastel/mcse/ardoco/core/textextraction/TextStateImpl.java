@@ -1,19 +1,15 @@
 /* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
-import java.io.Serializable;
 import java.util.Comparator;
 import java.util.SortedMap;
 import java.util.function.Function;
 
 import org.eclipse.collections.api.block.predicate.Predicate;
 import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.factory.SortedMaps;
 import org.eclipse.collections.api.factory.SortedSets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.map.sorted.ImmutableSortedMap;
-import org.eclipse.collections.api.map.sorted.MutableSortedMap;
 import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 
@@ -37,8 +33,6 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
  */
 public class TextStateImpl extends AbstractState implements TextState {
 
-    private static final AggregationFunctions DEFAULT_AGGREGATOR = AVERAGE;
-
     private static final Comparator<NounMapping> ORDER_NOUNMAPPING = (n1, n2) -> {
         if (n1.equals(n2))
             return 0;
@@ -47,7 +41,8 @@ public class TextStateImpl extends AbstractState implements TextState {
         int compare = Long.compare(nm1.earliestCreationTime(), nm2.earliestCreationTime());
         if (compare != 0)
             return compare;
-        throw new IllegalStateException("NounMappings are not equal but have same creation time");
+        return 0;
+        //FIXME isnt this highly dependant on the machine running ardoco? throw new IllegalStateException("NounMappings are not equal but have same creation time");
     };
 
     /**
@@ -58,8 +53,8 @@ public class TextStateImpl extends AbstractState implements TextState {
     private static final double MAPPING_KIND_MAX_DIFF = 0.1;
     private MutableList<NounMapping> nounMappings;
     private MutableList<PhraseMapping> phraseMappings;
-    protected MutableSet<WordAbbreviation> wordAbbreviations;
-    protected MutableSet<PhraseAbbreviation> phraseAbbreviations;
+    protected MutableSortedSet<WordAbbreviation> wordAbbreviations;
+    protected MutableSortedSet<PhraseAbbreviation> phraseAbbreviations;
     private TextStateStrategy strategy;
 
     /**
@@ -72,8 +67,8 @@ public class TextStateImpl extends AbstractState implements TextState {
     public TextStateImpl(Function<TextStateImpl, TextStateStrategy> constructor) {
         nounMappings = Lists.mutable.empty();
         phraseMappings = Lists.mutable.empty();
-        wordAbbreviations = Sets.mutable.empty();
-        phraseAbbreviations = Sets.mutable.empty();
+        wordAbbreviations = SortedSets.mutable.empty();
+        phraseAbbreviations = SortedSets.mutable.empty();
         strategy = constructor.apply(this);
     }
 
@@ -206,12 +201,12 @@ public class TextStateImpl extends AbstractState implements TextState {
     }
 
     @Override
-    public ImmutableSet<WordAbbreviation> getWordAbbreviations() {
+    public ImmutableSortedSet<WordAbbreviation> getWordAbbreviations() {
         return wordAbbreviations.toImmutable();
     }
 
     @Override
-    public ImmutableSet<PhraseAbbreviation> getPhraseAbbreviations() {
+    public ImmutableSortedSet<PhraseAbbreviation> getPhraseAbbreviations() {
         return phraseAbbreviations.toImmutable();
     }
 
@@ -310,8 +305,8 @@ public class TextStateImpl extends AbstractState implements TextState {
         return success;
     }
 
-    void removeNounMappingFromState(NounMapping nounMapping, NounMapping replacement) {
-        this.nounMappings.remove(nounMapping);
+    boolean removeNounMappingFromState(NounMapping nounMapping, NounMapping replacement) {
+        var success = this.nounMappings.remove(nounMapping);
         nounMapping.onDelete(replacement);
         return success;
     }

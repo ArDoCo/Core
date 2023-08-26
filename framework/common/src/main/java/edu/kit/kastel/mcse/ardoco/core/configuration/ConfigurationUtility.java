@@ -2,11 +2,12 @@ package edu.kit.kastel.mcse.ardoco.core.configuration;
 
 import static edu.kit.kastel.mcse.ardoco.core.configuration.AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage;
@@ -23,8 +24,8 @@ public class ConfigurationUtility {
      *
      * @param enabledAgents Set of agents that should be enabled
      */
-    public static Map<String, String> enableAgents(Class<? extends AbstractExecutionStage> stage, Set<Class<? extends PipelineAgent>> enabledAgents) {
-        var map = new HashMap<String, String>();
+    public static SortedMap<String, String> enableAgents(Class<? extends AbstractExecutionStage> stage, Set<Class<? extends PipelineAgent>> enabledAgents) {
+        var map = new TreeMap<String, String>();
         for (var agent : enabledAgents) {
             var listString = List.of(agent.getSimpleName()).toString();
             map.put(stage.getSimpleName() + CLASS_ATTRIBUTE_CONNECTOR + "enabledAgents", listString.substring(1, listString.length() - 1));
@@ -37,8 +38,8 @@ public class ConfigurationUtility {
      *
      * @param enabledInformant Set of informants that should be enabled
      */
-    public static Map<String, String> enableInformants(AbstractExecutionStage stage, Set<Class<? extends Informant>> enabledInformant) {
-        var map = new HashMap<String, String>();
+    public static SortedMap<String, String> enableInformants(AbstractExecutionStage stage, Set<Class<? extends Informant>> enabledInformant) {
+        var map = new TreeMap<String, String>();
         var agentsToEnable = new HashSet<Class<? extends PipelineAgent>>();
         for (var informant : enabledInformant) {
             getInformantsMap(stage).entrySet().stream().filter(e -> e.getValue().contains(informant)).forEach(e -> {

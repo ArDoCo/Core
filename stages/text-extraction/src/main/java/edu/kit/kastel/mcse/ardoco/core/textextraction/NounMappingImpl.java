@@ -3,7 +3,6 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
 import static edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions.AVERAGE;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashSet;
@@ -33,9 +32,9 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 /**
  * The Class NounMapping is a basic realization of {@link NounMapping}.
  */
- @Deterministic
- @NoHashCodeEquals
-public class NounMappingImpl implements NounMapping, Comparable<NounMappingImpl> {
+@Deterministic
+@NoHashCodeEquals
+public class NounMappingImpl implements NounMapping {
 
     private static final AtomicLong CREATION_TIME_COUNTER = new AtomicLong(0);
     private static final AggregationFunctions DEFAULT_AGGREGATOR = AVERAGE;
@@ -114,8 +113,8 @@ public class NounMappingImpl implements NounMapping, Comparable<NounMappingImpl>
      */
     public NounMappingImpl(Long earliestCreationTime, ImmutableSortedSet<Word> words, MappingKind kind, Claimant claimant, double probability,
             ImmutableList<Word> referenceWords, ImmutableList<String> surfaceForms) {
-        this(earliestCreationTime, words.toSortedSet().toImmutable(), SortedMaps.immutable.empty(), referenceWords, surfaceForms, calculateReference(
-                referenceWords));
+        this(earliestCreationTime, words.toSortedSet().toImmutable(), SortedMaps.immutable.empty(), referenceWords, surfaceForms,
+                calculateReference(referenceWords));
 
         Objects.requireNonNull(claimant);
         this.distribution.putIfAbsent(MappingKind.NAME, new Confidence(DEFAULT_AGGREGATOR));

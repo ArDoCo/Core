@@ -14,6 +14,8 @@ import java.util.TreeMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
+
 @Deterministic
 public abstract class AbstractConfigurable implements IConfigurable, Serializable {
     protected final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -64,7 +66,7 @@ public abstract class AbstractConfigurable implements IConfigurable, Serializabl
     /**
      * Returns the key (for the configuration file) of a field. If the field is marked as ChildClassConfigurable, the key is based on the class of the
      * configurable object. Otherwise, the key is based on the class where the field is defined.
-     * 
+     *
      * @param configurable            the configurable object
      * @param currentClassInHierarchy the class where the field is defined
      * @param field                   the field

@@ -1,19 +1,20 @@
 package edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency;
 
-import edu.kit.kastel.mcse.ardoco.core.api.InputDiagramData;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.SortedMap;
 import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
+import org.eclipse.collections.impl.factory.SortedMaps;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.kit.kastel.mcse.ardoco.core.api.InputDiagramData;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
@@ -44,11 +45,11 @@ public class DiagramInconsistencyCheckerTest extends StageTest<DiagramInconsiste
     }
 
     public DiagramInconsistencyCheckerTest() {
-        super(new DiagramInconsistencyChecker(Map.of(), null), DiagramProject.values());
+        super(new DiagramInconsistencyChecker(SortedMaps.mutable.empty(), null), DiagramProject.values());
     }
 
     @Override
-    protected Results runComparable(DiagramProject project, Map<String, String> additionalConfigurations, boolean cachePreRun) {
+    protected Results runComparable(DiagramProject project, SortedMap<String, String> additionalConfigurations, boolean cachePreRun) {
         var dataRepository = run(project, additionalConfigurations, cachePreRun);
         var diagramInconsistencyStates = dataRepository.getData(DiagramInconsistencyStates.ID, DiagramInconsistencyStates.class).orElseThrow();
         //TODO Get Metamodel properly
@@ -82,13 +83,10 @@ public class DiagramInconsistencyCheckerTest extends StageTest<DiagramInconsiste
                 pipelineSteps.add(ModelProviderAgent.get(project.getModelFile(), project.getArchitectureModelType(), dataRepository));
 
                 if (useMockDiagrams) {
-                    pipelineSteps.add(new DiagramRecognitionMock(project,
-                            project.getAdditionalConfigurations(), dataRepository));
+                    pipelineSteps.add(new DiagramRecognitionMock(project, project.getAdditionalConfigurations(), dataRepository));
                 } else {
-                    dataRepository.addData(InputDiagramData.ID,
-                            new InputDiagramData(project.getDiagramData()));
-                    pipelineSteps.add(DiagramRecognition.get(project.getAdditionalConfigurations(),
-                            dataRepository));
+                    dataRepository.addData(InputDiagramData.ID, new InputDiagramData(project.getDiagramData()));
+                    pipelineSteps.add(DiagramRecognition.get(project.getAdditionalConfigurations(), dataRepository));
                 }
 
                 pipelineSteps.add(TextExtraction.get(project.getAdditionalConfigurations(), dataRepository));
@@ -101,9 +99,9 @@ public class DiagramInconsistencyCheckerTest extends StageTest<DiagramInconsiste
     }
 
     @Override
-    protected DataRepository runTestRunner(DiagramProject project, Map<String, String> additionalConfigurations, DataRepository preRunDataRepository) {
+    protected DataRepository runTestRunner(DiagramProject project, SortedMap<String, String> additionalConfigurations, DataRepository preRunDataRepository) {
         logger.info("Run TestRunner for {}", project.name());
-        var combinedConfigs = new HashMap<>(project.getAdditionalConfigurations());
+        var combinedConfigs = new TreeMap<>(project.getAdditionalConfigurations());
         combinedConfigs.putAll(additionalConfigurations);
         return new AnonymousRunner(project.name(), preRunDataRepository) {
             @Override

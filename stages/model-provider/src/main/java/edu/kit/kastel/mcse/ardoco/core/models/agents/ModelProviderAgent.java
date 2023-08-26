@@ -1,5 +1,5 @@
 /* Licensed under MIT 2023. */
-package edu.kit.kastel.mcse.ardoco.core.models;
+package edu.kit.kastel.mcse.ardoco.core.models.agents;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,10 +30,10 @@ public class ModelProviderAgent extends PipelineAgent {
      * @param modelConnectors the list of ModelConnectors that should be used
      */
     public ModelProviderAgent(DataRepository data, List<ModelConnector> modelConnectors) {
-        super(informants(modelConnectors, data), ModelProviderAgent.class.getSimpleName(), data);
+        super(createInformants(modelConnectors, data), ModelProviderAgent.class.getSimpleName(), data);
     }
 
-    private static List<? extends Informant> informants(List<ModelConnector> modelConnectors, DataRepository data) {
+    private static List<? extends Informant> createInformants(List<ModelConnector> modelConnectors, DataRepository data) {
         return modelConnectors.stream().map(e -> new ModelProviderInformant(data, e)).toList();
     }
 

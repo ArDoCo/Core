@@ -16,14 +16,14 @@ class DiagramRecognition(
     private val diagramRecognitionState: DiagramRecognitionStateImpl,
     dataRepository: DataRepository
 ) : AbstractExecutionStage(
-    ID,
-    dataRepository,
     listOf(
         DiagramRecognitionAgent(diagramRecognitionState, dataRepository),
         DiagramCleanUpAgent(dataRepository),
         DiagramDisambiguationAgent(dataRepository),
         DiagramReferenceAgent(dataRepository)
-    )
+    ),
+    ID,
+    dataRepository
 ) {
 
     companion object {
@@ -40,7 +40,7 @@ class DiagramRecognition(
         fun get(
             additionalConfigs: SortedMap<String?, String?>?,
             dataRepository: DataRepository?
-        ): DiagramRecognition? {
+        ): DiagramRecognition {
             val diagramDetection = DiagramRecognition(
                 DiagramRecognitionStateImpl(),
                 dataRepository!!
