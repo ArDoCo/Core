@@ -2,7 +2,6 @@
 package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.textprocessor;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
 
 import edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.config.ConfigManager;
 
@@ -21,8 +20,8 @@ public final class MicroserviceChecker {
      */
     public static boolean isMicroserviceAvailable() throws IOException {
         String requestUrl = ConfigManager.getInstance().getMicroserviceUrl() + ConfigManager.getInstance().getHealthService();
-        CustomHttpResponse response = new HttpCommunicator().sendAuthenticatedGetRequest(requestUrl);
-        return response.statusCode() == HttpURLConnection.HTTP_OK;
+        String response = new HttpCommunicator().sendAuthenticatedGetRequest(requestUrl);
+        return response.equals("Microservice is healthy");
     }
 
 }

@@ -39,7 +39,6 @@ public class TextProcessorService {
 
     private String sendAuthenticatedGetRequest(String requestUrl) throws IOException {
         HttpCommunicator httpCommunicator = new HttpCommunicator();
-        CustomHttpResponse response = httpCommunicator.sendAuthenticatedGetRequest(requestUrl);
-        return response.responseBody();
+        return httpCommunicator.sendAuthenticatedGetRequest(requestUrl);
     }
 }
