@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Objects;
 
 import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.factory.Maps;
+import org.eclipse.collections.api.factory.SortedMaps;
 import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.map.ImmutableMap;
-import org.eclipse.collections.api.map.MutableMap;
+import org.eclipse.collections.api.map.sorted.ImmutableSortedMap;
+import org.eclipse.collections.api.map.sorted.MutableSortedMap;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.PhraseType;
@@ -105,8 +105,8 @@ public class PhraseImpl implements Phrase {
     }
 
     @Override
-    public ImmutableMap<Word, Integer> getPhraseVector() {
-        MutableMap<Word, Integer> phraseVector = Maps.mutable.empty();
+    public ImmutableSortedMap<Word, Integer> getPhraseVector() {
+        MutableSortedMap<Word, Integer> phraseVector = SortedMaps.mutable.empty();
 
         var grouped = getContainedWords().groupBy(Word::getText).toMap();
         grouped.forEach((key, value) -> phraseVector.put(value.getAny(), value.size()));
