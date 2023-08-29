@@ -20,8 +20,12 @@ public final class MicroserviceChecker {
      */
     public static boolean isMicroserviceAvailable() throws IOException {
         String requestUrl = ConfigManager.INSTANCE.getMicroserviceUrl() + ConfigManager.INSTANCE.getHealthService();
-        String response = new HttpCommunicator().sendAuthenticatedGetRequest(requestUrl);
-        return response.equals("Microservice is healthy");
+        try {
+            String response = new HttpCommunicator().sendAuthenticatedGetRequest(requestUrl);
+            return response.equals("Microservice is healthy");
+        } catch (IOException e) {
+            return false;
+        }
     }
 
 }
