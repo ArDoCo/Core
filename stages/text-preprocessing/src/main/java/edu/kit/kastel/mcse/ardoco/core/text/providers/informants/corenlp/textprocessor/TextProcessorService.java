@@ -20,7 +20,7 @@ public class TextProcessorService {
 
     /**
      * processes and annotates a given text by sending requests to a microservice
-     * 
+     *
      * @param inputText the input text
      * @return the annotated text
      */
@@ -33,7 +33,8 @@ public class TextProcessorService {
 
     private String sendCorenlpRequest(String inputText) throws IOException {
         inputText = URLEncoder.encode(inputText, StandardCharsets.UTF_8);
-        String requestUrl = ConfigManager.getInstance().getMicroserviceUrl() + ConfigManager.getInstance().getCorenlpService() + inputText;
+        ConfigManager configManager = ConfigManager.INSTANCE;
+        String requestUrl = configManager.getMicroserviceUrl() + configManager.getCorenlpService() + inputText;
         return sendAuthenticatedGetRequest(requestUrl);
     }
 

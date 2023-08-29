@@ -11,11 +11,12 @@ import org.slf4j.LoggerFactory;
 /**
  * This Singleton manages access to the config file.
  */
-public class ConfigManager {
+public enum ConfigManager {
 
-    Logger logger = LoggerFactory.getLogger(ConfigManager.class);
+    INSTANCE;
 
-    private static ConfigManager instance;
+    private final Logger logger = LoggerFactory.getLogger(ConfigManager.class);
+
     private final Properties properties;
     private static final String FILE_PATH = "config.properties";
     private static final String PROPERTY_MICROSERVICE_URL = "microserviceUrl";
@@ -40,13 +41,6 @@ public class ConfigManager {
         if (System.getenv("NLP_PROVIDER_SOURCE") != null) {
             properties.setProperty(PROPERTY_NLP_PROVIDER_SOURCE, System.getenv("NLP_PROVIDER_SOURCE"));
         }
-    }
-
-    public static ConfigManager getInstance() {
-        if (instance == null) {
-            instance = new ConfigManager();
-        }
-        return instance;
     }
 
     public String getMicroserviceUrl() {

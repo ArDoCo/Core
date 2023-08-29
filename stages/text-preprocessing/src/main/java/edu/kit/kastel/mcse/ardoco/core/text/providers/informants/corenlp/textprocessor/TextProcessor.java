@@ -21,7 +21,7 @@ public class TextProcessor {
 
     /**
      * processes and annotates a given text
-     * 
+     *
      * @param inputText the input text
      * @return the annotated text
      */
@@ -33,7 +33,7 @@ public class TextProcessor {
             microserviceAvailable = false;
             logger.warn("Could not check if CoreNLP microservice is available. ", e);
         }
-        if (ConfigManager.getInstance().getNlpProviderSource().equals("microservice") && microserviceAvailable) {
+        if (ConfigManager.INSTANCE.getNlpProviderSource().equals("microservice") && microserviceAvailable) {
             int numberOfTry = 0;
             while (numberOfTry < MAX_FAILED_SERVICE_REQUESTS) {
                 try {

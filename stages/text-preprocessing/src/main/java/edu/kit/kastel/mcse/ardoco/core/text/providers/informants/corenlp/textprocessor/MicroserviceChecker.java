@@ -15,11 +15,11 @@ public final class MicroserviceChecker {
 
     /**
      * checks if the CoreNLP microservice is available and can provide its services.
-     * 
+     *
      * @return whether the microservice is available
      */
     public static boolean isMicroserviceAvailable() throws IOException {
-        String requestUrl = ConfigManager.getInstance().getMicroserviceUrl() + ConfigManager.getInstance().getHealthService();
+        String requestUrl = ConfigManager.INSTANCE.getMicroserviceUrl() + ConfigManager.INSTANCE.getHealthService();
         String response = new HttpCommunicator().sendAuthenticatedGetRequest(requestUrl);
         return response.equals("Microservice is healthy");
     }
