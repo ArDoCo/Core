@@ -8,7 +8,6 @@
     <version>${revision}</version>
   </parent>
 
-  <groupId>io.github.ardoco</groupId>
   <artifactId>text-provider-json</artifactId>
   <packaging>jar</packaging>
   <name>TextProvider JSON</name>

@@ -43,9 +43,9 @@ enum: ["APPOS", "NSUBJ", "POSS", "OBJ", "IOBJ", "NMOD", "NSUBJPASS", "POBJ", "AG
 ```xml
 <dependencies>
 	<dependency>
-		<groupId>io.github.ardoco</groupId>
+		<groupId>io.github.ardoco.core</groupId>
 		<artifactId>text-provider-json</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>YOUR_VERSION_HERE</version>
 	</dependency>
 </dependencies>
 ```
