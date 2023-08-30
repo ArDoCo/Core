@@ -51,6 +51,6 @@ class ObjectDetectionInformant(dataRepository: DataRepository) : ImageProcessing
         val uploadFile = HttpPost("http://${hostIP()}:${container.apiPort}/sketches/")
         val multipart: HttpEntity = builder.build()
         uploadFile.entity = multipart
-        return executeRequest(uploadFile)
+        return executeRequest(uploadFile, true)
     }
 }

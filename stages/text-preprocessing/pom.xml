@@ -38,9 +38,17 @@
       <classifier>models</classifier>
     </dependency>
     <dependency>
+      <groupId>io.github.ardoco</groupId>
+      <artifactId>text-provider-json</artifactId>
+    </dependency>
+    <dependency>
       <groupId>io.github.ardoco.core</groupId>
       <artifactId>common</artifactId>
       <version>${revision}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents.client5</groupId>
+      <artifactId>httpclient5</artifactId>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -50,7 +58,6 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>log4j-over-slf4j</artifactId>
-      <version>${slf4j.version}</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
