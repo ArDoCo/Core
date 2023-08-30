@@ -19,5 +19,6 @@
 
   <modules>
     <module>common</module>
+    <module>text-provider-json</module>
   </modules>
 </project>
