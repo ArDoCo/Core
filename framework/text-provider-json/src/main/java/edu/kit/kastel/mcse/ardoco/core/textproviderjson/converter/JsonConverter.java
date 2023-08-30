@@ -15,12 +15,14 @@ import com.networknt.schema.JsonSchemaFactory;
 import com.networknt.schema.SpecVersion;
 import com.networknt.schema.ValidationMessage;
 
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.textproviderjson.dto.TextDto;
 import edu.kit.kastel.mcse.ardoco.core.textproviderjson.error.InvalidJsonException;
 
 /**
  * utility class to convert a text DTO into json and back
  **/
+@Deterministic
 public final class JsonConverter {
 
     private static final Logger logger = LoggerFactory.getLogger(JsonConverter.class);

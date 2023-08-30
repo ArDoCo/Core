@@ -8,8 +8,8 @@ import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.config.ConfigManager;
-import io.github.ardoco.textproviderjson.error.InvalidJsonException;
-import io.github.ardoco.textproviderjson.error.NotConvertableException;
+import edu.kit.kastel.mcse.ardoco.core.textproviderjson.error.InvalidJsonException;
+import edu.kit.kastel.mcse.ardoco.core.textproviderjson.error.NotConvertableException;
 
 /**
  * This text processor processes texts using CoreNLP.

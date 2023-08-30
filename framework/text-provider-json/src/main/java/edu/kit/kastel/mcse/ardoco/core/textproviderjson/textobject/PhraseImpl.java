@@ -14,7 +14,9 @@ import org.eclipse.collections.api.map.sorted.MutableSortedMap;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.PhraseType;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 
+@Deterministic
 public class PhraseImpl implements Phrase {
     private ImmutableList<Word> words;
 
