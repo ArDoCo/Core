@@ -7,11 +7,11 @@ import java.nio.charset.StandardCharsets;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.config.ConfigManager;
-import io.github.ardoco.textproviderjson.converter.DtoToObjectConverter;
-import io.github.ardoco.textproviderjson.converter.JsonConverter;
-import io.github.ardoco.textproviderjson.dto.TextDto;
-import io.github.ardoco.textproviderjson.error.InvalidJsonException;
-import io.github.ardoco.textproviderjson.error.NotConvertableException;
+import edu.kit.kastel.mcse.ardoco.core.textproviderjson.converter.DtoToObjectConverter;
+import edu.kit.kastel.mcse.ardoco.core.textproviderjson.converter.JsonConverter;
+import edu.kit.kastel.mcse.ardoco.core.textproviderjson.dto.TextDto;
+import edu.kit.kastel.mcse.ardoco.core.textproviderjson.error.InvalidJsonException;
+import edu.kit.kastel.mcse.ardoco.core.textproviderjson.error.NotConvertableException;
 
 /**
  * This text processor processes texts by sending requests to a microservice, which provides text processing using CoreNLP.

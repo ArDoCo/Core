@@ -38,12 +38,13 @@
       <classifier>models</classifier>
     </dependency>
     <dependency>
-      <groupId>io.github.ardoco</groupId>
-      <artifactId>text-provider-json</artifactId>
+      <groupId>io.github.ardoco.core</groupId>
+      <artifactId>common</artifactId>
+      <version>${revision}</version>
     </dependency>
     <dependency>
       <groupId>io.github.ardoco.core</groupId>
-      <artifactId>common</artifactId>
+      <artifactId>text-provider-json</artifactId>
       <version>${revision}</version>
     </dependency>
     <dependency>
