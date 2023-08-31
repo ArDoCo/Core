@@ -27,81 +27,81 @@ public enum Project {
     MEDIASTORE(//
             "/benchmark/mediastore/model_2016/pcm/ms.repository", //
             "/benchmark/mediastore/text_2016/mediastore.txt", //
-            "/benchmark/mediastore/text_2016/goldstandard.csv", //
+            "/benchmark/mediastore/goldstandards/goldstandard_sad_2016-sam_2016.csv", //
             "/configurations/ms/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "/benchmark/mediastore/text_2016/goldstandard_UME.csv", //
+            "/benchmark/mediastore/goldstandards/goldstandard_sad_2016-sam_2016_UME.csv", //
             new ExpectedResults(.999, .620, .765, .978, .778, .999), //
             new ExpectedResults(.212, .792, .328, .702, .227, .690) //
     ), //
     TEASTORE( //
             "/benchmark/teastore/model_2020/pcm/teastore.repository", //
             "/benchmark/teastore/text_2020/teastore.txt", //
-            "/benchmark/teastore/text_2020/goldstandard.csv", //
+            "/benchmark/teastore/goldstandards/goldstandard_sad_2020-sam_2020.csv", //
             "/configurations/ts/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "/benchmark/teastore/text_2020/goldstandard_UME.csv", //
+            "/benchmark/teastore/goldstandards/goldstandard_sad_2020-sam_2020_UME.csv", //
             new ExpectedResults(.999, .740, .850, .984, .853, .999), //
             new ExpectedResults(.962, .703, .784, .957, .808, .994) //
     ), //
     TEASTORE_HISTORICAL( //
             "/benchmark/teastore/model_2020/pcm/teastore.repository", //
             "/benchmark/teastore/text_2018/teastore_2018_AB.txt", //
-            "/benchmark/teastore/text_2018/goldstandard_AB.csv", //
+            "/benchmark/teastore/goldstandards/goldstandard_sad_2018-sam_2020_AB.csv", //
             "/configurations/ts/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "/benchmark/teastore/text_2018/goldstandard_AB_UME.csv", //
+            "/benchmark/teastore/goldstandards/goldstandard_sad_2018-sam_2020_AB_UME.csv", //
             new ExpectedResults(.999, .740, .850, .984, .853, .999), //
             new ExpectedResults(.163, .982, .278, .376, .146, .289) //
     ), //
     TEAMMATES( //
             "/benchmark/teammates/model_2021/pcm/teammates.repository", //
             "/benchmark/teammates/text_2021/teammates.txt", //
-            "/benchmark/teammates/text_2021/goldstandard.csv", //
+            "/benchmark/teammates/goldstandards/goldstandard_sad_2021-sam_2021.csv", //
             "/configurations/tm/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "/benchmark/teammates/text_2021/goldstandard_UME.csv", //
+            "/benchmark/teammates/goldstandards/goldstandard_sad_2021-sam_2021_UME.csv", //
             new ExpectedResults(.555, .882, .681, .965, .688, .975), //
             new ExpectedResults(.175, .745, .279, .851, .287, .851) //
     ), //
     TEAMMATES_HISTORICAL( //
             "/benchmark/teammates/model_2021/pcm/teammates.repository", //
             "/benchmark/teammates/text_2015/teammates_2015.txt", //
-            "/benchmark/teammates/text_2015/goldstandard.csv", //
+            "/benchmark/teammates/goldstandards/goldstandard_sad_2015-sam_2021.csv", //
             "/configurations/tm/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "/benchmark/teammates/text_2015/goldstandard_UME.csv", //
+            "/benchmark/teammates/goldstandards/goldstandard_sad_2015-sam_2021_UME.csv", //
             new ExpectedResults(.524, .695, .597, .970, .589, .979), //
             new ExpectedResults(.168, .629, .263, .863, .260, .870) //
     ), //
     BIGBLUEBUTTON( //
             "/benchmark/bigbluebutton/model_2021/pcm/bbb.repository", //
             "/benchmark/bigbluebutton/text_2021/bigbluebutton.txt", //
-            "/benchmark/bigbluebutton/text_2021/goldstandard.csv", //
+            "/benchmark/bigbluebutton/goldstandards/goldstandard_sad_2021-sam_2021.csv", //
             "/configurations/bbb/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "/benchmark/bigbluebutton/text_2021/goldstandard_UME.csv", //
+            "/benchmark/bigbluebutton/goldstandards/goldstandard_sad_2021-sam_2021_UME.csv", //
             new ExpectedResults(.875, .826, .850, .985, .835, .985), //
             new ExpectedResults(.887, .461, .429, .956, .534, .984) //
     ), //
     BIGBLUEBUTTON_HISTORICAL( //
             "/benchmark/bigbluebutton/model_2021/pcm/bbb.repository", //
             "/benchmark/bigbluebutton/text_2015/bigbluebutton_2015.txt", //
-            "/benchmark/bigbluebutton/text_2015/goldstandard.csv", //
+            "/benchmark/bigbluebutton/goldstandards/goldstandard_sad_2015-sam_2021.csv", //
             "/configurations/bbb/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "/benchmark/bigbluebutton/text_2015/goldstandard_UME.csv", //
+            "/benchmark/bigbluebutton/goldstandards/goldstandard_sad_2015-sam_2021_UME.csv", //
             new ExpectedResults(.807, .617, .699, .978, .695, .993), //
             new ExpectedResults(.085, .175, .111, .813, .018, .869) //
     ), //
     JABREF( //
             "/benchmark/jabref/model_2021/pcm/jabref.repository", //
             "/benchmark/jabref/text_2021/jabref.txt", //
-            "/benchmark/jabref/text_2021/goldstandard.csv", //
+            "/benchmark/jabref/goldstandards/goldstandard_sad_2021-sam_2021.csv", //
             "/configurations/jabref/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "/benchmark/jabref/text_2021/goldstandard_UME.csv", //
+            "/benchmark/jabref/goldstandards/goldstandard_sad_2021-sam_2021_UME.csv", //
             new ExpectedResults(.899, .999, .946, .973, .932, .966), //
             new ExpectedResults(1.0, .443, .443, .845, .616, 1.0) //
     ), //
     JABREF_HISTORICAL( //
             "/benchmark/jabref/model_2021/pcm/jabref.repository", //
             "/benchmark/jabref/text_2016/jabref_2016.txt", //
-            "/benchmark/jabref/text_2016/goldstandard.csv", //
+            "/benchmark/jabref/goldstandards/goldstandard_sad_2016-sam_2021.csv", //
             "/configurations/jabref/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "/benchmark/jabref/text_2016/goldstandard_UME.csv", //
+            "/benchmark/jabref/goldstandards/goldstandard_sad_2016-sam_2021_UME.csv", //
             new ExpectedResults(.817, .999, .899, .966, .886, .960), //
             new ExpectedResults(.110, .110, .110, .366, -.249, .475) //
     );
