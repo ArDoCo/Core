@@ -2,9 +2,8 @@
 package edu.kit.kastel.mcse.ardoco.core.models;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.SortedMap;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItemRepository;
@@ -24,8 +23,6 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
  */
 public class ArCoTLModelProviderAgent extends PipelineAgent {
 
-    private final List<Informant> informants;
-
     /**
      * Instantiates a new model provider agent.
      * The constructor takes a list of ModelConnectors that are executed and used to extract information from models.
@@ -34,15 +31,15 @@ public class ArCoTLModelProviderAgent extends PipelineAgent {
      * @param extractors the list of ModelConnectors that should be used
      */
     public ArCoTLModelProviderAgent(DataRepository data, List<Extractor> extractors) {
-        super(ArCoTLModelProviderAgent.class.getSimpleName(), data);
-        informants = new ArrayList<>();
-        for (var extractor : extractors) {
-            informants.add(new ArCoTLModelProviderInformant(data, extractor));
-        }
+        super(informants(data, extractors), ArCoTLModelProviderAgent.class.getSimpleName(), data);
+    }
+
+    private static List<? extends Informant> informants(DataRepository data, List<Extractor> extractors) {
+        return extractors.stream().map(e -> new ArCoTLModelProviderInformant(data, e)).toList();
     }
 
     public static ArCoTLModelProviderAgent get(File inputArchitectureModel, ArchitectureModelType architectureModelType, File inputCode,
-            Map<String, String> additionalConfigs, DataRepository dataRepository) {
+            SortedMap<String, String> additionalConfigs, DataRepository dataRepository) {
         ArchitectureExtractor architectureExtractor = switch (architectureModelType) {
         case PCM -> new PcmExtractor(inputArchitectureModel.getAbsolutePath());
         case UML -> new UmlExtractor(inputArchitectureModel.getAbsolutePath());
@@ -55,12 +52,7 @@ public class ArCoTLModelProviderAgent extends PipelineAgent {
     }
 
     @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+    protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration) {
         // empty
-    }
-
-    @Override
-    protected List<Informant> getEnabledPipelineSteps() {
-        return new ArrayList<>(informants);
     }
 }

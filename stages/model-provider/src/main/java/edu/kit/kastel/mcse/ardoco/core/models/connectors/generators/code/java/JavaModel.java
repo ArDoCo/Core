@@ -4,22 +4,48 @@ package edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.java;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.apache.commons.io.FilenameUtils;
-import org.eclipse.jdt.core.dom.*;
+import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
+import org.eclipse.jdt.core.dom.BodyDeclaration;
+import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.EnumDeclaration;
+import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.Name;
+import org.eclipse.jdt.core.dom.PackageDeclaration;
+import org.eclipse.jdt.core.dom.QualifiedName;
+import org.eclipse.jdt.core.dom.SimpleName;
+import org.eclipse.jdt.core.dom.Type;
+import org.eclipse.jdt.core.dom.TypeDeclaration;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.*;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.ClassUnit;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItem;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItemRepository;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModule;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodePackage;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.ControlElement;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.Datatype;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.InterfaceUnit;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.ProgrammingLanguage;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.java.finder.EnumDeclarationFinder;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.java.finder.MethodDeclarationFinder;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.java.finder.TypeDeclarationFinder;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.java.finder.TypeFinder;
 
+@Deterministic
 public final class JavaModel {
 
     private final CodeItemRepository codeItemRepository;
@@ -28,11 +54,11 @@ public final class JavaModel {
     private Set<JavaInterface> javaInterfaces;
     private CodeModel codeModel;
 
-    public JavaModel(CodeItemRepository codeItemRepository, Map<String, CompilationUnit> compUnitMap) {
+    public JavaModel(CodeItemRepository codeItemRepository, SortedMap<String, CompilationUnit> compUnitMap) {
         this.codeItemRepository = codeItemRepository;
-        javaTypes = new HashSet<>();
-        javaClassifiers = new HashSet<>();
-        javaInterfaces = new HashSet<>();
+        javaTypes = new LinkedHashSet<>();
+        javaClassifiers = new LinkedHashSet<>();
+        javaInterfaces = new LinkedHashSet<>();
         initModel(compUnitMap);
     }
 
@@ -87,7 +113,7 @@ public final class JavaModel {
                             .findFirst()
                             .orElseThrow())
                     .toList();
-            Set<Datatype> codeImplInterfaces = new HashSet<>();
+            SortedSet<Datatype> codeImplInterfaces = new TreeSet<>();
             javaImplInterfaces.forEach(javaImplInterface -> codeImplInterfaces.add(javaImplInterface.codeInterface()));
             javaClassifier.codeClassifier().setImplementedTypes(codeImplInterfaces);
         }
@@ -103,7 +129,7 @@ public final class JavaModel {
                             .findFirst()
                             .orElseThrow())
                     .toList();
-            Set<Datatype> codeExtendedInterfaces = new HashSet<>();
+            SortedSet<Datatype> codeExtendedInterfaces = new TreeSet<>();
             javaExtendedInterfaces.forEach(javaExtendedInterface -> codeExtendedInterfaces.add(javaExtendedInterface.codeInterface()));
             javaInterface.codeInterface().setExtendedTypes(codeExtendedInterfaces);
         }
@@ -120,7 +146,7 @@ public final class JavaModel {
                     .filter(otherJavaClass -> otherJavaClass.binding().getErasure().isEqualTo(superclassBinding.getErasure()))
                     .findFirst()
                     .orElseThrow();
-            Set<Datatype> superclasses = new HashSet<>();
+            SortedSet<Datatype> superclasses = new TreeSet<>();
             superclasses.add(javaSuperclass.codeClassifier());
             javaClassifier.codeClassifier().setExtendedTypes(superclasses);
         }
@@ -143,10 +169,10 @@ public final class JavaModel {
 
     //
 
-    private void initModel(Map<String, CompilationUnit> compUnitMap) {
-        Set<CodeItem> modelContent = new HashSet<>();
-        Set<CodePackage> codePackages = new HashSet<>();
-        Set<CodeCompilationUnit> codeCompilationUnits = new HashSet<>();
+    private void initModel(SortedMap<String, CompilationUnit> compUnitMap) {
+        SortedSet<CodeItem> modelContent = new TreeSet<>();
+        SortedSet<CodePackage> codePackages = new TreeSet<>();
+        SortedSet<CodeCompilationUnit> codeCompilationUnits = new TreeSet<>();
 
         for (var entry : compUnitMap.entrySet()) {
             CompilationUnit compilationUnit = entry.getValue();
@@ -164,7 +190,7 @@ public final class JavaModel {
                 Name fullName = packageDeclaration.getName();
                 packageNames = getPackageNames(fullName);
             }
-            CodeCompilationUnit codeCompilationUnit = new CodeCompilationUnit(codeItemRepository, fileNameWithoutExtension, new HashSet<>(), pathElements,
+            CodeCompilationUnit codeCompilationUnit = new CodeCompilationUnit(codeItemRepository, fileNameWithoutExtension, new TreeSet<>(), pathElements,
                     extension, ProgrammingLanguage.JAVA);
             codeCompilationUnits.add(codeCompilationUnit);
             if (null != packageDeclaration) {
@@ -210,7 +236,7 @@ public final class JavaModel {
 
     private ClassUnit processEnumDeclaration(EnumDeclaration enumDeclaration) {
         String name = enumDeclaration.getName().getIdentifier();
-        Set<ControlElement> declaredMethods = extractMethods(enumDeclaration);
+        SortedSet<ControlElement> declaredMethods = extractMethods(enumDeclaration);
         ClassUnit codeClassifier = new ClassUnit(codeItemRepository, name, declaredMethods);
         addClassifier(codeClassifier, enumDeclaration);
         return codeClassifier;
@@ -218,7 +244,7 @@ public final class JavaModel {
 
     private Datatype processTypeDeclaration(TypeDeclaration typeDeclaration) {
         String name = typeDeclaration.getName().getIdentifier();
-        Set<ControlElement> declaredMethods = extractMethods(typeDeclaration);
+        SortedSet<ControlElement> declaredMethods = extractMethods(typeDeclaration);
         Datatype codeType;
         if (typeDeclaration.isInterface()) {
             InterfaceUnit codeInterface = new InterfaceUnit(codeItemRepository, name, declaredMethods);
@@ -232,8 +258,8 @@ public final class JavaModel {
         return codeType;
     }
 
-    private Set<ControlElement> extractMethods(ASTNode node) {
-        Set<ControlElement> declaredMethods = new HashSet<>();
+    private SortedSet<ControlElement> extractMethods(ASTNode node) {
+        SortedSet<ControlElement> declaredMethods = new TreeSet<>();
         Set<MethodDeclaration> methodDeclarations = MethodDeclarationFinder.find(node);
         for (MethodDeclaration methodDeclaration : methodDeclarations) {
             declaredMethods.add(extractMethod(methodDeclaration));
@@ -277,7 +303,7 @@ public final class JavaModel {
     }
 
     private static Set<CodePackage> mergePackages(Set<CodePackage> packages) {
-        Map<String, CodePackage> packageMap = new HashMap<>();
+        Map<String, CodePackage> packageMap = new LinkedHashMap<>();
         List<CodePackage> packageList = new ArrayList<>(packages);
         for (CodePackage codePackage : packageList) {
             if (packageMap.containsKey(codePackage.getName())) {
@@ -294,6 +320,6 @@ public final class JavaModel {
             mergedPackageElements.forEach(packageElement -> packageElement.setParent(codePackage));
             codePackage.setContent(mergedPackageElements);
         }
-        return new HashSet<>(packageMap.values());
+        return new LinkedHashSet<>(packageMap.values());
     }
 }

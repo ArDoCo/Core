@@ -179,4 +179,16 @@ class WordImpl implements Word {
     public int hashCode() {
         return Objects.hash(getPosition(), getPosTag(), getText(), getSentenceNo());
     }
+
+    @Override
+    public int compareTo(Word o) {
+        if (this.equals(o))
+            return 0;
+
+        int compareSentences = Integer.compare(this.getSentenceNo(), o.getSentenceNo());
+        if (compareSentences != 0) {
+            return compareSentences;
+        }
+        return Integer.compare(this.getPosition(), o.getPosition());
+    }
 }

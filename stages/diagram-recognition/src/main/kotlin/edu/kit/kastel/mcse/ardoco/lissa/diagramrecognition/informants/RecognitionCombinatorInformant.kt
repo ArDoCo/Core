@@ -9,6 +9,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.boundingBox
 import java.awt.image.BufferedImage
 import java.io.ByteArrayInputStream
+import java.util.*
 import java.util.stream.IntStream
 import javax.imageio.ImageIO
 
@@ -17,7 +18,7 @@ class RecognitionCombinatorInformant(dataRepository: DataRepository) : Informant
         const val ID = "RecognitionCombinatorInformant"
     }
 
-    override fun delegateApplyConfigurationToInternalObjects(additionalConfiguration: MutableMap<String, String>?) {
+    override fun delegateApplyConfigurationToInternalObjects(additionalConfiguration: SortedMap<String, String>?) {
         // Not needed
     }
 

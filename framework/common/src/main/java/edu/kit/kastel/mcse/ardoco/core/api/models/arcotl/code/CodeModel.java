@@ -2,15 +2,16 @@
 package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
+import java.util.SortedSet;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
 
 /**
@@ -37,7 +38,7 @@ public class CodeModel extends Model {
      *
      * @param content the content of the code model
      */
-    public CodeModel(CodeItemRepository codeItemRepository, Set<? extends CodeItem> content) {
+    public CodeModel(CodeItemRepository codeItemRepository, SortedSet<? extends CodeItem> content) {
         this.initialized = true;
         this.codeItemRepository = codeItemRepository;
         this.content = new ArrayList<>();
@@ -74,11 +75,18 @@ public class CodeModel extends Model {
      *
      * @return all code packages of this code model
      */
-    public Set<? extends CodePackage> getAllPackages() {
+    public List<? extends CodePackage> getAllPackages() {
         if (!initialized)
             initialize();
-        Set<CodePackage> codePackages = new HashSet<>();
-        getContent().forEach(c -> codePackages.addAll(c.getAllPackages()));
+        List<CodePackage> codePackages = new ArrayList<>();
+        for (CodeItem c : getContent()) {
+            for (CodePackage cp : c.getAllPackages()) {
+                if (!codePackages.contains(cp)) {
+                    codePackages.add(cp);
+                }
+            }
+        }
+        codePackages.sort(Comparator.comparing(Entity::getName));
         return codePackages;
     }
 

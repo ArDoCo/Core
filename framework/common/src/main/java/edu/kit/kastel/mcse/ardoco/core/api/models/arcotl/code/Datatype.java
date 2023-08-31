@@ -4,7 +4,8 @@ package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -55,7 +56,7 @@ public class Datatype extends CodeItem {
         return null;
     }
 
-    public Set<Datatype> getExtendedTypes() {
+    public SortedSet<Datatype> getExtendedTypes() {
         return extendedDataTypesIds.stream().map(id -> {
             CodeItem codeItem = codeItemRepository.getCodeItem(id);
             if (codeItem instanceof Datatype datatype) {
@@ -63,10 +64,10 @@ public class Datatype extends CodeItem {
             } else {
                 return null;
             }
-        }).filter(Objects::nonNull).collect(Collectors.toSet());
+        }).filter(Objects::nonNull).collect(Collectors.toCollection(TreeSet::new));
     }
 
-    public Set<Datatype> getImplementedTypes() {
+    public SortedSet<Datatype> getImplementedTypes() {
         return implementedDataTypesIds.stream().map(id -> {
             CodeItem codeItem = codeItemRepository.getCodeItem(id);
             if (codeItem instanceof Datatype datatype) {
@@ -74,7 +75,7 @@ public class Datatype extends CodeItem {
             } else {
                 return null;
             }
-        }).filter(Objects::nonNull).collect(Collectors.toSet());
+        }).filter(Objects::nonNull).collect(Collectors.toCollection(TreeSet::new));
     }
 
     public void setCompilationUnit(CodeCompilationUnit compilationUnit) {
@@ -84,13 +85,13 @@ public class Datatype extends CodeItem {
         this.parentDatatypeId = parentDatatype.getId();
     }
 
-    public void setExtendedTypes(Set<Datatype> extendedDatatypes) {
+    public void setExtendedTypes(SortedSet<Datatype> extendedDatatypes) {
         for (Datatype datatype : extendedDatatypes) {
             this.extendedDataTypesIds.add(datatype.getId());
         }
     }
 
-    public void setImplementedTypes(Set<Datatype> implementedDatatypes) {
+    public void setImplementedTypes(SortedSet<Datatype> implementedDatatypes) {
         for (Datatype datatype : implementedDatatypes) {
             this.implementedDataTypesIds.add(datatype.getId());
         }

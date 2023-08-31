@@ -2,7 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.heuristics;
 
 import java.util.List;
-import java.util.Set;
+import java.util.SortedSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureComponent;
@@ -35,7 +35,7 @@ public class SubpackageFilter extends DependentHeuristic {
             return new Confidence();
         }
         List<CodePackage> thisPackages = NameComparisonUtils.getMatchedPackages(archEndpoint, compUnit);
-        Set<Entity> linkedArchitectureEndpoints = getNodeResult().getLinkedEndpoints(compUnit);
+        SortedSet<Entity> linkedArchitectureEndpoints = getNodeResult().getLinkedEndpoints(compUnit);
         linkedArchitectureEndpoints.remove(archEndpoint);
         for (var linkedArchitectureEndpoint : linkedArchitectureEndpoints) {
             List<CodePackage> otherPackages = NameComparisonUtils.getMatchedPackages(linkedArchitectureEndpoint, compUnit);

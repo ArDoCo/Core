@@ -5,8 +5,8 @@ import java.util.Locale;
 import java.util.Objects;
 
 import org.eclipse.collections.api.collection.ImmutableCollection;
-import org.eclipse.collections.api.factory.Sets;
-import org.eclipse.collections.api.set.MutableSet;
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.TextInconsistency;
 
@@ -27,7 +27,7 @@ public record MissingModelInstanceInconsistency(String name, int sentence, doubl
 
     @Override
     public ImmutableCollection<String[]> toFileOutput() {
-        MutableSet<String[]> entries = Sets.mutable.empty();
+        MutableList<String[]> entries = Lists.mutable.empty();
 
         var sentenceNoString = "" + sentence;
         String[] entry = { getType(), sentenceNoString, name, Integer.toString(sentence), Double.toString(confidence) };

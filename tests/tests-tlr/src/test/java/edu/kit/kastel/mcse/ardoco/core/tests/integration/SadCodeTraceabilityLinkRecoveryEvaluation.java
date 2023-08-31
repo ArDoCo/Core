@@ -4,8 +4,8 @@ package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 import static edu.kit.kastel.mcse.ardoco.core.tests.integration.TraceLinkEvaluationIT.OUTPUT;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -41,7 +41,7 @@ class SadCodeTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecovery
         File textInput = textProject.getTextFile();
         File inputArchitectureModel = codeProject.getProject().getModelFile();
         File inputCode = getInputCode(codeProject);
-        Map<String, String> additionalConfigsMap = new HashMap<>();
+        SortedMap<String, String> additionalConfigsMap = new TreeMap<>();
         File outputDir = new File(OUTPUT);
 
         var runner = new ArDoCoForSadCodeTraceabilityLinkRecovery(name);

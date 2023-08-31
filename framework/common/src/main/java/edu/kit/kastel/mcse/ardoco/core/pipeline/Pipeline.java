@@ -5,7 +5,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.SortedMap;
 
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 
@@ -89,8 +89,8 @@ public class Pipeline extends AbstractPipelineStep {
     /**
      * This method is called at the start of running the pipeline. Within this method, the added PipelineSteps are prepared.
      * Sub-classes of Pipeline can override it with special cases.
-     * It is recommended that you apply the Map from {@link #getLastAppliedConfiguration()} via {@link #applyConfiguration(Map)} to each pipeline step.
-     * You can do that on your own if you need special treatment or by default call {@link #delegateApplyConfigurationToInternalObjects(Map)}.
+     * It is recommended that you apply the Map from {@link #getLastAppliedConfiguration()} via {@link #applyConfiguration(SortedMap)} to each pipeline step.
+     * You can do that on your own if you need special treatment or by default call {@link #delegateApplyConfigurationToInternalObjects(SortedMap)}.
      * The base version does apply the last configuration via the default call.
      */
     protected void preparePipelineSteps() {
@@ -98,7 +98,7 @@ public class Pipeline extends AbstractPipelineStep {
     }
 
     @Override
-    protected void delegateApplyConfigurationToInternalObjects(Map<String, String> additionalConfiguration) {
+    protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration) {
         this.pipelineSteps.forEach(it -> it.applyConfiguration(additionalConfiguration));
     }
 }

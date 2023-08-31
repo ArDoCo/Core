@@ -1,9 +1,10 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.models;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
 import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
@@ -11,8 +12,8 @@ import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
 public class ModelStates implements PipelineStepData {
     public static final String ID = "ModelStatesData";
 
-    private transient Map<String, ModelExtractionState> modelExtractionStates = new HashMap<>();
-    private transient Map<String, Model> models = new HashMap<>();
+    private transient SortedMap<String, ModelExtractionState> modelExtractionStates = new TreeMap<>();
+    private transient SortedMap<String, Model> models = new TreeMap<>();
 
     /**
      * Constructor to create a {@link ModelStates} object that holds all {@link ModelExtractionState}s
@@ -46,8 +47,8 @@ public class ModelStates implements PipelineStepData {
      *
      * @return the IDs of all contained {@link ModelExtractionState ModelExtractionStates}
      */
-    public Set<String> extractionModelIds() {
-        return modelExtractionStates.keySet();
+    public SortedSet<String> extractionModelIds() {
+        return new TreeSet<>(modelExtractionStates.keySet());
     }
 
     /**
@@ -55,8 +56,8 @@ public class ModelStates implements PipelineStepData {
      *
      * @return the IDs of all contained {@link Model Models}
      */
-    public Set<String> modelIds() {
-        return models.keySet();
+    public SortedSet<String> modelIds() {
+        return new TreeSet<>(models.keySet());
     }
 
     /**

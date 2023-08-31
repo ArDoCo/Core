@@ -1,8 +1,12 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline.agent;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedMap;
 
+import edu.kit.kastel.mcse.ardoco.core.configuration.ChildClassConfigurable;
+import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
@@ -11,13 +15,21 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
  * This class represents a pipeline agent that calculates some results for an {@link AbstractExecutionStage} execution
  * stage}.
  *
- * Implementing classes need to override {@link #getEnabledPipelineSteps()}.
+ * Implementing classes need to override.
  * Additionally, sub-classes are free to override {@link #initializeState()} to execute code at the beginning of the initialization before the main processing.
  */
 public abstract class PipelineAgent extends Pipeline implements Agent {
 
-    protected PipelineAgent(String id, DataRepository dataRepository) {
+    private final List<Informant> informants;
+
+    @Configurable
+    @ChildClassConfigurable
+    private List<String> enabledInformants;
+
+    protected PipelineAgent(List<? extends Informant> informants, String id, DataRepository dataRepository) {
         super(id, dataRepository);
+        this.informants = new ArrayList<>(informants);
+        this.enabledInformants = informants.stream().map(Informant::getId).toList();
     }
 
     @Override
@@ -31,8 +43,10 @@ public abstract class PipelineAgent extends Pipeline implements Agent {
      */
     protected final void initialize() {
         initializeState();
-        for (var informant : getEnabledPipelineSteps()) {
-            this.addPipelineStep(informant);
+        for (var informant : informants) {
+            if (enabledInformants.contains(informant.getId())) {
+                this.addPipelineStep(informant);
+            }
         }
     }
 
@@ -43,10 +57,10 @@ public abstract class PipelineAgent extends Pipeline implements Agent {
         // do nothing here
     }
 
-    /**
-     * Return the enabled pipeline steps (informants)
-     * 
-     * @return the list of Informants
-     */
-    protected abstract List<Informant> getEnabledPipelineSteps();
+    @Override
+    protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration) {
+        super.delegateApplyConfigurationToInternalObjects(additionalConfiguration);
+        informants.forEach(filter -> filter.applyConfiguration(additionalConfiguration));
+    }
+
 }

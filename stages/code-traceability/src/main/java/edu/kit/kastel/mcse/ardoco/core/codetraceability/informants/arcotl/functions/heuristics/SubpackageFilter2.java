@@ -1,7 +1,7 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.functions.heuristics;
 
-import java.util.Set;
+import java.util.SortedSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureComponent;
@@ -32,7 +32,7 @@ public class SubpackageFilter2 extends DependentHeuristic {
             return new Confidence();
         }
         int i = 0;
-        Set<Entity> linkedArchEndpoints = getNodeResult().getLinkedEndpoints(compUnit);
+        SortedSet<Entity> linkedArchEndpoints = getNodeResult().getLinkedEndpoints(compUnit);
         for (var linkedArchEndpoint : linkedArchEndpoints) {
             if (linkedArchEndpoint instanceof ArchitectureComponent) {
                 i++;

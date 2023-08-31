@@ -11,6 +11,7 @@ import org.apache.hc.core5.http.ContentType
 import org.apache.hc.core5.http.HttpEntity
 import java.io.ByteArrayInputStream
 import java.io.InputStream
+import java.util.*
 
 class ObjectDetectionInformant(dataRepository: DataRepository) : ImageProcessingDockerInformant(
     DOCKER_SKETCH_RECOGNITION,
@@ -28,7 +29,7 @@ class ObjectDetectionInformant(dataRepository: DataRepository) : ImageProcessing
         const val ID = "ObjectDetectionInformant"
     }
 
-    override fun delegateApplyConfigurationToInternalObjects(additionalConfiguration: MutableMap<String, String>?) {
+    override fun delegateApplyConfigurationToInternalObjects(additionalConfiguration: SortedMap<String, String>?) {
         // Not needed
     }
 
@@ -50,6 +51,6 @@ class ObjectDetectionInformant(dataRepository: DataRepository) : ImageProcessing
         val uploadFile = HttpPost("http://${hostIP()}:${container.apiPort}/sketches/")
         val multipart: HttpEntity = builder.build()
         uploadFile.entity = multipart
-        return executeRequest(uploadFile)
+        return executeRequest(uploadFile, true)
     }
 }

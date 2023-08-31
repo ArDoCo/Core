@@ -4,7 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
+import java.util.SortedSet;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -20,7 +20,7 @@ public class InterfaceUnit extends Datatype {
         // Jackson
     }
 
-    public InterfaceUnit(CodeItemRepository codeItemRepository, String name, Set<? extends CodeItem> content) {
+    public InterfaceUnit(CodeItemRepository codeItemRepository, String name, SortedSet<? extends CodeItem> content) {
         super(codeItemRepository, name);
         this.content = new ArrayList<>();
         for (var codeItem : content) {

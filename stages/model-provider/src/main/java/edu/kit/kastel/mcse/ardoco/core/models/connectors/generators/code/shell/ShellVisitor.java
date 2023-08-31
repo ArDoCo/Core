@@ -9,9 +9,9 @@ import java.nio.file.FileVisitor;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -28,13 +28,13 @@ public class ShellVisitor implements FileVisitor<Path> {
     private static final Logger logger = LoggerFactory.getLogger(ShellVisitor.class);
 
     private final Path startingDir;
-    private final Set<CodeItem> codeEndpoints;
+    private final SortedSet<CodeItem> codeEndpoints;
     private final CodeItemRepository codeItemRepository;
 
     public ShellVisitor(CodeItemRepository codeItemRepository, Path startingDir) {
         this.codeItemRepository = codeItemRepository;
         this.startingDir = startingDir;
-        codeEndpoints = new HashSet<>();
+        codeEndpoints = new TreeSet<>();
     }
 
     public CodeModel getCodeModel() {
@@ -81,7 +81,7 @@ public class ShellVisitor implements FileVisitor<Path> {
         for (int i = 0; i < relativePath.getNameCount() - 1; i++) {
             pathElements.add(relativePath.getName(i).toString());
         }
-        CodeCompilationUnit sourceFile = new CodeCompilationUnit(codeItemRepository, fileNameWithoutExtension, new HashSet<>(), pathElements, extension,
+        CodeCompilationUnit sourceFile = new CodeCompilationUnit(codeItemRepository, fileNameWithoutExtension, new TreeSet<>(), pathElements, extension,
                 ProgrammingLanguage.SHELL);
         codeEndpoints.add(sourceFile);
         return FileVisitResult.CONTINUE;
