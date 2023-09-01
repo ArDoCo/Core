@@ -6,9 +6,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.collections.api.map.ImmutableMap;
+import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.impl.factory.Maps;
 import org.jetbrains.annotations.NotNull;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -82,5 +84,13 @@ public class Disambiguation implements Comparable<Disambiguation>, Serializable 
             map.merge(disambiguation.getAbbreviation(), disambiguation, Disambiguation::addMeanings);
         }
         return map.toImmutable();
+    }
+
+    public static MutableMap<String, Disambiguation> merge(MutableMap<String, Disambiguation> a, Map<String, Disambiguation> b) {
+        var mergedMap = Maps.mutable.ofMap(a);
+        for (var entry : b.entrySet()) {
+            mergedMap.merge(entry.getKey(), entry.getValue(), Disambiguation::addMeanings);
+        }
+        return mergedMap;
     }
 }

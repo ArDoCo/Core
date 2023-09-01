@@ -6,9 +6,9 @@ import java.util.Objects;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 
 /**
- * A ComparisonContext contains all information that can be used for comparing similarity between objects that occur
- * within ArDoCo. The fields {@link #firstString} and {@link #secondString} are always not null. The field
- * {@link #lemmatize} decides whether the lemmatized version of both words should be used for comparison.
+ * A ComparisonContext contains all information that can be used for comparing similarity between objects that occur within ArDoCo. The fields
+ * {@link #firstString} and {@link #secondString} are always not null. The field {@link #lemmatize} decides whether the lemmatized version of both words should
+ * be used for comparison.
  */
 public record ComparisonContext(String firstString, String secondString, Word firstWord, Word secondWord, boolean lemmatize) {
 
@@ -33,8 +33,8 @@ public record ComparisonContext(String firstString, String secondString, Word fi
     }
 
     /**
-     * Finds the most appropriate string representation by the first object in this comparison object. This method can
-     * be used as a shorthand to avoid going through all variables that could possibly represent the first object.
+     * Finds the most appropriate string representation by the first object in this comparison object. This method can be used as a shorthand to avoid going
+     * through all variables that could possibly represent the first object.
      *
      * @return the most appropriate string presentation of the first object in this comparison
      */
@@ -44,8 +44,8 @@ public record ComparisonContext(String firstString, String secondString, Word fi
     }
 
     /**
-     * Finds the most appropriate string representation by the second object in this comparison object. This method can
-     * be used as a shorthand to avoid going through all variables that could possibly represent the second object.
+     * Finds the most appropriate string representation by the second object in this comparison object. This method can be used as a shorthand to avoid going
+     * through all variables that could possibly represent the second object.
      *
      * @return the most appropriate string presentation of the second object in this comparison
      */

@@ -35,7 +35,7 @@ public class AmbiguationConnectionInformant extends Informant {
     private void ambiguateRecommendedInstances(ModelExtractionState modelState, RecommendationState recommendationState, ConnectionState connectionState) {
         for (var recommendedInstance : recommendationState.getRecommendedInstances()) {
             var riName = recommendedInstance.getName().toLowerCase();
-            var set = AbbreviationDisambiguationHelper.getInstance().ambiguate(riName);
+            var set = AbbreviationDisambiguationHelper.ambiguate(riName);
             if (set.isEmpty())
                 continue;
 
@@ -47,7 +47,7 @@ public class AmbiguationConnectionInformant extends Informant {
 
     private void ambiguateModelInstances(ModelExtractionState modelState, RecommendationState recommendationState, ConnectionState connectionState) {
         for (var instance : modelState.getInstances()) {
-            var set = AbbreviationDisambiguationHelper.getInstance().ambiguate(instance.getFullName().toLowerCase());
+            var set = AbbreviationDisambiguationHelper.ambiguate(instance.getFullName().toLowerCase());
             if (set.isEmpty())
                 continue;
 

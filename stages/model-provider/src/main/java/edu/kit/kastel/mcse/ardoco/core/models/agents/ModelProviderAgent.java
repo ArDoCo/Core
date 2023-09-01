@@ -3,7 +3,9 @@ package edu.kit.kastel.mcse.ardoco.core.models.agents;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelConnector;
@@ -12,6 +14,7 @@ import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.PcmXmlModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.UmlModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.models.informants.LegacyCodeModelInformant;
+import edu.kit.kastel.mcse.ardoco.core.models.informants.ModelDisambiguationInformant;
 import edu.kit.kastel.mcse.ardoco.core.models.informants.ModelProviderInformant;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
@@ -23,8 +26,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
 public class ModelProviderAgent extends PipelineAgent {
 
     /**
-     * Instantiates a new model provider agent.
-     * The constructor takes a list of ModelConnectors that are executed and used to extract information from models.
+     * Instantiates a new model provider agent. The constructor takes a list of ModelConnectors that are executed and used to extract information from models.
      *
      * @param data            the DataRepository
      * @param modelConnectors the list of ModelConnectors that should be used
@@ -34,7 +36,9 @@ public class ModelProviderAgent extends PipelineAgent {
     }
 
     private static List<? extends Informant> createInformants(List<ModelConnector> modelConnectors, DataRepository data) {
-        return modelConnectors.stream().map(e -> new ModelProviderInformant(data, e)).toList();
+        ArrayList<Informant> list = modelConnectors.stream().map(e -> new ModelProviderInformant(data, e)).collect(Collectors.toCollection(ArrayList::new));
+        list.add(new ModelDisambiguationInformant(data));
+        return list;
     }
 
     private ModelProviderAgent(DataRepository data, LegacyCodeModelInformant codeModelInformant) {
@@ -53,8 +57,8 @@ public class ModelProviderAgent extends PipelineAgent {
     public static ModelProviderAgent get(File inputArchitectureModel, ArchitectureModelType architectureModelType, DataRepository dataRepository)
             throws IOException {
         ModelConnector connector = switch (architectureModelType) {
-        case PCM -> new PcmXmlModelConnector(inputArchitectureModel);
-        case UML -> new UmlModelConnector(inputArchitectureModel);
+            case PCM -> new PcmXmlModelConnector(inputArchitectureModel);
+            case UML -> new UmlModelConnector(inputArchitectureModel);
         };
         return new ModelProviderAgent(dataRepository, List.of(connector));
     }

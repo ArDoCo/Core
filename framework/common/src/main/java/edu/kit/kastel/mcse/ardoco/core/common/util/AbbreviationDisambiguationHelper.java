@@ -6,9 +6,8 @@ import java.util.*;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
-import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.Maps;
-import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.MutableMap;
 import org.jetbrains.annotations.NotNull;
 import org.jsoup.Jsoup;
@@ -22,7 +21,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.Disambiguation;
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 
-public class AbbreviationDisambiguationHelper extends FileBasedCache<MutableMap<String, Disambiguation>> {
+public final class AbbreviationDisambiguationHelper extends FileBasedCache<MutableMap<String, Disambiguation>> {
     /**
      * Matches abbreviations with up to 1 lowercase letter between uppercase letters. Accounts for camelCase by lookahead, e.g. UserDBAdapter is matched as "DB"
      * rather than "DBA". Matches abbreviations at any point in the word, including at the start and end.
@@ -30,12 +29,14 @@ public class AbbreviationDisambiguationHelper extends FileBasedCache<MutableMap<
     private final static Pattern abbreviationsPattern = Pattern.compile("(?:([A-Z]+[a-z]?)+[A-Z])" + "(?=([A-Z][a-z])|\\b)");
     public static final int LIMIT = 2;
     public static final double SIMILARITY_THRESHOLD = 0.9;
-    private static Logger logger = LoggerFactory.getLogger(AbbreviationDisambiguationHelper.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbbreviationDisambiguationHelper.class);
     private static final String abbreviationsCom = "https://www.abbreviations.com/";
     private static final String acronymFinderCom = "https://www.acronymfinder" + ".com/Information-Technology/";
     private static AbbreviationDisambiguationHelper instance;
+    private static LinkedHashMap<String, String> ambiguated = new LinkedHashMap<>();
+    private static final MutableMap<String, Disambiguation> local = Maps.mutable.empty();
 
-    public static synchronized @NotNull AbbreviationDisambiguationHelper getInstance() {
+    protected static synchronized @NotNull AbbreviationDisambiguationHelper getInstance() {
         if (instance == null) {
             instance = new AbbreviationDisambiguationHelper();
         }
@@ -46,19 +47,59 @@ public class AbbreviationDisambiguationHelper extends FileBasedCache<MutableMap<
         super("abbreviations", ".json", "");
     }
 
-    public Set<String> disambiguate(@NotNull String abbreviation) {
+    public static void addTransient(Disambiguation disambiguation) {
+        local.merge(disambiguation.getAbbreviation(), disambiguation, Disambiguation::addMeanings);
+        ambiguated = new LinkedHashMap<>();
+    }
+
+    public static void addPersistent(Disambiguation disambiguation) {
+        getPersistent().merge(disambiguation.getAbbreviation(), disambiguation, Disambiguation::addMeanings);
+        ambiguated = new LinkedHashMap<>();
+    }
+
+    public static Set<String> disambiguate(@NotNull String abbreviation) {
         //Specifically check. We do not want to mess up our files.
         Objects.requireNonNull(abbreviation);
         if (abbreviation.isBlank())
             throw new IllegalArgumentException();
 
-        var disambiguation = getOrRead().computeIfAbsent(abbreviation, this::crawl);
-        return Set.copyOf(disambiguation.getMeanings());
+        var fromTransientCache = getAll().getOrDefault(abbreviation, null);
+        if (fromTransientCache != null)
+            return fromTransientCache.getMeanings();
+
+        var fromPersistentCache = getPersistent().getOrDefault(abbreviation, null);
+        if (fromPersistentCache != null)
+            return fromPersistentCache.getMeanings();
+
+        var fromCrawl = crawl(abbreviation);
+        addPersistent(fromCrawl);
+
+        return fromCrawl.getMeanings();
     }
 
-    public Set<String> ambiguate(@NotNull String meaning) {
+    /**
+     * Replaces all meanings with their known abbreviation in a single string.
+     *
+     * @param text       a text containing an arbitrary amount of meanings (can be zero)
+     * @param ignoreCase whether to ignore the casing when searching for a meaning inside the text
+     * @return a single string where all meanings have been replaced with known abbreviations
+     */
+    public static String ambiguateAll(@NotNull String text, boolean ignoreCase) {
+        return ambiguated.computeIfAbsent(text, (key) -> replaceAllMeanings(key, ignoreCase));
+    }
+
+    private static String replaceAllMeanings(@NotNull String text, boolean ignoreCase) {
+        var replaced = text;
+        var disambiguations = getAll();
+        for (var disambiguation : disambiguations) {
+            replaced = disambiguation.replaceMeaningWithAbbreviation(replaced, ignoreCase);
+        }
+        return replaced;
+    }
+
+    public static Set<String> ambiguate(@NotNull String meaning) {
         var set = new HashSet<String>();
-        var crossProduct = AbbreviationDisambiguationHelper.getInstance().similarAbbreviations(meaning);
+        var crossProduct = similarAbbreviations(meaning);
         if (crossProduct.isEmpty())
             return set;
         for (var abbreviationPairs : crossProduct) {
@@ -71,8 +112,12 @@ public class AbbreviationDisambiguationHelper extends FileBasedCache<MutableMap<
         return set;
     }
 
-    public ImmutableList<Disambiguation> getAll() {
-        return Lists.immutable.ofAll(getOrRead().values());
+    private static MutableMap<String, Disambiguation> getPersistent() {
+        return getInstance().getOrRead();
+    }
+
+    public static ImmutableMap<String, Disambiguation> getAll() {
+        return Disambiguation.merge(local, getPersistent()).toImmutable();
     }
 
     public void add(@NotNull Disambiguation disambiguation) {
@@ -89,8 +134,8 @@ public class AbbreviationDisambiguationHelper extends FileBasedCache<MutableMap<
         cache(disambiguations);
     }
 
-    private List<List<Pair<String, String>>> similarAbbreviations(@NotNull String meaning) {
-        var disambiguations = getOrRead();
+    private static List<List<Pair<String, String>>> similarAbbreviations(@NotNull String meaning) {
+        var disambiguations = getAll();
         var allAbbrevs = new ArrayList<List<Pair<String, String>>>();
         for (var disambiguation : disambiguations) {
             var listOfPairs = disambiguation.getMeanings()
@@ -106,14 +151,14 @@ public class AbbreviationDisambiguationHelper extends FileBasedCache<MutableMap<
         return com.google.common.collect.Lists.cartesianProduct(allAbbrevs).stream().filter(l -> !l.isEmpty()).toList();
     }
 
-    public Disambiguation crawl(@NotNull String abbreviation) {
+    public static Disambiguation crawl(@NotNull String abbreviation) {
         logger.info("Using crawler to disambiguate {}", abbreviation);
         var meanings = crawlAcronymFinderCom(abbreviation);
         meanings.addAll(crawlAbbreviationsCom(abbreviation));
         return new Disambiguation(abbreviation, meanings);
     }
 
-    public LinkedHashSet<String> crawlAbbreviationsCom(@NotNull String abbreviation) {
+    public static LinkedHashSet<String> crawlAbbreviationsCom(@NotNull String abbreviation) {
         var meanings = new LinkedHashSet<String>();
         try {
             Document document = Jsoup.connect(abbreviationsCom + abbreviation).get();
@@ -128,12 +173,12 @@ public class AbbreviationDisambiguationHelper extends FileBasedCache<MutableMap<
         return meanings;
     }
 
-    public LinkedHashSet<String> crawlAcronymFinderCom(@NotNull String abbreviation) {
+    public static LinkedHashSet<String> crawlAcronymFinderCom(@NotNull String abbreviation) {
         var meanings = new LinkedHashSet<String>();
         try {
             Document document = Jsoup.connect(acronymFinderCom + abbreviation + ".html").get();
             var elements = document.select("td.result-list__body__meaning > a, td" + ".result-list__body__meaning");
-            meanings.addAll(elements.stream().limit(LIMIT).map(Element::text).map(this::removeAllBrackets).toList());
+            meanings.addAll(elements.stream().limit(LIMIT).map(Element::text).map(AbbreviationDisambiguationHelper::removeAllBrackets).toList());
             logger.info("Crawler found {} -> {} on {}", abbreviation, meanings, acronymFinderCom);
         } catch (IOException e) {
             logger.error(e.getCause().getMessage());
@@ -178,7 +223,7 @@ public class AbbreviationDisambiguationHelper extends FileBasedCache<MutableMap<
         }
     }
 
-    private @NotNull MutableMap<String, Disambiguation> toMutableMap(@NotNull Disambiguation[] abbreviations) {
+    private static @NotNull MutableMap<String, Disambiguation> toMutableMap(@NotNull Disambiguation[] abbreviations) {
         var all = new HashMap<String, Disambiguation>();
         for (var abbr : abbreviations) {
             all.put(abbr.getAbbreviation(), abbr);
@@ -186,7 +231,7 @@ public class AbbreviationDisambiguationHelper extends FileBasedCache<MutableMap<
         return Maps.mutable.ofMap(all);
     }
 
-    private @NotNull String removeAllBrackets(String text) {
+    private static @NotNull String removeAllBrackets(String text) {
         String prev = null;
         var current = removeBracket(text);
         while (!Objects.equals(prev, current)) {
@@ -199,7 +244,7 @@ public class AbbreviationDisambiguationHelper extends FileBasedCache<MutableMap<
     /**
      * Removes the first bracket and text inbetween, does not support nested brackets
      */
-    private @NotNull String removeBracket(String text) {
+    private static @NotNull String removeBracket(String text) {
         var innerMostOpen = text.indexOf("(");
         var innerMostClose = text.indexOf(")");
         if (innerMostOpen == -1 || innerMostClose == -1 || innerMostOpen > innerMostClose)

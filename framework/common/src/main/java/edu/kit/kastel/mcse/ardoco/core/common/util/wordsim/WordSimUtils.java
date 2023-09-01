@@ -12,6 +12,7 @@ import org.sqlite.SQLiteConfig;
 import org.sqlite.SQLiteOpenMode;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
+import edu.kit.kastel.mcse.ardoco.core.common.util.AbbreviationDisambiguationHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.equality.EqualityMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.strategy.ComparisonStrategy;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.strategy.SimilarityStrategy;
@@ -79,6 +80,17 @@ public class WordSimUtils {
     public static boolean areWordsSimilar(ComparisonContext ctx, ComparisonStrategy strategy) {
         Objects.requireNonNull(ctx);
         Objects.requireNonNull(strategy);
+
+        var firstTerm = ctx.firstTerm();
+        var secondTerm = ctx.secondTerm();
+        var ambiguatedFirstTerm = AbbreviationDisambiguationHelper.ambiguateAll(firstTerm, true);
+        var ambiguatedSecondTerm = AbbreviationDisambiguationHelper.ambiguateAll(secondTerm, true);
+
+        if (!ambiguatedFirstTerm.equals(firstTerm) || !ambiguatedSecondTerm.equals(secondTerm)) {
+            if (areWordsSimilar(new ComparisonContext(ambiguatedFirstTerm, ambiguatedSecondTerm, null, null, false))) {
+                return true;
+            }
+        }
 
         // Currently, we need the split test as it improves results by a lot. In the future, we should try to avoid its requirement
         if (!splitLengthTest(ctx)) {

@@ -1,7 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.informants;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
@@ -13,7 +12,6 @@ import org.eclipse.collections.impl.factory.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.api.Disambiguation;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramUtil;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.TextBox;
@@ -53,15 +51,13 @@ public class DiagramModelReferenceInformant extends Informant {
     private void setReferences(MutableList<Box> boxes, ModelStates modelStates) {
         var modelIds = modelStates.extractionModelIds();
 
-        var diagramDisambiguations = DataRepositoryHelper.getDiagramRecognitionState(dataRepository).getDisambiguations();
-
         for (var model : modelIds) {
             var modelState = modelStates.getModelExtractionState(model);
             var instances = modelState.getInstances();
             for (var box : boxes) {
                 box.setReferences(Set.of());
-                var references = getReferencesPerTextBox(box, diagramDisambiguations);
-                var similar = similarModelInstance(instances, box, references);
+                var references = getReferencesPerTextBox(box);
+                var similar = similarModelInstance(instances, references);
                 similar.forEach(s -> logger.info(box + " similar to " + s));
                 var isEmpty = similar.isEmpty();
                 for (var ref : references.entrySet()) {
@@ -73,7 +69,7 @@ public class DiagramModelReferenceInformant extends Informant {
         }
     }
 
-    private MutableList<Triple<TextBox, Double, ModelInstance>> similarModelInstance(ImmutableList<ModelInstance> modelInstances, Box box,
+    private MutableList<Triple<TextBox, Double, ModelInstance>> similarModelInstance(ImmutableList<ModelInstance> modelInstances,
             Map<TextBox, Set<String>> references) {
         var list = Lists.mutable.<Triple<TextBox, Double, ModelInstance>>of();
         for (var entry : references.entrySet()) {
@@ -108,11 +104,11 @@ public class DiagramModelReferenceInformant extends Informant {
         return Optional.empty();
     }
 
-    private Map<TextBox, Set<String>> getReferencesPerTextBox(Box box, List<Disambiguation> disambiguations) {
+    private Map<TextBox, Set<String>> getReferencesPerTextBox(Box box) {
         var map = new LinkedHashMap<TextBox, Set<String>>();
         var texts = box.getTexts();
         for (TextBox textBox : texts) {
-            map.put(textBox, DiagramUtil.getReferences(textBox, Disambiguation.toMap(disambiguations)));
+            map.put(textBox, DiagramUtil.getReferences(textBox));
         }
         return map;
     }

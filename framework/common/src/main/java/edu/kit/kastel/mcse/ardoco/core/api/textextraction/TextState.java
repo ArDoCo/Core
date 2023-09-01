@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
+import edu.kit.kastel.mcse.ardoco.core.common.util.AbbreviationDisambiguationHelper;
 import edu.kit.kastel.mcse.ardoco.core.configuration.IConfigurable;
 import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
@@ -143,13 +144,17 @@ public interface TextState extends IConfigurable, PipelineStepData {
     ImmutableList<NounMapping> getNounMappingsWithSimilarReference(String reference);
 
     default WordAbbreviation addWordAbbreviation(String abbreviation, Word word) {
-        logger.info("Added word abbreviation for {} with meaning {}", abbreviation, word.getText());
-        return getTextStateStrategy().addOrExtendWordAbbreviation(abbreviation, word);
+        logger.debug("Added word abbreviation for {} with meaning {}", abbreviation, word.getText());
+        var wordAbbreviation = getTextStateStrategy().addOrExtendWordAbbreviation(abbreviation, word);
+        AbbreviationDisambiguationHelper.addTransient(wordAbbreviation);
+        return wordAbbreviation;
     }
 
     default PhraseAbbreviation addPhraseAbbreviation(String abbreviation, Phrase phrase) {
-        logger.info("Added phrase abbreviation for {} with meaning {}", abbreviation, phrase.getText());
-        return getTextStateStrategy().addOrExtendPhraseAbbreviation(abbreviation, phrase);
+        logger.debug("Added phrase abbreviation for {} with meaning {}", abbreviation, phrase.getText());
+        var phraseAbbreviation = getTextStateStrategy().addOrExtendPhraseAbbreviation(abbreviation, phrase);
+        AbbreviationDisambiguationHelper.addTransient(phraseAbbreviation);
+        return phraseAbbreviation;
     }
 
     ImmutableSortedSet<WordAbbreviation> getWordAbbreviations();

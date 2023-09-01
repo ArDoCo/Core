@@ -1,6 +1,8 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp;
 
+import edu.kit.kastel.mcse.ardoco.core.common.util.AbbreviationDisambiguationHelper;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -30,6 +32,7 @@ class WordImpl implements Word {
     private final int sentenceNo;
     private Phrase phrase;
     private final String text;
+    private String generalizedText;
     private final POSTag posTag;
 
     WordImpl(CoreLabel token, int index, TextImpl parent) {
