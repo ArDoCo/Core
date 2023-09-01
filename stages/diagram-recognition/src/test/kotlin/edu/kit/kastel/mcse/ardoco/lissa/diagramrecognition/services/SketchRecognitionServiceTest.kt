@@ -49,7 +49,7 @@ class SketchRecognitionServiceTest {
 
     private fun assumeDocker() {
         val remoteDocker =
-            System.getenv("REMOTE_DOCKER_IP") != null && System.getenv("REMOTE_DOCKER_PORT") != null
+            System.getenv("REMOTE_DOCKER_IP") != null && System.getenv("REMOTE_DOCKER_PORT") != null || System.getenv("REMOTE_DOCKER_URI") != null
         var localDocker = true
         try {
             val result = Runtime.getRuntime().exec("docker ps")

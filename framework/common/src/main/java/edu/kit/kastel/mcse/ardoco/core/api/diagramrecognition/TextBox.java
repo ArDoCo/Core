@@ -24,6 +24,11 @@ public class TextBox implements SimilarityComparable<TextBox>, Serializable {
         this.text = text;
     }
 
+    public TextBox(BoundingBox boundingBox, double confidence, String text, Color dominatingColor) {
+        this(boundingBox, confidence, text);
+        this.dominatingColor = dominatingColor;
+    }
+
     @JsonCreator
     public TextBox(@JsonProperty("x") int xCoordinate, @JsonProperty("y") int yCoordinate, @JsonProperty("w") int width, @JsonProperty("h") int height,
             @JsonProperty("confidence") double confidence, @JsonProperty("text") String text) {

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.kit.kastel.mcse.ardoco.core.api.InputDiagramData;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
@@ -26,9 +27,16 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.TextStateImpl;
 import edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator.DiagramConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.DiagramInconsistencyChecker;
 import edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.DiagramRecognitionMock;
+import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognition;
 import edu.kit.kastel.mcse.ardoco.tests.eval.GoldStandardDiagramsWithTLR;
 
 public class SadSamTraceabilityLinkRecoveryEvaluationERID extends SadSamTraceabilityLinkRecoveryEvaluation<GoldStandardDiagramsWithTLR> {
+    boolean useDiagramRecognitionMock;
+
+    public SadSamTraceabilityLinkRecoveryEvaluationERID(boolean useDiagramRecognitionMock) {
+        this.useDiagramRecognitionMock = useDiagramRecognitionMock;
+    }
+
     @Override
     protected ArDoCoResult runTraceLinkEvaluation(GoldStandardDiagramsWithTLR project) {
         return super.runTraceLinkEvaluation(project);
@@ -56,7 +64,13 @@ public class SadSamTraceabilityLinkRecoveryEvaluationERID extends SadSamTraceabi
                 pipelineSteps.add(TextPreprocessingAgent.get(additionalConfigs, dataRepository));
 
                 pipelineSteps.add(ModelProviderAgent.get(inputModelArchitecture, ArchitectureModelType.PCM, dataRepository));
-                pipelineSteps.add(new DiagramRecognitionMock(project, additionalConfigs, dataRepository));
+
+                if (useDiagramRecognitionMock) {
+                    pipelineSteps.add(new DiagramRecognitionMock(project, additionalConfigs, dataRepository));
+                } else {
+                    dataRepository.addData(InputDiagramData.ID, new InputDiagramData(project.getDiagramData()));
+                    pipelineSteps.add(DiagramRecognition.get(project.getAdditionalConfigurations(), dataRepository));
+                }
 
                 var textState = new TextStateImpl();
                 var textStrategy = new DiagramBackedTextStateStrategy(textState, dataRepository);

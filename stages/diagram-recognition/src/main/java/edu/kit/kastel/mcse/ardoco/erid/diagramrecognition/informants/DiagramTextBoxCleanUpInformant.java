@@ -1,14 +1,17 @@
 package edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.informants;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+
+import org.eclipse.collections.impl.factory.Lists;
+
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.BoundingBox;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.TextBox;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
-import java.util.ArrayList;
-import java.util.Comparator;
-import org.eclipse.collections.impl.factory.Lists;
 
+@Deprecated
 public class DiagramTextBoxCleanUpInformant extends Informant {
     public DiagramTextBoxCleanUpInformant(DataRepository dataRepository) {
         super(DiagramTextBoxCleanUpInformant.class.getSimpleName(), dataRepository);
@@ -21,28 +24,16 @@ public class DiagramTextBoxCleanUpInformant extends Informant {
             var boxes = diagram.getBoxes();
             for (var box : boxes) {
                 var texts = box.getTexts();
-                /*var list2D = new ArrayList<ArrayList<TextBox>>();
-                list2D =
-                        new ArrayList<>(texts.stream().map(t1 -> new ArrayList<>(texts.stream().filter(t -> t.getBoundingBox().horizontal(t1
-                        .getBoundingBox())).toList())).toList());
-                list2D.removeIf(ArrayList::isEmpty);
-                for (var list : list2D) {
-                    list.sort(orderLeftToRight);
-                }
-                list2D.sort(orderTopToBottom);
-                for (var list : list2D) {
-                    list.stream().collect(Collectors.groupingBy());
-                }*/
                 var newTexts = new ArrayList<TextBox>();
                 var map = Lists.mutable.withAll(texts).groupBy(TextBox::getDominatingColor);
-                map.forEachKeyMutableList((c, list) -> {
+                map.forEachKeyMutableList((color, list) -> {
                     var sorted = Lists.mutable.withAll(list);
                     sorted.sort(order);
                     var combinedText = sorted.stream().map(TextBox::getText).reduce((a, b) -> a + " " + b).orElse(null);
                     var combinedBB = sorted.stream().map(TextBox::getBoundingBox).reduce(BoundingBox::combine).orElse(null);
                     var confidence = sorted.stream().map(TextBox::getConfidence).max(Double::compare).orElse(null);
                     if (combinedText != null && combinedBB != null && confidence != null) {
-                        newTexts.add(new TextBox(combinedBB, confidence, combinedText));
+                        newTexts.add(new TextBox(combinedBB, confidence, combinedText, color));
                     }
                 });
                 texts.forEach(box::removeTextBox);

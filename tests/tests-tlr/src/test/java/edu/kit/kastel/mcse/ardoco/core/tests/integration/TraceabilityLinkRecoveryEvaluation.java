@@ -2,8 +2,8 @@
 package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
 import java.io.File;
-import java.util.LinkedHashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -40,7 +40,7 @@ public abstract class TraceabilityLinkRecoveryEvaluation<T extends GoldStandardP
     // If the path separator in the gold standards are changed, this needs to update
     public static final String GOLD_STANDARD_PATH_SEPARATOR = "/";
 
-    protected static Map<GoldStandardProject, ArDoCoResult> resultMap = new HashMap<>();
+    protected static Map<GoldStandardProject, ArDoCoResult> resultMap = new LinkedHashMap<>();
 
     protected ArDoCoResult runTraceLinkEvaluation(T project) {
         ArDoCoResult result = resultMap.get(project);

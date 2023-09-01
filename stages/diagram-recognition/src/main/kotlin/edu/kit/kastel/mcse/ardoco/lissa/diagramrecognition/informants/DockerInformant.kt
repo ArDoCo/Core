@@ -1,11 +1,9 @@
 package edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.informants
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant
 import edu.kit.kastel.mcse.ardoco.docker.ContainerResponse
 import edu.kit.kastel.mcse.ardoco.docker.DockerManager
-import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.createObjectMapper
 import org.apache.hc.client5.http.classic.methods.HttpGet
 import org.apache.hc.client5.http.impl.classic.BasicHttpClientResponseHandler
 import org.apache.hc.client5.http.impl.classic.HttpClients
@@ -21,7 +19,7 @@ abstract class DockerInformant : Informant {
         // E.g., 2375
         private val REMOTE_DOCKER_PORT: Int? = System.getenv("REMOTE_DOCKER_PORT")?.toIntOrNull()
 
-        private val REMOTE_URI: String? = "https://vdl-ws.kastel.kit.edu"
+        private val REMOTE_DOCKER_URI: String? = System.getenv("REMOTE_DOCKER_URI")
 
         private val REMOTE = REMOTE_DOCKER_IP != null && REMOTE_DOCKER_PORT != null
         private val dockerManagerCache: MutableMap<String, DockerManager> = mutableMapOf()
@@ -112,7 +110,7 @@ abstract class DockerInformant : Informant {
     }
 
     protected fun getUri(): String {
-        if (REMOTE_URI != null) return "$REMOTE_URI/$endpoint/"
+        if (REMOTE_DOCKER_URI != null) return "$REMOTE_DOCKER_URI/$endpoint/"
         return "http://${hostIP()}:${container.apiPort}/${endpoint}/"
     }
 

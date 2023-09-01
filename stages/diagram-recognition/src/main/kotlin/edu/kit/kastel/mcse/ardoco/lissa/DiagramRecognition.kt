@@ -4,13 +4,11 @@ import edu.kit.kastel.mcse.ardoco.core.api.InputDiagramData
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage
-import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent
-import edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.agents.DiagramCleanUpAgent
 import edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.agents.DiagramDisambiguationAgent
 import edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.agents.DiagramReferenceAgent
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.agents.DiagramRecognitionAgent
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.model.DiagramImpl
-import java.util.SortedMap
+import java.util.*
 
 class DiagramRecognition(
     private val diagramRecognitionState: DiagramRecognitionStateImpl,
@@ -18,7 +16,6 @@ class DiagramRecognition(
 ) : AbstractExecutionStage(
     listOf(
         DiagramRecognitionAgent(diagramRecognitionState, dataRepository),
-        DiagramCleanUpAgent(dataRepository),
         DiagramDisambiguationAgent(dataRepository),
         DiagramReferenceAgent(dataRepository)
     ),

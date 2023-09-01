@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
 
 import org.eclipse.collections.api.map.ImmutableMap;
@@ -70,9 +69,9 @@ public class Disambiguation implements Comparable<Disambiguation>, Serializable 
     public String replaceMeaningWithAbbreviation(String text, boolean ignoreCase) {
         var abbreviatedText = text;
         for (String meaning : meanings) {
-            if (ignoreCase)
-                abbreviatedText = abbreviatedText.replace(meaning.toLowerCase(Locale.US), abbreviation);
-            abbreviatedText = abbreviatedText.replace(meaning, abbreviation);
+            String pattern = ignoreCase ? "(?i)" : "";
+            pattern += meaning;
+            abbreviatedText = abbreviatedText.replaceAll(pattern, abbreviation);
         }
         return abbreviatedText;
     }

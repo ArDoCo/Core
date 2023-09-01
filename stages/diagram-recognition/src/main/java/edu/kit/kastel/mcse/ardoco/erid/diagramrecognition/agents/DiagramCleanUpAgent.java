@@ -6,6 +6,7 @@ import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
 import edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.informants.DiagramTextBoxCleanUpInformant;
 
+@Deprecated
 public class DiagramCleanUpAgent extends PipelineAgent {
 
     public DiagramCleanUpAgent(DataRepository dataRepository) {

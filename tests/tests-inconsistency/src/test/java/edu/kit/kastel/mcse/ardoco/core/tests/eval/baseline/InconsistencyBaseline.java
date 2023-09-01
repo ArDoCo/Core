@@ -10,8 +10,6 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage;
  * Baseline approach for inconsistency detection
  */
 public class InconsistencyBaseline extends AbstractExecutionStage {
-    private PipelineAgent agent;
-
     public InconsistencyBaseline(DataRepository dataRepository) {
         super(List.of(new InconsistencyBaselineAgent(dataRepository)), "InconsistencyBaseline", dataRepository);
     }

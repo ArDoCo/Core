@@ -1,10 +1,9 @@
 /* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents;
 
-import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.informants.AmbiguationConnectionInformant;
-
 import java.util.List;
 
+import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.informants.AmbiguationConnectionInformant;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.informants.InstantConnectionInformant;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
@@ -20,6 +19,7 @@ public class InstanceConnectionAgent extends PipelineAgent {
      * @param dataRepository the {@link DataRepository}
      */
     public InstanceConnectionAgent(DataRepository dataRepository) {
-        super(List.of(new InstantConnectionInformant(dataRepository), new AmbiguationConnectionInformant(dataRepository)), InstanceConnectionAgent.class.getSimpleName(), dataRepository);
+        super(List.of(new InstantConnectionInformant(dataRepository), new AmbiguationConnectionInformant(dataRepository)),
+                InstanceConnectionAgent.class.getSimpleName(), dataRepository);
     }
 }
