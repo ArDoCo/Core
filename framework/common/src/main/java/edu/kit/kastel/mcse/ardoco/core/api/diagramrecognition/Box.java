@@ -39,7 +39,11 @@ public class Box extends DiagramElement implements Serializable {
     }
 
     public static String getUUID(int[] coordinates) {
-        return String.format("Box [%s]", Arrays.stream(coordinates).mapToObj((Integer::toString)).reduce((l, r) -> l + "-" + r).orElseThrow());
+        return String.format("Box [%s]", getBoundingBoxConcat(coordinates));
+    }
+
+    public static String getBoundingBoxConcat(int[] coordinates) {
+        return Arrays.stream(coordinates).mapToObj((Integer::toString)).reduce((l, r) -> l + "-" + r).orElseThrow();
     }
 
     // Jackson JSON
@@ -137,7 +141,7 @@ public class Box extends DiagramElement implements Serializable {
 
     /**
      * Remove a text box that is associated with the box.
-     * 
+     *
      * @param textBox the textbox
      */
     public void removeTextBox(TextBox textBox) {
@@ -196,6 +200,14 @@ public class Box extends DiagramElement implements Serializable {
 
     @Override
     public String toString() {
-        return getName();
+        return toString(true);
+    }
+
+    public String toString(boolean wrap) {
+        var formatted = String.format("%s %s", Arrays.stream(coordinates).mapToObj((Integer::toString)).reduce((l, r) -> l + "-" + r).orElseThrow(),
+                getReferences().stream().findFirst().orElse("REFERENCES_NOT_SET"));
+        if (wrap)
+            return String.format("Box [%s]", formatted);
+        return formatted;
     }
 }

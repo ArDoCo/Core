@@ -35,24 +35,55 @@ class RecognitionCombinatorInformant(
         for (diagram in diagramRecognitionState.getUnprocessedDiagrams()) {
             val entities = diagram.boxes.filter { it.classification != Classification.LABEL }
             val texts = diagram.textBoxes
+            removeLabelBoxes(diagram)
             combineBoxesAndText(entities, texts)
             calculateDominatingColors(diagram.location.readBytes(), entities)
             combineTextBoxesInBoxes(diagram)
         }
     }
 
-    private fun combineBoxesAndText(entities: List<Box>, texts: List<TextBox>) {
-        for (text in texts) {
-            if (text.text.length < 3) continue
+    private fun removeLabelBoxes(diagram: Diagram) {
+        diagram.boxes.filter { it.classification == Classification.LABEL }.forEach(diagram::removeBox)
+    }
 
-            val intersects =
-                entities.map { it to it.box.boundingBox().iou(text.absoluteBox().boundingBox()) }
+    private fun combineBoxesAndText(entities: List<Box>, textsUnfiltered: List<TextBox>) {
+        //Boxes without parents are tree roots
+        var boxes = entities.filter { it.parent.isEmpty }
+        var texts = textsUnfiltered.filter { it.text.length >= 2 }
 
-            val results = intersects.filter { it.second.areaIntersect / text.area() > 0.9 }
-            if (results.isEmpty()) continue
-            logger.info("Found {} intersects with {}", intersects.size, text.text)
-            results.forEach { it.first.addTextBox(text) }
+        for (box in boxes) {
+            //TODO Could also only pass the remaining texts here instead of passing all texts to each node, but will leave it like this for now, not sure of the impact
+            combineBoxesAndTextForTree(box, texts)
         }
+    }
+
+    /**
+     * Depth first search
+     */
+    private fun combineBoxesAndTextForTree(root: Box, texts: List<TextBox>): List<TextBox> {
+        val children = root.children
+
+        var remainingTexts = texts
+        for (child in children) {
+            if (child is Box) {
+                remainingTexts = combineBoxesAndTextForTree(child, remainingTexts)
+            }
+        }
+
+        val mutableRemainingTexts = remainingTexts.toMutableList()
+
+        val intersects =
+            remainingTexts.map { it to root.box.boundingBox().iou(it.absoluteBox().boundingBox()) }
+
+        val results = intersects.filter { it.second.areaIntersect / it.first.area() > 0.85 }
+
+        results.forEach {
+            logger.info("Found {} intersects with {}", intersects.size, it.first.text)
+            root.addTextBox(it.first)
+            mutableRemainingTexts.remove(it.first)
+        }
+
+        return mutableRemainingTexts
     }
 
     private fun calculateDominatingColors(imageData: ByteArray, boxes: List<Box>) {

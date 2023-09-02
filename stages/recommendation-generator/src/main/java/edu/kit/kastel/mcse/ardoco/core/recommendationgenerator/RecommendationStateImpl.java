@@ -2,8 +2,10 @@
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator;
 
 import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.factory.SortedSets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
@@ -17,13 +19,13 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
  */
 public class RecommendationStateImpl extends AbstractState implements RecommendationState {
 
-    private MutableList<RecommendedInstance> recommendedInstances;
+    private MutableSortedSet<RecommendedInstance> recommendedInstances;
 
     /**
      * Creates a new recommendation state.
      */
     public RecommendationStateImpl() {
-        recommendedInstances = Lists.mutable.empty();
+        recommendedInstances = SortedSets.mutable.empty();
     }
 
     /**
@@ -76,7 +78,7 @@ public class RecommendationStateImpl extends AbstractState implements Recommenda
             return;
         }
 
-        var risWithExactName = recommendedInstances.select(r -> r.getName().equalsIgnoreCase(ri.getName())).toImmutable();
+        var risWithExactName = recommendedInstances.select(r -> r.getName().equalsIgnoreCase(ri.getName())).toImmutable().toImmutableList();
         var risWithExactNameAndType = risWithExactName.select(r -> r.getType().equalsIgnoreCase(ri.getType()));
 
         if (risWithExactNameAndType.isEmpty()) {
@@ -119,7 +121,7 @@ public class RecommendationStateImpl extends AbstractState implements Recommenda
      */
     @Override
     public ImmutableList<RecommendedInstance> getRecommendedInstancesByTypeMapping(NounMapping mapping) {
-        return recommendedInstances.select(sinstance -> sinstance.getTypeMappings().contains(mapping)).toImmutable();
+        return recommendedInstances.select(sinstance -> sinstance.getTypeMappings().contains(mapping)).toImmutableList();
     }
 
     /**
@@ -131,7 +133,7 @@ public class RecommendationStateImpl extends AbstractState implements Recommenda
     @Override
     public ImmutableList<RecommendedInstance> getAnyRecommendedInstancesByMapping(NounMapping mapping) {
         return recommendedInstances //
-                .select(sinstance -> sinstance.getTypeMappings().contains(mapping) || sinstance.getNameMappings().contains(mapping)).toImmutable();
+                .select(sinstance -> sinstance.getTypeMappings().contains(mapping) || sinstance.getNameMappings().contains(mapping)).toImmutableList();
     }
 
     /**
@@ -142,7 +144,7 @@ public class RecommendationStateImpl extends AbstractState implements Recommenda
      */
     @Override
     public ImmutableList<RecommendedInstance> getRecommendedInstancesByName(String name) {
-        return recommendedInstances.select(ri -> ri.getName().toLowerCase().contentEquals(name.toLowerCase())).toImmutable();
+        return recommendedInstances.select(ri -> ri.getName().toLowerCase().contentEquals(name.toLowerCase())).toImmutableList();
     }
 
     /**
@@ -171,7 +173,7 @@ public class RecommendationStateImpl extends AbstractState implements Recommenda
      */
     @Override
     public ImmutableList<RecommendedInstance> getRecommendedInstancesByType(String type) {
-        return recommendedInstances.select(ri -> ri.getType().toLowerCase().contentEquals(type.toLowerCase())).toImmutable();
+        return recommendedInstances.select(ri -> ri.getType().toLowerCase().contentEquals(type.toLowerCase())).toImmutableList();
     }
 
     /**
@@ -182,6 +184,6 @@ public class RecommendationStateImpl extends AbstractState implements Recommenda
      */
     @Override
     public ImmutableList<RecommendedInstance> getRecommendedInstancesBySimilarType(String type) {
-        return recommendedInstances.select(ri -> SimilarityUtils.areWordsSimilar(ri.getType(), type)).toImmutable();
+        return recommendedInstances.select(ri -> SimilarityUtils.areWordsSimilar(ri.getType(), type)).toImmutableList();
     }
 }

@@ -145,7 +145,7 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
         }
         var avg = new LinkedHashMap<String, Double>();
         var avgWeighted = new LinkedHashMap<String, Double>();
-        var totalGoldStandardPositives = 0;
+        var totalGoldStandardPositives = 0L;
         for (var result : results) {
             totalGoldStandardPositives += result.goldStandardPositives();
         }

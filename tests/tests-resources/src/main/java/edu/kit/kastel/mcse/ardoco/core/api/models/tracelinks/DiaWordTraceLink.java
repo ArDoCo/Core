@@ -1,6 +1,5 @@
 package edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -112,11 +111,11 @@ public class DiaWordTraceLink extends DiaTexTraceLink {
 
     @Override
     public String toString() {
-        var prefix = "";
+        var relatedTypes = "";
         if (!relatedGSLinks.isEmpty()) {
-            prefix = relatedGSLinks.stream().map(g -> "[" + g.getTraceType().name() + "]").collect(Collectors.joining("-")) + "-";
+            relatedTypes = relatedGSLinks.stream().map(g -> "[" + g.getTraceType().name() + "]").collect(Collectors.joining("-")) + "-";
         }
-        return prefix + super.toString(false) + MessageFormat.format("-[{0}]-[{1}]-[{2,number,#.###}]", getWord().getText(), getWord().getPhrase().getText(),
-                getConfidence());
+        return String.format("%s-[%s]-[%s]-[%.3f]-%s", super.toString(false), getWord().getText(), getWord().getPhrase().getText(), getConfidence(),
+                relatedTypes);
     }
 }

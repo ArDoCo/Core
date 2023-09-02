@@ -100,6 +100,6 @@ public class DiaGSTraceLink extends DiaTexTraceLink {
 
     @Override
     public String toString() {
-        return "[" + getTraceType().name() + "]-" + super.toString();
+        return String.format("%s-[%s]", super.toString(), getTraceType().name());
     }
 }

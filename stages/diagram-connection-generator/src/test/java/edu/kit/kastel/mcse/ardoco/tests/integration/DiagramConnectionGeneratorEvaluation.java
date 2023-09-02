@@ -32,6 +32,11 @@ public class DiagramConnectionGeneratorEvaluation extends DiagramConnectionGener
     @Disabled
     @Test
     @Override
+    protected void evaluateAll() { super.evaluateAll(); }
+
+    @Disabled
+    @Test
+    @Override
     protected void teammatesTest() {
         runComparable(DiagramProject.TEAMMATES, false);
     }

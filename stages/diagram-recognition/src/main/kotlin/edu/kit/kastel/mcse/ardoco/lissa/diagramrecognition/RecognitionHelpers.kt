@@ -67,6 +67,12 @@ fun visualize(imageStream: InputStream, diagram: Diagram, destination: OutputStr
                 coordinates[0],
                 coordinates[1]
             )
+        } else {
+            g2d.drawString(
+                Box.getBoundingBoxConcat(box.boundingBox.toCoordinates()),
+                coordinates[0],
+                coordinates[1]
+            )
         }
     }
     g2d.dispose()

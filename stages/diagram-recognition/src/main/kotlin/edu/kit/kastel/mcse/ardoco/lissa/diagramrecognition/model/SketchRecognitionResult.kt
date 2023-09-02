@@ -11,6 +11,6 @@ data class SketchRecognitionResult(
     List<Connector>
 ) : Serializable {
     companion object {
-        private const val serialVersionUID: Long = 3
+        private const val serialVersionUID: Long = 9
     }
 }

@@ -24,7 +24,7 @@ public interface Diagram extends SimilarityComparable<Diagram>, Serializable {
 
     /**
      * Returns the raw text boxes that are attached to this diagram. This method does not return the text boxes that are attached to the boxes of this diagram.
-     * 
+     *
      * @return the raw text boxes that are attached to this diagram
      */
     List<TextBox> getTextBoxes();
