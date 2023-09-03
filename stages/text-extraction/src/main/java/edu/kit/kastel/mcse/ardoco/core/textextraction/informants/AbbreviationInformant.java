@@ -307,7 +307,7 @@ public class AbbreviationInformant extends Informant {
                 var sentence = subList.get(0).getSentence();
                 shortestPhrase = new ContextPhrase(Lists.immutable.ofAll(subList), sentence);
                 sentence.addPhrase(shortestPhrase);
-                logger.info("Added phrase {}", shortestPhrase);
+                logger.debug("Added phrase {}", shortestPhrase);
             } else {
                 shortestPhrase = optShortestPhrase.orElseThrow();
             }

@@ -67,7 +67,7 @@ public class DiagramAsModelInformant extends Informant {
                 }
             }
         }
-        logger.info("Found {} diagram links based on increasing minimal proportional threshold", basedOnIncreasingMinimalProportionalThreshold.size());
+        logger.debug("Found {} diagram links based on increasing minimal proportional threshold", basedOnIncreasingMinimalProportionalThreshold.size());
         basedOnIncreasingMinimalProportionalThreshold.forEach(diagramConnectionState::addToLinksBetweenDeAndRi);
     }
 
@@ -97,8 +97,8 @@ public class DiagramAsModelInformant extends Informant {
                 }
             }
         }
-        logger.info("Found {} diagram links based on overall similarity", basedOnOverallSimilarity.size());
-        logger.info("Found {} diagram links based on surface words", basedOnSurfaceWords.size());
+        logger.debug("Found {} diagram links based on overall similarity", basedOnOverallSimilarity.size());
+        logger.debug("Found {} diagram links based on surface words", basedOnSurfaceWords.size());
         basedOnOverallSimilarity.forEach(diagramConnectionState::addToLinksBetweenDeAndRi);
         basedOnSurfaceWords.forEach(diagramConnectionState::addToLinksBetweenDeAndRi);
     }

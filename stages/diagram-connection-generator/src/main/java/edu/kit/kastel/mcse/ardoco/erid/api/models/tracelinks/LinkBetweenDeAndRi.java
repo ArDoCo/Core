@@ -1,6 +1,5 @@
 package edu.kit.kastel.mcse.ardoco.erid.api.models.tracelinks;
 
-import java.text.MessageFormat;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
@@ -17,8 +16,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedIn
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
-public class LinkBetweenDeAndRi
-        extends EndpointTuple implements Claimant, Comparable<LinkBetweenDeAndRi> {
+public class LinkBetweenDeAndRi extends EndpointTuple implements Claimant, Comparable<LinkBetweenDeAndRi> {
     public static final Function<Map<Word, Double>, Double> MAXIMUM_CONFIDENCE = (Map<Word, Double> confidenceMap) -> confidenceMap.values()
             .stream()
             .reduce(0.0, Math::max);
@@ -91,8 +89,8 @@ public class LinkBetweenDeAndRi
 
     @Override
     public String toString() {
-        return MessageFormat.format("[{0}]-[{1}]-[{2}]-[{3}]", recommendedInstance.getName(), diagramElement,
-                confidenceMap.values().stream().max(Double::compareTo), claimant.getClass().getSimpleName());
+        return String.format("[%s]-[%s]-[%s]-[%s]", recommendedInstance.getName(), diagramElement, confidenceMap.values().stream().max(Double::compareTo),
+                claimant.getClass().getSimpleName());
     }
 
     @Override

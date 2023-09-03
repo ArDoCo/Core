@@ -58,7 +58,7 @@ public class DiagramModelReferenceInformant extends Informant {
                 box.setReferences(Set.of());
                 var references = getReferencesPerTextBox(box);
                 var similar = similarModelInstance(instances, references);
-                similar.forEach(s -> logger.info(box + " similar to " + s));
+                similar.forEach(s -> logger.debug(box + " similar to " + s));
                 var isEmpty = similar.isEmpty();
                 for (var ref : references.entrySet()) {
                     if (isEmpty || similar.stream().anyMatch(t -> t.first().equals(ref.getKey()))) {

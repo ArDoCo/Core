@@ -78,7 +78,7 @@ public interface DiagramConnectionState extends IConfigurable {
             traceLinks.addAll(linkBetweenDeAndRi.toTraceLinks().toList());
         }
         var aboveThreshold = traceLinks.stream().filter(diaWordTraceLink -> diaWordTraceLink.getConfidence() >= confidenceThreshold).toList();
-        logger.info("Removed {} Word Trace Links due to low confidence", traceLinks.size() - aboveThreshold.size());
+        logger.debug("Removed {} Word Trace Links due to low confidence", traceLinks.size() - aboveThreshold.size());
         return Sets.immutable.ofAll(aboveThreshold);
     }
 
@@ -88,13 +88,6 @@ public interface DiagramConnectionState extends IConfigurable {
 
     default @NotNull ImmutableSet<DiaWordTraceLink> getMostSpecificWordTraceLinks() {
         var allLinks = Sets.mutable.<DiaWordTraceLink>empty();
-        /*var sameDiagram = getWordTraceLinks().stream().collect(Collectors.groupingBy(tl -> tl.getDiagramElement().getDiagram()));
-        var values = sameDiagram.values();
-        for (var diagram : values) {
-            var sameWord = diagram.stream().collect(Collectors.groupingBy(tl -> tl.getWord().getPosition()));
-            sameWord.remove(-1);
-            allLinks.addAll(sameWord.values().stream().flatMap(tls -> getHighestConfidenceTraceLinks(tls).stream()).toList());
-        }*/
         var sameWord = getWordTraceLinks().stream().collect(Collectors.groupingBy(tl -> tl.getWord().getPosition()));
         sameWord.remove(-1);
         allLinks.addAll(sameWord.values().stream().flatMap(tls -> getHighestConfidenceTraceLinks(tls).stream()).toList());
