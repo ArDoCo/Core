@@ -19,9 +19,9 @@ import org.jetbrains.annotations.NotNull;
  * @param unicodeCharacter the corresponding unicode character
  */
 public record UnicodeCharacter(int codePoint, @NotNull String unicodeCharacter) implements Serializable {
-    public static final BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> EQUAL = UnicodeCharacter::equals;
-    public static final BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> EQUAL_OR_HOMOGLYPH = (a, b) -> EQUAL.apply(a,
-            b) || ConfusablesHelper.areHomoglyphs(a, b);
+    public static final BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> EQUAL = (BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> & Serializable) UnicodeCharacter::equals;
+    public static final BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> EQUAL_OR_HOMOGLYPH = (BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> & Serializable) (a, b) -> EQUAL.apply(
+            a, b) || ConfusablesHelper.areHomoglyphs(a, b);
 
     public static @NotNull ImmutableList<UnicodeCharacter> from(@NotNull String input) {
         return Lists.immutable.fromStream(Arrays.stream(input.codePoints().toArray()).mapToObj(UnicodeCharacter::new));

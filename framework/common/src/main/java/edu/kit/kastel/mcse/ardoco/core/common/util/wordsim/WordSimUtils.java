@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
+import org.jetbrains.annotations.NotNull;
 import org.sqlite.SQLiteConfig;
 import org.sqlite.SQLiteOpenMode;
 
@@ -70,6 +71,14 @@ public class WordSimUtils {
      */
     public static void setStrategy(SimilarityStrategy strategy) {
         WordSimUtils.similarityStrategy = strategy;
+    }
+
+    public static void setCharacterMatchFunction(@NotNull BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> characterMatch) {
+        WordSimUtils.characterMatch = characterMatch;
+    }
+
+    public static @NotNull BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> getCharacterMatchFunction() {
+        return WordSimUtils.characterMatch;
     }
 
     /**
@@ -207,8 +216,8 @@ public class WordSimUtils {
             measures.add(new EqualityMeasure());
 
         return strategy.getSimilarity(
-                new ComparisonContext(ignoreCase ? firstWord.toLowerCase() : firstWord, ignoreCase ? secondWord.toLowerCase() : secondWord, null, null, false, characterMatch),
-                measures);
+                new ComparisonContext(ignoreCase ? firstWord.toLowerCase() : firstWord, ignoreCase ? secondWord.toLowerCase() : secondWord, null, null, false,
+                        characterMatch), measures);
     }
 
     /**

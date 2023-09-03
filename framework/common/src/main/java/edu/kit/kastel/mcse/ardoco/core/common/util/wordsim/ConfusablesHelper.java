@@ -8,9 +8,12 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.MissingResourceException;
+import java.util.stream.Stream;
 
 import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.impl.factory.Lists;
+import org.eclipse.collections.impl.factory.Maps;
 import org.eclipse.collections.impl.list.mutable.FastList;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,7 +22,7 @@ public class ConfusablesHelper {
         throw new IllegalStateException("Cannot be instantiated");
     }
 
-    private static final MutableList<FastList<UnicodeCharacter>> homoglyphs = Lists.mutable.empty();
+    private static final MutableMap<UnicodeCharacter, FastList<UnicodeCharacter>> homoglyphs = Maps.mutable.empty();
 
     private static final String confusablesSummary = "/wordsim/confusablesSummary.txt";
 
@@ -53,7 +56,10 @@ public class ConfusablesHelper {
                 while ((line = br.readLine()) != null) {
                     var extracted = extractHomoglyphsFromLine(line);
                     if (!extracted.isEmpty()) {
-                        homoglyphs.add(extracted);
+                        for (var unicodeCharacter : extracted) {
+                            homoglyphs.merge(unicodeCharacter, extracted,
+                                    (oldL, newL) -> FastList.newList(Stream.concat(oldL.stream(), newL.stream()).toList()));
+                        }
                     }
                 }
             } catch (IOException ex) {
@@ -65,7 +71,7 @@ public class ConfusablesHelper {
     }
 
     public static List<UnicodeCharacter> getHomoglyphs(UnicodeCharacter unicodeCharacter) {
-        return homoglyphs.stream().filter(i -> i.contains(unicodeCharacter)).flatMap(FastList::stream).toList();
+        return homoglyphs.getOrDefault(unicodeCharacter, FastList.newList());
     }
 
     public static boolean areHomoglyphs(UnicodeCharacter a, UnicodeCharacter b) {
