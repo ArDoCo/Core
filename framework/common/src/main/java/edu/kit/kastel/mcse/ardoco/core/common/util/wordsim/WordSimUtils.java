@@ -4,6 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -29,6 +30,7 @@ public class WordSimUtils {
     private static MutableList<WordSimMeasure> measures = Lists.mutable.withAll(WordSimLoader.loadUsingProperties());
     private static ComparisonStrategy strategy = ComparisonStrategy.AT_LEAST_ONE;
     private static SimilarityStrategy similarityStrategy = SimilarityStrategy.AVERAGE;
+    private static BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> characterMatch = UnicodeCharacter.EQUAL;
 
     private WordSimUtils() {
     }
@@ -87,7 +89,7 @@ public class WordSimUtils {
         var ambiguatedSecondTerm = AbbreviationDisambiguationHelper.ambiguateAll(secondTerm, true);
 
         if (!ambiguatedFirstTerm.equals(firstTerm) || !ambiguatedSecondTerm.equals(secondTerm)) {
-            if (areWordsSimilar(new ComparisonContext(ambiguatedFirstTerm, ambiguatedSecondTerm, null, null, false))) {
+            if (areWordsSimilar(new ComparisonContext(ambiguatedFirstTerm, ambiguatedSecondTerm, null, null, false, ctx.characterMatch()))) {
                 return true;
             }
         }
@@ -175,7 +177,7 @@ public class WordSimUtils {
      * @return Returns {@code true} if the default strategy considers the words similar enough.
      */
     public static boolean areWordsSimilar(String firstWord, Word secondWord) {
-        return areWordsSimilar(new ComparisonContext(firstWord, secondWord.getText(), null, secondWord, false), strategy);
+        return areWordsSimilar(new ComparisonContext(firstWord, secondWord.getText(), null, secondWord, false, characterMatch), strategy);
     }
 
     /**
@@ -187,7 +189,7 @@ public class WordSimUtils {
      * @return Returns {@code true} if the given strategy considers the words similar enough.
      */
     public static boolean areWordsSimilar(String firstWord, Word secondWord, ComparisonStrategy strategy) {
-        return areWordsSimilar(new ComparisonContext(firstWord, secondWord.getText(), null, secondWord, false), strategy);
+        return areWordsSimilar(new ComparisonContext(firstWord, secondWord.getText(), null, secondWord, false, characterMatch), strategy);
     }
 
     /**
@@ -205,7 +207,7 @@ public class WordSimUtils {
             measures.add(new EqualityMeasure());
 
         return strategy.getSimilarity(
-                new ComparisonContext(ignoreCase ? firstWord.toLowerCase() : firstWord, ignoreCase ? secondWord.toLowerCase() : secondWord, null, null, false),
+                new ComparisonContext(ignoreCase ? firstWord.toLowerCase() : firstWord, ignoreCase ? secondWord.toLowerCase() : secondWord, null, null, false, characterMatch),
                 measures);
     }
 

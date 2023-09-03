@@ -3,7 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.tests.eval;
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Map;
+import java.util.MissingResourceException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -53,7 +53,7 @@ public interface GoldStandardProject extends Serializable {
         var logger = LoggerFactory.getLogger(cls);
         try (var resource = cls.getResourceAsStream(resourceName)) {
             if (resource == null)
-                throw new IllegalArgumentException("No such resource at path " + resourceName);
+                throw new MissingResourceException("No such resource at path " + resourceName, File.class.getSimpleName(), resourceName);
             String md5 = DigestUtils.md5Hex(resource);
             if (!Objects.equals(Preferences.userNodeForPackage(cls).get(resourceName, null), md5)) {
                 Preferences.userNodeForPackage(cls).put(resourceName, md5);

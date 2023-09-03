@@ -153,9 +153,7 @@ public final class SimilarityUtils {
      * @return true, if the words are similar; false if not.
      */
     public static boolean areWordsSimilar(Word word1, Word word2) {
-        var word1Text = word1.getText();
-        var word2Text = word2.getText();
-        return areWordsSimilar(word1Text, word2Text);
+        return WordSimUtils.areWordsSimilar(word1, word2);
     }
 
     /**

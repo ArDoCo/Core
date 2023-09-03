@@ -2,34 +2,36 @@
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim;
 
 import java.util.Objects;
+import java.util.function.BiFunction;
+
+import org.jetbrains.annotations.NotNull;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 
 /**
  * A ComparisonContext contains all information that can be used for comparing similarity between objects that occur within ArDoCo. The fields
  * {@link #firstString} and {@link #secondString} are always not null. The field {@link #lemmatize} decides whether the lemmatized version of both words should
- * be used for comparison.
+ * be used for comparison. The field {@link #characterMatch} provides a function to determine whether two {@link UnicodeCharacter UnicodeCharacters} are
+ * considered to be a match by the {@link WordSimMeasure WordSimMeasures}.
  */
-public record ComparisonContext(String firstString, String secondString, Word firstWord, Word secondWord, boolean lemmatize) {
+public record ComparisonContext(@NotNull String firstString, @NotNull String secondString, Word firstWord, Word secondWord, boolean lemmatize,
+                                @NotNull BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> characterMatch) {
 
-    public ComparisonContext(String firstString, String secondString) {
-        this(firstString, secondString, null, null, false);
+    public ComparisonContext(@NotNull String firstString, @NotNull String secondString,
+            @NotNull BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> characterMatch) {
+        this(firstString, secondString, null, null, false, characterMatch);
     }
 
-    public ComparisonContext(String firstString, String secondString, boolean lemmatize) {
-        this(firstString, secondString, null, null, lemmatize);
+    public ComparisonContext(@NotNull String firstString, @NotNull String secondString) {
+        this(firstString, secondString, null, null, false, UnicodeCharacter.EQUAL);
     }
 
-    public ComparisonContext(Word firstWord, Word secondWord, boolean lemmatize) {
-        this(firstWord.getText(), secondWord.getText(), firstWord, secondWord, lemmatize);
+    public ComparisonContext(@NotNull String firstString, @NotNull String secondString, boolean lemmatize) {
+        this(firstString, secondString, null, null, lemmatize, UnicodeCharacter.EQUAL);
     }
 
-    public ComparisonContext(String firstString, String secondString, Word firstWord, Word secondWord, boolean lemmatize) {
-        this.firstString = Objects.requireNonNull(firstString);
-        this.secondString = Objects.requireNonNull(secondString);
-        this.firstWord = firstWord;
-        this.secondWord = secondWord;
-        this.lemmatize = lemmatize;
+    public ComparisonContext(@NotNull Word firstWord, @NotNull Word secondWord, boolean lemmatize) {
+        this(firstWord.getText(), secondWord.getText(), firstWord, secondWord, lemmatize, UnicodeCharacter.EQUAL);
     }
 
     /**

@@ -45,7 +45,7 @@ public class JaroWinklerMeasure implements WordSimMeasure {
 
     @Override
     public double getSimilarity(ComparisonContext ctx) {
-        return this.jaroWinklerSimilarity.apply(ctx.firstTerm(), ctx.secondTerm());
+        return UnicodeJaroWinklerSimilarity.apply(ctx.firstTerm(), ctx.secondTerm(), ctx.characterMatch());
     }
 
 }

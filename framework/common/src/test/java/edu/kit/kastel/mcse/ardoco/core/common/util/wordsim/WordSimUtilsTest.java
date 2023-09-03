@@ -8,9 +8,9 @@ class WordSimUtilsTest {
 
     @Test
     void getSimilarity() {
-        assertEquals(WordSimUtils.getSimilarity("", ""), 1);
-        assertEquals(WordSimUtils.getSimilarity("lorem", "lorem"), 1);
-        assertEquals(WordSimUtils.getSimilarity("lorem ipsum", "lorem ipsum"), 1);
-        assertEquals(WordSimUtils.getSimilarity("lOrEm IpSuM", "lorem ipsum", true), 1);
+        assertEquals(1, WordSimUtils.getSimilarity("", ""));
+        assertEquals(1, WordSimUtils.getSimilarity("lorem", "lorem"));
+        assertEquals(1, WordSimUtils.getSimilarity("lorem ipsum", "lorem ipsum"));
+        assertEquals(1, WordSimUtils.getSimilarity("lOrEm IpSuM", "lorem ipsum", true));
     }
 }
