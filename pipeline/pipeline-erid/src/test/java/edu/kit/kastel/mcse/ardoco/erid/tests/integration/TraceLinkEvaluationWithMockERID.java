@@ -16,28 +16,25 @@ import edu.kit.kastel.mcse.ardoco.core.tests.integration.SadSamTraceabilityLinkR
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.TraceLinkEvaluationIT;
 import edu.kit.kastel.mcse.ardoco.tests.eval.GoldStandardDiagramsWithTLR;
 
-public class TraceLinkEvaluationERID extends TraceLinkEvaluationIT<GoldStandardDiagramsWithTLR> {
-    protected static String OUTPUT = TraceLinkEvaluationIT.OUTPUT;
-
+public class TraceLinkEvaluationWithMockERID extends TraceLinkEvaluationIT<GoldStandardDiagramsWithTLR> {
     @DisplayName("Evaluate SAD-SAM")
     @ParameterizedTest(name = "{0}")
     @MethodSource("edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject#getNonHistoricalProjects")
     @Order(20)
     @Override
     protected void evaluateSadSamTlrIT(GoldStandardDiagramsWithTLR project) {
-        var evaluation = new SadSamTraceabilityLinkRecoveryEvaluationERID(false);
+        var evaluation = new SadSamTraceabilityLinkRecoveryEvaluationERID(true);
         var results = evaluation.runTraceLinkEvaluation(project);
         Assertions.assertNotNull(results);
     }
 
-    @EnabledIfEnvironmentVariable(named = "testHistoric", matches = ".*")
     @DisplayName("Evaluate TLR (Historical)")
     @ParameterizedTest(name = "{0}")
     @MethodSource("edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject#getHistoricalProjects")
     @Order(21)
     @Override
     protected void evaluateSadSamTlrHistoricalIT(GoldStandardDiagramsWithTLR project) {
-        var evaluation = new SadSamTraceabilityLinkRecoveryEvaluationERID(false);
+        var evaluation = new SadSamTraceabilityLinkRecoveryEvaluationERID(true);
         var results = evaluation.runTraceLinkEvaluation(project);
         Assertions.assertNotNull(results);
     }
