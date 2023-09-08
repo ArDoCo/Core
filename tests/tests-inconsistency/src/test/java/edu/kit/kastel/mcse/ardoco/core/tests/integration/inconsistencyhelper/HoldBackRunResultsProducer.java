@@ -90,6 +90,7 @@ public class HoldBackRunResultsProducer implements Serializable {
                 }
                 DataRepositoryHelper.putInputText(dataRepository, text);
                 pipelineSteps.add(TextPreprocessingAgent.get(additionalConfigs, dataRepository));
+                pipelineSteps.add(TextExtraction.get(additionalConfigs, dataRepository));
 
                 return pipelineSteps;
             }
@@ -105,7 +106,6 @@ public class HoldBackRunResultsProducer implements Serializable {
                 var pipelineSteps = new ArrayList<AbstractPipelineStep>();
 
                 pipelineSteps.add(new ModelProviderInformant(dataRepository, holdElementsBackModelConnector));
-                pipelineSteps.add(TextExtraction.get(additionalConfigs, dataRepository));
                 pipelineSteps.add(RecommendationGenerator.get(additionalConfigs, dataRepository));
                 pipelineSteps.add(ConnectionGenerator.get(additionalConfigs, dataRepository));
 
