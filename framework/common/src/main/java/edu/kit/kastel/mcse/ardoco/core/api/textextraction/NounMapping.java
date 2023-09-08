@@ -66,7 +66,7 @@ public interface NounMapping extends Serializable {
      */
     ImmutableList<Integer> getMappingSentenceNo();
 
-    ImmutableList<Phrase> getPhrases();
+    ImmutableSortedSet<Phrase> getPhrases();
 
     /**
      * Gets the probability for name.

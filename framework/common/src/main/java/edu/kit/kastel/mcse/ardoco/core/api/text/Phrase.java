@@ -6,7 +6,7 @@ import java.io.Serializable;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.map.sorted.ImmutableSortedMap;
 
-public interface Phrase extends Serializable {
+public interface Phrase extends Serializable, Comparable<Phrase> {
     int getSentenceNo();
 
     String getText();

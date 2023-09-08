@@ -9,12 +9,13 @@ import org.eclipse.collections.api.map.sorted.ImmutableSortedMap;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.PhraseType;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
+import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 
 public interface PhraseMapping extends Serializable {
 
     ImmutableList<NounMapping> getNounMappings(TextState textState);
 
-    ImmutableList<Phrase> getPhrases();
+    ImmutableSortedSet<Phrase> getPhrases();
 
     PhraseType getPhraseType();
 

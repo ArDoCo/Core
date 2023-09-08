@@ -1,22 +1,19 @@
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import org.eclipse.collections.api.factory.Maps;
-import org.eclipse.collections.api.factory.SortedMaps;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.map.ImmutableMap;
-import org.eclipse.collections.api.map.MutableMap;
-import org.eclipse.collections.api.map.sorted.ImmutableSortedMap;
-import org.eclipse.collections.api.map.sorted.MutableSortedMap;
-import org.eclipse.collections.impl.factory.Lists;
-
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.PhraseType;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
+import java.util.Comparator;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import org.eclipse.collections.api.factory.SortedMaps;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.map.sorted.ImmutableSortedMap;
+import org.eclipse.collections.api.map.sorted.MutableSortedMap;
+import org.eclipse.collections.impl.factory.Lists;
+import org.jetbrains.annotations.NotNull;
 
 public class ContextPhrase implements Phrase {
     private final MutableList<Word> words;
@@ -94,5 +91,10 @@ public class ContextPhrase implements Phrase {
     @Override
     public String toString() {
         return "Phrase{" + "text='" + getText() + '\'' + '}';
+    }
+
+    @Override
+    public int compareTo(@NotNull Phrase o) {
+        return Comparator.comparing(Phrase::getSentenceNo).thenComparing(Phrase::getText).thenComparing(Phrase::getPhraseType).thenComparingInt(p -> p.getContainedWords().get(0).getPosition()).compare(this, o);
     }
 }

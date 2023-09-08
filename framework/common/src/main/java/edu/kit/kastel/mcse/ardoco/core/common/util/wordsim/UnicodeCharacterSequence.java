@@ -3,7 +3,6 @@ package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.stream.IntStream;
-
 import org.eclipse.collections.api.list.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,7 +21,7 @@ public record UnicodeCharacterSequence(ImmutableList<UnicodeCharacter> character
     }
 
     public IntStream codePoints() {
-        return characters.stream().mapToInt(UnicodeCharacter::codePoint);
+        return characters.stream().mapToInt(UnicodeCharacter::getCodePoint);
     }
 
     public int length() {

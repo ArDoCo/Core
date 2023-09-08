@@ -1,17 +1,6 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
-
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.factory.SortedMaps;
-import org.eclipse.collections.api.factory.SortedSets;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.map.sorted.ImmutableSortedMap;
-import org.eclipse.collections.api.map.sorted.MutableSortedMap;
-
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.PhraseType;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
@@ -21,6 +10,17 @@ import edu.kit.kastel.mcse.ardoco.core.api.textextraction.PhraseMappingChangeLis
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.architecture.NoHashCodeEquals;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.factory.SortedMaps;
+import org.eclipse.collections.api.factory.SortedSets;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.map.sorted.ImmutableSortedMap;
+import org.eclipse.collections.api.map.sorted.MutableSortedMap;
+import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
+import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 
 @Deterministic
 @NoHashCodeEquals
@@ -28,12 +28,12 @@ public final class PhraseMappingImpl implements PhraseMapping {
     /**
      * Phrases encapsulated in the mapping.
      */
-    private final MutableList<Phrase> phrases;
+    private final MutableSortedSet<Phrase> phrases;
 
     private final Set<PhraseMappingChangeListener> changeListeners = new LinkedHashSet<>();
 
-    public PhraseMappingImpl(ImmutableList<Phrase> phrases) {
-        this.phrases = Lists.mutable.withAll(phrases);
+    public PhraseMappingImpl(ImmutableSortedSet<Phrase> phrases) {
+        this.phrases = SortedSets.mutable.withAll(phrases);
     }
 
     @Override
@@ -43,8 +43,8 @@ public final class PhraseMappingImpl implements PhraseMapping {
     }
 
     @Override
-    public ImmutableList<Phrase> getPhrases() {
-        return Lists.immutable.withAll(phrases);
+    public ImmutableSortedSet<Phrase> getPhrases() {
+        return phrases.toImmutable();
     }
 
     @Override

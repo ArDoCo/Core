@@ -5,26 +5,40 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
-
 import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.impl.factory.Lists;
+import org.eclipse.collections.impl.factory.Maps;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Represents a Unicode character corresponding to a particular Unicode code point. Refer to the <a href="http://www.unicode.org/glossary/">Unicode Glossary</a>
- * and the Java {@link Character} documentation for an explanation of code points. Java {@link Character} instances and the corresponding primitive {@code char}
- * can not represent all unicode characters in a single instance due to historic reasons.
- *
- * @param codePoint        the code point
- * @param unicodeCharacter the corresponding unicode character
+ * Represents a Unicode character corresponding to a particular Unicode code point. Refer to the
+ * <a href="http://www.unicode.org/glossary/">Unicode Glossary</a>
+ * and the Java {@link Character} documentation for an explanation of code points. Java {@link Character} instances and the corresponding primitive
+ * {@code char} can not represent all unicode characters in a single instance due to historic reasons.
  */
-public record UnicodeCharacter(int codePoint, @NotNull String unicodeCharacter) implements Serializable {
-    public static final BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> EQUAL = (BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> & Serializable) UnicodeCharacter::equals;
-    public static final BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> EQUAL_OR_HOMOGLYPH = (BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> & Serializable) (a, b) -> EQUAL.apply(
-            a, b) || ConfusablesHelper.areHomoglyphs(a, b);
+public final class UnicodeCharacter implements Serializable {
+    private static final MutableMap<Integer, UnicodeCharacter> integerToUnicode = Maps.mutable.empty();
+
+    public static final BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> EQUAL =
+            (BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> & Serializable) UnicodeCharacter::equals;
+    public static final BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> EQUAL_OR_HOMOGLYPH = (BiFunction<UnicodeCharacter, UnicodeCharacter
+            , Boolean> & Serializable) (a, b) -> a.equals(b) || ConfusablesHelper.areHomoglyphs(a, b);
+
+    private final int codePoint;
+
+    public int getCodePoint() {
+        return codePoint;
+    }
+
+    private final String representation;
+
+    public String getRepresentation() {
+        return representation;
+    }
 
     public static @NotNull ImmutableList<UnicodeCharacter> from(@NotNull String input) {
-        return Lists.immutable.fromStream(Arrays.stream(input.codePoints().toArray()).mapToObj(UnicodeCharacter::new));
+        return Lists.immutable.fromStream(Arrays.stream(input.codePoints().toArray()).mapToObj(UnicodeCharacter::valueOf));
     }
 
     public static @NotNull String toString(@NotNull List<UnicodeCharacter> unicodeCharacters) {
@@ -40,22 +54,29 @@ public record UnicodeCharacter(int codePoint, @NotNull String unicodeCharacter) 
     }
 
     public static @NotNull UnicodeCharacter valueOf(int codePoint) {
-        return new UnicodeCharacter(codePoint);
+        return integerToUnicode.computeIfAbsent(codePoint, UnicodeCharacter::new);
     }
 
-    public static @NotNull UnicodeCharacter valueOf(String unicodeCharacter) {
-        return new UnicodeCharacter(unicodeCharacter);
+    public static @NotNull UnicodeCharacter valueOf(String representation) {
+        if (representation.codePointCount(0, representation.length()) != 1) {
+            throw new IllegalArgumentException(String.format("%s is not a valid unicode character", representation));
+        }
+        var codePoint = representation.codePointAt(0);
+        return integerToUnicode.computeIfAbsent(codePoint, UnicodeCharacter::new);
     }
 
     private UnicodeCharacter(int codePoint) {
         this(codePoint, toUnicodeCharacter(codePoint));
     }
 
-    private UnicodeCharacter(@NotNull String unicodeCharacter) {
-        this(unicodeCharacter.codePointAt(0), unicodeCharacter);
-        if (unicodeCharacter.codePointCount(0, unicodeCharacter.length()) != 1) {
-            throw new IllegalArgumentException(String.format("%s is not a valid unicode character", unicodeCharacter));
-        }
+    private UnicodeCharacter(@NotNull String representation) {
+        this(representation.codePointAt(0), representation);
+    }
+
+    private UnicodeCharacter(int codePoint, @NotNull String representation) {
+        this.codePoint = codePoint;
+        this.representation = representation;
+        integerToUnicode.put(codePoint, this);
     }
 
     @Override
