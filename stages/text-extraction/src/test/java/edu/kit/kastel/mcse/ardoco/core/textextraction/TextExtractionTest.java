@@ -15,14 +15,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
 import edu.kit.kastel.mcse.ardoco.core.api.Disambiguation;
-import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.PhraseAbbreviation;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.WordAbbreviation;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.AnonymousRunner;
-import edu.kit.kastel.mcse.ardoco.core.models.agents.ModelProviderAgent;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
@@ -59,8 +57,6 @@ public class TextExtractionTest extends StageTest<TextExtraction, TextExtraction
                 }
                 DataRepositoryHelper.putInputText(dataRepository, text);
                 pipelineSteps.add(TextPreprocessingAgent.get(project.getAdditionalConfigurations(), dataRepository));
-
-                pipelineSteps.add(ModelProviderAgent.get(project.getModelFile(), ArchitectureModelType.PCM, dataRepository));
 
                 return pipelineSteps;
             }
