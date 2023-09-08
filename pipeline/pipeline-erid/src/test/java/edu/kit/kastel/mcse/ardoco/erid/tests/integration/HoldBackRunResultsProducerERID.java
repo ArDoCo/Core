@@ -29,6 +29,7 @@ public class HoldBackRunResultsProducerERID extends HoldBackRunResultsProducer {
     protected void addMiddleSteps(GoldStandardProject goldStandardProject, HoldElementsBackModelConnector holdElementsBackModelConnector, ArDoCo arDoCo,
             DataRepository dataRepository, SortedMap<String, String> additionalConfigs) {
         var diagramProject = DiagramProject.getFromName(goldStandardProject.getProjectName()).orElseThrow();
+        //arDoCo.addPipelineStep(TextExtraction.get(additionalConfigs, dataRepository));
         arDoCo.addPipelineStep(new ModelProviderInformant(dataRepository, holdElementsBackModelConnector));
         if (useDiagramRecognitionMock) {
             arDoCo.addPipelineStep(new DiagramRecognitionMock(diagramProject, additionalConfigs, dataRepository));
@@ -36,7 +37,7 @@ public class HoldBackRunResultsProducerERID extends HoldBackRunResultsProducer {
             dataRepository.addData(InputDiagramData.ID, new InputDiagramData(diagramProject.getDiagramData()));
             arDoCo.addPipelineStep(DiagramRecognition.get(diagramProject.getAdditionalConfigurations(), dataRepository));
         }
-        arDoCo.addPipelineStep(TextExtraction.get(additionalConfigs, dataRepository));
+        //arDoCo.addPipelineStep(TextExtraction.get(additionalConfigs, dataRepository));
         arDoCo.addPipelineStep(RecommendationGenerator.get(additionalConfigs, dataRepository));
         arDoCo.addPipelineStep(new DiagramConnectionGenerator(additionalConfigs, dataRepository));
         arDoCo.addPipelineStep(new DiagramInconsistencyChecker(additionalConfigs, dataRepository));

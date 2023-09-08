@@ -4,6 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.tests.integration.inconsistencyhelper;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedMap;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Assertions;
 import edu.kit.kastel.mcse.ardoco.core.api.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
@@ -88,7 +90,7 @@ public class HoldBackRunResultsProducer {
         var dataRepository = arDoCo.getDataRepository();
         var additionalConfigs = goldStandardProject.getAdditionalConfigurations();
 
-        addPreSteps(inputText, goldStandardProject, arDoCo, dataRepository, additionalConfigs);
+        addPreSteps(inputText, arDoCo, dataRepository, additionalConfigs);
         addMiddleSteps(goldStandardProject, holdElementsBackModelConnector, arDoCo, dataRepository, additionalConfigs);
 
         if (useInconsistencyBaseline) {
@@ -107,7 +109,9 @@ public class HoldBackRunResultsProducer {
         var dataRepository = arDoCo.getDataRepository();
         var additionalConfigs = goldStandardProject.getAdditionalConfigurations();
 
-        addPreSteps(precomputedResults, dataRepository);
+        var originalPrecomputationResults = new PrecomputationResults(precomputedResults.getPreprocessingData(), precomputedResults.getTextState());
+        var precomputationResults = DataRepositoryHelper.deepCopy(originalPrecomputationResults);
+        addPreSteps(precomputationResults, dataRepository);
         addMiddleSteps(goldStandardProject, holdElementsBackModelConnector, arDoCo, dataRepository, additionalConfigs);
 
         if (useInconsistencyBaseline) {
@@ -121,21 +125,24 @@ public class HoldBackRunResultsProducer {
     protected void addMiddleSteps(GoldStandardProject goldStandardProject, HoldElementsBackModelConnector holdElementsBackModelConnector, ArDoCo arDoCo,
             DataRepository dataRepository, SortedMap<String, String> additionalConfigs) {
         arDoCo.addPipelineStep(new ModelProviderInformant(dataRepository, holdElementsBackModelConnector));
-        arDoCo.addPipelineStep(TextExtraction.get(additionalConfigs, dataRepository));
+        //arDoCo.addPipelineStep(TextExtraction.get(additionalConfigs, dataRepository));
         arDoCo.addPipelineStep(RecommendationGenerator.get(additionalConfigs, dataRepository));
         arDoCo.addPipelineStep(ConnectionGenerator.get(additionalConfigs, dataRepository));
     }
 
-    protected void addPreSteps(File inputText, GoldStandardProject goldStandardProject, ArDoCo arDoCo, DataRepository dataRepository,
-            SortedMap<String, String> additionalConfigs) {
+    protected void addPreSteps(File inputText, ArDoCo arDoCo, DataRepository dataRepository, SortedMap<String, String> additionalConfigs) {
         String text = CommonUtilities.readInputText(inputText);
         DataRepositoryHelper.putInputText(dataRepository, text);
 
         arDoCo.addPipelineStep(TextPreprocessingAgent.get(additionalConfigs, dataRepository));
+        arDoCo.addPipelineStep(TextExtraction.get(additionalConfigs, dataRepository));
     }
 
-    protected void addPreSteps(ArDoCoResult precomputedResults, DataRepository dataRepository) {
-        var preprocessingData = new PreprocessingData(precomputedResults.getText());
-        DataRepositoryHelper.putPreprocessingData(dataRepository, preprocessingData);
+    protected void addPreSteps(PrecomputationResults precomputationResults, DataRepository dataRepository) {
+        DataRepositoryHelper.putPreprocessingData(dataRepository, new PreprocessingData(precomputationResults.preprocessingData().getText()));
+        dataRepository.addData(TextState.ID, precomputationResults.textState());
+    }
+
+    protected record PrecomputationResults(PreprocessingData preprocessingData, TextState textState) implements Serializable {
     }
 }
