@@ -1,77 +1,70 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.inconsistencyhelper;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.SortedMap;
-
-import org.junit.jupiter.api.Assertions;
-
-import edu.kit.kastel.mcse.ardoco.core.api.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
-import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
-import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
+import edu.kit.kastel.mcse.ardoco.core.execution.runner.AnonymousRunner;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.PcmXmlModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.models.informants.ModelProviderInformant;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.baseline.InconsistencyBaseline;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.TextPreprocessingAgent;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.*;
 
-public class HoldBackRunResultsProducer {
-    private File inputText;
-    private File inputModel;
-    private PcmXmlModelConnector pcmModel;
+public class HoldBackRunResultsProducer implements Serializable {
+    protected File inputText;
+    protected File inputModel;
+    protected SortedMap<String, String> additionalConfigs;
+    protected PcmXmlModelConnector pcmModel;
 
     public HoldBackRunResultsProducer() {
         super();
     }
 
     /**
-     * Runs ArDoCo or the ArDoCo-backed baseline approach multiple times to produce results. The first run calls ArDoCo normally, in further runs one element is
+     * Runs ArDoCo or the ArDoCo-backed baseline approach multiple times to produce results. The first run calls ArDoCo normally, in further runs
+     * one element is
      * held back each time (so that each element was held back once). This way, we can simulate missing elements.
      *
      * @param goldStandardProject the project that should be run
      * @param useBaselineApproach set to true if the baseline approach should be used instead of ArDoCo
-     * @return a map containing the mapping from ModelElement that was held back to the DataStructure that was produced when running ArDoCo without the
+     * @return a map containing the mapping from ModelElement that was held back to the DataStructure that was produced when running ArDoCo without
+     * the
      * ModelElement
      */
     public Map<ModelInstance, ArDoCoResult> produceHoldBackRunResults(GoldStandardProject goldStandardProject, boolean useBaselineApproach) {
-        Map<ModelInstance, ArDoCoResult> runs = new HashMap<ModelInstance, ArDoCoResult>();
+        Map<ModelInstance, ArDoCoResult> runs = new HashMap<>();
         inputModel = goldStandardProject.getModelFile();
         inputText = goldStandardProject.getTextFile();
+        additionalConfigs = goldStandardProject.getAdditionalConfigurations();
 
         var holdElementsBackModelConnector = constructHoldElementsBackModelConnector();
 
-        ArDoCo arDoCoBaseRun;
-        try {
-            arDoCoBaseRun = definePipelineBase(goldStandardProject, inputText, holdElementsBackModelConnector, useBaselineApproach);
-        } catch (IOException e) {
-            Assertions.fail(e);
-            return runs;
-        }
-        arDoCoBaseRun.run();
-        var baseRunData = new ArDoCoResult(arDoCoBaseRun.getDataRepository());
+        var preRunDataRepository = runShared(goldStandardProject);
+
+        var baseRunData = new ArDoCoResult(runUnshared(goldStandardProject, holdElementsBackModelConnector, preRunDataRepository.deepCopy(),
+                useBaselineApproach));
         runs.put(null, baseRunData);
 
         for (int i = 0; i < holdElementsBackModelConnector.numberOfActualInstances(); i++) {
             holdElementsBackModelConnector.setCurrentHoldBackIndex(i);
             var currentHoldBack = holdElementsBackModelConnector.getCurrentHoldBack();
-            var currentRun = defineArDoCoWithPreComputedData(baseRunData, goldStandardProject, holdElementsBackModelConnector, useBaselineApproach);
-            currentRun.run();
-            runs.put(currentHoldBack, new ArDoCoResult(currentRun.getDataRepository()));
+            var currentRunData = runUnshared(goldStandardProject, holdElementsBackModelConnector, preRunDataRepository.deepCopy(),
+                    useBaselineApproach);
+            runs.put(currentHoldBack, new ArDoCoResult(currentRunData));
         }
+
         return runs;
     }
 
@@ -84,65 +77,45 @@ public class HoldBackRunResultsProducer {
         return new HoldElementsBackModelConnector(pcmModel);
     }
 
-    private ArDoCo definePipelineBase(GoldStandardProject goldStandardProject, File inputText, HoldElementsBackModelConnector holdElementsBackModelConnector,
-            boolean useInconsistencyBaseline) throws FileNotFoundException {
-        ArDoCo arDoCo = new ArDoCo(goldStandardProject.getProjectName().toLowerCase());
-        var dataRepository = arDoCo.getDataRepository();
-        var additionalConfigs = goldStandardProject.getAdditionalConfigurations();
+    protected DataRepository runShared(GoldStandardProject goldStandardProject) {
+        return new AnonymousRunner(goldStandardProject.getProjectName()) {
+            @Override
+            public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) {
+                var pipelineSteps = new ArrayList<AbstractPipelineStep>();
 
-        addPreSteps(inputText, arDoCo, dataRepository, additionalConfigs);
-        addMiddleSteps(goldStandardProject, holdElementsBackModelConnector, arDoCo, dataRepository, additionalConfigs);
+                var text = CommonUtilities.readInputText(inputText);
+                if (text.isBlank()) {
+                    throw new IllegalArgumentException("Cannot deal with empty input text. Maybe there was an error reading the file.");
+                }
+                DataRepositoryHelper.putInputText(dataRepository, text);
+                pipelineSteps.add(TextPreprocessingAgent.get(additionalConfigs, dataRepository));
 
-        if (useInconsistencyBaseline) {
-            arDoCo.addPipelineStep(new InconsistencyBaseline(dataRepository));
-        } else {
-            arDoCo.addPipelineStep(InconsistencyChecker.get(additionalConfigs, dataRepository));
-        }
-
-        return arDoCo;
+                return pipelineSteps;
+            }
+        }.runWithoutSaving();
     }
 
-    private ArDoCo defineArDoCoWithPreComputedData(ArDoCoResult precomputedResults, GoldStandardProject goldStandardProject,
-            HoldElementsBackModelConnector holdElementsBackModelConnector, boolean useInconsistencyBaseline) {
-        var projectName = precomputedResults.getProjectName();
-        ArDoCo arDoCo = new ArDoCo(projectName);
-        var dataRepository = arDoCo.getDataRepository();
-        var additionalConfigs = goldStandardProject.getAdditionalConfigurations();
+    protected DataRepository runUnshared(GoldStandardProject goldStandardProject, HoldElementsBackModelConnector holdElementsBackModelConnector,
+                                         DataRepository preRunDataRepository,
+                                         boolean useInconsistencyBaseline) {
+        return new AnonymousRunner(goldStandardProject.getProjectName(), preRunDataRepository) {
+            @Override
+            public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) {
+                var pipelineSteps = new ArrayList<AbstractPipelineStep>();
 
-        var originalPrecomputationResults = new PrecomputationResults(precomputedResults.getPreprocessingData(), precomputedResults.getTextState());
-        var precomputationResults = DataRepositoryHelper.deepCopy(originalPrecomputationResults);
-        addPreSteps(precomputationResults, dataRepository);
-        addMiddleSteps(goldStandardProject, holdElementsBackModelConnector, arDoCo, dataRepository, additionalConfigs);
+                pipelineSteps.add(new ModelProviderInformant(dataRepository, holdElementsBackModelConnector));
+                pipelineSteps.add(TextExtraction.get(additionalConfigs, dataRepository));
+                pipelineSteps.add(RecommendationGenerator.get(additionalConfigs, dataRepository));
+                pipelineSteps.add(ConnectionGenerator.get(additionalConfigs, dataRepository));
 
-        if (useInconsistencyBaseline) {
-            arDoCo.addPipelineStep(new InconsistencyBaseline(dataRepository));
-        } else {
-            arDoCo.addPipelineStep(InconsistencyChecker.get(additionalConfigs, dataRepository));
-        }
-        return arDoCo;
-    }
+                if (useInconsistencyBaseline) {
+                    pipelineSteps.add(new InconsistencyBaseline(dataRepository));
+                } else {
+                    pipelineSteps.add(InconsistencyChecker.get(additionalConfigs, dataRepository));
+                }
 
-    protected void addMiddleSteps(GoldStandardProject goldStandardProject, HoldElementsBackModelConnector holdElementsBackModelConnector, ArDoCo arDoCo,
-            DataRepository dataRepository, SortedMap<String, String> additionalConfigs) {
-        arDoCo.addPipelineStep(new ModelProviderInformant(dataRepository, holdElementsBackModelConnector));
-        //arDoCo.addPipelineStep(TextExtraction.get(additionalConfigs, dataRepository));
-        arDoCo.addPipelineStep(RecommendationGenerator.get(additionalConfigs, dataRepository));
-        arDoCo.addPipelineStep(ConnectionGenerator.get(additionalConfigs, dataRepository));
-    }
-
-    protected void addPreSteps(File inputText, ArDoCo arDoCo, DataRepository dataRepository, SortedMap<String, String> additionalConfigs) {
-        String text = CommonUtilities.readInputText(inputText);
-        DataRepositoryHelper.putInputText(dataRepository, text);
-
-        arDoCo.addPipelineStep(TextPreprocessingAgent.get(additionalConfigs, dataRepository));
-        arDoCo.addPipelineStep(TextExtraction.get(additionalConfigs, dataRepository));
-    }
-
-    protected void addPreSteps(PrecomputationResults precomputationResults, DataRepository dataRepository) {
-        DataRepositoryHelper.putPreprocessingData(dataRepository, new PreprocessingData(precomputationResults.preprocessingData().getText()));
-        dataRepository.addData(TextState.ID, precomputationResults.textState());
-    }
-
-    protected record PrecomputationResults(PreprocessingData preprocessingData, TextState textState) implements Serializable {
+                return pipelineSteps;
+            }
+        }.runWithoutSaving();
     }
 }

@@ -1,36 +1,6 @@
 /* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.factory.Maps;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.tuple.Pair;
-import org.eclipse.collections.impl.tuple.Tuples;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistentSentence;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.ModelInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
@@ -46,12 +16,34 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ResultMatrix;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.calculator.ResultCalculatorUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.inconsistencyhelper.HoldBackRunResultsProducer;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.util.*;
+import java.util.stream.Collectors;
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.factory.Maps;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.tuple.Pair;
+import org.eclipse.collections.impl.tuple.Tuples;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Integration test that evaluates the inconsistency detection capabilities of ArDoCo. Runs on the projects that are defined in the enum {@link Project}.
+ * Integration test that evaluates the inconsistency detection capabilities of ArDoCo. Runs on the projects that are defined in the enum
+ * {@link Project}.
  * <p>
- * Currently, the focus lies on detecting elements that are mentioned in the text but are not represented in the model. For this, we run an evaluation that
- * holds back (removes) one element from the model. This way, we know that there is a missing element and the trace links to this element (in the gold standard)
+ * Currently, the focus lies on detecting elements that are mentioned in the text but are not represented in the model. For this, we run an
+ * evaluation that
+ * holds back (removes) one element from the model. This way, we know that there is a missing element and the trace links to this element (in the
+ * gold standard)
  * are the spots of inconsistency then. We run this multiple times so each element was held back once.
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -121,7 +113,8 @@ public class InconsistencyDetectionEvaluationIT {
     }
 
     /**
-     * Tests the baseline approach that reports a missing model element inconsistency for each sentence that is not traced to a model element. This test is
+     * Tests the baseline approach that reports a missing model element inconsistency for each sentence that is not traced to a model element. This
+     * test is
      * enabled by providing the environment variable "testBaseline" with any value.
      *
      * @param goldStandardProject Project that gets inserted automatically with the enum {@link Project}.
@@ -151,7 +144,7 @@ public class InconsistencyDetectionEvaluationIT {
         HoldBackRunResultsProducer holdBackRunResultsProducer = new HoldBackRunResultsProducer();
         Map<ModelInstance, ArDoCoResult> runs = holdBackRunResultsProducer.produceHoldBackRunResults(goldStandardProject, true);
 
-        Assertions.assertTrue(runs != null && runs.size() > 0);
+        Assertions.assertTrue(runs != null && !runs.isEmpty());
 
         var results = calculateEvaluationResults(goldStandardProject, runs);
         OVERALL_MME_RESULTS_BASELINE.addAll(results);
@@ -195,7 +188,8 @@ public class InconsistencyDetectionEvaluationIT {
 
         MutableList<String> expectedInconsistentModelElements = goldStandardProject.getMissingTextForModelElementGoldStandard();
         var inconsistentModelElements = projectResults.getAllModelInconsistencies().collect(ModelInconsistency::getModelInstanceUid).toList();
-        var results = TestUtil.compareInconsistencies(projectResults, inconsistentModelElements.toImmutable(), expectedInconsistentModelElements.toImmutable());
+        var results = TestUtil.compareInconsistencies(projectResults, inconsistentModelElements.toImmutable(),
+                expectedInconsistentModelElements.toImmutable());
 
         OVERALL_UME_RESULTS.add(results);
 
@@ -266,7 +260,8 @@ public class InconsistencyDetectionEvaluationIT {
         }
     }
 
-    private MutableList<EvaluationResults<String>> calculateEvaluationResults(GoldStandardProject goldStandardProject, Map<ModelInstance, ArDoCoResult> runs) {
+    private MutableList<EvaluationResults<String>> calculateEvaluationResults(GoldStandardProject goldStandardProject, Map<ModelInstance,
+            ArDoCoResult> runs) {
 
         Map<ModelInstance, EvaluationResults<String>> results = Maps.mutable.empty();
 
@@ -281,11 +276,12 @@ public class InconsistencyDetectionEvaluationIT {
                 inconsistentSentencesPerProject.put(goldStandardProject, arDoCoResult.getInconsistentSentences());
             }
         }
-
+        results.forEach((m, r) -> logger.info(TestUtil.createResultLogString(m.getFullName(), r)));
         return Lists.mutable.ofAll(results.values());
     }
 
-    private EvaluationResults<String> evaluateRun(GoldStandardProject goldStandardProject, ModelInstance removedElement, ArDoCoResult arDoCoResult) {
+    private static EvaluationResults<String> evaluateRun(GoldStandardProject goldStandardProject, ModelInstance removedElement,
+                                                         ArDoCoResult arDoCoResult) {
         var modelId = arDoCoResult.getModelIds().get(0);
 
         ImmutableList<MissingModelInstanceInconsistency> inconsistencies = arDoCoResult.getInconsistenciesOfTypeForModel(modelId,
@@ -303,7 +299,7 @@ public class InconsistencyDetectionEvaluationIT {
     }
 
     private static EvaluationResults<String> calculateEvaluationResults(ArDoCoResult arDoCoResult, ImmutableList<String> expectedLines,
-            ImmutableList<String> actualSentences) {
+                                                                        ImmutableList<String> actualSentences) {
         return TestUtil.compareInconsistencies(arDoCoResult, actualSentences, expectedLines);
     }
 
@@ -316,7 +312,7 @@ public class InconsistencyDetectionEvaluationIT {
     }
 
     private void logResultsMissingModelInconsistency(GoldStandardProject goldStandardProject, EvaluationResults<String> weightedAverageResult,
-            ExpectedResults expectedResults) {
+                                                     ExpectedResults expectedResults) {
         if (logger.isInfoEnabled()) {
             String name = goldStandardProject.getProjectName() + " missing model inconsistency";
             TestUtil.logResultsWithExpected(logger, name, weightedAverageResult, expectedResults);
@@ -337,7 +333,8 @@ public class InconsistencyDetectionEvaluationIT {
                         "Phi coefficient " + results.phiCoefficient() + " is below the expected " + "minimum value " + expectedResults.phiCoefficient()));
     }
 
-    private void writeOutResults(GoldStandardProject goldStandardProject, List<EvaluationResults<String>> results, Map<ModelInstance, ArDoCoResult> runs) {
+    private void writeOutResults(GoldStandardProject goldStandardProject, List<EvaluationResults<String>> results,
+                                 Map<ModelInstance, ArDoCoResult> runs) {
         var outputs = createOutput(goldStandardProject, results, runs);
         var outputBuilder = outputs.getOne();
         var detailedOutputBuilder = outputs.getTwo();
@@ -399,7 +396,7 @@ public class InconsistencyDetectionEvaluationIT {
     }
 
     private static Pair<StringBuilder, StringBuilder> createOutput(GoldStandardProject goldStandardProject, List<EvaluationResults<String>> results,
-            Map<ModelInstance, ArDoCoResult> runs) {
+                                                                   Map<ModelInstance, ArDoCoResult> runs) {
         StringBuilder outputBuilder = createStringBuilderWithHeader(goldStandardProject);
         var resultCalculatorStringBuilderPair = inspectResults(results, runs, outputBuilder);
         var resultCalculator = resultCalculatorStringBuilderPair.getOne();
@@ -432,7 +429,8 @@ public class InconsistencyDetectionEvaluationIT {
             }
         }
 
-        Files.writeString(outputFile, outputBuilder.toString(), StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+        Files.writeString(outputFile, outputBuilder.toString(), StandardCharsets.UTF_8, StandardOpenOption.CREATE,
+                StandardOpenOption.TRUNCATE_EXISTING);
     }
 
     private static void writeOverallOutputMissingTextInconsistency(EvaluationResults<String> weightedResults, EvaluationResults<String> macroResults)
@@ -454,7 +452,8 @@ public class InconsistencyDetectionEvaluationIT {
         StringBuilder outputBuilder = new StringBuilder();
         outputBuilder.append("###").append(LINE_SEPARATOR);
         var weightedAverageResults = ResultCalculatorUtil.calculateWeightedAverageResults(results.toImmutable());
-        var resultString = TestUtil.createResultLogString("### OVERALL RESULTS ###" + LINE_SEPARATOR + "Weighted" + " Average", weightedAverageResults);
+        var resultString = TestUtil.createResultLogString("### OVERALL RESULTS ###" + LINE_SEPARATOR + "Weighted" + " Average",
+                weightedAverageResults);
         outputBuilder.append(resultString);
         outputBuilder.append(LINE_SEPARATOR);
         return outputBuilder.toString();
@@ -468,7 +467,8 @@ public class InconsistencyDetectionEvaluationIT {
     }
 
     private static Pair<MutableList<EvaluationResults<String>>, StringBuilder> inspectResults(List<EvaluationResults<String>> results,
-            Map<ModelInstance, ArDoCoResult> runs, StringBuilder outputBuilder) {
+                                                                                              Map<ModelInstance, ArDoCoResult> runs,
+                                                                                              StringBuilder outputBuilder) {
         var detailedOutputBuilder = new StringBuilder();
         MutableList<EvaluationResults<String>> resultsWithWeight = Lists.mutable.empty();
         int counter = 0;
@@ -498,8 +498,9 @@ public class InconsistencyDetectionEvaluationIT {
         return Tuples.pair(resultsWithWeight, detailedOutputBuilder);
     }
 
-    private static void inspectRun(StringBuilder outputBuilder, StringBuilder detailedOutputBuilder, MutableList<EvaluationResults<String>> allResults,
-            ArDoCoResult arDoCoResult, EvaluationResults<String> result) {
+    private static void inspectRun(StringBuilder outputBuilder, StringBuilder detailedOutputBuilder,
+                                   MutableList<EvaluationResults<String>> allResults,
+                                   ArDoCoResult arDoCoResult, EvaluationResults<String> result) {
         var truePositives = result.truePositives().toList();
         appendResults(truePositives, detailedOutputBuilder, "True Positives", arDoCoResult, outputBuilder);
 
@@ -515,7 +516,7 @@ public class InconsistencyDetectionEvaluationIT {
     }
 
     private static void appendResults(List<String> resultList, StringBuilder detailedOutputBuilder, String type, ArDoCoResult arDoCoResult,
-            StringBuilder outputBuilder) {
+                                      StringBuilder outputBuilder) {
         resultList = sortIntegerStrings(resultList);
         detailedOutputBuilder.append(LINE_SEPARATOR).append("== ").append(type).append(" ==");
         detailedOutputBuilder.append(LINE_SEPARATOR).append(createDetailedOutputString(arDoCoResult, resultList));
