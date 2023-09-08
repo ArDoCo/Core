@@ -1,6 +1,8 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.data;
 
+import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -75,13 +77,6 @@ public class DataRepository implements Serializable {
      */
     @DeepCopy
     public DataRepository deepCopy() {
-        try {
-            var byteArrayOutputStream = new ByteArrayOutputStream();
-            new ObjectOutputStream(byteArrayOutputStream).writeObject(this);
-            var byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
-            return (DataRepository) new ObjectInputStream(byteArrayInputStream).readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        return DataRepositoryHelper.deepCopy(this);
     }
 }

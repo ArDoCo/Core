@@ -11,7 +11,7 @@ import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
 public class PreprocessingData implements PipelineStepData {
     public static final String ID = "PreprocessingData";
 
-    private Text preprocessedText;
+    private final Text preprocessedText;
 
     public PreprocessingData(Text preprocessedText) {
         super();
