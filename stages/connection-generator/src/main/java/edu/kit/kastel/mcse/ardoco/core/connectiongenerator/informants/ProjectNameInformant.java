@@ -1,14 +1,6 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.informants;
 
-import java.util.Objects;
-import java.util.SortedMap;
-import java.util.function.BinaryOperator;
-import java.util.function.UnaryOperator;
-
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.MutableList;
-
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
@@ -19,9 +11,16 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
+import java.util.Objects;
+import java.util.SortedMap;
+import java.util.function.BinaryOperator;
+import java.util.function.UnaryOperator;
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.MutableList;
 
 /**
- * This informant looks for (parts of) the project's name within RecommendedInstances and if it finds the project's name, influences the probability of the
+ * This informant looks for (parts of) the project's name within RecommendedInstances and if it finds the project's name, influences the
+ * probability of the
  * RecommendedInstance negatively because it then should not be a recommended instance.
  */
 public class ProjectNameInformant extends Informant {
@@ -32,7 +31,7 @@ public class ProjectNameInformant extends Informant {
 
     /**
      * Constructs a new instance of the {@link ProjectNameInformant} with the given data repository.
-     * 
+     *
      * @param dataRepository the data repository
      */
     public ProjectNameInformant(DataRepository dataRepository) {
@@ -51,6 +50,7 @@ public class ProjectNameInformant extends Informant {
             var recommendationState = recommendationStates.getRecommendationState(metamodel);
 
             checkForProjectNameInRecommendedInstances(projectName, recommendationState);
+            checkForProjectNameInRecommendedInstances(projectName.toLowerCase(), recommendationState);
         }
     }
 
@@ -119,7 +119,7 @@ public class ProjectNameInformant extends Informant {
     }
 
     private void expandWordForName(String name, Word currWord, MutableList<Word> words, UnaryOperator<Word> wordExpansion,
-            BinaryOperator<String> concatenation) {
+                                   BinaryOperator<String> concatenation) {
         Objects.requireNonNull(name);
         if (words.isEmpty()) {
             throw new IllegalArgumentException(ERROR_EMPTY_LIST);

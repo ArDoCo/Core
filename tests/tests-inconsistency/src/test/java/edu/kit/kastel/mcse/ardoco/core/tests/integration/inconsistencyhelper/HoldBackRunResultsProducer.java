@@ -62,7 +62,8 @@ public class HoldBackRunResultsProducer implements Serializable {
             var currentHoldBack = holdElementsBackModelConnector.getCurrentHoldBack();
             var currentRunData = runUnshared(goldStandardProject, holdElementsBackModelConnector, preRunDataRepository.deepCopy(),
                     useBaselineApproach);
-            runs.put(currentHoldBack, new ArDoCoResult(currentRunData));
+            var result = new ArDoCoResult(currentRunData);
+            runs.put(currentHoldBack, result);
         }
 
         return runs;

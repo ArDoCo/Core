@@ -276,12 +276,11 @@ public class InconsistencyDetectionEvaluationIT {
                 inconsistentSentencesPerProject.put(goldStandardProject, arDoCoResult.getInconsistentSentences());
             }
         }
-        results.forEach((m, r) -> logger.info(TestUtil.createResultLogString(m.getFullName(), r)));
         return Lists.mutable.ofAll(results.values());
     }
 
-    private static EvaluationResults<String> evaluateRun(GoldStandardProject goldStandardProject, ModelInstance removedElement,
-                                                         ArDoCoResult arDoCoResult) {
+    public static EvaluationResults<String> evaluateRun(GoldStandardProject goldStandardProject, ModelInstance removedElement,
+                                                        ArDoCoResult arDoCoResult) {
         var modelId = arDoCoResult.getModelIds().get(0);
 
         ImmutableList<MissingModelInstanceInconsistency> inconsistencies = arDoCoResult.getInconsistenciesOfTypeForModel(modelId,
