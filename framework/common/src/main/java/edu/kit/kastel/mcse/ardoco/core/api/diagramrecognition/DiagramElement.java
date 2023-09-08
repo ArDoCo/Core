@@ -5,6 +5,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.apache.commons.lang3.concurrent.ConcurrentException;
+import org.apache.commons.lang3.concurrent.LazyInitializer;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.MutableSet;
 import org.eclipse.collections.impl.factory.Sets;
@@ -15,25 +17,29 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.ModelElement;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityComparable;
 
 public abstract class DiagramElement extends Entity implements SimilarityComparable<DiagramElement> {
-    /**
-     * Required for null object pattern
-     */
-    private static class NullObject extends DiagramElement {
-        @NotNull
-        @Override
-        public BoundingBox getBoundingBox() {
-            throw new UnsupportedOperationException();
-        }
-    }
-
     private Diagram diagram;
 
-    /**
-     * Null if uninitialized NullObject if no parent exists
-     */
-    private DiagramElement parent;
+    private final transient LazyInitializer<DiagramElement> parent = new LazyInitializer<>() {
+        @Override
+        protected DiagramElement initialize() {
+            var all = getDiagram().getBoxes();
+            return all.stream()
+                    .filter(de -> !de.equals(DiagramElement.this) && de.getBoundingBox()
+                            .containsEntirely(getBoundingBox())) //Find boxes containing this element
+                    .min(Comparator.comparingDouble(de -> de.getBoundingBox().area()))
+                    .orElse(null);
+        }
+    };
 
-    private transient MutableSet<DiagramElement> children;
+    private final transient LazyInitializer<MutableSet<DiagramElement>> children = new LazyInitializer<>() {
+        @Override
+        protected MutableSet<DiagramElement> initialize() {
+            var all = getDiagram().getBoxes();
+            return Sets.mutable.fromStream(all.stream()
+                    .filter(de -> !de.equals(DiagramElement.this) && de.getParent().map(p -> p == DiagramElement.this).orElse(false))
+                    .map(b -> (DiagramElement) b));
+        }
+    };
 
     protected DiagramElement(@NotNull Diagram diagram, @NotNull String uuid) {
         super(uuid);
@@ -64,24 +70,19 @@ public abstract class DiagramElement extends Entity implements SimilarityCompara
      * {@return the set of elements which are considered direct children}
      */
     public @NotNull ImmutableSet<DiagramElement> getChildren() {
-        if (children == null) {
-            var all = getDiagram().getBoxes();
-            children = Sets.mutable.fromStream(all.stream().filter(de -> !de.equals(this) && de.getParent().map(p -> p == this).orElse(false)));
+        try {
+            return children.get().toImmutable();
+        } catch (ConcurrentException e) {
+            throw new RuntimeException(e);
         }
-        return children.toImmutable();
     }
 
     public Optional<DiagramElement> getParent() {
-        if (parent == null) {
-            var all = getDiagram().getBoxes();
-            parent = all.stream().filter(de -> !de.equals(this) && de.getBoundingBox().containsEntirely(getBoundingBox())) //Find boxes containing this element
-                    .min(Comparator.comparingDouble(de -> de.getBoundingBox().area())) //Find smallest box containing this element
-                    .map(de -> (DiagramElement) de).orElse(new NullObject()); //Cast to diagram element
-
+        try {
+            return Optional.of(parent.get());
+        } catch (ConcurrentException e) {
+            throw new RuntimeException(e);
         }
-        if (parent instanceof NullObject)
-            return Optional.empty();
-        return Optional.of(parent);
     }
 
     @Override
