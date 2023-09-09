@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
+import edu.kit.kastel.mcse.ardoco.core.models.ArCoTLModelProviderAgent;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +16,6 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
-import edu.kit.kastel.mcse.ardoco.core.models.ModelProviderAgent;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.TextPreprocessingAgent;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
@@ -31,9 +32,9 @@ public class ArDoCoForLiSSA extends ArDoCoRunner {
     }
 
     public void setUp(File diagramDirectory, File inputText, File inputModelArchitecture, ArchitectureModelType inputArchitectureModelType,
-            Map<String, String> additionalConfigs, File outputDir) {
+            File inputCode, Map<String, String> additionalConfigs, File outputDir) {
         try {
-            definePipeline(diagramDirectory, inputText, inputModelArchitecture, inputArchitectureModelType, additionalConfigs);
+            definePipeline(diagramDirectory, inputText, inputModelArchitecture, inputArchitectureModelType, inputCode, additionalConfigs);
         } catch (IOException e) {
             logger.error("Problem in initialising pipeline when loading data (IOException)", e.getCause());
             isSetUp = false;
@@ -44,9 +45,9 @@ public class ArDoCoForLiSSA extends ArDoCoRunner {
     }
 
     public void setUp(String diagramDirectory, String inputTextLocation, String inputArchitectureModelLocation, ArchitectureModelType architectureModelType,
-            Map<String, String> additionalConfigs, String outputDirectory) {
-        setUp(new File(diagramDirectory), new File(inputTextLocation), new File(inputArchitectureModelLocation), architectureModelType, additionalConfigs,
-                new File(outputDirectory));
+            String inputCodeLocation, Map<String, String> additionalConfigs, String outputDirectory) {
+        setUp(new File(diagramDirectory), new File(inputTextLocation), new File(inputArchitectureModelLocation), architectureModelType, new File(inputCodeLocation),
+                additionalConfigs, new File(outputDirectory));
     }
 
     /**
@@ -60,7 +61,7 @@ public class ArDoCoForLiSSA extends ArDoCoRunner {
      * @throws IOException When one of the input files cannot be accessed/loaded
      */
     private void definePipeline(File diagramDirectory, File inputText, File inputArchitectureModel, ArchitectureModelType architectureModelType,
-            Map<String, String> additionalConfigs) throws IOException {
+            File inputCode, Map<String, String> additionalConfigs) throws IOException {
         ArDoCo arDoCo = getArDoCo();
         var dataRepository = arDoCo.getDataRepository();
         var text = CommonUtilities.readInputText(inputText);
@@ -72,7 +73,7 @@ public class ArDoCoForLiSSA extends ArDoCoRunner {
 
         arDoCo.addPipelineStep(DiagramRecognition.get(additionalConfigs, dataRepository));
         arDoCo.addPipelineStep(TextPreprocessingAgent.get(additionalConfigs, dataRepository));
-        arDoCo.addPipelineStep(ModelProviderAgent.get(inputArchitectureModel, architectureModelType, dataRepository));
+        arDoCo.addPipelineStep(ArCoTLModelProviderAgent.get(inputArchitectureModel, architectureModelType, inputCode, additionalConfigs, dataRepository));
         arDoCo.addPipelineStep(TextExtraction.get(additionalConfigs, dataRepository));
         arDoCo.addPipelineStep(RecommendationGenerator.get(additionalConfigs, dataRepository));
         arDoCo.addPipelineStep(ConnectionGenerator.get(additionalConfigs, dataRepository));

@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
+import edu.kit.kastel.mcse.ardoco.core.models.ArCoTLModelProviderAgent;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +15,6 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.ArDoCoRunner;
-import edu.kit.kastel.mcse.ardoco.core.models.ModelProviderAgent;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.TextPreprocessingAgent;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
@@ -25,10 +26,10 @@ public class ArDoCoForSadSamTraceabilityLinkRecovery extends ArDoCoRunner {
         super(projectName);
     }
 
-    public void setUp(File inputText, File inputArchitectureModel, ArchitectureModelType architectureModelType, Map<String, String> additionalConfigs,
+    public void setUp(File inputText, File inputArchitectureModel, ArchitectureModelType architectureModelType, File inputCode, Map<String, String> additionalConfigs,
             File outputDir) {
         try {
-            definePipeline(inputText, inputArchitectureModel, architectureModelType, additionalConfigs);
+            definePipeline(inputText, inputArchitectureModel, architectureModelType, inputCode, additionalConfigs);
         } catch (IOException e) {
             logger.error("Problem in initialising pipeline when loading data (IOException)", e.getCause());
             isSetUp = false;
@@ -38,12 +39,12 @@ public class ArDoCoForSadSamTraceabilityLinkRecovery extends ArDoCoRunner {
         isSetUp = true;
     }
 
-    public void setUp(String inputTextLocation, String inputArchitectureModelLocation, ArchitectureModelType architectureModelType,
+    public void setUp(String inputTextLocation, String inputArchitectureModelLocation, ArchitectureModelType architectureModelType, String inputCodeLocation,
             Map<String, String> additionalConfigs, String outputDirectory) {
-        setUp(new File(inputTextLocation), new File(inputArchitectureModelLocation), architectureModelType, additionalConfigs, new File(outputDirectory));
+        setUp(new File(inputTextLocation), new File(inputArchitectureModelLocation), architectureModelType, new File(inputCodeLocation), additionalConfigs, new File(outputDirectory));
     }
 
-    private void definePipeline(File inputText, File inputArchitectureModel, ArchitectureModelType architectureModelType, Map<String, String> additionalConfigs)
+    private void definePipeline(File inputText, File inputArchitectureModel, ArchitectureModelType architectureModelType, File inputCode, Map<String, String> additionalConfigs)
             throws IOException {
         var dataRepository = this.getArDoCo().getDataRepository();
         var text = CommonUtilities.readInputText(inputText);
@@ -53,7 +54,7 @@ public class ArDoCoForSadSamTraceabilityLinkRecovery extends ArDoCoRunner {
         DataRepositoryHelper.putInputText(dataRepository, text);
 
         this.getArDoCo().addPipelineStep(TextPreprocessingAgent.get(additionalConfigs, dataRepository));
-        this.getArDoCo().addPipelineStep(ModelProviderAgent.get(inputArchitectureModel, architectureModelType, dataRepository));
+        this.getArDoCo().addPipelineStep(ArCoTLModelProviderAgent.get(inputArchitectureModel, architectureModelType, inputCode, additionalConfigs, dataRepository));
 
         this.getArDoCo().addPipelineStep(TextExtraction.get(additionalConfigs, dataRepository));
         this.getArDoCo().addPipelineStep(RecommendationGenerator.get(additionalConfigs, dataRepository));
