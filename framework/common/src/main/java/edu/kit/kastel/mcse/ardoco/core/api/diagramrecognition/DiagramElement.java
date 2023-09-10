@@ -79,7 +79,7 @@ public abstract class DiagramElement extends Entity implements SimilarityCompara
 
     public Optional<DiagramElement> getParent() {
         try {
-            return Optional.of(parent.get());
+            return Optional.ofNullable(parent.get());
         } catch (ConcurrentException e) {
             throw new RuntimeException(e);
         }
