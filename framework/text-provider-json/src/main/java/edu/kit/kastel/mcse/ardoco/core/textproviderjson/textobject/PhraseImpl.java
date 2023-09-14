@@ -2,12 +2,14 @@
 package edu.kit.kastel.mcse.ardoco.core.textproviderjson.textobject;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.SortedMaps;
 import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.sorted.ImmutableSortedMap;
 import org.eclipse.collections.api.map.sorted.MutableSortedMap;
 
@@ -18,32 +20,36 @@ import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 
 @Deterministic
 public class PhraseImpl implements Phrase {
-    private ImmutableList<Word> words;
+    private static final String PUNCTUATION_WITH_SPACE = "\\s+([.,;:?!])";
+    private static final String BRACKETS_WITH_SPACE = "\\s+([()\\[\\]{}<>])";
+    private final ImmutableList<Word> nonPhraseWords;
+    private ImmutableList<Word> phraseWords;
 
-    private String text = "";
+    private String text;
 
     private final PhraseType type;
 
     private final List<Phrase> childPhrases;
 
-    public PhraseImpl(ImmutableList<Word> words, PhraseType type, List<Phrase> childPhrases) {
-        this.words = words;
+    public PhraseImpl(ImmutableList<Word> nonPhraseWords, PhraseType type, List<Phrase> childPhrases) {
+        this.nonPhraseWords = nonPhraseWords;
         this.type = type;
         this.childPhrases = childPhrases;
     }
 
     @Override
     public int getSentenceNo() {
-        return words.get(0).getSentenceNo();
+        return getContainedWords().get(0).getSentenceNo();
     }
 
     @Override
     public String getText() {
         if (this.text == null) {
-            List<Word> wordList = getContainedWords().castToList();
-            wordList.sort((word1, word2) -> word1.getPosition() - word2.getPosition());
-            List<String> wordText = wordList.stream().map(Word::getText).toList();
-            this.text = String.join(" ", wordText);
+            MutableList<Word> wordList = getContainedWords().toList();
+            wordList.sort(Comparator.comparingInt(Word::getPosition));
+            List<String> wordText = wordList.collect(Word::getText);
+            // Join string with spaces but remove spaces before punctuation and brackets
+            this.text = String.join(" ", wordText).replaceAll(PUNCTUATION_WITH_SPACE, "$1").replaceAll(BRACKETS_WITH_SPACE, "$1");
         }
         return this.text;
     }
@@ -55,14 +61,18 @@ public class PhraseImpl implements Phrase {
 
     @Override
     public ImmutableList<Word> getContainedWords() {
-        if (words == null) {
+        if (phraseWords == null) {
             List<Word> collectedWords = new ArrayList<>();
             for (Phrase subphrase : childPhrases) {
                 collectedWords.addAll(subphrase.getContainedWords().castToList());
             }
-            this.words = Lists.immutable.ofAll(collectedWords);
+            this.phraseWords = Lists.immutable.ofAll(collectedWords);
         }
-        return words;
+
+        MutableList<Word> words = Lists.mutable.ofAll(nonPhraseWords);
+        words.addAllIterable(phraseWords);
+        words.sortThis(Comparator.comparingInt(Word::getPosition));
+        return words.toImmutable();
     }
 
     @Override
@@ -127,12 +137,12 @@ public class PhraseImpl implements Phrase {
             return true;
         if (!(o instanceof PhraseImpl phrase))
             return false;
-        return Objects.equals(words, phrase.words) && Objects.equals(text, phrase.text) && type == phrase.type && Objects.equals(childPhrases,
-                phrase.childPhrases);
+        return Objects.equals(getContainedWords(), phrase.getContainedWords()) && Objects.equals(getText(), phrase.getText()) && type == phrase.type && Objects
+                .equals(childPhrases, phrase.childPhrases);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(words, text, type, childPhrases);
+        return Objects.hash(getContainedWords(), getText(), type, childPhrases);
     }
 }
