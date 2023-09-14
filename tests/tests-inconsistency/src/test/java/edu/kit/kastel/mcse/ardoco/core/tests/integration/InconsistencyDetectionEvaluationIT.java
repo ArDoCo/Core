@@ -233,7 +233,7 @@ public class InconsistencyDetectionEvaluationIT {
     @Order(999)
     void overAllResultsIT() {
         var weightedResults = ResultCalculatorUtil.calculateWeightedAverageResults(OVERALL_MME_RESULTS.toImmutable());
-        var macroResults = ResultCalculatorUtil.calculateWeightedAverageResults(OVERALL_MME_RESULTS.toImmutable());
+        var macroResults = ResultCalculatorUtil.calculateAverageResults(OVERALL_MME_RESULTS.toImmutable());
 
         Assertions.assertNotNull(weightedResults);
         Assertions.assertNotNull(macroResults);

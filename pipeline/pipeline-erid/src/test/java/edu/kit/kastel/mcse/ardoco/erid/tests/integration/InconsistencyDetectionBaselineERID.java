@@ -1,11 +1,8 @@
 package edu.kit.kastel.mcse.ardoco.erid.tests.integration;
 
-import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
-
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -13,15 +10,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.InconsistencyDetectionEvaluationIT;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.inconsistencyhelper.HoldBackRunResultsProducer;
 
 @Disabled
-public class InconsistencyDetectionWithMockERID extends InconsistencyDetectionEvaluationIT {
-    @Override
-    protected HoldBackRunResultsProducer getHoldBackRunResultsProducer() {
-        return new HoldBackRunResultsProducerERID(true);
-    }
-
+public class InconsistencyDetectionBaselineERID extends InconsistencyDetectionEvaluationIT {
     @DisplayName("Evaluating MME-Inconsistency Detection (Mock)")
     @ParameterizedTest(name = "Evaluating MME-Inconsistency for {0}")
     @MethodSource("edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject#getNonHistoricalProjects")
