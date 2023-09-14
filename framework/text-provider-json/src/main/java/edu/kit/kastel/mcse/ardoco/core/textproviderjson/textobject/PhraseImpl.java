@@ -32,7 +32,7 @@ public class PhraseImpl implements Phrase {
     private final List<Phrase> childPhrases;
 
     public PhraseImpl(ImmutableList<Word> nonPhraseWords, PhraseType type, List<Phrase> childPhrases) {
-        this.nonPhraseWords = nonPhraseWords;
+        this.nonPhraseWords = nonPhraseWords == null ? Lists.immutable.empty() : nonPhraseWords;
         this.type = type;
         this.childPhrases = childPhrases;
     }
