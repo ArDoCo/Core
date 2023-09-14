@@ -20,7 +20,10 @@ public class InfluenceByInconsistenciesInformant extends Informant {
     private final static Logger logger = LoggerFactory.getLogger(InfluenceByInconsistenciesInformant.class);
 
     @Configurable
-    private double maximumReward = 0.25;
+    private double maximumReward = .55;
+
+    @Configurable
+    private double maximumPunishment = -10d;
 
     public InfluenceByInconsistenciesInformant(DataRepository dataRepository) {
         super(InfluenceByInconsistenciesInformant.class.getSimpleName(), dataRepository);
@@ -45,7 +48,9 @@ public class InfluenceByInconsistenciesInformant extends Informant {
                     .distinct()
                     .toList();
             var mdeInconsistencies = diagramInconsistencyState.getInconsistencies(MDEInconsistency.class);
-            var linksBetweenDeAndRi = allRecommendedInstances.stream().flatMap(ri -> diagramConnectionState.getLinksBetweenDeAndRi(ri).stream()).collect(Collectors.toSet());
+            var linksBetweenDeAndRi = allRecommendedInstances.stream()
+                    .flatMap(ri -> diagramConnectionState.getLinksBetweenDeAndRi(ri).stream())
+                    .collect(Collectors.toSet());
             var coverage = coveredRecommendedInstances.size() / (double) allRecommendedInstances.size();
             logger.info("Recommended Instances coverage {}%, Covered RIs {}, All RIs {}", coverage * 100, coveredRecommendedInstances.size(),
                     allRecommendedInstances.size());
@@ -57,8 +62,8 @@ public class InfluenceByInconsistenciesInformant extends Informant {
     public void punishInconsistency(double coverage, Set<MDEInconsistency> mdeInconsistencySet) {
         mdeInconsistencySet.forEach(mde -> {
             var old = mde.recommendedInstance().getProbability();
-            //Punish more if mdes are rare
-            var probability = clamp(old * (1.0 - coverage), 0.0, 1.0);
+            //Punish more if coverage is high
+            var probability = clamp(old + maximumPunishment * coverage, 0.0, 1.0);
             mde.recommendedInstance().addProbability(this, probability);
         });
     }
@@ -66,7 +71,7 @@ public class InfluenceByInconsistenciesInformant extends Informant {
     public void rewardConsistency(double coverage, Set<LinkBetweenDeAndRi> linkBetweenDeAndRiSet) {
         linkBetweenDeAndRiSet.forEach(dl -> {
             var old = dl.getRecommendedInstance().getProbability();
-            //Reward more if mdes are rare
+            //Reward more if coverage is low
             var probability = clamp(old + maximumReward * (1.0 - coverage), 0.0, 1.0);
             dl.getRecommendedInstance().addProbability(this, probability);
         });

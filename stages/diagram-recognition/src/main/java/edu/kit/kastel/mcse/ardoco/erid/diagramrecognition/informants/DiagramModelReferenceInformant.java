@@ -5,6 +5,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
@@ -110,6 +111,15 @@ public class DiagramModelReferenceInformant extends Informant {
         for (TextBox textBox : texts) {
             map.put(textBox, DiagramUtil.getReferences(textBox));
         }
+
+        var atleastOneUpperCaseCharacterInTBox = map.entrySet()
+                .stream()
+                .filter(e -> e.getValue().stream().anyMatch(s -> !s.equals(s.toLowerCase(Locale.ENGLISH))))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        if (!atleastOneUpperCaseCharacterInTBox.isEmpty())
+            return atleastOneUpperCaseCharacterInTBox;
+
         return map;
     }
 }

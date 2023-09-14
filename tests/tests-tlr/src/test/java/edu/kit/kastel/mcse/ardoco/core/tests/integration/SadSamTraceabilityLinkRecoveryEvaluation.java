@@ -161,7 +161,7 @@ public class SadSamTraceabilityLinkRecoveryEvaluation<T extends GoldStandardProj
             ExpectedResults expectedResults) {
         if (logger.isInfoEnabled()) {
             String projectName = project.getProjectName().toLowerCase();
-            TestUtil.logResultsWithExpected(logger, projectName, results, expectedResults);
+            TestUtil.logExtendedResultsWithExpected(logger, projectName, results, expectedResults);
 
             var data = arDoCoResult.dataRepository();
             printDetailedDebug(results, data);

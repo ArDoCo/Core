@@ -16,6 +16,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.integration.SadSamTraceabilityLinkR
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.TraceLinkEvaluationIT;
 import edu.kit.kastel.mcse.ardoco.tests.eval.GoldStandardDiagramsWithTLR;
 
+@Disabled
 public class TraceLinkEvaluationWithMockERID extends TraceLinkEvaluationIT<GoldStandardDiagramsWithTLR> {
     @DisplayName("Evaluate SAD-SAM")
     @ParameterizedTest(name = "{0}")

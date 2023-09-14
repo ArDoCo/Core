@@ -3,6 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -148,6 +149,11 @@ public class DiagramUtil {
         var noBlank = splitAndDecameled.stream().map(s -> s.replaceAll("\\s+", "")).toList();
         names.addAll(splitAndDecameled);
         names.addAll(noBlank);
+
+        var atleastOneUpperCaseChar = names.stream().filter(s -> !s.equals(s.toLowerCase(Locale.ENGLISH))).collect(Collectors.toSet());
+
+        if (!atleastOneUpperCaseChar.isEmpty())
+            return atleastOneUpperCaseChar;
 
         return names;
     }

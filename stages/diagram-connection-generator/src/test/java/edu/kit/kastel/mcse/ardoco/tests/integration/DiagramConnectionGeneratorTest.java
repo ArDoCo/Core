@@ -168,15 +168,12 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
                 .map(r -> r.project().getAlias() + " & " + r.mapOfMetrics()
                         .values()
                         .stream()
-                        .map(d -> String.format(Locale.US, "%.2f", d))
+                        .map(d -> String.format(Locale.ENGLISH, "%.2f", d))
                         .collect(Collectors.joining(" & ")) + "\\\\")
                 .forEach(System.out::println);
+        System.out.println("Average & " + avg.values().stream().map(d -> String.format(Locale.ENGLISH, "%.2f", d)).collect(Collectors.joining(" & ")) + "\\\\");
         System.out.println(
-                "Average & " + avg.values().stream().map(d -> Double.toString(Math.round(d * 100.0) / 100.0)).collect(Collectors.joining(" & ")) + "\\\\");
-        System.out.println("w. Average & " + avgWeighted.values()
-                .stream()
-                .map(d -> Double.toString(Math.round(d * 100.0) / 100.0))
-                .collect(Collectors.joining(" & ")) + "\\\\");
+                "w. Average & " + avgWeighted.values().stream().map(d -> String.format(Locale.ENGLISH, "%.2f", d)).collect(Collectors.joining(" & ")) + "\\\\");
     }
 
     @Disabled
