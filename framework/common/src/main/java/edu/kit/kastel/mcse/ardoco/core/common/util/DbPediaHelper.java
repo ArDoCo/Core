@@ -16,7 +16,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class DbPediaHelper extends FileBasedCache<DbPediaHelper.DbPediaData> {
-    private static Logger logger = LoggerFactory.getLogger(DbPediaHelper.class);
+    private static final Logger logger = LoggerFactory.getLogger(DbPediaHelper.class);
     private static DbPediaHelper instance;
 
     public static synchronized @NotNull DbPediaHelper getInstance() {
@@ -37,8 +37,8 @@ public class DbPediaHelper extends FileBasedCache<DbPediaHelper.DbPediaData> {
                 PREFIX dbo:     <http://dbpedia.org/ontology/>
                 PREFIX yago: <http://dbpedia.org/class/yago/>
                                 
-                SELECT ?label 
-                WHERE { 
+                SELECT ?label
+                WHERE {
                         {
                         ?pl dbo:abstract ?abstract .
                         ?pl rdfs:label ?label .
@@ -71,8 +71,8 @@ public class DbPediaHelper extends FileBasedCache<DbPediaHelper.DbPediaData> {
                 PREFIX dbo:     <http://dbpedia.org/ontology/>
                 PREFIX yago: <http://dbpedia.org/class/yago/>
                                 
-                SELECT ?label 
-                WHERE { 
+                SELECT ?label
+                WHERE {
                         ?pl dbo:abstract ?abstract .
                         ?pl rdfs:label ?label .
                         ?pl rdf:type yago:MarkupLanguage106787835 .
@@ -93,8 +93,8 @@ public class DbPediaHelper extends FileBasedCache<DbPediaHelper.DbPediaData> {
                 PREFIX dbo:     <http://dbpedia.org/ontology/>
                 PREFIX yago: <http://dbpedia.org/class/yago/>
                                 
-                SELECT ?label 
-                WHERE { 
+                SELECT ?label
+                WHERE {
                         ?p rdf:type dbo:Software .
                         ?p dbo:programmingLanguage ?pl .
                         ?pl dbo:abstract ?abstract .
@@ -141,9 +141,8 @@ public class DbPediaHelper extends FileBasedCache<DbPediaHelper.DbPediaData> {
     protected DbPediaData read() throws CacheException {
         try {
             logger.info("Reading {} file", getIdentifier());
-            var dbPediaData = new ObjectMapper().readValue(getFile(), new TypeReference<DbPediaData>() {
+            return new ObjectMapper().readValue(getFile(), new TypeReference<>() {
             });
-            return dbPediaData;
         } catch (IOException e) {
             logger.error("Error reading {} file", getIdentifier());
             throw new CacheException(e);
