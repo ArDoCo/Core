@@ -29,7 +29,7 @@ public class TextImpl implements Text {
     public int getLength() {
         int length = 0;
         for (Sentence sentence : sentences) {
-            length += sentence.getText().length();
+            length += sentence.getWords().size();
         }
         return length;
     }

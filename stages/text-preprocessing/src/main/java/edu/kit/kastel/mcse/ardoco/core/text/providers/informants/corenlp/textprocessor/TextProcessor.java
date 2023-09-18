@@ -37,9 +37,8 @@ public class TextProcessor {
             int numberOfTry = 0;
             while (numberOfTry < MAX_FAILED_SERVICE_REQUESTS) {
                 try {
-                    Text processedText = processService(inputText);
-                    logger.info("Processed text with CoreNLP microservice.");
-                    return processedText;
+                    logger.info("Processing text with CoreNLP microservice.");
+                    return processService(inputText);
                 } catch (IOException e) {
                     numberOfTry++;
                     logger.warn("Could not process text with CoreNLP microservice. Trying again. ", e);
@@ -50,7 +49,7 @@ public class TextProcessor {
             }
             logger.warn("Could not process text with CoreNLP microservice. Processing locally instead.");
         }
-        logger.info("Processed text locally.");
+        logger.info("Processing text locally.");
         return processLocally(inputText);
     }
 
