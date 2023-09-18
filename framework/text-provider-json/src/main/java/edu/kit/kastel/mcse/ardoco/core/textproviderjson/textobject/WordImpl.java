@@ -7,7 +7,12 @@ import java.util.Objects;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.api.text.*;
+import edu.kit.kastel.mcse.ardoco.core.api.text.DependencyTag;
+import edu.kit.kastel.mcse.ardoco.core.api.text.POSTag;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 
 public class WordImpl implements Word {
 
@@ -125,13 +130,13 @@ public class WordImpl implements Word {
             return true;
         if (!(o instanceof WordImpl word))
             return false;
-        return indexInText == word.indexInText && sentenceNo == word.sentenceNo && Objects.equals(preWord, word.preWord) && Objects.equals(nextWord,
-                word.nextWord) && Objects.equals(text, word.text) && posTag == word.posTag && Objects.equals(lemma, word.lemma) && Objects.equals(
-                        ingoingDependencies, word.ingoingDependencies) && Objects.equals(outgoingDependencies, word.outgoingDependencies);
+        return indexInText == word.indexInText && sentenceNo == word.sentenceNo && Objects.equals(text, word.text) && posTag == word.posTag && Objects.equals(
+                lemma, word.lemma) && Objects.equals(ingoingDependencies, word.ingoingDependencies) && Objects.equals(outgoingDependencies,
+                word.outgoingDependencies);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(indexInText, preWord, nextWord, sentenceNo, text, posTag, lemma, ingoingDependencies, outgoingDependencies);
+        return Objects.hash(indexInText, sentenceNo, text, posTag, lemma, ingoingDependencies, outgoingDependencies);
     }
 }
