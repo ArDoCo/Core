@@ -16,6 +16,8 @@ public class TextImpl implements Text {
 
     private ImmutableList<Word> words;
 
+    private int length = -1;
+
     public TextImpl() {
         sentences = Lists.immutable.empty();
         words = Lists.immutable.empty();
@@ -26,10 +28,13 @@ public class TextImpl implements Text {
     }
 
     @Override
-    public int getLength() {
-        int length = 0;
-        for (Sentence sentence : sentences) {
-            length += sentence.getWords().size();
+    public synchronized int getLength() {
+        if (this.length < 0) {
+            int calculatedLength = 0;
+            for (Sentence sentence : sentences) {
+                calculatedLength += sentence.getWords().size();
+            }
+            this.length = calculatedLength;
         }
         return length;
     }
@@ -50,7 +55,7 @@ public class TextImpl implements Text {
     private ImmutableList<Word> collectWords() {
         MutableList<Word> collectedWords = Lists.mutable.empty();
         for (Sentence sentence : sentences) {
-            collectedWords.addAll(sentence.getWords().castToCollection());
+            collectedWords.addAll(sentence.getWords().toList());
         }
         return collectedWords.toImmutable();
     }
