@@ -2,6 +2,8 @@
 package edu.kit.kastel.mcse.ardoco.core.textproviderjson.textobject;
 
 import java.util.Objects;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -15,6 +17,7 @@ public class TextImpl implements Text {
     private ImmutableList<Sentence> sentences;
 
     private ImmutableList<Word> words;
+    private final SortedMap<Integer, Word> wordsIndex = new TreeMap<>();
 
     private int length = -1;
 
@@ -43,8 +46,21 @@ public class TextImpl implements Text {
     public ImmutableList<Word> words() {
         if (words.isEmpty()) {
             words = collectWords();
+            int index = 0;
+            for (Word word : words) {
+                wordsIndex.put(index, word);
+                index++;
+            }
         }
         return words;
+    }
+
+    @Override
+    public synchronized Word getWord(int index) {
+        if (wordsIndex.isEmpty()) {
+            words();
+        }
+        return wordsIndex.get(index);
     }
 
     @Override
