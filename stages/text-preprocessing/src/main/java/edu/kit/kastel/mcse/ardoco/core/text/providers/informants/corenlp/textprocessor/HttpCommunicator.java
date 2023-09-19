@@ -2,14 +2,18 @@
 package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.textprocessor;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import org.apache.hc.client5.http.auth.AuthScope;
 import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
 import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
 import org.apache.hc.client5.http.impl.classic.BasicHttpClientResponseHandler;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.io.entity.StringEntity;
 
 public class HttpCommunicator {
 
@@ -21,6 +25,24 @@ public class HttpCommunicator {
         }
 
         HttpGet request = new HttpGet(requestUrl);
+        BasicCredentialsProvider provider = new BasicCredentialsProvider();
+        provider.setCredentials(new AuthScope(null, -1), new UsernamePasswordCredentials(username, password.toCharArray()));
+        try (CloseableHttpClient httpClient = HttpClients.custom().setDefaultCredentialsProvider(provider).build()) {
+            return httpClient.execute(request, new BasicHttpClientResponseHandler());
+        }
+    }
+
+    public String sendAuthenticatedPostRequest(String requestUrl, String body) throws IOException {
+        String username = System.getenv("USERNAME");
+        String password = System.getenv("PASSWORD");
+        if (username == null || password == null) {
+            throw new IOException("Environment variables USERNAME and PASSWORD must be set.");
+        }
+
+        HttpPost request = new HttpPost(requestUrl);
+        StringEntity requestEntity = new StringEntity(body, ContentType.APPLICATION_JSON, StandardCharsets.UTF_8.toString(), false); //TODO
+        request.setEntity(requestEntity);
+
         BasicCredentialsProvider provider = new BasicCredentialsProvider();
         provider.setCredentials(new AuthScope(null, -1), new UsernamePasswordCredentials(username, password.toCharArray()));
         try (CloseableHttpClient httpClient = HttpClients.custom().setDefaultCredentialsProvider(provider).build()) {
