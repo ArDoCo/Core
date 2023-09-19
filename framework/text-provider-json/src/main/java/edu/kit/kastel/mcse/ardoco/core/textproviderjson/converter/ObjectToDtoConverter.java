@@ -9,10 +9,14 @@ import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.list.ImmutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.api.text.*;
+import edu.kit.kastel.mcse.ardoco.core.api.text.DependencyTag;
+import edu.kit.kastel.mcse.ardoco.core.api.text.POSTag;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.textproviderjson.dto.IncomingDependencyDto;
 import edu.kit.kastel.mcse.ardoco.core.textproviderjson.dto.OutgoingDependencyDto;
-import edu.kit.kastel.mcse.ardoco.core.textproviderjson.dto.PosTag;
 import edu.kit.kastel.mcse.ardoco.core.textproviderjson.dto.SentenceDto;
 import edu.kit.kastel.mcse.ardoco.core.textproviderjson.dto.TextDto;
 import edu.kit.kastel.mcse.ardoco.core.textproviderjson.dto.WordDto;
@@ -27,7 +31,7 @@ public class ObjectToDtoConverter {
 
     /**
      * converts an ArDoCo text into a text DTO
-     * 
+     *
      * @param text the ArDoCo text
      * @return the text DTO
      */
@@ -74,7 +78,7 @@ public class ObjectToDtoConverter {
         wordDTO.setText(word.getText());
         wordDTO.setLemma(word.getLemma());
         try {
-            wordDTO.setPosTag(PosTag.forValue(word.getPosTag().toString()));
+            wordDTO.setPosTag(POSTag.forValue(word.getPosTag().toString()));
         } catch (IOException e) {
             throw new NotConvertableException(String.format("IOException when converting word with id %d to WordDto: PosTag not found.", wordDTO.getId()));
         }
