@@ -68,7 +68,7 @@ public class WordImpl implements Word {
     public Word getPreWord() {
         int preWordIndex = indexInText - 1;
         if (preWord == null && preWordIndex > 0) {
-            preWord = parent.words().get(preWordIndex);
+            preWord = parent.getWord(preWordIndex);
         }
         return preWord;
     }
@@ -77,7 +77,7 @@ public class WordImpl implements Word {
     public Word getNextWord() {
         int nextWordIndex = indexInText + 1;
         if (nextWord == null && nextWordIndex < parent.getLength()) {
-            nextWord = parent.words().get(nextWordIndex);
+            nextWord = parent.getWord(nextWordIndex);
         }
         return nextWord;
     }
@@ -95,14 +95,14 @@ public class WordImpl implements Word {
     @Override
     public ImmutableList<Word> getOutgoingDependencyWordsWithType(DependencyTag dependencyTag) {
         List<DependencyImpl> dependenciesOfType = this.outgoingDependencies.stream().filter(x -> x.getDependencyTag() == dependencyTag).toList();
-        List<Word> words = dependenciesOfType.stream().map(x -> this.parent.words().get((int) x.getWordId())).toList();
+        List<Word> words = dependenciesOfType.stream().map(x -> this.parent.getWord((int) x.getWordId())).toList();
         return Lists.immutable.ofAll(words);
     }
 
     @Override
     public ImmutableList<Word> getIncomingDependencyWordsWithType(DependencyTag dependencyTag) {
         List<DependencyImpl> dependenciesOfType = this.ingoingDependencies.stream().filter(x -> x.getDependencyTag() == dependencyTag).toList();
-        List<Word> words = dependenciesOfType.stream().map(x -> this.parent.words().get((int) x.getWordId())).toList();
+        List<Word> words = dependenciesOfType.stream().map(x -> this.parent.getWord((int) x.getWordId())).toList();
         return Lists.immutable.ofAll(words);
     }
 

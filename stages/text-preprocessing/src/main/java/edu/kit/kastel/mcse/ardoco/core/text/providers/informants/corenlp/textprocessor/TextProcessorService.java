@@ -44,13 +44,7 @@ public class TextProcessorService {
     }
 
     private static String encodeText(String inputText) {
-        String encodedText = URLEncoder.encode(inputText, StandardCharsets.UTF_8);
-        return encodedText;
-    }
-
-    private String sendAuthenticatedGetRequest(String requestUrl) throws IOException {
-        HttpCommunicator httpCommunicator = new HttpCommunicator();
-        return httpCommunicator.sendAuthenticatedGetRequest(requestUrl);
+        return URLEncoder.encode(inputText, StandardCharsets.UTF_8);
     }
 
     private String sendAuthenticatedPostRequest(String requestUrl, String encodedText) throws IOException {
