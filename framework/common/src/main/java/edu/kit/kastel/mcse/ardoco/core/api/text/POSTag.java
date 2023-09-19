@@ -1,12 +1,15 @@
 /* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.text;
 
+import java.io.IOException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * This class represents all valid part-of-speech (pos) tags
- *
  */
 public enum POSTag {
     //@formatter:off
@@ -77,4 +80,19 @@ public enum POSTag {
     public boolean isNoun() {
         return getTag().startsWith("NN");
     }
+
+    @JsonValue
+    public String toValue() {
+        return getTag();
+    }
+
+    @JsonCreator
+    public static POSTag forValue(String value) throws IOException {
+        try {
+            return get(value);
+        } catch (IllegalArgumentException e) {
+            throw new IOException("Cannot deserialize PosTag");
+        }
+    }
+
 }
