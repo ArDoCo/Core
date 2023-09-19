@@ -22,24 +22,28 @@ import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 public class PhraseImpl implements Phrase {
     private static final String PUNCTUATION_WITH_SPACE = "\\s+([.,;:?!])";
     private static final String BRACKETS_WITH_SPACE = "\\s+([()\\[\\]{}<>])";
+    private final PhraseType type;
+    private final ImmutableList<Phrase> childPhrases;
     private final ImmutableList<Word> nonPhraseWords;
     private ImmutableList<Word> phraseWords;
-
+    private ImmutableList<Word> containedWords;
+    private ImmutableList<Phrase> subPhrases;
+    private ImmutableSortedMap<Word, Integer> phraseVector;
+    private int sentenceNo = -1;
     private String text;
-
-    private final PhraseType type;
-
-    private final List<Phrase> childPhrases;
 
     public PhraseImpl(ImmutableList<Word> nonPhraseWords, PhraseType type, List<Phrase> childPhrases) {
         this.nonPhraseWords = nonPhraseWords == null ? Lists.immutable.empty() : nonPhraseWords;
         this.type = type;
-        this.childPhrases = childPhrases;
+        this.childPhrases = Lists.immutable.ofAll(childPhrases);
     }
 
     @Override
-    public int getSentenceNo() {
-        return getContainedWords().get(0).getSentenceNo();
+    public synchronized int getSentenceNo() {
+        if (sentenceNo < 0) {
+            sentenceNo = getContainedWords().get(0).getSentenceNo();
+        }
+        return sentenceNo;
     }
 
     @Override
@@ -60,70 +64,79 @@ public class PhraseImpl implements Phrase {
     }
 
     @Override
-    public ImmutableList<Word> getContainedWords() {
-        if (phraseWords == null) {
-            List<Word> collectedWords = new ArrayList<>();
-            for (Phrase subphrase : childPhrases) {
-                collectedWords.addAll(subphrase.getContainedWords().castToList());
+    public synchronized ImmutableList<Word> getContainedWords() {
+        if (containedWords == null) {
+            if (phraseWords == null) {
+                List<Word> collectedWords = new ArrayList<>();
+                for (Phrase subphrase : childPhrases) {
+                    collectedWords.addAll(subphrase.getContainedWords().castToList());
+                }
+                this.phraseWords = Lists.immutable.ofAll(collectedWords);
             }
-            this.phraseWords = Lists.immutable.ofAll(collectedWords);
+
+            MutableList<Word> words = Lists.mutable.ofAll(nonPhraseWords);
+            words.addAllIterable(phraseWords);
+            words.sortThis(Comparator.comparingInt(Word::getPosition));
+            containedWords = words.toImmutable();
         }
 
-        MutableList<Word> words = Lists.mutable.ofAll(nonPhraseWords);
-        words.addAllIterable(phraseWords);
-        words.sortThis(Comparator.comparingInt(Word::getPosition));
-        return words.toImmutable();
+        return containedWords;
     }
 
     @Override
-    public ImmutableList<Phrase> getSubPhrases() {
-        List<Phrase> subPhrases = new ArrayList<>(childPhrases);
-        for (Phrase childPhrase : childPhrases) {
-            subPhrases.addAll(childPhrase.getSubPhrases().toList());
+    public synchronized ImmutableList<Phrase> getSubPhrases() {
+        if (subPhrases == null) {
+            MutableList<Phrase> tempSubPhrases = Lists.mutable.ofAll(childPhrases);
+            for (Phrase childPhrase : childPhrases) {
+                tempSubPhrases.addAll(childPhrase.getSubPhrases().toList());
+            }
+            subPhrases = tempSubPhrases.toImmutable();
         }
-        return Lists.immutable.ofAll(subPhrases);
+        return subPhrases;
     }
 
     @Override
     public boolean isSuperPhraseOf(Phrase other) {
-        List<Phrase> subphrases = this.childPhrases;
+        MutableList<Phrase> subphrases = Lists.mutable.ofAll(this.getSubPhrases());
         while (!subphrases.isEmpty()) {
             if (subphrases.contains(other)) {
                 return true;
             }
-            List<Phrase> newSubphrases = new ArrayList<>();
-            for (Phrase subphrase : subphrases) {
-                newSubphrases.addAll(subphrase.getSubPhrases().castToList());
-            }
-            subphrases = newSubphrases;
+            subphrases = getSubPhrasesOfPhrases(subphrases);
         }
         return false;
+    }
+
+    private static MutableList<Phrase> getSubPhrasesOfPhrases(MutableList<Phrase> subphrases) {
+        MutableList<Phrase> newSubphrases = Lists.mutable.empty();
+        for (Phrase subphrase : subphrases) {
+            newSubphrases.addAll(subphrase.getSubPhrases().castToList());
+        }
+        subphrases = newSubphrases;
+        return subphrases;
     }
 
     @Override
     public boolean isSubPhraseOf(Phrase other) {
-        List<Phrase> subphrases = other.getSubPhrases().castToList();
+        MutableList<Phrase> subphrases = Lists.mutable.ofAll(other.getSubPhrases());
         while (!subphrases.isEmpty()) {
             if (subphrases.contains(this)) {
                 return true;
             }
-            List<Phrase> newSubphrases = new ArrayList<>();
-            for (Phrase subphrase : subphrases) {
-                newSubphrases.addAll(subphrase.getSubPhrases().castToList());
-            }
-            subphrases = newSubphrases;
+            subphrases = getSubPhrasesOfPhrases(subphrases);
         }
         return false;
     }
 
     @Override
-    public ImmutableSortedMap<Word, Integer> getPhraseVector() {
-        MutableSortedMap<Word, Integer> phraseVector = SortedMaps.mutable.empty();
-
-        var grouped = getContainedWords().groupBy(Word::getText).toMap();
-        grouped.forEach((key, value) -> phraseVector.put(value.getAny(), value.size()));
-
-        return phraseVector.toImmutable();
+    public synchronized ImmutableSortedMap<Word, Integer> getPhraseVector() {
+        if (this.phraseVector == null) {
+            MutableSortedMap<Word, Integer> phraseVector = SortedMaps.mutable.empty();
+            var grouped = getContainedWords().groupBy(Word::getText).toMap();
+            grouped.forEach((key, value) -> phraseVector.put(value.getAny(), value.size()));
+            this.phraseVector = phraseVector.toImmutable();
+        }
+        return this.phraseVector;
     }
 
     @Override
@@ -137,8 +150,8 @@ public class PhraseImpl implements Phrase {
             return true;
         if (!(o instanceof PhraseImpl phrase))
             return false;
-        return Objects.equals(getContainedWords(), phrase.getContainedWords()) && Objects.equals(getText(), phrase.getText()) && type == phrase.type && Objects
-                .equals(childPhrases, phrase.childPhrases);
+        return Objects.equals(getContainedWords(), phrase.getContainedWords()) && Objects.equals(getText(),
+                phrase.getText()) && type == phrase.type && Objects.equals(childPhrases, phrase.childPhrases);
     }
 
     @Override
