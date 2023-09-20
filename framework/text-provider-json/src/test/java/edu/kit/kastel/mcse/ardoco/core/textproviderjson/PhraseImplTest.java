@@ -65,9 +65,8 @@ class PhraseImplTest {
     void testIsSuperPhraseOf() {
         Phrase subphrase = phraseImplInstance.getSubPhrases().get(0);
         Assertions.assertAll(//
-                () -> Assertions.assertTrue(phraseImplInstance.isSuperPhraseOf(subphrase)),
-                () -> Assertions.assertFalse(phraseImplInstance.isSuperPhraseOf(phraseImplInstance)),
-                () -> Assertions.assertFalse(subphrase.isSuperPhraseOf(phraseImplInstance))//
+                () -> Assertions.assertTrue(phraseImplInstance.isSuperPhraseOf(subphrase)), () -> Assertions.assertFalse(phraseImplInstance.isSuperPhraseOf(
+                        phraseImplInstance)), () -> Assertions.assertFalse(subphrase.isSuperPhraseOf(phraseImplInstance))//
         );
     }
 
@@ -75,9 +74,8 @@ class PhraseImplTest {
     void testIsSubPhraseOf() {
         Phrase subphrase = phraseImplInstance.getSubPhrases().get(0);
         Assertions.assertAll(//
-                () -> Assertions.assertFalse(phraseImplInstance.isSubPhraseOf(subphrase)),
-                () -> Assertions.assertFalse(phraseImplInstance.isSubPhraseOf(phraseImplInstance)),
-                () -> Assertions.assertTrue(subphrase.isSubPhraseOf(phraseImplInstance))//
+                () -> Assertions.assertFalse(phraseImplInstance.isSubPhraseOf(subphrase)), () -> Assertions.assertFalse(phraseImplInstance.isSubPhraseOf(
+                        phraseImplInstance)), () -> Assertions.assertTrue(subphrase.isSubPhraseOf(phraseImplInstance))//
         );
     }
 
