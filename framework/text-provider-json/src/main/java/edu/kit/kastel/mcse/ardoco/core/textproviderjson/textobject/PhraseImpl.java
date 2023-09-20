@@ -131,10 +131,10 @@ public class PhraseImpl implements Phrase {
     @Override
     public synchronized ImmutableSortedMap<Word, Integer> getPhraseVector() {
         if (this.phraseVector == null) {
-            MutableSortedMap<Word, Integer> phraseVector = SortedMaps.mutable.empty();
+            MutableSortedMap<Word, Integer> tempPhraseVector = SortedMaps.mutable.empty();
             var grouped = getContainedWords().groupBy(Word::getText).toMap();
-            grouped.forEach((key, value) -> phraseVector.put(value.getAny(), value.size()));
-            this.phraseVector = phraseVector.toImmutable();
+            grouped.forEach((key, value) -> tempPhraseVector.put(value.getAny(), value.size()));
+            this.phraseVector = tempPhraseVector.toImmutable();
         }
         return this.phraseVector;
     }
@@ -150,8 +150,8 @@ public class PhraseImpl implements Phrase {
             return true;
         if (!(o instanceof PhraseImpl phrase))
             return false;
-        return Objects.equals(getContainedWords(), phrase.getContainedWords()) && Objects.equals(getText(), phrase.getText()) && type == phrase.type && Objects
-                .equals(childPhrases, phrase.childPhrases);
+        return Objects.equals(getContainedWords(), phrase.getContainedWords()) && Objects.equals(getText(),
+                phrase.getText()) && type == phrase.type && Objects.equals(childPhrases, phrase.childPhrases);
     }
 
     @Override
