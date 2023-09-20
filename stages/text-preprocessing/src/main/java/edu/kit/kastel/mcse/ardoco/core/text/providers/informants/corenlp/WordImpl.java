@@ -167,8 +167,8 @@ class WordImpl implements Word {
         if (!(o instanceof WordImpl word))
             return false;
 
-        return word.getText()
-                .equals(this.getText()) && getPosition() == word.getPosition() && getPosTag() == word.getPosTag() && getSentenceNo() == word.getSentenceNo();
+        return word.getText().equals(this.getText()) && getPosition() == word.getPosition() && getPosTag() == word.getPosTag() && getSentenceNo() == word
+                .getSentenceNo();
     }
 
     @Override
