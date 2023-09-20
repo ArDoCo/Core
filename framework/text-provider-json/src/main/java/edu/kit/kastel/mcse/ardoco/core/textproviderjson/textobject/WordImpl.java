@@ -132,7 +132,7 @@ public class WordImpl implements Word {
             return false;
         return indexInText == word.indexInText && sentenceNo == word.sentenceNo && Objects.equals(text, word.text) && posTag == word.posTag && Objects.equals(
                 lemma, word.lemma) && Objects.equals(ingoingDependencies, word.ingoingDependencies) && Objects.equals(outgoingDependencies,
-                word.outgoingDependencies);
+                        word.outgoingDependencies);
     }
 
     @Override

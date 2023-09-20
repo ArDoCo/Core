@@ -91,9 +91,9 @@ public final class TestUtil {
     public static Text generateDefaultText() {
         TextImpl text = new TextImpl();
         List<WordImpl> words = new ArrayList<>(List.of(new WordImpl(text, 0, 0, "This", POSTag.DETERMINER, "this", new ArrayList<>(), new ArrayList<>()),
-                new WordImpl(text, 1, 0, "is", POSTag.VERB_SINGULAR_PRESENT_THIRD_PERSON, "be", new ArrayList<>(), new ArrayList<>()),
-                new WordImpl(text, 2, 0, "me", POSTag.PRONOUN_PERSONAL, "I", new ArrayList<>(), new ArrayList<>()),
-                new WordImpl(text, 3, 0, ".", POSTag.CLOSER, ".", new ArrayList<>(), new ArrayList<>())));
+                new WordImpl(text, 1, 0, "is", POSTag.VERB_SINGULAR_PRESENT_THIRD_PERSON, "be", new ArrayList<>(), new ArrayList<>()), new WordImpl(text, 2, 0,
+                        "me", POSTag.PRONOUN_PERSONAL, "I", new ArrayList<>(), new ArrayList<>()), new WordImpl(text, 3, 0, ".", POSTag.CLOSER, ".",
+                                new ArrayList<>(), new ArrayList<>())));
 
         SentenceImpl sentence1 = new SentenceImpl(0, "This is me.", Lists.immutable.ofAll(words));
 
@@ -207,9 +207,9 @@ public final class TestUtil {
         List<Sentence> sentences = new ArrayList<>();
 
         List<WordImpl> words = new ArrayList<>(List.of(new WordImpl(text, 0, 0, "This", POSTag.DETERMINER, "this", new ArrayList<>(), new ArrayList<>()),
-                new WordImpl(text, 1, 0, "is", POSTag.VERB_SINGULAR_PRESENT_THIRD_PERSON, "be", new ArrayList<>(), new ArrayList<>()),
-                new WordImpl(text, 2, 0, "me", POSTag.PRONOUN_PERSONAL, "I", new ArrayList<>(), new ArrayList<>()),
-                new WordImpl(text, 3, 0, ".", POSTag.CLOSER, ".", new ArrayList<>(), new ArrayList<>())));
+                new WordImpl(text, 1, 0, "is", POSTag.VERB_SINGULAR_PRESENT_THIRD_PERSON, "be", new ArrayList<>(), new ArrayList<>()), new WordImpl(text, 2, 0,
+                        "me", POSTag.PRONOUN_PERSONAL, "I", new ArrayList<>(), new ArrayList<>()), new WordImpl(text, 3, 0, ".", POSTag.CLOSER, ".",
+                                new ArrayList<>(), new ArrayList<>())));
 
         SentenceImpl sentence1 = new SentenceImpl(0, "This is me.", Lists.immutable.ofAll(words));
 
@@ -226,9 +226,9 @@ public final class TestUtil {
         sentences.add(sentence1);
 
         List<WordImpl> words2 = new ArrayList<>(List.of(new WordImpl(text, 4, 1, "This", POSTag.DETERMINER, "this", new ArrayList<>(), new ArrayList<>()),
-                new WordImpl(text, 5, 1, "is", POSTag.VERB_SINGULAR_PRESENT_THIRD_PERSON, "be", new ArrayList<>(), new ArrayList<>()),
-                new WordImpl(text, 6, 1, "you", POSTag.PRONOUN_PERSONAL, "you", new ArrayList<>(), new ArrayList<>()),
-                new WordImpl(text, 7, 1, ".", POSTag.CLOSER, ".", new ArrayList<>(), new ArrayList<>())));
+                new WordImpl(text, 5, 1, "is", POSTag.VERB_SINGULAR_PRESENT_THIRD_PERSON, "be", new ArrayList<>(), new ArrayList<>()), new WordImpl(text, 6, 1,
+                        "you", POSTag.PRONOUN_PERSONAL, "you", new ArrayList<>(), new ArrayList<>()), new WordImpl(text, 7, 1, ".", POSTag.CLOSER, ".",
+                                new ArrayList<>(), new ArrayList<>())));
         SentenceImpl sentence2 = new SentenceImpl(1, "This is you.", Lists.immutable.ofAll(words2));
 
         Phrase subsubphrase2 = new PhraseImpl(Lists.immutable.of(words2.get(2)), PhraseType.NP, new ArrayList<>());
