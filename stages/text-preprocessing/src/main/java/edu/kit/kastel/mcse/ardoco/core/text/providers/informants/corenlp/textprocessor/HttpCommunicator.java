@@ -40,7 +40,7 @@ public class HttpCommunicator {
         }
 
         HttpPost request = new HttpPost(requestUrl);
-        StringEntity requestEntity = new StringEntity(body, ContentType.APPLICATION_JSON, StandardCharsets.UTF_8.toString(), false); //TODO
+        StringEntity requestEntity = new StringEntity(body, ContentType.APPLICATION_JSON, StandardCharsets.UTF_8.toString(), false);
         request.setEntity(requestEntity);
 
         BasicCredentialsProvider provider = new BasicCredentialsProvider();
