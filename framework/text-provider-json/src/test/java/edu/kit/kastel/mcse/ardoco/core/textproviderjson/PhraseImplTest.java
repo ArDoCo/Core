@@ -12,12 +12,13 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.textproviderjson.converter.DtoToObjectConverter;
 import edu.kit.kastel.mcse.ardoco.core.textproviderjson.error.NotConvertableException;
+import edu.kit.kastel.mcse.ardoco.core.textproviderjson.textobject.PhraseImpl;
 
 class PhraseImplTest {
 
     private static final DtoToObjectConverter CONVERTER = new DtoToObjectConverter();
     private static Phrase baselinePhrase;
-    private Phrase phraseImplInstance;
+    private PhraseImpl phraseImplInstance;
 
     @BeforeAll
     static void initAll() {
@@ -29,7 +30,7 @@ class PhraseImplTest {
     void init() {
         try {
             Text textImplInstance = CONVERTER.convertText(TestUtil.generateDTOWithMultipleSentences());
-            phraseImplInstance = textImplInstance.getSentences().get(1).getPhrases().get(0);
+            phraseImplInstance = (PhraseImpl) textImplInstance.getSentences().get(1).getPhrases().get(0);
         } catch (NotConvertableException | IOException e) {
             throw new RuntimeException(e);
         }
@@ -64,8 +65,9 @@ class PhraseImplTest {
     void testIsSuperPhraseOf() {
         Phrase subphrase = phraseImplInstance.getSubPhrases().get(0);
         Assertions.assertAll(//
-                () -> Assertions.assertTrue(phraseImplInstance.isSuperPhraseOf(subphrase)), () -> Assertions.assertFalse(phraseImplInstance.isSuperPhraseOf(
-                        phraseImplInstance)), () -> Assertions.assertFalse(subphrase.isSuperPhraseOf(phraseImplInstance))//
+                () -> Assertions.assertTrue(phraseImplInstance.isSuperPhraseOf(subphrase)),
+                () -> Assertions.assertFalse(phraseImplInstance.isSuperPhraseOf(phraseImplInstance)),
+                () -> Assertions.assertFalse(subphrase.isSuperPhraseOf(phraseImplInstance))//
         );
     }
 
@@ -73,9 +75,20 @@ class PhraseImplTest {
     void testIsSubPhraseOf() {
         Phrase subphrase = phraseImplInstance.getSubPhrases().get(0);
         Assertions.assertAll(//
-                () -> Assertions.assertFalse(phraseImplInstance.isSubPhraseOf(subphrase)), () -> Assertions.assertFalse(phraseImplInstance.isSubPhraseOf(
-                        phraseImplInstance)), () -> Assertions.assertTrue(subphrase.isSubPhraseOf(phraseImplInstance))//
+                () -> Assertions.assertFalse(phraseImplInstance.isSubPhraseOf(subphrase)),
+                () -> Assertions.assertFalse(phraseImplInstance.isSubPhraseOf(phraseImplInstance)),
+                () -> Assertions.assertTrue(subphrase.isSubPhraseOf(phraseImplInstance))//
         );
+    }
+
+    @Test
+    void testGetPhraseVector() {
+        Assertions.assertEquals(baselinePhrase.getPhraseVector().size(), phraseImplInstance.getPhraseVector().size());
+    }
+
+    @Test
+    void simpleHashCodeTest() {
+        Assertions.assertEquals(phraseImplInstance.hashCode(), phraseImplInstance.hashCode());
     }
 
 }
