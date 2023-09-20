@@ -6,8 +6,6 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.config.ConfigManager;
@@ -21,7 +19,6 @@ import edu.kit.kastel.mcse.ardoco.core.textproviderjson.error.NotConvertableExce
  * This text processor processes texts by sending requests to a microservice, which provides text processing using CoreNLP.
  */
 public class TextProcessorService {
-    private static final Logger logger = LoggerFactory.getLogger(TextProcessorService.class);
 
     /**
      * processes and annotates a given text by sending requests to a microservice
@@ -31,12 +28,12 @@ public class TextProcessorService {
      */
     public Text processText(String inputText) throws IOException, InvalidJsonException, NotConvertableException {
         TextDto textDto;
-        String jsonText = sendCorenlpRequest(inputText);
+        String jsonText = sendCoreNlpRequest(inputText);
         textDto = JsonConverter.fromJsonString(jsonText);
         return new DtoToObjectConverter().convertText(textDto);
     }
 
-    private String sendCorenlpRequest(String inputText) throws IOException {
+    private String sendCoreNlpRequest(String inputText) throws IOException {
         String encodedText = encodeText(inputText);
         ConfigManager configManager = ConfigManager.INSTANCE;
         String requestUrl = configManager.getMicroserviceUrl() + configManager.getCorenlpService();
