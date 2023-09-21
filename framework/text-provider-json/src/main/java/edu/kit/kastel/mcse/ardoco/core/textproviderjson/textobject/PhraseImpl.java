@@ -108,12 +108,11 @@ public class PhraseImpl implements Phrase {
     }
 
     private static MutableList<Phrase> getSubPhrasesOfPhrases(MutableList<Phrase> subphrases) {
-        MutableList<Phrase> newSubphrases = Lists.mutable.empty();
+        MutableList<Phrase> subPhrasesOfPhrases = Lists.mutable.empty();
         for (Phrase subphrase : subphrases) {
-            newSubphrases.addAll(subphrase.getSubPhrases().castToList());
+            subPhrasesOfPhrases.addAll(subphrase.getSubPhrases().castToList());
         }
-        subphrases = newSubphrases;
-        return subphrases;
+        return subPhrasesOfPhrases;
     }
 
     @Override
@@ -150,8 +149,8 @@ public class PhraseImpl implements Phrase {
             return true;
         if (!(o instanceof PhraseImpl phrase))
             return false;
-        return Objects.equals(getContainedWords(), phrase.getContainedWords()) && Objects.equals(getText(), phrase.getText()) && type == phrase.type && Objects
-                .equals(childPhrases, phrase.childPhrases);
+        return Objects.equals(getContainedWords(), phrase.getContainedWords()) && Objects.equals(getText(),
+                phrase.getText()) && type == phrase.type && Objects.equals(childPhrases, phrase.childPhrases);
     }
 
     @Override
