@@ -17,11 +17,14 @@ import org.apache.hc.core5.http.io.entity.StringEntity;
 
 public class HttpCommunicator {
 
+    public static final String ENV_USERNAME = "SCNLP_SERVICE_USER";
+    public static final String ENV_PASSWORD = "SCNLP_SERVICE_PASSWORD";
+
     public String sendAuthenticatedGetRequest(String requestUrl) throws IOException {
-        String username = System.getenv("USERNAME");
-        String password = System.getenv("PASSWORD");
+        String username = System.getenv(ENV_USERNAME);
+        String password = System.getenv(ENV_PASSWORD);
         if (username == null || password == null) {
-            throw new IOException("Environment variables USERNAME and PASSWORD must be set.");
+            throw new IOException("Environment variables MS_USER and PASSWORD must be set.");
         }
 
         HttpGet request = new HttpGet(requestUrl);
@@ -33,8 +36,8 @@ public class HttpCommunicator {
     }
 
     public String sendAuthenticatedPostRequest(String requestUrl, String body) throws IOException {
-        String username = System.getenv("USERNAME");
-        String password = System.getenv("PASSWORD");
+        String username = System.getenv(ENV_USERNAME);
+        String password = System.getenv(ENV_PASSWORD);
         if (username == null || password == null) {
             throw new IOException("Environment variables USERNAME and PASSWORD must be set.");
         }
