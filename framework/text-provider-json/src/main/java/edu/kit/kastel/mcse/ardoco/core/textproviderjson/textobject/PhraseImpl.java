@@ -149,8 +149,8 @@ public class PhraseImpl implements Phrase {
             return true;
         if (!(o instanceof PhraseImpl phrase))
             return false;
-        return Objects.equals(getContainedWords(), phrase.getContainedWords()) && Objects.equals(getText(),
-                phrase.getText()) && type == phrase.type && Objects.equals(childPhrases, phrase.childPhrases);
+        return Objects.equals(getContainedWords(), phrase.getContainedWords()) && Objects.equals(getText(), phrase.getText()) && type == phrase.type && Objects
+                .equals(childPhrases, phrase.childPhrases);
     }
 
     @Override
