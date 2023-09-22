@@ -2,6 +2,8 @@
 package edu.kit.kastel.mcse.ardoco.core.textproviderjson.textobject;
 
 import java.util.Objects;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -15,6 +17,9 @@ public class TextImpl implements Text {
     private ImmutableList<Sentence> sentences;
 
     private ImmutableList<Word> words;
+    private final SortedMap<Integer, Word> wordsIndex = new TreeMap<>();
+
+    private int length = -1;
 
     public TextImpl() {
         sentences = Lists.immutable.empty();
@@ -26,10 +31,13 @@ public class TextImpl implements Text {
     }
 
     @Override
-    public int getLength() {
-        int length = 0;
-        for (Sentence sentence : sentences) {
-            length += sentence.getText().length();
+    public synchronized int getLength() {
+        if (this.length < 0) {
+            int calculatedLength = 0;
+            for (Sentence sentence : sentences) {
+                calculatedLength += sentence.getWords().size();
+            }
+            this.length = calculatedLength;
         }
         return length;
     }
@@ -38,8 +46,21 @@ public class TextImpl implements Text {
     public ImmutableList<Word> words() {
         if (words.isEmpty()) {
             words = collectWords();
+            int index = 0;
+            for (Word word : words) {
+                wordsIndex.put(index, word);
+                index++;
+            }
         }
         return words;
+    }
+
+    @Override
+    public synchronized Word getWord(int index) {
+        if (wordsIndex.isEmpty()) {
+            words();
+        }
+        return wordsIndex.get(index);
     }
 
     @Override
@@ -50,7 +71,7 @@ public class TextImpl implements Text {
     private ImmutableList<Word> collectWords() {
         MutableList<Word> collectedWords = Lists.mutable.empty();
         for (Sentence sentence : sentences) {
-            collectedWords.addAll(sentence.getWords().castToCollection());
+            collectedWords.addAll(sentence.getWords().toList());
         }
         return collectedWords.toImmutable();
     }

@@ -7,10 +7,14 @@ import java.util.List;
 
 import org.eclipse.collections.api.factory.Lists;
 
-import edu.kit.kastel.mcse.ardoco.core.api.text.*;
+import edu.kit.kastel.mcse.ardoco.core.api.text.DependencyTag;
+import edu.kit.kastel.mcse.ardoco.core.api.text.POSTag;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
+import edu.kit.kastel.mcse.ardoco.core.api.text.PhraseType;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.textproviderjson.dto.IncomingDependencyDto;
 import edu.kit.kastel.mcse.ardoco.core.textproviderjson.dto.OutgoingDependencyDto;
-import edu.kit.kastel.mcse.ardoco.core.textproviderjson.dto.PosTag;
 import edu.kit.kastel.mcse.ardoco.core.textproviderjson.dto.SentenceDto;
 import edu.kit.kastel.mcse.ardoco.core.textproviderjson.dto.TextDto;
 import edu.kit.kastel.mcse.ardoco.core.textproviderjson.dto.WordDto;
@@ -30,7 +34,7 @@ public final class TestUtil {
 
     /**
      * generates a default textDTO without dependencies between the words
-     * 
+     *
      * @return a default textDTO
      */
     public static TextDto generateDefaultDTO() throws IOException {
@@ -39,28 +43,28 @@ public final class TestUtil {
         word1.setSentenceNo(1);
         word1.setLemma("this");
         word1.setText("This");
-        word1.setPosTag(PosTag.forValue("DT"));
+        word1.setPosTag(POSTag.forValue("DT"));
 
         WordDto word2 = new WordDto();
         word2.setId(2);
         word2.setSentenceNo(1);
         word2.setLemma("be");
         word2.setText("is");
-        word2.setPosTag(PosTag.forValue("VBZ"));
+        word2.setPosTag(POSTag.forValue("VBZ"));
 
         WordDto word3 = new WordDto();
         word3.setId(3);
         word3.setSentenceNo(1);
         word3.setLemma("I");
         word3.setText("me");
-        word3.setPosTag(PosTag.forValue("PRP"));
+        word3.setPosTag(POSTag.forValue("PRP"));
 
         WordDto word4 = new WordDto();
         word4.setId(4);
         word4.setSentenceNo(1);
         word4.setLemma(".");
         word4.setText(".");
-        word4.setPosTag(PosTag.forValue("."));
+        word4.setPosTag(POSTag.forValue("."));
 
         List<WordDto> words = new ArrayList<>(List.of(word1, word2, word3, word4));
 
@@ -126,28 +130,28 @@ public final class TestUtil {
         word1.setSentenceNo(1);
         word1.setLemma("this");
         word1.setText("This");
-        word1.setPosTag(PosTag.forValue("DT"));
+        word1.setPosTag(POSTag.forValue("DT"));
 
         WordDto word2 = new WordDto();
         word2.setId(2);
         word2.setSentenceNo(1);
         word2.setLemma("be");
         word2.setText("is");
-        word2.setPosTag(PosTag.forValue("VBZ"));
+        word2.setPosTag(POSTag.forValue("VBZ"));
 
         WordDto word3 = new WordDto();
         word3.setId(3);
         word3.setSentenceNo(1);
         word3.setLemma("I");
         word3.setText("me");
-        word3.setPosTag(PosTag.forValue("PRP"));
+        word3.setPosTag(POSTag.forValue("PRP"));
 
         WordDto word4 = new WordDto();
         word4.setId(4);
         word4.setSentenceNo(1);
         word4.setLemma(".");
         word4.setText(".");
-        word4.setPosTag(PosTag.forValue("."));
+        word4.setPosTag(POSTag.forValue("."));
 
         List<WordDto> words = new ArrayList<>(List.of(word1, word2, word3, word4));
 
@@ -162,28 +166,28 @@ public final class TestUtil {
         word5.setSentenceNo(2);
         word5.setLemma("this");
         word5.setText("This");
-        word5.setPosTag(PosTag.forValue("DT"));
+        word5.setPosTag(POSTag.forValue("DT"));
 
         WordDto word6 = new WordDto();
         word6.setId(6);
         word6.setSentenceNo(2);
         word6.setLemma("be");
         word6.setText("is");
-        word6.setPosTag(PosTag.forValue("VBZ"));
+        word6.setPosTag(POSTag.forValue("VBZ"));
 
         WordDto word7 = new WordDto();
         word7.setId(7);
         word7.setSentenceNo(2);
         word7.setLemma("you");
         word7.setText("you");
-        word7.setPosTag(PosTag.forValue("PRP"));
+        word7.setPosTag(POSTag.forValue("PRP"));
 
         WordDto word8 = new WordDto();
         word8.setId(8);
         word8.setSentenceNo(2);
         word8.setLemma(".");
         word8.setText(".");
-        word8.setPosTag(PosTag.forValue("."));
+        word8.setPosTag(POSTag.forValue("."));
 
         List<WordDto> words2 = new ArrayList<>(List.of(word5, word6, word7, word8));
 
@@ -268,7 +272,7 @@ public final class TestUtil {
         word1.setSentenceNo(1);
         word1.setLemma("hello");
         word1.setText("Hello");
-        word1.setPosTag(PosTag.forValue("UH"));
+        word1.setPosTag(POSTag.forValue("UH"));
         OutgoingDependencyDto outgoingDependency = new OutgoingDependencyDto();
         outgoingDependency.setTargetWordId(2);
         outgoingDependency.setDependencyTag(DependencyTag.PUNCT);
@@ -279,7 +283,7 @@ public final class TestUtil {
         word2.setSentenceNo(1);
         word2.setLemma(".");
         word2.setText(".");
-        word2.setPosTag(PosTag.forValue("."));
+        word2.setPosTag(POSTag.forValue("."));
         IncomingDependencyDto incomingDependency = new IncomingDependencyDto();
         incomingDependency.setSourceWordId(1);
         incomingDependency.setDependencyTag(DependencyTag.PUNCT);
