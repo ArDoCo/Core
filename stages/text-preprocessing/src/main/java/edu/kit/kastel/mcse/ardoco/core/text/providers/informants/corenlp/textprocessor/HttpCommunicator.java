@@ -39,7 +39,7 @@ public class HttpCommunicator {
         String username = System.getenv(ENV_USERNAME);
         String password = System.getenv(ENV_PASSWORD);
         if (username == null || password == null) {
-            throw new IOException("Environment variables USERNAME and PASSWORD must be set.");
+            throw new IOException("Environment variables " + ENV_USERNAME + " and " + ENV_PASSWORD + " must be set.");
         }
 
         HttpPost request = new HttpPost(requestUrl);
