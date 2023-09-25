@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
+import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
+
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
@@ -60,11 +62,11 @@ public class GoldStandard {
         return sentence2instance.get(sentenceNo).toImmutable();
     }
 
-    public ImmutableList<Integer> getSentencesWithElement(ModelInstance elem) {
+    public ImmutableList<Integer> getSentencesWithElement(Entity elem) {
         MutableList<Integer> sentences = Lists.mutable.empty();
         for (int i = 0; i < sentence2instance.size(); i++) {
             var instances = sentence2instance.get(i);
-            if (instances.anySatisfy(e -> e.getUid().equals(elem.getUid()))) {
+            if (instances.anySatisfy(e -> e.getUid().equals(elem.getId()))) {
                 sentences.add(i);
             }
         }

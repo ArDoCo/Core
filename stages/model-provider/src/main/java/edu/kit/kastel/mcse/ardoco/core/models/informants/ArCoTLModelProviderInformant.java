@@ -4,7 +4,6 @@ package edu.kit.kastel.mcse.ardoco.core.models.informants;
 import java.util.Map;
 import java.util.Optional;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModel;
@@ -29,7 +28,7 @@ public final class ArCoTLModelProviderInformant extends Informant {
     }
 
     /**
-     * Instantiates a new model provider that uses the provided {@link ModelConnector} to extract information into the {@link DataRepository}.
+     * Instantiates a new model provider that uses the provided {@link Extractor} to extract information into the {@link DataRepository}.
      *
      * @param dataRepository the data repository
      * @param extractor      the model connector

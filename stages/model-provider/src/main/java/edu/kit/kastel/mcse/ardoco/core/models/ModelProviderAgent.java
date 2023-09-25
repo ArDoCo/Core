@@ -46,7 +46,7 @@ public class ModelProviderAgent extends PipelineAgent {
     }
 
     /**
-     * Creates a {@link ModelProviderInformant} for PCM.
+     * Creates a {@link ModelProviderAgent} for PCM.
      *
      * @param inputArchitectureModel the path to the input PCM
      * @param architectureModelType  the architecture model to use

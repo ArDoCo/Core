@@ -43,15 +43,30 @@ public class ArCoTLModelProviderAgent extends PipelineAgent {
 
     public static ArCoTLModelProviderAgent get(File inputArchitectureModel, ArchitectureModelType architectureModelType, File inputCode,
             Map<String, String> additionalConfigs, DataRepository dataRepository) {
-        ArchitectureExtractor architectureExtractor = switch (architectureModelType) {
-        case PCM -> new PcmExtractor(inputArchitectureModel.getAbsolutePath());
-        case UML -> new UmlExtractor(inputArchitectureModel.getAbsolutePath());
-        };
+        ArchitectureExtractor architectureExtractor = getArchitectureExtractor(inputArchitectureModel, architectureModelType);
+
         CodeItemRepository codeItemRepository = new CodeItemRepository();
         CodeExtractor codeExtractor = new AllLanguagesExtractor(codeItemRepository, inputCode.getAbsolutePath());
+
         ArCoTLModelProviderAgent agent = new ArCoTLModelProviderAgent(dataRepository, List.of(architectureExtractor, codeExtractor));
         agent.applyConfiguration(additionalConfigs);
         return agent;
+    }
+
+    public static ArCoTLModelProviderAgent get(File inputArchitectureModel, ArchitectureModelType architectureModelType,
+            Map<String, String> additionalConfigs, DataRepository dataRepository) {
+        ArchitectureExtractor architectureExtractor = getArchitectureExtractor(inputArchitectureModel, architectureModelType);
+
+        ArCoTLModelProviderAgent agent = new ArCoTLModelProviderAgent(dataRepository, List.of(architectureExtractor));
+        agent.applyConfiguration(additionalConfigs);
+        return agent;
+    }
+
+    private static ArchitectureExtractor getArchitectureExtractor(File inputArchitectureModel, ArchitectureModelType architectureModelType) {
+        return switch (architectureModelType) {
+            case PCM -> new PcmExtractor(inputArchitectureModel.getAbsolutePath());
+            case UML -> new UmlExtractor(inputArchitectureModel.getAbsolutePath());
+        };
     }
 
     @Override

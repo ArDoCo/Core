@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
+
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
@@ -103,7 +105,7 @@ class InconsistencyDetectionEvaluationIT {
 
     private void runMissingModelElementInconsistencyEval(Project project) {
         logger.info("Start evaluation of MME-inconsistency for {}", project.name());
-        Map<ModelInstance, ArDoCoResult> runs = produceRuns(project);
+        Map<Entity, ArDoCoResult> runs = produceRuns(project);
 
         var results = calculateEvaluationResults(project, runs);
 
@@ -147,7 +149,7 @@ class InconsistencyDetectionEvaluationIT {
         ranBaseline = true;
 
         HoldBackRunResultsProducer holdBackRunResultsProducer = new HoldBackRunResultsProducer();
-        Map<ModelInstance, ArDoCoResult> runs = holdBackRunResultsProducer.produceHoldBackRunResults(project, true);
+        Map<Entity, ArDoCoResult> runs = holdBackRunResultsProducer.produceHoldBackRunResults(project, true);
 
         Assertions.assertTrue(runs != null && runs.size() > 0);
 
@@ -202,10 +204,10 @@ class InconsistencyDetectionEvaluationIT {
         writeOutResults(project, results);
     }
 
-    private static Map<ModelInstance, ArDoCoResult> produceRuns(Project project) {
+    private static Map<Entity, ArDoCoResult> produceRuns(Project project) {
         HoldBackRunResultsProducer holdBackRunResultsProducer = new HoldBackRunResultsProducer();
 
-        Map<ModelInstance, ArDoCoResult> runs = holdBackRunResultsProducer.produceHoldBackRunResults(project, false);
+        Map<Entity, ArDoCoResult> runs = holdBackRunResultsProducer.produceHoldBackRunResults(project, false);
 
         ArDoCoResult baseArDoCoResult = runs.get(null);
         saveOutput(project, baseArDoCoResult);
@@ -260,14 +262,14 @@ class InconsistencyDetectionEvaluationIT {
         }
     }
 
-    private MutableList<EvaluationResults<String>> calculateEvaluationResults(Project project, Map<ModelInstance, ArDoCoResult> runs) {
+    private MutableList<EvaluationResults<String>> calculateEvaluationResults(Project project, Map<Entity, ArDoCoResult> runs) {
 
         MutableList<EvaluationResults<String>> results = Lists.mutable.empty();
 
         for (var run : runs.entrySet()) {
-            ModelInstance modelInstance = run.getKey();
+            Entity entity = run.getKey();
             ArDoCoResult arDoCoResult = run.getValue();
-            var runEvalResults = evaluateRun(project, modelInstance, arDoCoResult);
+            var runEvalResults = evaluateRun(project, entity, arDoCoResult);
             if (runEvalResults != null) {
                 results.add(runEvalResults);
             } else {
@@ -279,7 +281,7 @@ class InconsistencyDetectionEvaluationIT {
         return results;
     }
 
-    private EvaluationResults<String> evaluateRun(Project project, ModelInstance removedElement, ArDoCoResult arDoCoResult) {
+    private EvaluationResults<String> evaluateRun(Project project, Entity removedElement, ArDoCoResult arDoCoResult) {
         var modelId = arDoCoResult.getModelIds().get(0);
 
         ImmutableList<MissingModelInstanceInconsistency> inconsistencies = arDoCoResult.getInconsistenciesOfTypeForModel(modelId,
@@ -330,7 +332,7 @@ class InconsistencyDetectionEvaluationIT {
                         .phiCoefficient() + " is below the expected minimum value " + expectedResults.phiCoefficient()));
     }
 
-    private void writeOutResults(Project project, List<EvaluationResults<String>> results, Map<ModelInstance, ArDoCoResult> runs) {
+    private void writeOutResults(Project project, List<EvaluationResults<String>> results, Map<Entity, ArDoCoResult> runs) {
         var outputs = createOutput(project, results, runs);
         var outputBuilder = outputs.getOne();
         var detailedOutputBuilder = outputs.getTwo();
@@ -392,7 +394,7 @@ class InconsistencyDetectionEvaluationIT {
     }
 
     private static Pair<StringBuilder, StringBuilder> createOutput(Project project, List<EvaluationResults<String>> results,
-            Map<ModelInstance, ArDoCoResult> runs) {
+            Map<Entity, ArDoCoResult> runs) {
         StringBuilder outputBuilder = createStringBuilderWithHeader(project);
         var resultCalculatorStringBuilderPair = inspectResults(results, runs, outputBuilder);
         var resultCalculator = resultCalculatorStringBuilderPair.getOne();
@@ -461,20 +463,20 @@ class InconsistencyDetectionEvaluationIT {
     }
 
     private static Pair<MutableList<EvaluationResults<String>>, StringBuilder> inspectResults(List<EvaluationResults<String>> results,
-            Map<ModelInstance, ArDoCoResult> runs, StringBuilder outputBuilder) {
+            Map<Entity, ArDoCoResult> runs, StringBuilder outputBuilder) {
         var detailedOutputBuilder = new StringBuilder();
         MutableList<EvaluationResults<String>> resultsWithWeight = Lists.mutable.empty();
         int counter = 0;
         for (var run : runs.entrySet()) {
             ArDoCoResult arDoCoResult = run.getValue();
-            ModelInstance instance = run.getKey();
-            if (instance == null) {
+            Entity entity = run.getKey();
+            if (entity == null) {
                 inspectBaseCase(outputBuilder, arDoCoResult);
             } else {
                 outputBuilder.append("###").append(LINE_SEPARATOR);
                 detailedOutputBuilder.append("###").append(LINE_SEPARATOR);
-                outputBuilder.append("Removed Instance: ").append(instance.getFullName());
-                detailedOutputBuilder.append("Removed Instance: ").append(instance.getFullName());
+                outputBuilder.append("Removed Instance: ").append(entity.getName());
+                detailedOutputBuilder.append("Removed Instance: ").append(entity.getName());
                 outputBuilder.append(LINE_SEPARATOR);
                 detailedOutputBuilder.append(LINE_SEPARATOR);
                 var result = results.get(counter++);
