@@ -6,18 +6,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.*;
+
 import org.eclipse.collections.api.factory.Lists;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.ClassUnit;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModel;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModule;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodePackage;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.InterfaceUnit;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.ProgrammingLanguage;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.models.ModelExtractionStateImpl;
@@ -40,55 +35,47 @@ public class LegacyCodeModelInformant extends Informant {
         var codeModel = findCodeModel(models);
         if (codeModel == null)
             return;
-        List<ModelInstance> instances = new ArrayList<>();
-        fillPackages(codeModel.getAllPackages(), instances);
-        fillCompilationUnits(codeModel.getEndpoints(), instances);
-        models.addModelExtractionState(codeModel.getId(), new ModelExtractionStateImpl(codeModel.getId(), Metamodel.CODE, Lists.immutable.withAll(instances)));
+        List<CodeItem> codeItems = new ArrayList<>();
+        fillPackages(codeModel.getAllPackages(), codeItems);
+        fillCompilationUnits(codeModel.getEndpoints(), codeItems);
+        models.addModelExtractionState(codeModel.getId(), new ModelExtractionStateImpl(codeModel.getId(), Metamodel.CODE, Lists.immutable.withAll(codeItems)));
     }
 
-    private void fillPackages(Collection<? extends CodePackage> packages, List<ModelInstance> instances) {
+    private void fillPackages(Collection<? extends CodePackage> packages, List<CodeItem> codeItems) {
         for (var modelElement : packages) {
-            String path = modelElement.getName();
-            CodeModule parent = modelElement.getParent();
-            while (parent != null) {
-                path = parent.getName() + "/" + path;
-                parent = parent.getParent();
-            }
-            // Ensure that package is handled as directory
-            path += "/";
-            instances.add(new ModelInstanceImpl(modelElement.getName(), "Package", path));
+            codeItems.add(new CodePackage(new CodeItemRepository(), modelElement.getName()));
         }
     }
 
-    private void fillCompilationUnits(Collection<? extends CodeCompilationUnit> units, List<ModelInstance> instances) {
+    private void fillCompilationUnits(Collection<? extends CodeCompilationUnit> units, List<CodeItem> codeItems) {
         for (var unit : units) {
-            String type = findType(unit);
-            instances.add(new ModelInstanceImpl(unit.getName(), type, unit.getPath()));
+            var content = unit.getContent().stream().filter(it -> unit.getName().contains(it.getName())).findFirst().orElse(null);
+            codeItems.add(content);
         }
 
     }
 
-    private String findType(CodeCompilationUnit unit) {
-        // Assumption mostly one class per unit
-        var content = unit.getContent().stream().filter(it -> unit.getName().contains(it.getName())).findFirst().orElse(null);
-        if (content instanceof ClassUnit) {
-            return "Class";
-        }
-        if (content instanceof InterfaceUnit) {
-            return "Interface";
-        }
-        if (unit.getPath().endsWith("package-info.java")) {
-            return "PackageInfo";
-        }
-        if (unit.getPath().endsWith(".java")) {
-            // Default to Class
-            return "Class";
-        }
-        if (unit.getLanguage() == ProgrammingLanguage.SHELL) {
-            return "ShellScript";
-        }
-        throw new IllegalStateException("Unknown type of CodeCompilationUnit");
-    }
+//    private String findType(CodeCompilationUnit unit) { todo: remove
+//        // Assumption mostly one class per unit
+//        var content = unit.getContent().stream().filter(it -> unit.getName().contains(it.getName())).findFirst().orElse(null);
+//        if (content instanceof ClassUnit) {
+//            return "Class";
+//        }
+//        if (content instanceof InterfaceUnit) {
+//            return "Interface";
+//        }
+//        if (unit.getPath().endsWith("package-info.java")) {
+//            return "PackageInfo";
+//        }
+//        if (unit.getPath().endsWith(".java")) {
+//            // Default to Class
+//            return "Class";
+//        }
+//        if (unit.getLanguage() == ProgrammingLanguage.SHELL) {
+//            return "ShellScript";
+//        }
+//        throw new IllegalStateException("Unknown type of CodeCompilationUnit");
+//    }
 
     private CodeModel findCodeModel(ModelStates models) {
         for (var modelId : models.modelIds()) {

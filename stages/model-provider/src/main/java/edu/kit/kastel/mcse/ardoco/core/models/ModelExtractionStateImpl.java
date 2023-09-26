@@ -1,8 +1,11 @@
 /* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.models;
 
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
+
+import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.Sets;
@@ -12,7 +15,6 @@ import org.eclipse.collections.api.set.MutableSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelExtractionState;
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.data.AbstractState;
 
 /**
@@ -23,15 +25,15 @@ public class ModelExtractionStateImpl extends AbstractState implements ModelExtr
 
     private final String modelId;
     private final Metamodel metamodelType;
-    private final MutableSet<String> instanceTypes;
+    private final MutableSet<String> entityTypes;
     private final MutableSet<String> names;
-    private transient ImmutableList<ModelInstance> instances;
+    private transient ImmutableList<Entity> entities;
 
     // For generation of configuration
     private ModelExtractionStateImpl() {
         this.modelId = null;
         this.metamodelType = null;
-        this.instanceTypes = null;
+        this.entityTypes = null;
         this.names = null;
     }
 
@@ -40,25 +42,25 @@ public class ModelExtractionStateImpl extends AbstractState implements ModelExtr
      *
      * @param modelId       the model id
      * @param metamodelType the metamodel type
-     * @param instances     instances of this model extraction state
+     * @param entities     entities of this model extraction state
      */
-    public ModelExtractionStateImpl(String modelId, Metamodel metamodelType, ImmutableList<ModelInstance> instances) {
+    public ModelExtractionStateImpl(String modelId, Metamodel metamodelType, ImmutableList<Entity> entities) {
         this.modelId = Objects.requireNonNull(modelId);
         this.metamodelType = metamodelType;
-        this.instances = instances;
-        instanceTypes = Sets.mutable.empty();
+        this.entities = entities;
+        entityTypes = Sets.mutable.empty();
         names = Sets.mutable.empty();
         collectTypesAndNames();
     }
 
     /**
-     * Collects all occurring types and names from the instances and relations and stores them. The titles of relations
+     * Collects all occurring types and names from the entities and relations and stores them. The titles of relations
      * are stored in types.
      */
     private void collectTypesAndNames() {
-        for (ModelInstance i : instances) {
-            instanceTypes.addAll(i.getTypeParts().castToCollection());
-            names.addAll(i.getNameParts().castToCollection());
+        for (Entity i : entities) {
+            entityTypes.add(i.getClass().getName());
+            names.addAll(Arrays.stream(i.getName().split(" ")).toList());
         }
     }
 
@@ -73,24 +75,24 @@ public class ModelExtractionStateImpl extends AbstractState implements ModelExtr
     }
 
     /**
-     * Returns the instances of a specific type.
+     * Returns the entities of a specific type.
      *
      * @param type the type to search for
-     * @return all instances that are from that type
+     * @return all entities that are from that type
      */
     @Override
-    public ImmutableList<ModelInstance> getInstancesOfType(String type) {
-        return instances.select(i -> i.getTypeParts().contains(type));
+    public ImmutableList<Entity> getEntitiesOfType(String type) {
+        return entities.select(i -> i.getClass().getName().equals(type));
     }
 
     /**
-     * Returns all types that are contained by instances of this state.
+     * Returns all types that are contained by entities of this state.
      *
-     * @return all instance types of this state
+     * @return all entity types of this state
      */
     @Override
-    public ImmutableSet<String> getInstanceTypes() {
-        return instanceTypes.toImmutable();
+    public ImmutableSet<String> getEntityTypes() {
+        return entityTypes.toImmutable();
     }
 
     /**
@@ -104,29 +106,29 @@ public class ModelExtractionStateImpl extends AbstractState implements ModelExtr
     }
 
     /**
-     * Returns all instances that are contained by this state.
+     * Returns all entities that are contained by this state.
      *
-     * @return all instances of this state
+     * @return all entities of this state
      */
     @Override
-    public ImmutableList<ModelInstance> getInstances() {
-        return instances;
+    public ImmutableList<Entity> getEntities() {
+        return entities;
     }
 
     @Override
     public void addAllOf(ModelExtractionState other) {
-        instanceTypes.addAll(other.getInstanceTypes().toSet());
+        entityTypes.addAll(other.getEntityTypes().toSet());
         names.addAll(other.getNames());
 
-        var mergedInstances = Lists.mutable.ofAll(instances);
-        mergedInstances.addAll(other.getInstances().toList());
-        instances = mergedInstances.toImmutable();
+        var mergedEntities = Lists.mutable.ofAll(entities);
+        mergedEntities.addAll(other.getEntities().toList());
+        entities = mergedEntities.toImmutable();
     }
 
     @Override
     public String toString() {
-        var output = new StringBuilder("Instances:\n");
-        for (ModelInstance i : instances) {
+        var output = new StringBuilder("Entities:\n");
+        for (Entity i : entities) {
             output.append(i.toString()).append("\n");
         }
         return output.toString();

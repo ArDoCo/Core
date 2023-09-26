@@ -22,6 +22,8 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
+
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
@@ -35,7 +37,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistentSentence;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.ModelInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelExtractionState;
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.InstanceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadSamTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
@@ -265,8 +266,8 @@ public final class FilePrinter {
         dataLines.add(new String[] { "" });
         dataLines.add(new String[] { "UID", "Name", "Type" });
 
-        for (ModelInstance instance : modelState.getInstances()) {
-            dataLines.add(new String[] { instance.getUid(), instance.getFullName(), instance.getFullType() });
+        for (Entity entity : modelState.getEntities()) {
+            dataLines.add(new String[] { entity.getId(), entity.getName(), entity.getClass().getName()});
         }
 
         return dataLines.toImmutable();
