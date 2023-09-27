@@ -7,7 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Map;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 
@@ -41,20 +41,18 @@ public class TLModelFile {
             builder.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
             for (var modelId : projectData.getModelIds()) {
-                var models = projectData.getModelState(modelId).getInstances();
+                var models = projectData.getModelState(modelId).getEntities();
                 builder.append("## ModelId: ").append(modelId);
                 builder.append(LINE_SEPARATOR);
-                for (ModelInstance model : models) {
+                for (Entity model : models) {
                     builder.append("- [")
-                            .append(model.getUid())
+                            .append(model.getId())
                             .append("]: \"")
-                            .append(model.getFullName())
+                            .append(model.getName())
                             .append("\" (")
-                            .append(model.getFullType())
+                            .append(model.getClass().getName())
                             .append(") (")
                             .append(String.join(", ", model.getNameParts()))
-                            .append(") (")
-                            .append(String.join(", ", model.getTypeParts()))
                             .append(")")
                             .append(LINE_SEPARATOR);
                 }
