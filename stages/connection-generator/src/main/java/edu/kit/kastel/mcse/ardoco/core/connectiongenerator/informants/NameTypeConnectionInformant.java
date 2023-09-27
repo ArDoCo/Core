@@ -3,12 +3,12 @@ package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.informants;
 
 import java.util.Map;
 
+import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
+
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelExtractionState;
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationStates;
@@ -22,6 +22,8 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
+
+import org.eclipse.collections.api.list.MutableList;
 
 /**
  * This analyzer searches for name type patterns. If these patterns occur recommendations are created.
@@ -164,17 +166,17 @@ public class NameTypeConnectionInformant extends Informant {
      *
      * @param currentWord         the current node
      * @param textExtractionState the text extraction state
-     * @param instance            the instance
+     * @param entity              the entity
      * @param nameMappings        the name mappings
      * @param typeMappings        the type mappings
      */
     private void addRecommendedInstanceIfNodeNotNull(//
-            Word currentWord, TextState textExtractionState, ModelInstance instance, ImmutableList<NounMapping> nameMappings,
+            Word currentWord, TextState textExtractionState, Entity entity, ImmutableList<NounMapping> nameMappings,
             ImmutableList<NounMapping> typeMappings, RecommendationState recommendationState) {
         var nounMappingsByCurrentWord = textExtractionState.getNounMappingsByWord(currentWord);
-        if (instance != null && nounMappingsByCurrentWord != null) {
+        if (entity != null && nounMappingsByCurrentWord != null) {
             for (NounMapping nmapping : nounMappingsByCurrentWord) {
-                var name = instance.getFullName();
+                var name = entity.getName();
                 var type = nmapping.getReference();
                 recommendationState.addRecommendedInstance(name, type, this, probability, nameMappings, typeMappings);
             }
@@ -190,14 +192,14 @@ public class NameTypeConnectionInformant extends Informant {
      * @param word                the node for name identification
      * @return the unique matching instance
      */
-    private ModelInstance tryToIdentify(TextState textExtractionState, ImmutableList<String> similarTypes, Word word, ModelExtractionState modelState) {
+    private Entity tryToIdentify(TextState textExtractionState, ImmutableList<String> similarTypes, Word word, ModelExtractionState modelState) {
         if (textExtractionState == null || similarTypes == null || word == null) {
             return null;
         }
-        MutableList<ModelInstance> matchingInstances = Lists.mutable.empty();
+        MutableList<Entity> matchingInstances = Lists.mutable.empty();
 
         for (String type : similarTypes) {
-            matchingInstances.addAll(modelState.getInstancesOfType(type).castToCollection());
+            matchingInstances.addAll(modelState.getEntitiesOfType(type).castToCollection());
         }
 
         var text = word.getText();
