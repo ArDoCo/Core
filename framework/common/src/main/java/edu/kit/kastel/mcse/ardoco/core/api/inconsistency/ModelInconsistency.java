@@ -12,19 +12,19 @@ public interface ModelInconsistency extends Inconsistency {
      * 
      * @return the name of the inconsistent model instance.
      */
-    String getModelInstanceName();
+    String getEntityName();
 
     /**
      * Return the type of the inconsistent model instance.
      * 
      * @return the type of the inconsistent model instance.
      */
-    String getModelInstanceType();
+    String getEntityType();
 
     /**
      * Return the UID of the inconsistent model instance.
      * 
      * @return the UID of the inconsistent model instance.
      */
-    String getModelInstanceUid();
+    String getInstanceId();
 }

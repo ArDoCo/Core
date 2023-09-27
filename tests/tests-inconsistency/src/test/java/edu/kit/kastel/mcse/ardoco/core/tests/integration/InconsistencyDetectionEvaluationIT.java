@@ -34,7 +34,6 @@ import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistentSentence;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.ModelInconsistency;
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.common.util.FilePrinter;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.types.MissingModelInstanceInconsistency;
@@ -194,7 +193,7 @@ class InconsistencyDetectionEvaluationIT {
         Assertions.assertNotNull(projectResults, "No results found.");
 
         MutableList<String> expectedInconsistentModelElements = project.getMissingTextForModelElementGoldStandard();
-        var inconsistentModelElements = projectResults.getAllModelInconsistencies().collect(ModelInconsistency::getModelInstanceUid).toList();
+        var inconsistentModelElements = projectResults.getAllModelInconsistencies().collect(ModelInconsistency::getInstanceId).toList();
         var results = TestUtil.compareInconsistencies(projectResults, inconsistentModelElements.toImmutable(), expectedInconsistentModelElements.toImmutable());
 
         OVERALL_UME_RESULTS.add(results);

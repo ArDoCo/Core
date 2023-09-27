@@ -4,25 +4,25 @@ package edu.kit.kastel.mcse.ardoco.core.inconsistency.types;
 import java.util.Locale;
 import java.util.Objects;
 
+import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
+
 import org.eclipse.collections.api.collection.ImmutableCollection;
 import org.eclipse.collections.api.factory.Lists;
 
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.ModelInconsistency;
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 
 public class MissingTextForModelElementInconsistency implements ModelInconsistency {
     private static final String INCONSISTENCY_TYPE_NAME = "MissingTextForModelElement";
 
-    private final ModelInstance instance;
+    private final Entity entity;
 
-    public MissingTextForModelElementInconsistency(ModelInstance instance) {
-        this.instance = instance;
+    public MissingTextForModelElementInconsistency(Entity entity) {
+        this.entity = entity;
     }
 
     @Override
     public String getReason() {
-        return String.format(Locale.US, "Model contains an Instance \"%s\" (type: \"%s\")  that seems to be undocumented.", instance.getFullName(), instance
-                .getFullType());
+        return String.format(Locale.US, "Model contains an Instance \"%s\" (type: \"%s\")  that seems to be undocumented.", entity.getName(), entity.getClass().getName());
     }
 
     @Override
@@ -32,12 +32,12 @@ public class MissingTextForModelElementInconsistency implements ModelInconsisten
 
     @Override
     public String toString() {
-        return "MissingTextForModelElementInconsistency [modelInstance=" + instance + "]";
+        return "MissingTextForModelElementInconsistency [modelInstance=" + entity + "]";
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(instance);
+        return Objects.hash(entity);
     }
 
     @Override
@@ -48,29 +48,29 @@ public class MissingTextForModelElementInconsistency implements ModelInconsisten
         if (!(obj instanceof MissingTextForModelElementInconsistency other)) {
             return false;
         }
-        return Objects.equals(instance, other.instance);
+        return Objects.equals(entity, other.entity);
     }
 
     @Override
     public ImmutableCollection<String[]> toFileOutput() {
-        String[] entry = { getType(), instance.getFullName(), instance.getFullType() };
+        String[] entry = { getType(), entity.getName(), entity.getClass().getName() };
         var list = Lists.mutable.<String[]>empty();
         list.add(entry);
         return list.toImmutable();
     }
 
     @Override
-    public String getModelInstanceName() {
-        return instance.getFullName();
+    public String getEntityName() {
+        return entity.getName();
     }
 
     @Override
-    public String getModelInstanceType() {
-        return instance.getFullType();
+    public String getEntityType() {
+        return entity.getClass().getName();
     }
 
     @Override
-    public String getModelInstanceUid() {
-        return instance.getUid();
+    public String getInstanceId() {
+        return entity.getId();
     }
 }
