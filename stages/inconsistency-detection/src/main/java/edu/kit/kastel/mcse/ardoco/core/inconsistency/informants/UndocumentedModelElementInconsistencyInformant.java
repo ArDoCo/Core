@@ -5,12 +5,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
+
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistencyState;
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.InstanceLink;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
@@ -51,8 +52,8 @@ public class UndocumentedModelElementInconsistencyInformant extends Informant {
             var linkedModelInstances = connectionState.getInstanceLinks().collect(InstanceLink::getEntity).distinct();
 
             // find model instances of given types that are not linked and, thus, are candidates
-            var candidateModelInstances = Lists.mutable.<ModelInstance>empty();
-            for (var modelInstance : modelState.getInstances()) {
+            var candidateModelInstances = Lists.mutable.<Entity>empty();
+            for (var modelInstance : modelState.getEntities()) {
                 if (modelInstanceHasTargetedType(modelInstance, types) && !modelInstanceHasMinimumNumberOfAppearances(linkedModelInstances, modelInstance)) {
                     candidateModelInstances.add(modelInstance);
                 }
@@ -66,28 +67,20 @@ public class UndocumentedModelElementInconsistencyInformant extends Informant {
         }
     }
 
-    private boolean modelInstanceHasMinimumNumberOfAppearances(ImmutableList<ModelInstance> linkedModelInstances, ModelInstance modelInstance) {
-        return linkedModelInstances.count(modelInstance::equals) >= minimumNeededTraceLinks;
+    private boolean modelInstanceHasMinimumNumberOfAppearances(ImmutableList<Entity> linkedEntities, Entity entity) {
+        return linkedEntities.count(entity::equals) >= minimumNeededTraceLinks;
     }
 
-    public static boolean modelInstanceHasTargetedType(ModelInstance modelInstance, List<String> types) {
-        if (types.contains(modelInstance.getFullType())) {
-            return true;
-        }
-        for (var instanceType : modelInstance.getTypeParts()) {
-            if (types.contains(instanceType)) {
-                return true;
-            }
-        }
-        return false;
+    public static boolean modelInstanceHasTargetedType(Entity entity, List<String> types) {
+        return types.contains(entity.getClass().getName());
     }
 
-    public static MutableList<ModelInstance> filterWithWhitelist(MutableList<ModelInstance> candidateModelInstances, List<String> whitelist) {
+    public static MutableList<Entity> filterWithWhitelist(MutableList<Entity> candidateModelInstances, List<String> whitelist) {
         var filteredCandidates = Lists.mutable.ofAll(candidateModelInstances);
         for (var whitelisting : whitelist) {
             var pattern = Pattern.compile(whitelisting);
             var whitelistedCandidates = filteredCandidates.select(c -> {
-                if (pattern.matcher(c.getFullName()).matches()) {
+                if (pattern.matcher(c.getName()).matches()) {
                     return true;
                 }
                 for (var name : c.getNameParts()) {
@@ -102,7 +95,7 @@ public class UndocumentedModelElementInconsistencyInformant extends Informant {
         return filteredCandidates;
     }
 
-    private void createInconsistencies(MutableList<ModelInstance> candidateModelInstances, InconsistencyState inconsistencyState) {
+    private void createInconsistencies(MutableList<Entity> candidateModelInstances, InconsistencyState inconsistencyState) {
         for (var candidate : candidateModelInstances) {
             var inconsistency = new MissingTextForModelElementInconsistency(candidate);
             inconsistencyState.addInconsistency(inconsistency);
