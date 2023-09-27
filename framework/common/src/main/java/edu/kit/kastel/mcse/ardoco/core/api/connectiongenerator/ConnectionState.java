@@ -1,12 +1,13 @@
 /* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator;
 
+import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
+
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.MutableSet;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.InstanceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadSamTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
@@ -78,15 +79,15 @@ public interface ConnectionState extends IConfigurable {
     }
 
     /**
-     * Adds the connection of a recommended instance and a model instance to the state. If the model instance is already
+     * Adds the connection of a recommended instance and an entity to the state. If the entity is already
      * contained by the state it is extended. Elsewhere a new instance link is created
      *
      * @param recommendedModelInstance the recommended instance
-     * @param instance                 the model instance
+     * @param entity                   the entity
      * @param claimant                 the claimant
      * @param probability              the probability of the link
      */
-    void addToLinks(RecommendedInstance recommendedModelInstance, ModelInstance instance, Claimant claimant, double probability);
+    void addToLinks(RecommendedInstance recommendedModelInstance, Entity entity, Claimant claimant, double probability);
 
     /**
      * Checks if an instance link is already contained by the state.
@@ -108,7 +109,7 @@ public interface ConnectionState extends IConfigurable {
      *
      * @param instance the given instance
      */
-    void removeAllInstanceLinksWith(ModelInstance instance);
+    void removeAllInstanceLinksWith(Entity instance);
 
     /**
      * Removes all instance links containing the given recommended instance.

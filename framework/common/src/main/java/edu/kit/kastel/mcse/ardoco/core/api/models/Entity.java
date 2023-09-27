@@ -3,6 +3,11 @@ package edu.kit.kastel.mcse.ardoco.core.api.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+
+import java.util.Arrays;
+
 /**
  * An entity with a name. Is a model element.
  */
@@ -36,6 +41,10 @@ public abstract class Entity extends ModelElement {
      */
     public String getName() {
         return name;
+    }
+
+    public ImmutableList<String> getNameParts() {
+        return Lists.immutable.ofAll(Arrays.stream(getName().split(" ")).toList());
     }
 
     @Override

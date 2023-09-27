@@ -48,7 +48,7 @@ public class UndocumentedModelElementInconsistencyInformant extends Informant {
             var connectionState = connectionStates.getConnectionState(metaModel);
             var inconsistencyState = inconsistencyStates.getInconsistencyState(metaModel);
 
-            var linkedModelInstances = connectionState.getInstanceLinks().collect(InstanceLink::getModelInstance).distinct();
+            var linkedModelInstances = connectionState.getInstanceLinks().collect(InstanceLink::getEntity).distinct();
 
             // find model instances of given types that are not linked and, thus, are candidates
             var candidateModelInstances = Lists.mutable.<ModelInstance>empty();

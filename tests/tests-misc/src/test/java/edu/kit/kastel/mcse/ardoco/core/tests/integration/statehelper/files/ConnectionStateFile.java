@@ -59,9 +59,9 @@ public class ConnectionStateFile {
                 "Types [T]", "Probability [T]", "Claimants [T]", LINE_SEPARATOR));
         builder.append(LINE_SEPARATOR);
 
-        for (InstanceLink instanceLink : connectionState.getInstanceLinks().toSortedListBy(il -> il.getModelInstance().getUid())) {
+        for (InstanceLink instanceLink : connectionState.getInstanceLinks().toSortedListBy(il -> il.getEntity().getUid())) {
 
-            var modelInstance = instanceLink.getModelInstance();
+            var modelInstance = instanceLink.getEntity();
             var textInstance = instanceLink.getTextualInstance();
 
             builder.append(modelInstance.getUid());
@@ -105,7 +105,7 @@ public class ConnectionStateFile {
             logger.error("Could not load ConnectionState. Abort writing diff.");
             return false;
         }
-        var currentLinks = currentConnectionState.getInstanceLinks().toSortedListBy(il -> il.getModelInstance().getUid());
+        var currentLinks = currentConnectionState.getInstanceLinks().toSortedListBy(il -> il.getEntity().getUid());
 
         builder.append("# ").append(arDoCoResult.getProjectName());
         builder.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
@@ -133,7 +133,7 @@ public class ConnectionStateFile {
             }
 
             var currentLink = currentLinks.get(i - valueStart);
-            var currentModelInstance = currentLink.getModelInstance();
+            var currentModelInstance = currentLink.getEntity();
             var currentTextInstance = currentLink.getTextualInstance();
 
             int modelOrder = parts.get(0).compareTo(currentModelInstance.getUid());

@@ -4,9 +4,9 @@ package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.informants;
 import java.util.Map;
 
 import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionState;
+import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelExtractionState;
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
@@ -48,12 +48,12 @@ public class InstantConnectionInformant extends Informant {
     private void findNamesOfModelInstancesInSupposedMappings(ModelExtractionState modelState, RecommendationState recommendationState,
             ConnectionState connectionState) {
         var recommendedInstances = recommendationState.getRecommendedInstances();
-        for (ModelInstance instance : modelState.getInstances()) {
-            var mostLikelyRi = SimilarityUtils.getMostRecommendedInstancesToInstanceByReferences(instance, recommendedInstances);
+        for (Entity entity : modelState.getEntities()) {
+            var mostLikelyRi = SimilarityUtils.getMostRecommendedInstancesToInstanceByReferences(entity, recommendedInstances);
 
             for (var recommendedInstance : mostLikelyRi) {
                 var riProbability = recommendedInstance.getTypeMappings().isEmpty() ? probabilityWithoutType : probability;
-                connectionState.addToLinks(recommendedInstance, instance, this, riProbability);
+                connectionState.addToLinks(recommendedInstance, entity, this, riProbability);
             }
         }
     }
@@ -61,8 +61,8 @@ public class InstantConnectionInformant extends Informant {
     private void createLinksForEqualOrSimilarRecommendedInstances(ModelExtractionState modelState, RecommendationState recommendationState,
             ConnectionState connectionState) {
         for (var recommendedInstance : recommendationState.getRecommendedInstances()) {
-            var sameInstances = modelState.getInstances()
-                    .select(instance -> SimilarityUtils.isRecommendedInstanceSimilarToModelInstance(recommendedInstance, instance));
+            var sameInstances = modelState.getEntities()
+                    .select(instance -> SimilarityUtils.isRecommendedInstanceSimilarToEntity(recommendedInstance, instance));
             sameInstances.forEach(instance -> connectionState.addToLinks(recommendedInstance, instance, this, probability));
         }
     }

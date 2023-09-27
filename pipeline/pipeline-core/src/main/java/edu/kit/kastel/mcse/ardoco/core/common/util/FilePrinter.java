@@ -466,7 +466,7 @@ public final class FilePrinter {
     }
 
     private static Comparator<InstanceLink> getInstanceLinkComparator() {
-        return Comparator.comparing(i -> i.getModelInstance().getUid());
+        return Comparator.comparing(i -> i.getEntity().getId());
     }
 
     public static void writeInconsistencyOutput(File file, ArDoCoResult arDoCoResult) {

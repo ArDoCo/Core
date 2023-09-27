@@ -6,10 +6,11 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
+import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
+
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions;
@@ -17,24 +18,24 @@ import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 /**
- * An InstanceLink defines a link between an {@link RecommendedInstance} and an {@link ModelInstance}.
+ * An InstanceLink defines a link between an {@link RecommendedInstance} and an {@link Entity}.
  */
 public class InstanceLink extends EndpointTuple {
 
     private final RecommendedInstance textualInstance;
-    private final ModelInstance modelInstance;
+    private final Entity entity;
     private Confidence confidence;
 
     /**
      * Create a new instance link
      *
      * @param textualInstance the recommended instance
-     * @param modelInstance   the model instance
+     * @param entity   the model instance
      */
-    public InstanceLink(RecommendedInstance textualInstance, ModelInstance modelInstance) {
-        super(textualInstance, modelInstance);
+    public InstanceLink(RecommendedInstance textualInstance, Entity entity) {
+        super(textualInstance, entity);
         this.textualInstance = textualInstance;
-        this.modelInstance = modelInstance;
+        this.entity = entity;
         this.confidence = new Confidence(AggregationFunctions.AVERAGE);
     }
 
@@ -42,12 +43,12 @@ public class InstanceLink extends EndpointTuple {
      * Creates a new instance link.
      *
      * @param textualInstance the recommended instance
-     * @param modelInstance   the model instance
+     * @param entity   the model instance
      * @param claimant        the claimant
      * @param probability     the probability of this link
      */
-    public InstanceLink(RecommendedInstance textualInstance, ModelInstance modelInstance, Claimant claimant, double probability) {
-        this(textualInstance, modelInstance);
+    public InstanceLink(RecommendedInstance textualInstance, Entity entity, Claimant claimant, double probability) {
+        this(textualInstance, entity);
         this.confidence.addAgentConfidence(claimant, probability);
     }
 
@@ -74,13 +75,13 @@ public class InstanceLink extends EndpointTuple {
      *
      * @return the extracted instance
      */
-    public final ModelInstance getModelInstance() {
-        return modelInstance;
+    public final Entity getEntity() {
+        return entity;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(modelInstance, textualInstance);
+        return Objects.hash(entity, textualInstance);
     }
 
     @Override
@@ -91,7 +92,7 @@ public class InstanceLink extends EndpointTuple {
         if (!(obj instanceof InstanceLink other)) {
             return false;
         }
-        return Objects.equals(getModelInstance(), other.getModelInstance()) && Objects.equals(getTextualInstance(), other.getTextualInstance());
+        return Objects.equals(getEntity(), other.getEntity()) && Objects.equals(getTextualInstance(), other.getTextualInstance());
     }
 
     @Override
@@ -109,8 +110,8 @@ public class InstanceLink extends EndpointTuple {
             types.addAll(typeMapping.getSurfaceForms().castToCollection());
             typePositions.addAll(typeMapping.getMappingSentenceNo().castToCollection());
         }
-        return "InstanceMapping [ uid=" + modelInstance.getUid() + ", name=" + modelInstance.getFullName() + //
-                ", as=" + String.join(", ", modelInstance.getFullType()) + ", probability=" + getConfidence() + ", FOUND: " + //
+        return "InstanceMapping [ uid=" + entity.getId() + ", name=" + entity.getName() + //
+                ", as=" + String.join(", ", entity.getClass().getName()) + ", probability=" + getConfidence() + ", FOUND: " + //
                 textualInstance.getName() + " : " + textualInstance.getType() + ", occurrences= " + //
                 "NameVariants: " + names.size() + ": " + names + " sentences{" + Arrays.toString(namePositions.toArray()) + "}" + //
                 ", TypeVariants: " + types.size() + ": " + types + "sentences{" + Arrays.toString(typePositions.toArray()) + "}" + "]";

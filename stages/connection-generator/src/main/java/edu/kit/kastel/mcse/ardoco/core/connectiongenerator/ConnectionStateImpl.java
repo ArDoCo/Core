@@ -1,14 +1,16 @@
 /* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+
+import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.InstanceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.data.AbstractState;
@@ -47,7 +49,7 @@ public class ConnectionStateImpl extends AbstractState implements ConnectionStat
      */
     @Override
     public ImmutableList<InstanceLink> getInstanceLinksByName(String name) {
-        return Lists.immutable.fromStream(instanceLinks.stream().filter(imapping -> imapping.getModelInstance().getNameParts().contains(name)));
+        return Lists.immutable.fromStream(instanceLinks.stream().filter(imapping -> imapping.getEntity().getNameParts().contains(name)));
     }
 
     /**
@@ -58,7 +60,7 @@ public class ConnectionStateImpl extends AbstractState implements ConnectionStat
      */
     @Override
     public ImmutableList<InstanceLink> getInstanceLinksByType(String type) {
-        return Lists.immutable.fromStream(instanceLinks.stream().filter(ilink -> ilink.getModelInstance().getTypeParts().contains(type)));
+        return Lists.immutable.fromStream(instanceLinks.stream().filter(ilink -> ilink.getEntity().getClass().getName().equals(type)));
     }
 
     @Override
@@ -76,22 +78,22 @@ public class ConnectionStateImpl extends AbstractState implements ConnectionStat
     @Override
     public ImmutableList<InstanceLink> getInstanceLinks(String name, String type) {
         return Lists.immutable.fromStream(instanceLinks.stream()
-                .filter(imapping -> imapping.getModelInstance().getNameParts().contains(name))//
-                .filter(imapping -> imapping.getModelInstance().getTypeParts().contains(type)));
+                .filter(imapping -> imapping.getEntity().getNameParts().contains(name))//
+                .filter(imapping -> Arrays.stream(imapping.getEntity().getClass().getName().split(" ")).toList().contains(type)));
     }
 
     /**
-     * Adds the connection of a recommended instance and a model instance to the state. If the model instance is already
+     * Adds the connection of a recommended instance and an entity to the state. If the entity is already
      * contained by the state it is extended. Elsewhere a new instance link is created
      *
      * @param recommendedModelInstance the recommended instance
-     * @param instance                 the model instance
+     * @param entity                   the entity
      * @param probability              the probability of the link
      */
     @Override
-    public void addToLinks(RecommendedInstance recommendedModelInstance, ModelInstance instance, Claimant claimant, double probability) {
+    public void addToLinks(RecommendedInstance recommendedModelInstance, Entity entity, Claimant claimant, double probability) {
 
-        var newInstanceLink = new InstanceLink(recommendedModelInstance, instance, claimant, probability);
+        var newInstanceLink = new InstanceLink(recommendedModelInstance, entity, claimant, probability);
         if (!isContainedByInstanceLinks(newInstanceLink)) {
             instanceLinks.add(newInstanceLink);
         } else {
@@ -127,13 +129,13 @@ public class ConnectionStateImpl extends AbstractState implements ConnectionStat
     }
 
     /**
-     * Removes all instance links containing the given instance
+     * Removes all instance links containing the given entity
      *
-     * @param instance the given instance
+     * @param entity  the given entity
      */
     @Override
-    public void removeAllInstanceLinksWith(ModelInstance instance) {
-        instanceLinks.removeIf(mapping -> mapping.getModelInstance().equals(instance));
+    public void removeAllInstanceLinksWith(Entity entity) {
+        instanceLinks.removeIf(mapping -> mapping.getEntity().equals(entity));
     }
 
     /**

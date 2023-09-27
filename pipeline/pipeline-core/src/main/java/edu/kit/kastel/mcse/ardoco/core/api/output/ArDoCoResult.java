@@ -101,7 +101,7 @@ public record ArDoCoResult(DataRepository dataRepository) {
     }
 
     private static String formatTraceLinksHumanReadable(SadSamTraceLink traceLink) {
-        String modelElementName = traceLink.getInstanceLink().getModelInstance().getFullName();
+        String modelElementName = traceLink.getInstanceLink().getEntity().getName();
         String modelElementUid = traceLink.getModelElementUid();
         String modelInfo = String.format("%s (%s)", modelElementName, modelElementUid);
 

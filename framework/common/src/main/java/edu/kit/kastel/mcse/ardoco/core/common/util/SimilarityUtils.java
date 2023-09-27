@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
+
 import org.apache.commons.text.similarity.CosineSimilarity;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -98,13 +100,14 @@ public final class SimilarityUtils {
      * Compares a given {@link RecommendedInstance} with a given {@link ModelInstance} for similarity.
      *
      * @param ri       the {@link RecommendedInstance}
-     * @param instance the {@link ModelInstance}
-     * @return true, iff the {@link RecommendedInstance} and {@link ModelInstance} are similar.
+     * @param entity the {@link Entity}
+     * @return true, iff the {@link RecommendedInstance} and {@link Entity} are similar.
      */
-    public static boolean isRecommendedInstanceSimilarToModelInstance(RecommendedInstance ri, ModelInstance instance) {
+    public static boolean isRecommendedInstanceSimilarToEntity(RecommendedInstance ri, Entity entity) {
         var name = ri.getName();
         var nameList = Lists.immutable.with(name.split(" "));
-        return instance.getFullName().equalsIgnoreCase(ri.getName()) || areWordsOfListsSimilar(instance.getNameParts(), nameList);
+        var nameListOfEntity = Lists.immutable.with(entity.getName().split(" "));
+        return entity.getName().equalsIgnoreCase(ri.getName()) || areWordsOfListsSimilar(nameListOfEntity, nameList);
     }
 
     /**
@@ -204,15 +207,15 @@ public final class SimilarityUtils {
      * while loop ends with more than one possibility or all remaining lists are sorted out in the same run, all are
      * returned. Elsewhere only the remaining recommended instance is returned within the list.
      *
-     * @param instance             instance to use as original for compare
+     * @param entity             instance to use as original for compare
      * @param recommendedInstances recommended instances to check for similarity
      * @return a list of the most similar recommended instances (to the instance names)
      */
-    public static ImmutableList<RecommendedInstance> getMostRecommendedInstancesToInstanceByReferences(ModelInstance instance,
+    public static ImmutableList<RecommendedInstance> getMostRecommendedInstancesToInstanceByReferences(Entity entity,
             ImmutableList<RecommendedInstance> recommendedInstances) {
-        var instanceNames = instance.getNameParts();
+        var instanceNames = entity.getNameParts();
         var similarity = CommonTextToolsConfig.JAROWINKLER_SIMILARITY_THRESHOLD;
-        var selection = recommendedInstances.select(ri -> checkRecommendedInstanceForSelection(instance, ri, similarity));
+        var selection = recommendedInstances.select(ri -> checkRecommendedInstanceForSelection(entity, ri, similarity));
 
         var getMostRecommendedIByRefMinProportion = CommonTextToolsConfig.GET_MOST_RECOMMENDED_I_BY_REF_MIN_PROPORTION;
         var getMostRecommendedIByRefIncrease = CommonTextToolsConfig.GET_MOST_RECOMMENDED_I_BY_REF_INCREASE;
@@ -225,7 +228,7 @@ public final class SimilarityUtils {
             getMostRecommendedIByRefMinProportion += getMostRecommendedIByRefIncrease;
             MutableList<RecommendedInstance> risToRemove = Lists.mutable.empty();
             for (RecommendedInstance ri : whileSelection) {
-                if (checkRecommendedInstanceWordSimilarityToInstance(instance, ri)) {
+                if (checkRecommendedInstanceWordSimilarityToInstance(entity, ri)) {
                     allListsSimilar++;
                 }
 
@@ -246,8 +249,8 @@ public final class SimilarityUtils {
 
     }
 
-    private static boolean checkRecommendedInstanceWordSimilarityToInstance(ModelInstance instance, RecommendedInstance ri) {
-        var instanceNames = instance.getNameParts();
+    private static boolean checkRecommendedInstanceWordSimilarityToInstance(Entity entity, RecommendedInstance ri) {
+        var instanceNames = entity.getNameParts();
         for (var sf : ri.getNameMappings().flatCollect(NounMapping::getSurfaceForms)) {
             var splitSF = CommonUtilities.splitCases(String.join(" ", CommonUtilities.splitAtSeparators(sf)));
             if (areWordsSimilar(String.join(" ", instanceNames), splitSF)) {
@@ -257,12 +260,12 @@ public final class SimilarityUtils {
         return false;
     }
 
-    private static boolean checkRecommendedInstanceForSelection(ModelInstance instance, RecommendedInstance ri, double similarity) {
+    private static boolean checkRecommendedInstanceForSelection(Entity instance, RecommendedInstance ri, double similarity) {
         var instanceNames = instance.getNameParts();
-        ImmutableList<String> longestNameSplit = Lists.immutable.of(CommonUtilities.splitCases(instance.getFullName()).split(" "));
+        ImmutableList<String> longestNameSplit = Lists.immutable.of(CommonUtilities.splitCases(instance.getName()).split(" "));
         ImmutableList<String> recommendedInstanceNames = Lists.immutable.with(ri.getName());
 
-        boolean instanceNameAndRIName = areWordsSimilar(instance.getFullName(), ri.getName());
+        boolean instanceNameAndRIName = areWordsSimilar(instance.getName(), ri.getName());
         boolean instanceNamesAndRIs = SimilarityUtils.areWordsOfListsSimilar(instanceNames, recommendedInstanceNames, similarity);
         boolean longestNameSplitAndRINames = SimilarityUtils.areWordsOfListsSimilar(longestNameSplit, recommendedInstanceNames, similarity);
         boolean listOfNamesSimilarEnough = 1.0 * similarEntriesOfList(instanceNames, recommendedInstanceNames) / Math.max(instanceNames.size(),

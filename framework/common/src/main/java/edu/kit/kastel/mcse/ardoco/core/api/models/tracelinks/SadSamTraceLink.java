@@ -23,7 +23,7 @@ public class SadSamTraceLink extends TraceLink implements Comparable<SadSamTrace
      * @param word         word that the trace link points to
      */
     public SadSamTraceLink(InstanceLink instanceLink, Word word) {
-        super(new EndpointTuple(instanceLink.getTextualInstance(), instanceLink.getModelInstance()));
+        super(new EndpointTuple(instanceLink.getTextualInstance(), instanceLink.getEntity()));
         this.instanceLink = instanceLink;
         this.word = word;
     }
@@ -52,7 +52,7 @@ public class SadSamTraceLink extends TraceLink implements Comparable<SadSamTrace
      * @return Uid of the model element that the trace link is based on.
      */
     public String getModelElementUid() {
-        return instanceLink.getModelInstance().getUid();
+        return instanceLink.getEntity().getId();
     }
 
     /**
