@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 
 public class GoldStandard {
     private Logger logger = LoggerFactory.getLogger(GoldStandard.class);
@@ -23,7 +22,7 @@ public class GoldStandard {
     private File goldStandard;
     private ModelConnector model;
 
-    private MutableList<MutableList<ModelInstance>> sentence2instance = Lists.mutable.empty();
+    private MutableList<MutableList<Entity>> sentence2instance = Lists.mutable.empty();
 
     public GoldStandard(File goldStandard, ModelConnector model) {
         this.goldStandard = goldStandard;
@@ -41,7 +40,7 @@ public class GoldStandard {
                 }
 
                 String[] idXline = line.strip().split(",", -1);
-                ModelInstance instance = model.getInstances().select(i -> i.getUid().equals(idXline[0])).getFirst();
+                Entity instance = model.getInstances().select(i -> i.getUid().equals(idXline[0])).getFirst();
                 if (instance == null) {
                     System.err.println("No instance found for id \"" + idXline[0] + "\"");
                     continue;
@@ -57,7 +56,7 @@ public class GoldStandard {
         }
     }
 
-    public ImmutableList<ModelInstance> getModelInstances(int sentenceNo) {
+    public ImmutableList<Entity> getEntities(int sentenceNo) {
         // Index starts at 1
         return sentence2instance.get(sentenceNo).toImmutable();
     }
@@ -66,7 +65,7 @@ public class GoldStandard {
         MutableList<Integer> sentences = Lists.mutable.empty();
         for (int i = 0; i < sentence2instance.size(); i++) {
             var instances = sentence2instance.get(i);
-            if (instances.anySatisfy(e -> e.getUid().equals(elem.getId()))) {
+            if (instances.anySatisfy(e -> e.getId().equals(elem.getId()))) {
                 sentences.add(i);
             }
         }

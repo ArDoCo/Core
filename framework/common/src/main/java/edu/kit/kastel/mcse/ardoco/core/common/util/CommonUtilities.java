@@ -233,14 +233,14 @@ public final class CommonUtilities {
      * @return Set of identifiers for existing types
      */
     public static Set<String> getTypeIdentifiers(ModelExtractionState modelState) {
-        Set<String> identifiers = modelState.getInstanceTypes()
+        Set<String> identifiers = modelState.getEntityTypes()
                 .stream()
                 .map(CommonUtilities::splitSnakeAndKebabCase)
                 .map(CommonUtilities::splitCamelCase)
                 .map(type -> type.split(" "))
                 .flatMap(Arrays::stream)
                 .collect(Collectors.toSet());
-        identifiers.addAll(modelState.getInstanceTypes().toSet());
+        identifiers.addAll(modelState.getEntityTypes().toSet());
         return identifiers;
     }
 

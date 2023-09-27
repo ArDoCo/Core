@@ -55,7 +55,7 @@ public class ExtractionDependentOccurrenceInformant extends Informant {
         if (posTagIsUndesired(word) && !wordStartsWithCapitalLetter(word)) {
             return;
         }
-        var instanceNameIsSimilar = modelState.getInstances().anySatisfy(i -> SimilarityUtils.isWordSimilarToModelInstance(word, i));
+        var instanceNameIsSimilar = modelState.getEntities().anySatisfy(i -> SimilarityUtils.isWordSimilarToModelInstance(word, i));
         if (instanceNameIsSimilar) {
             textState.addNounMapping(word, MappingKind.NAME, this, probability);
         }
@@ -75,7 +75,7 @@ public class ExtractionDependentOccurrenceInformant extends Informant {
      * value is taken as reference.
      */
     private void searchForType(ModelExtractionState modelState, TextState textState, Word word) {
-        var instanceTypeIsSimilar = modelState.getInstances().anySatisfy(i -> SimilarityUtils.isWordSimilarToModelInstanceType(word, i));
+        var instanceTypeIsSimilar = modelState.getEntities().anySatisfy(i -> SimilarityUtils.isWordSimilarToModelInstanceType(word, i));
         if (instanceTypeIsSimilar) {
             textState.addNounMapping(word, MappingKind.TYPE, this, probability);
         }

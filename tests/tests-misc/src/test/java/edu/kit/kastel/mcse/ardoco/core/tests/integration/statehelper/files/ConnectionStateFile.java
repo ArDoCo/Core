@@ -59,16 +59,16 @@ public class ConnectionStateFile {
                 "Types [T]", "Probability [T]", "Claimants [T]", LINE_SEPARATOR));
         builder.append(LINE_SEPARATOR);
 
-        for (InstanceLink instanceLink : connectionState.getInstanceLinks().toSortedListBy(il -> il.getEntity().getUid())) {
+        for (InstanceLink instanceLink : connectionState.getInstanceLinks().toSortedListBy(il -> il.getEntity().getId())) {
 
-            var modelInstance = instanceLink.getEntity();
+            var entity = instanceLink.getEntity();
             var textInstance = instanceLink.getTextualInstance();
 
-            builder.append(modelInstance.getUid());
+            builder.append(entity.getId());
             builder.append(VALUE_SEPARATOR);
-            builder.append(modelInstance.getFullName());
+            builder.append(entity.getName());
             builder.append(VALUE_SEPARATOR);
-            builder.append(modelInstance.getFullType());
+            builder.append(entity.getClass().getName());
             builder.append(VALUE_SEPARATOR);
 
             builder.append(df.format(instanceLink.getConfidence()));
@@ -105,7 +105,7 @@ public class ConnectionStateFile {
             logger.error("Could not load ConnectionState. Abort writing diff.");
             return false;
         }
-        var currentLinks = currentConnectionState.getInstanceLinks().toSortedListBy(il -> il.getEntity().getUid());
+        var currentLinks = currentConnectionState.getInstanceLinks().toSortedListBy(il -> il.getEntity().getId());
 
         builder.append("# ").append(arDoCoResult.getProjectName());
         builder.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
@@ -136,13 +136,13 @@ public class ConnectionStateFile {
             var currentModelInstance = currentLink.getEntity();
             var currentTextInstance = currentLink.getTextualInstance();
 
-            int modelOrder = parts.get(0).compareTo(currentModelInstance.getUid());
+            int modelOrder = parts.get(0).compareTo(currentModelInstance.getId());
 
             if (modelOrder >= 0) {
 
-                String uid = currentModelInstance.getUid();
-                String modelName = currentModelInstance.getFullName();
-                String modelType = currentModelInstance.getFullType();
+                String uid = currentModelInstance.getId();
+                String modelName = currentModelInstance.getName();
+                String modelType = currentModelInstance.getClass().getName();
                 String linkProbability = df.format(currentLink.getConfidence());
                 ImmutableList<String> sentences = currentTextInstance.getSentenceNumbers().toSortedList().collect(no -> Integer.toString(no)).toImmutable();
                 String name = currentTextInstance.getName();

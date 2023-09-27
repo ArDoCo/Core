@@ -14,7 +14,6 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.MutableMap;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.text.PhraseType;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
@@ -68,7 +67,7 @@ public final class SimilarityUtils {
      *
      * @param nounMapping the {@link NounMapping}
      * @param entity    the {@link Entity}
-     * @return true, iff the {@link NounMapping} and {@link ModelInstance} are similar.
+     * @return true, iff the {@link NounMapping} and {@link Entity} are similar.
      */
     public static boolean isNounMappingSimilarToEntity(NounMapping nounMapping, Entity entity) {
         if (areWordsOfListsSimilar(entity.getNameParts(), Lists.immutable.with(nounMapping.getReference())) || areWordsSimilar(entity.getName(),
@@ -85,19 +84,19 @@ public final class SimilarityUtils {
     }
 
     /**
-     * Compares a given {@link Word} with a given {@link ModelInstance} for similarity.
+     * Compares a given {@link Word} with a given {@link Entity} for similarity.
      *
      * @param word     the {@link Word}
-     * @param instance the {@link ModelInstance}
-     * @return true, iff the {@link Word} and {@link ModelInstance} are similar.
+     * @param entity   the {@link Entity}
+     * @return true, iff the {@link Word} and {@link Entity} are similar.
      */
-    public static boolean isWordSimilarToModelInstance(Word word, ModelInstance instance) {
-        var names = instance.getNameParts();
+    public static boolean isWordSimilarToModelInstance(Word word, Entity entity) {
+        var names = entity.getNameParts();
         return compareWordWithStringListEntries(word, names);
     }
 
     /**
-     * Compares a given {@link RecommendedInstance} with a given {@link ModelInstance} for similarity.
+     * Compares a given {@link RecommendedInstance} with a given {@link Entity} for similarity.
      *
      * @param ri       the {@link RecommendedInstance}
      * @param entity the {@link Entity}
@@ -111,15 +110,15 @@ public final class SimilarityUtils {
     }
 
     /**
-     * Compares a given {@link Word} with the type of a given {@link ModelInstance} for similarity.
+     * Compares a given {@link Word} with the type of a given {@link Entity} for similarity.
      *
      * @param word     the {@link Word}
-     * @param instance the {@link ModelInstance}
-     * @return true, iff the {@link Word} and the type of the {@link ModelInstance} are similar.
+     * @param entity   the {@link Entity}
+     * @return true, if the {@link Word} and the type of the {@link Entity} are similar.
      */
-    public static boolean isWordSimilarToModelInstanceType(Word word, ModelInstance instance) {
-        var types = instance.getTypeParts();
-        return compareWordWithStringListEntries(word, types);
+    public static boolean isWordSimilarToModelInstanceType(Word word, Entity entity) {
+        var type = entity.getClass().getName();
+        return areWordsSimilar(type, word.getText());
     }
 
     private static boolean compareWordWithStringListEntries(Word word, ImmutableList<String> names) {

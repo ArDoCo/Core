@@ -1,10 +1,14 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.types;
 
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureComponent;
+
 import org.junit.jupiter.api.BeforeEach;
 
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.Inconsistency;
 import edu.kit.kastel.mcse.ardoco.core.models.ModelInstanceImpl;
+
+import java.util.HashSet;
 
 class NameInconsistencyTest extends AbstractInconsistencyTypeTest {
     private static final String NAME_INCONSISTENCY_TYPE = "NameInconsistency";
@@ -12,7 +16,7 @@ class NameInconsistencyTest extends AbstractInconsistencyTypeTest {
 
     @BeforeEach
     void beforeEach() {
-        nameInconsistency = new NameInconsistency(new ModelInstanceImpl("Dummy", "BasicComponent", "1"), new DummyWord());
+        nameInconsistency = new NameInconsistency(new ArchitectureComponent("Dummy", "1", new HashSet<>(), new HashSet<>(), new HashSet<>()), new DummyWord());
     }
 
     @Override
@@ -32,12 +36,12 @@ class NameInconsistencyTest extends AbstractInconsistencyTypeTest {
 
     @Override
     protected Inconsistency getUnequalInconsistency() {
-        return new NameInconsistency(new ModelInstanceImpl("DummyComposite", "CompositeComponent", "2"), new DummyWord());
+        return new NameInconsistency(new ArchitectureComponent("DummyComposite", "2", new HashSet<>(), new HashSet<>(), new HashSet<>()), new DummyWord());
     }
 
     @Override
     protected Inconsistency getEqualInconsistency() {
-        return new NameInconsistency(new ModelInstanceImpl("Dummy", "BasicComponent", "1"), new DummyWord());
+        return new NameInconsistency(new ArchitectureComponent("Dummy", "1", new HashSet<>(), new HashSet<>(), new HashSet<>()), new DummyWord());
     }
 
     @Override

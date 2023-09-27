@@ -3,20 +3,21 @@ package edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks;
 
 import java.util.Objects;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
+
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 
 /**
  * Represents a trace link. This is a convenience data class that takes the necessary info from {@link InstanceLink} and
- * the specific {@link ModelInstance} and {@link Word} that are used in this trace link.
+ * the specific {@link Entity} and {@link Word} that are used in this trace link.
  */
 public class SadSamTraceLink extends TraceLink implements Comparable<SadSamTraceLink> {
     private final InstanceLink instanceLink;
     private final Word word;
 
     /**
-     * Create a trace link based on a {@link InstanceLink} and a concrete {@link ModelInstance} along with a concrete
+     * Create a trace link based on a {@link InstanceLink} and a concrete {@link Entity} along with a concrete
      * {@link Word}.
      *
      * @param instanceLink InstanceLink of this trace link

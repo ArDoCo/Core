@@ -9,6 +9,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
+import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
+
 import org.eclipse.collections.api.collection.ImmutableCollection;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -20,7 +22,6 @@ import org.junit.jupiter.api.TestMethodOrder;
 
 import edu.kit.kastel.mcse.ardoco.core.api.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
@@ -100,7 +101,7 @@ class SadSamTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryE
         int sentences = arDoCoResult.getText().getSentences().size();
         int modelElements = 0;
         for (var model : arDoCoResult.getModelIds()) {
-            modelElements += arDoCoResult.getModelState(model).getInstances().size();
+            modelElements += arDoCoResult.getModelState(model).getEntities().size();
         }
 
         return sentences * modelElements;
@@ -220,10 +221,10 @@ class SadSamTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryE
         var modelStates = data.getData(ModelStates.ID, ModelStates.class).orElseThrow();
 
         for (String modelId : modelStates.extractionModelIds()) {
-            var instances = modelStates.getModelExtractionState(modelId).getInstances();
+            var entities = modelStates.getModelExtractionState(modelId).getEntities();
 
-            var falseNegativeOutput = createOutputStrings(falseNegatives, sentences, instances);
-            var falsePositivesOutput = createOutputStrings(falsePositives, sentences, instances);
+            var falseNegativeOutput = createOutputStrings(falseNegatives, sentences, entities);
+            var falsePositivesOutput = createOutputStrings(falsePositives, sentences, entities);
 
             logger.debug("Model: \n{}", modelId);
             if (!falseNegativeOutput.isEmpty()) {
@@ -237,7 +238,7 @@ class SadSamTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryE
     }
 
     private static MutableList<String> createOutputStrings(Stream<String> traceLinkStrings, ImmutableList<Sentence> sentences,
-            ImmutableList<ModelInstance> instances) {
+            ImmutableList<Entity> entities) {
         var outputList = Lists.mutable.<String>empty();
         for (var traceLinkString : traceLinkStrings.toList()) {
             var parts = traceLinkString.split(",", -1);
@@ -246,7 +247,7 @@ class SadSamTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryE
             }
             var id = parts[0];
 
-            var modelElement = instances.detect(instance -> instance.getUid().equals(id));
+            var modelElement = entities.detect(entity -> entity.getId().equals(id));
 
             var sentence = parts[1];
 
@@ -259,7 +260,7 @@ class SadSamTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryE
             }
             var sentenceText = sentences.get(sentenceNo - 1);
 
-            outputList.add(String.format("%-20s - %s (%s)", modelElement.getFullName(), sentenceText.getText(), traceLinkString));
+            outputList.add(String.format("%-20s - %s (%s)", modelElement.getName(), sentenceText.getText(), traceLinkString));
         }
         return outputList;
     }
