@@ -3,10 +3,11 @@ package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.informants;
 
 import java.util.Map;
 
+import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
+
 import org.eclipse.collections.api.list.ImmutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelExtractionState;
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
@@ -45,8 +46,8 @@ public class ReferenceInformant extends Informant {
      */
     private void findRecommendedInstancesFromNounMappingsThatAreSimilarToInstances(ModelExtractionState modelState, RecommendationState recommendationState,
             TextState textState) {
-        for (ModelInstance instance : modelState.getInstances()) {
-            var similarToInstanceMappings = getSimilarNounMappings(instance, textState);
+        for (Entity entity : modelState.getEntities()) {
+            var similarToInstanceMappings = getSimilarNounMappings(entity, textState);
 
             for (NounMapping similarNameMapping : similarToInstanceMappings) {
                 recommendationState.addRecommendedInstance(similarNameMapping.getReference(), this, probability, similarToInstanceMappings);
@@ -55,9 +56,9 @@ public class ReferenceInformant extends Informant {
 
     }
 
-    private ImmutableList<NounMapping> getSimilarNounMappings(ModelInstance instance, TextState textState) {
+    private ImmutableList<NounMapping> getSimilarNounMappings(Entity entity, TextState textState) {
         return textState.getNounMappingsOfKind(MappingKind.NAME)
-                .select(nounMapping -> SimilarityUtils.isNounMappingSimilarToModelInstance(nounMapping, instance));
+                .select(nounMapping -> SimilarityUtils.isNounMappingSimilarToEntity(nounMapping, entity));
     }
 
     @Override

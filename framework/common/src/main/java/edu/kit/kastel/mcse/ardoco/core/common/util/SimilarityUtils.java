@@ -63,20 +63,20 @@ public final class SimilarityUtils {
     }
 
     /**
-     * Compares a given {@link NounMapping} with a given {@link ModelInstance} for similarity. Checks if all names, the
+     * Compares a given {@link NounMapping} with a given {@link Entity} for similarity. Checks if all names, the
      * longest name or a single name are similar to the reference of the NounMapping.
      *
      * @param nounMapping the {@link NounMapping}
-     * @param instance    the {@link ModelInstance}
+     * @param entity    the {@link Entity}
      * @return true, iff the {@link NounMapping} and {@link ModelInstance} are similar.
      */
-    public static boolean isNounMappingSimilarToModelInstance(NounMapping nounMapping, ModelInstance instance) {
-        if (areWordsOfListsSimilar(instance.getNameParts(), Lists.immutable.with(nounMapping.getReference())) || areWordsSimilar(instance.getFullName(),
+    public static boolean isNounMappingSimilarToEntity(NounMapping nounMapping, Entity entity) {
+        if (areWordsOfListsSimilar(entity.getNameParts(), Lists.immutable.with(nounMapping.getReference())) || areWordsSimilar(entity.getName(),
                 nounMapping.getReference())) {
             return true;
         }
 
-        for (String name : instance.getNameParts()) {
+        for (String name : entity.getNameParts()) {
             if (areWordsSimilar(name, nounMapping.getReference())) {
                 return true;
             }
