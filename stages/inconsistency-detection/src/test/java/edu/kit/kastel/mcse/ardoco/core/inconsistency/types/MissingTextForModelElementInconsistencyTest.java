@@ -1,11 +1,16 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.types;
 
+import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
+
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureComponent;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureInterface;
+
 import org.junit.jupiter.api.BeforeEach;
 
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.Inconsistency;
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.models.ModelInstanceImpl;
+
+import java.util.HashSet;
 
 /**
  *
@@ -16,8 +21,8 @@ public class MissingTextForModelElementInconsistencyTest extends AbstractInconsi
 
     @BeforeEach
     void beforeEach() {
-        ModelInstance instance = new ModelInstanceImpl("instance", "type", "uid1");
-        missingTextForModelElementInconsistency = new MissingTextForModelElementInconsistency(instance);
+        Entity entity = new ArchitectureInterface("instance", "uid1", new HashSet<>());
+        missingTextForModelElementInconsistency = new MissingTextForModelElementInconsistency(entity);
     }
 
     @Override
@@ -37,14 +42,14 @@ public class MissingTextForModelElementInconsistencyTest extends AbstractInconsi
 
     @Override
     protected Inconsistency getUnequalInconsistency() {
-        ModelInstance instance = new ModelInstanceImpl("otherInstance", "otherType", "uid2");
-        return new MissingTextForModelElementInconsistency(instance);
+        Entity entity = new ArchitectureComponent("otherInstance", "uid2", new HashSet<>(), new HashSet<>(), new HashSet<>());
+        return new MissingTextForModelElementInconsistency(entity);
     }
 
     @Override
     protected Inconsistency getEqualInconsistency() {
-        ModelInstance instance = new ModelInstanceImpl("instance", "type", "uid1");
-        return new MissingTextForModelElementInconsistency(instance);
+        Entity entity = new ArchitectureInterface("instance", "uid1", new HashSet<>());
+        return new MissingTextForModelElementInconsistency(entity);
     }
 
     @Override

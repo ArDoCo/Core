@@ -1,30 +1,36 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.agents;
 
+import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
+
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureComponent;
+
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureInterface;
+
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.informants.UndocumentedModelElementInconsistencyInformant;
-import edu.kit.kastel.mcse.ardoco.core.models.ModelInstanceImpl;
+
+import java.util.HashSet;
 
 /**
  * Tests for the {@link UndocumentedModelElementInconsistencyInformant}.
  */
 class UndocumentedModelElementInconsistencyTest {
-    private MutableList<ModelInstance> modelInstances;
+    private MutableList<Entity> modelInstances;
 
     @BeforeEach
     void beforeEach() {
         modelInstances = Lists.mutable.empty();
-        modelInstances.add(new ModelInstanceImpl("DummyRecommender", "BasicComponent", "1"));
-        modelInstances.add(new ModelInstanceImpl("ExpertRecommender", "CompositeComponent", "2"));
-        modelInstances.add(new ModelInstanceImpl("Cache", "Interface", "3"));
-        modelInstances.add(new ModelInstanceImpl("WebUI", "BasicComponent", "4"));
-        modelInstances.add(new ModelInstanceImpl("Only Suffix", "Component", "5"));
+        modelInstances.add(new ArchitectureComponent("DummyRecommender",  "1", new HashSet<>(), new HashSet<>(), new HashSet<>()));
+        modelInstances.add(new ArchitectureComponent("ExpertRecommender", "2", new HashSet<>(), new HashSet<>(), new HashSet<>()));
+        modelInstances.add(new ArchitectureInterface("Cache", "3", new HashSet<>()));
+        modelInstances.add(new ArchitectureComponent("WebUI", "4", new HashSet<>(), new HashSet<>(), new HashSet<>()));
+        modelInstances.add(new ArchitectureComponent("Only Suffix", "5", new HashSet<>(), new HashSet<>(), new HashSet<>()));
     }
 
     @Test
@@ -40,7 +46,7 @@ class UndocumentedModelElementInconsistencyTest {
         var filteredList = UndocumentedModelElementInconsistencyInformant.filterWithWhitelist(modelInstances, whitelist);
         Assertions.assertAll(//
                 () -> Assertions.assertEquals(1, filteredList.size()), //
-                () -> Assertions.assertEquals("4", filteredList.get(0).getUid()));
+                () -> Assertions.assertEquals("4", filteredList.get(0).getId()));
     }
 
     @Test
