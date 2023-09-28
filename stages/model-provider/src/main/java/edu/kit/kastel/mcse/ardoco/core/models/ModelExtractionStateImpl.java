@@ -59,7 +59,7 @@ public class ModelExtractionStateImpl extends AbstractState implements ModelExtr
      */
     private void collectTypesAndNames() {
         for (Entity i : entities) {
-            entityTypes.add(i.getClass().getName());
+            entityTypes.add(i.getClass().getSimpleName());
             names.addAll(Arrays.stream(i.getName().split(" ")).toList());
         }
     }
@@ -82,7 +82,7 @@ public class ModelExtractionStateImpl extends AbstractState implements ModelExtr
      */
     @Override
     public ImmutableList<Entity> getEntitiesOfType(String type) {
-        return entities.select(i -> i.getClass().getName().equals(type));
+        return entities.select(i -> i.getClass().getSimpleName().equals(type));
     }
 
     /**

@@ -267,7 +267,7 @@ public final class FilePrinter {
         dataLines.add(new String[] { "UID", "Name", "Type" });
 
         for (Entity entity : modelState.getEntities()) {
-            dataLines.add(new String[] { entity.getId(), entity.getName(), entity.getClass().getName()});
+            dataLines.add(new String[] { entity.getId(), entity.getName(), entity.getClass().getSimpleName()});
         }
 
         return dataLines.toImmutable();

@@ -131,14 +131,14 @@ public class TLSummaryFile {
     }
 
     static String format(TestLink link, Text text, ModelExtractionState modelState) {
-        var model = modelState.getInstances().stream().filter(m -> m.getUid().equals(link.modelId())).findAny().orElse(null);
+        var model = modelState.getEntities().stream().filter(m -> m.getId().equals(link.modelId())).findAny().orElse(null);
         var sentence = text.getSentences().stream().filter(s -> s.getSentenceNumber() == link.sentenceNr()).findAny().orElse(null);
 
         if (model == null && sentence == null) {
             return null;
         }
 
-        var modelStr = model == null ? link.modelId() : "\"" + model.getFullName() + "\"";
+        var modelStr = model == null ? link.modelId() : "\"" + model.getName() + "\"";
         var sentenceStr = sentence == null ? String.valueOf(link.sentenceNr()) : "\"" + sentence.getText() + "\"";
 
         return String.format("%s ⇔ %s [%s,%s]", modelStr, sentenceStr, link.modelId(), link.sentenceNr());

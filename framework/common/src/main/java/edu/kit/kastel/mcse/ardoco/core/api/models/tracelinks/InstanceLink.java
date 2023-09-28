@@ -111,7 +111,7 @@ public class InstanceLink extends EndpointTuple {
             typePositions.addAll(typeMapping.getMappingSentenceNo().castToCollection());
         }
         return "InstanceMapping [ uid=" + entity.getId() + ", name=" + entity.getName() + //
-                ", as=" + String.join(", ", entity.getClass().getName()) + ", probability=" + getConfidence() + ", FOUND: " + //
+                ", as=" + String.join(", ", entity.getClass().getSimpleName()) + ", probability=" + getConfidence() + ", FOUND: " + //
                 textualInstance.getName() + " : " + textualInstance.getType() + ", occurrences= " + //
                 "NameVariants: " + names.size() + ": " + names + " sentences{" + Arrays.toString(namePositions.toArray()) + "}" + //
                 ", TypeVariants: " + types.size() + ": " + types + "sentences{" + Arrays.toString(typePositions.toArray()) + "}" + "]";

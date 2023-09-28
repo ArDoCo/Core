@@ -117,7 +117,7 @@ public final class SimilarityUtils {
      * @return true, if the {@link Word} and the type of the {@link Entity} are similar.
      */
     public static boolean isWordSimilarToModelInstanceType(Word word, Entity entity) {
-        var type = entity.getClass().getName();
+        var type = entity.getClass().getSimpleName();
         return areWordsSimilar(type, word.getText());
     }
 

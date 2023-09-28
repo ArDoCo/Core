@@ -68,7 +68,7 @@ public class ConnectionStateFile {
             builder.append(VALUE_SEPARATOR);
             builder.append(entity.getName());
             builder.append(VALUE_SEPARATOR);
-            builder.append(entity.getClass().getName());
+            builder.append(entity.getClass().getSimpleName());
             builder.append(VALUE_SEPARATOR);
 
             builder.append(df.format(instanceLink.getConfidence()));
@@ -142,7 +142,7 @@ public class ConnectionStateFile {
 
                 String uid = currentModelInstance.getId();
                 String modelName = currentModelInstance.getName();
-                String modelType = currentModelInstance.getClass().getName();
+                String modelType = currentModelInstance.getClass().getSimpleName();
                 String linkProbability = df.format(currentLink.getConfidence());
                 ImmutableList<String> sentences = currentTextInstance.getSentenceNumbers().toSortedList().collect(no -> Integer.toString(no)).toImmutable();
                 String name = currentTextInstance.getName();

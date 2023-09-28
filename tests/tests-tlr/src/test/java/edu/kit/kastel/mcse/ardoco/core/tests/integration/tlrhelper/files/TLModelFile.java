@@ -50,7 +50,7 @@ public class TLModelFile {
                             .append("]: \"")
                             .append(model.getName())
                             .append("\" (")
-                            .append(model.getClass().getName())
+                            .append(model.getClass().getSimpleName())
                             .append(") (")
                             .append(String.join(", ", model.getNameParts()))
                             .append(")")

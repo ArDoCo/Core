@@ -22,7 +22,7 @@ public class MissingTextForModelElementInconsistency implements ModelInconsisten
 
     @Override
     public String getReason() {
-        return String.format(Locale.US, "Model contains an Instance \"%s\" (type: \"%s\")  that seems to be undocumented.", entity.getName(), entity.getClass().getName());
+        return String.format(Locale.US, "Model contains an Instance \"%s\" (type: \"%s\")  that seems to be undocumented.", entity.getName(), entity.getClass().getSimpleName());
     }
 
     @Override
@@ -53,7 +53,7 @@ public class MissingTextForModelElementInconsistency implements ModelInconsisten
 
     @Override
     public ImmutableCollection<String[]> toFileOutput() {
-        String[] entry = { getType(), entity.getName(), entity.getClass().getName() };
+        String[] entry = { getType(), entity.getName(), entity.getClass().getSimpleName() };
         var list = Lists.mutable.<String[]>empty();
         list.add(entry);
         return list.toImmutable();
@@ -66,7 +66,7 @@ public class MissingTextForModelElementInconsistency implements ModelInconsisten
 
     @Override
     public String getEntityType() {
-        return entity.getClass().getName();
+        return entity.getClass().getSimpleName();
     }
 
     @Override
