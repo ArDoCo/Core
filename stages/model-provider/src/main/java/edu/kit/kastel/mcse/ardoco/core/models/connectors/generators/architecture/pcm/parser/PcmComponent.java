@@ -26,6 +26,9 @@ public final class PcmComponent {
     @XMLList(name = "providedRoles_InterfaceProvidingEntity", elementType = InterfaceId.class)
     private List<InterfaceId> providedInterfaceIds;
 
+    @XMLList(name = "assemblyContexts__ComposedStructure", elementType = ComponentId.class)
+    private List<ComponentId> innerComponents;
+
     private List<PcmInterface> required;
     private List<PcmInterface> provided;
 
@@ -63,6 +66,10 @@ public final class PcmComponent {
         return new ArrayList<>(provided);
     }
 
+    public List<ComponentId> getInnerComponents() {
+        return innerComponents == null ? List.of() : new ArrayList<>(innerComponents);
+    }
+
     @XMLClass
     static final class InterfaceId {
         @XMLValue(name = "providedInterface__OperationProvidedRole", mandatory = false)
@@ -74,6 +81,16 @@ public final class PcmComponent {
             if (provided == null && required == null)
                 throw new IllegalStateException("Required And Provided cannot be null at the same time");
             return provided == null ? required : provided;
+        }
+    }
+
+    @XMLClass
+    public static final class ComponentId {
+        @XMLValue(name = "encapsulatedComponent__AssemblyContext")
+        private String id;
+
+        public String getId() {
+            return id;
         }
     }
 }
