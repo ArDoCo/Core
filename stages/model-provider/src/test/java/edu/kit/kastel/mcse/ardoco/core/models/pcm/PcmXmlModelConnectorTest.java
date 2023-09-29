@@ -20,6 +20,7 @@ import org.xml.sax.SAXException;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.PcmXmlModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.pcm.parser.PcmModel;
 
 class PcmXmlModelConnectorTest {
     private static final Logger logger = LoggerFactory.getLogger(PcmXmlModelConnectorTest.class);
@@ -108,6 +109,15 @@ class PcmXmlModelConnectorTest {
         Assertions.assertEquals(Metamodel.ARCHITECTURE, connector.getMetamodel());
         Assertions.assertEquals(14, connector.getInstances().size());
         Assertions.assertTrue(connector.getInstances().allSatisfy(i -> i.getFullType().equals("BasicComponent")));
+    }
+
+    @Test
+    void testCompositeComponent() throws Exception {
+        InputStream is = Objects.requireNonNull(PcmXmlModelConnectorTest.class.getResourceAsStream("/teammates-with-composite.repository"));
+        PcmModel pcmModel = new PcmModel(is);
+        is.close();
+        var component = pcmModel.getRepository().getComponents().stream().filter(it -> it.getEntityName().equals("TestComponent1")).findFirst().orElseThrow();
+        Assertions.assertEquals("_1lMqsKESEeu-mYqkDskRow", component.getInnerComponents().get(0).getId());
     }
 
 }
