@@ -23,12 +23,6 @@ public abstract class Informant extends AbstractPipelineStep implements Claimant
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration) {
-        //FIXME Informants conceptually are at the very bottom of the hierarchy, currently 30+
-        // classes override this method doing nothing because of that.
-        //FIXME Since providing a base implementation in this class does not prevent subclasses
-        // from overriding the method in fringe cases, this would reduce unnecessary code
-        // duplication, without removing functionality
-        //FIXME probably subclasses should be provided for informants that have subprocesses
-        // (none as of now) and those which dont
+        //Nothing by default
     }
 }

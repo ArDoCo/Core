@@ -53,7 +53,7 @@ public interface Word extends Comparable<Word>, Serializable {
     Word getNextWord();
 
     /**
-     * FIXME Isnt it just the position in the text though? This is confusing imo
+     * FIXME This description is confusing. Is this relative to the sentence or relative to the entire text?
      * Gets the position in the sentence / text.
      *
      * @return the position

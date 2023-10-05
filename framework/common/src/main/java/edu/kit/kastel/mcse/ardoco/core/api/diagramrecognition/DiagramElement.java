@@ -16,6 +16,10 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelElement;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityComparable;
 
+/**
+ * This box represents a geometrical shape with an arbitrary amount of text from a diagram. An element can be uniquely identified by its bounding box or UID and
+ * the diagram it belongs to.
+ */
 public abstract class DiagramElement extends Entity implements SimilarityComparable<DiagramElement> {
     private Diagram diagram;
 
@@ -41,11 +45,20 @@ public abstract class DiagramElement extends Entity implements SimilarityCompara
         }
     };
 
+    /**
+     * Creates a new diagram element that is associated with the given diagram and unique identifier.
+     *
+     * @param diagram the diagram this element is associated with
+     * @param uuid    the unique identifier
+     */
     protected DiagramElement(@NotNull Diagram diagram, @NotNull String uuid) {
         super(uuid);
         this.diagram = diagram;
     }
 
+    /**
+     * Empty constructor for JSON deserialization
+     */
     protected DiagramElement() {
         super(UUID.randomUUID().toString());
     }
@@ -67,7 +80,10 @@ public abstract class DiagramElement extends Entity implements SimilarityCompara
     }
 
     /**
-     * {@return the set of elements which are considered direct children}
+     * {@return the set of elements which are direct children of this diagram element} Determined indirectly by searching for diagram elements in the diagram
+     * which reference this element as their parent.
+     *
+     * @see #getParent()
      */
     public @NotNull ImmutableSet<DiagramElement> getChildren() {
         try {
@@ -77,6 +93,12 @@ public abstract class DiagramElement extends Entity implements SimilarityCompara
         }
     }
 
+    /**
+     * {@return the optional parent of this element, empty if this diagram element is at the top-most level} Searches the diagram for diagram elements whose
+     * bounding box entirely contain this element. The diagram element with the smallest area is chosen as parent.
+     *
+     * @see BoundingBox#containsEntirely(BoundingBox)
+     */
     public Optional<DiagramElement> getParent() {
         try {
             return Optional.ofNullable(parent.get());

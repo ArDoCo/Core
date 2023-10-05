@@ -12,6 +12,9 @@ import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.execution.PipelineMetaData;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
 
+/**
+ * This class can be used to easily define an anonymous {@link ArDoCoRunner} for testing purposes.
+ */
 public abstract class AnonymousRunner extends ArDoCoRunner {
     private static final Logger logger = LoggerFactory.getLogger(AnonymousRunner.class);
 
@@ -34,7 +37,7 @@ public abstract class AnonymousRunner extends ArDoCoRunner {
      * @param preRunDataRepository data repository of a previous run used as a base
      * @return List of AbstractPipelineSteps this runner consists of
      */
-    public List<AbstractPipelineStep> setUp(@Nullable DataRepository preRunDataRepository) {
+    private List<AbstractPipelineStep> setUp(@Nullable DataRepository preRunDataRepository) {
         try {
             var arDoCo = getArDoCo();
             var dataRepository = arDoCo.getDataRepository();

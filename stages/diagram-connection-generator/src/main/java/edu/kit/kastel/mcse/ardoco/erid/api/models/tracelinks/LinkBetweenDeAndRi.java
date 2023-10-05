@@ -3,7 +3,6 @@ package edu.kit.kastel.mcse.ardoco.erid.api.models.tracelinks;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
 
 import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.set.ImmutableSet;
@@ -14,27 +13,13 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaWordTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.EndpointTuple;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
+import edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
+/**
+ * This class represents a trace link between a {@link DiagramElement} and a {@link RecommendedInstance}.
+ */
 public class LinkBetweenDeAndRi extends EndpointTuple implements Claimant, Comparable<LinkBetweenDeAndRi> {
-    public static final Function<Map<Word, Double>, Double> MAXIMUM_CONFIDENCE = (Map<Word, Double> confidenceMap) -> confidenceMap.values()
-            .stream()
-            .reduce(0.0, Math::max);
-    public static final Function<Map<Word, Double>, Double> MINIMUM_CONFIDENCE = (Map<Word, Double> confidenceMap) -> confidenceMap.values()
-            .stream()
-            .reduce(0.0, Math::min);
-    public static final Function<Map<Word, Double>, Double> AVERAGE_CONFIDENCE = (Map<Word, Double> confidenceMap) -> {
-        return confidenceMap.values().stream().reduce(0.0, Double::sum) / confidenceMap.values().size();
-    };
-    public static final Function<Map<Word, Double>, Double> MEDIAN_CONFIDENCE = (Map<Word, Double> confidenceMap) -> {
-        var values = confidenceMap.values().stream().sorted().toList();
-        var length = values.size();
-        if (length % 2 == 0) {
-            return (values.get(length / 2) + values.get(length / 2 - 1)) / 2;
-        }
-        return values.get(length / 2);
-    };
-
     private final RecommendedInstance recommendedInstance;
     private final DiagramElement diagramElement;
     private final String projectName;
@@ -42,6 +27,8 @@ public class LinkBetweenDeAndRi extends EndpointTuple implements Claimant, Compa
     private final Map<Word, Double> confidenceMap;
 
     /**
+     * Creates a new trace link for the given project with the confidence map provided by the claimant.
+     *
      * @param recommendedInstance the recommended instance
      * @param diagramElement      the diagram element
      * @param projectName         the name of the project
@@ -63,28 +50,50 @@ public class LinkBetweenDeAndRi extends EndpointTuple implements Claimant, Compa
         this.confidenceMap = confidenceMap;
     }
 
+    /**
+     * {@return the traced recommended instance}
+     */
     public RecommendedInstance getRecommendedInstance() {
         return recommendedInstance;
     }
 
+    /**
+     * {@return the traced diagram element}
+     */
     public DiagramElement getDiagramElement() {
         return diagramElement;
     }
 
+    /**
+     * {@return the confidence for a given word} {@link Double#MIN_VALUE}, if the word is not part of the traced recommended instance.
+     *
+     * @param word the word
+     */
     public double getConfidence(Word word) {
         return confidenceMap.getOrDefault(word, Double.MIN_VALUE);
     }
 
+    /**
+     * {@return a map of confidences for each word that is part of the recommended instance}
+     */
     public Map<Word, Double> getConfidenceMap() {
         return Map.copyOf(confidenceMap);
     }
 
+    /**
+     * {@return sets the confidence for a specific word} Does not check whether the word is contained by the recommended instance.
+     */
     public void setConfidence(Word word, double confidence) {
         confidenceMap.put(word, confidence);
     }
 
-    public double getConfidence(Function<Map<Word, Double>, Double> accumulator) {
-        return accumulator.apply(getConfidenceMap());
+    /**
+     * {@return the overall confidence in the link} The confidence is calculated by aggregating the confidence map values using a {@link AggregationFunctions}.
+     *
+     * @param aggregationFunction an aggregation function
+     */
+    public double getConfidence(AggregationFunctions aggregationFunction) {
+        return aggregationFunction.applyAsDouble(getConfidenceMap().values());
     }
 
     @Override

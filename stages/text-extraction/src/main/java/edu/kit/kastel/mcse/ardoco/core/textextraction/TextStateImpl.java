@@ -5,6 +5,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.*;
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
+import edu.kit.kastel.mcse.ardoco.core.common.util.AbbreviationDisambiguationHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.Comparators;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.data.AbstractState;
@@ -35,8 +36,6 @@ public class TextStateImpl extends AbstractState implements TextState {
         if (compare != 0)
             return compare;
         return 0;
-        //FIXME isnt this highly dependant on the machine running ardoco? throw new IllegalStateException("NounMappings are not equal but have same
-        // creation time");
     };
 
     /**
@@ -299,12 +298,24 @@ public class TextStateImpl extends AbstractState implements TextState {
         this.nounMappings.sortThis(ORDER_NOUNMAPPING);
     }
 
+    /**
+     * Removes the specified phrase mapping from the state and replaces it with an (optional) replacement
+     * @param phraseMapping the mapping
+     * @param replacement the replacement
+     * @return true if removed, false otherwise
+     */
     boolean removePhraseMappingFromState(PhraseMapping phraseMapping, PhraseMapping replacement) {
         var success = this.phraseMappings.remove(phraseMapping);
         phraseMapping.onDelete(replacement);
         return success;
     }
 
+    /**
+     * Removes the specified noun mapping from the state and replaces it with an (optional) replacement
+     * @param nounMapping the mapping
+     * @param replacement the replacement
+     * @return true if removed, false otherwise
+     */
     boolean removeNounMappingFromState(NounMapping nounMapping, NounMapping replacement) {
         var success = this.nounMappings.remove(nounMapping);
         nounMapping.onDelete(replacement);

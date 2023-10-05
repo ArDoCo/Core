@@ -1,5 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -10,8 +11,9 @@ class DbPediaHelperTest {
     @Test
     void load() {
         var record = DbPediaHelper.getInstance().getOrRead();
-        assertTrue(record.programmingLanguages().size() > 0);
-        assertTrue(record.markupLanguages().size() > 0);
+        assertFalse(record.programmingLanguages().isEmpty());
+        assertFalse(record.markupLanguages().isEmpty());
+        assertFalse(record.software().isEmpty());
     }
 
     @Test

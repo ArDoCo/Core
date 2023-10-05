@@ -3,21 +3,25 @@ package edu.kit.kastel.mcse.ardoco.erid.api.diagraminconsistency;
 import java.util.Set;
 
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.Inconsistency;
-import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
 
+/**
+ * This state holds the diagram element {@link Inconsistency Inconsistencies}
+ * {@link edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.types.MDEInconsistency MDEInconsistency} and
+ * {@link edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.types.MTDEInconsistency MTDEInconsistency}.
+ */
 public interface DiagramInconsistencyState extends PipelineStepData {
-    public static final String ID = "DiagramInconsistencyState";
+    String ID = "DiagramInconsistencyState";
 
     /**
      * @param type inconsistency type {@return the set of inconsistencies discovered by this stage of the given type}
      */
-    public <T extends Inconsistency> Set<T> getInconsistencies(Class<T> type);
+    <T extends Inconsistency> Set<T> getInconsistencies(Class<T> type);
 
     /**
      * {@return the set of inconsistencies discovered by this stage}
      */
-    public Set<Inconsistency> getInconsistencies();
+    Set<Inconsistency> getInconsistencies();
 
     /**
      * Adds an inconsistency
@@ -25,5 +29,5 @@ public interface DiagramInconsistencyState extends PipelineStepData {
      * @param inconsistency instance
      * @return true, if the inconsistency was added to the state, false else
      */
-    public boolean addInconsistency(Inconsistency inconsistency);
+    boolean addInconsistency(Inconsistency inconsistency);
 }

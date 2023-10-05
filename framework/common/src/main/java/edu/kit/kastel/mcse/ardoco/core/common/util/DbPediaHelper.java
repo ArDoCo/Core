@@ -15,21 +15,33 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * This class provides lists of computer- and software-related terminology. It retrieves the terminology from the DBPedia ontology using SPARQL queries. The
+ * class caches the lists in a {@link FileBasedCache} in the user data directory folder of ArDoCo.
+ */
 public class DbPediaHelper extends FileBasedCache<DbPediaHelper.DbPediaData> {
     private static final Logger logger = LoggerFactory.getLogger(DbPediaHelper.class);
     private static DbPediaHelper instance;
 
-    public static synchronized @NotNull DbPediaHelper getInstance() {
+    /**
+     * {@return the singleton instance}
+     */
+    static synchronized @NotNull DbPediaHelper getInstance() {
         if (instance == null) {
             instance = new DbPediaHelper();
         }
         return instance;
     }
 
-    public DbPediaHelper() {
+    private DbPediaHelper() {
         super("dbpedia", ".json", "");
     }
 
+    /**
+     * SPARQL query to retrieve programming languages from the Yago programming languages and DBOntology programming languages category.
+     *
+     * @return a list of programming languages
+     */
     private List<String> loadProgrammingLanguages() {
         ParameterizedSparqlString qs = new ParameterizedSparqlString("""
                 prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -64,6 +76,11 @@ public class DbPediaHelper extends FileBasedCache<DbPediaHelper.DbPediaData> {
         return languages;
     }
 
+    /**
+     * SPARQL query to retrieve markup languages from the Yago markup languages category.
+     *
+     * @return a list of markup languages
+     */
     private List<String> loadMarkupLanguages() {
         ParameterizedSparqlString qs = new ParameterizedSparqlString("""
                 prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -86,6 +103,11 @@ public class DbPediaHelper extends FileBasedCache<DbPediaHelper.DbPediaData> {
         return languages;
     }
 
+    /**
+     * SPARQL query to retrieve softwares from the DBOntology software category.
+     *
+     * @return a list of softwares
+     */
     private List<String> loadSoftware() {
         ParameterizedSparqlString qs = new ParameterizedSparqlString("""
                 prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -109,6 +131,11 @@ public class DbPediaHelper extends FileBasedCache<DbPediaHelper.DbPediaData> {
         return software;
     }
 
+    /**
+     * {@return all labels retrieved by the SPARQL query}
+     *
+     * @param query the parameterized query
+     */
     private List<String> runQuery(ParameterizedSparqlString query) {
         var list = List.<String>of();
         ResultSet results;
@@ -149,17 +176,39 @@ public class DbPediaHelper extends FileBasedCache<DbPediaHelper.DbPediaData> {
         }
     }
 
-    public record DbPediaData(List<String> programmingLanguages, List<String> markupLanguages, List<String> software) {
+    /**
+     * Record used for caching
+     *
+     * @param programmingLanguages the list of programming languages
+     * @param markupLanguages      the list of markup languages
+     * @param software             the list of software
+     */
+    protected record DbPediaData(List<String> programmingLanguages, List<String> markupLanguages, List<String> software) {
     }
 
+    /**
+     * {@return whether a word is a programming language}
+     *
+     * @param word the word
+     */
     public static boolean isWordProgrammingLanguage(String word) {
         return getInstance().getOrRead().programmingLanguages().stream().anyMatch(s -> s.replaceAll("\\s+", "").equalsIgnoreCase(word.replaceAll("\\s+", "")));
     }
 
+    /**
+     * {@return whether a word is a markup language}
+     *
+     * @param word the word
+     */
     public static boolean isWordMarkupLanguage(String word) {
         return getInstance().getOrRead().markupLanguages().stream().anyMatch(s -> s.replaceAll("\\s+", "").equalsIgnoreCase(word.replaceAll("\\s+", "")));
     }
 
+    /**
+     * {@return whether a word is a software}
+     *
+     * @param word the word
+     */
     public static boolean isWordSoftware(String word) {
         return getInstance().getOrRead().software().stream().anyMatch(s -> s.replaceAll("\\s+", "").equalsIgnoreCase(word.replaceAll("\\s+", "")));
     }

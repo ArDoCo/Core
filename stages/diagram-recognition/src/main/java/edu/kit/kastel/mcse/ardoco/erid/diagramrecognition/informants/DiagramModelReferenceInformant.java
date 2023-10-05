@@ -1,15 +1,14 @@
 package edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.informants;
 
-import java.util.LinkedHashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import edu.kit.kastel.mcse.ardoco.core.common.util.DbPediaHelper;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.impl.factory.Lists;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,8 +90,8 @@ public class DiagramModelReferenceInformant extends Informant {
         ModelInstance mostSimilarModelInstance = null;
         for (var instance : modelInstances) {
             if (WordSimUtils.areWordsSimilar(textBox.getText(), instance.getFullName()) || references.stream()
-                    .anyMatch(ref -> WordSimUtils.areWordsSimilar(ref.toLowerCase(Locale.US), instance.getFullName().toLowerCase(Locale.US)))) {
-                var similarity = WordSimUtils.getSimilarity(textBox.getText().toLowerCase(Locale.US), instance.getFullName().toLowerCase(Locale.US));
+                    .anyMatch(ref -> WordSimUtils.areWordsSimilar(ref.toLowerCase(Locale.ENGLISH), instance.getFullName().toLowerCase(Locale.ENGLISH)))) {
+                var similarity = WordSimUtils.getSimilarity(textBox.getText().toLowerCase(Locale.ENGLISH), instance.getFullName().toLowerCase(Locale.ENGLISH));
                 if (similarity > textBoxSimilarityThreshold && similarity > max) {
                     max = similarity;
                     mostSimilarModelInstance = instance;
@@ -109,7 +108,7 @@ public class DiagramModelReferenceInformant extends Informant {
         var map = new LinkedHashMap<TextBox, Set<String>>();
         var texts = box.getTexts();
         for (TextBox textBox : texts) {
-            map.put(textBox, DiagramUtil.getReferences(textBox));
+            map.put(textBox, getReferences(textBox));
         }
 
         var atleastOneUpperCaseCharacterInTBox = map.entrySet()
@@ -121,5 +120,71 @@ public class DiagramModelReferenceInformant extends Informant {
             return atleastOneUpperCaseCharacterInTBox;
 
         return map;
+    }
+
+    /**
+     * Determines a set of possible references for a textBox. Tries to filter out technical terms using {@link DbPediaHelper}.
+     *
+     * @param textBox the textBox
+     * @return a set of possible names
+     */
+    private static @NotNull Set<String> getReferences(@NotNull TextBox textBox) {
+        var names = new LinkedHashSet<String>();
+
+        var text = textBox.getText();
+        var splitAndDecameled = processText(text).stream()
+                .filter(s -> !DbPediaHelper.isWordMarkupLanguage(s))
+                .filter(s -> !DbPediaHelper.isWordProgrammingLanguage(s))
+                .filter(s -> !DbPediaHelper.isWordSoftware(s))
+                .toList();
+
+        var noBlank = splitAndDecameled.stream().map(s -> s.replaceAll("\\s+", "")).toList();
+        names.addAll(splitAndDecameled);
+        names.addAll(noBlank);
+
+        var atleastOneUpperCaseChar = names.stream().filter(s -> !s.equals(s.toLowerCase(Locale.ENGLISH))).collect(Collectors.toSet());
+
+        if (!atleastOneUpperCaseChar.isEmpty())
+            return atleastOneUpperCaseChar;
+
+        return names;
+    }
+
+    /**
+     * {@return a set of alternative texts extracted from the input text}. The text is processed with {@link #splitBracketsAndEnumerations(String)} and
+     * {@link #getDeCameledText(String)}.
+     *
+     * @param text the text
+     */
+    private static @NotNull Set<String> processText(@NotNull String text) {
+        var words = new LinkedHashSet<String>();
+        var split = splitBracketsAndEnumerations(text);
+        var deCameledSplit = split.stream().map(DiagramModelReferenceInformant::getDeCameledText).toList();
+        words.addAll(split);
+        words.addAll(deCameledSplit);
+        words.remove("");
+        return words;
+    }
+
+    /**
+     * Splits the string around brackets and commas. The results are trimmed. <span style=" white-space: nowrap;">Example: "Lorem (ipsum), Dolor, sit (Amet)" ->
+     * {"Lorem","ipsum","Dolor","sit","Amet"}</span>
+     *
+     * @param text the text
+     * @return a non-empty list of splits
+     */
+    private static @NotNull List<String> splitBracketsAndEnumerations(@NotNull String text) {
+        return Arrays.stream(text.split("[,()]")).map(String::trim).toList();
+    }
+
+    /**
+     * Decamels the word and returns it as words joined by space. <span style=" white-space: nowrap;">Example: "CamelCaseExample" -> "Camel Case Example",
+     * "example" -> "example", etc.</span>
+     *
+     * @param word the word that should be decameled
+     * @return the decameled word
+     */
+    private static @NotNull String getDeCameledText(@NotNull String word) {
+        return String.join(" ", word.split("(?<!([A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])")).replaceAll("\\s+", " ");
     }
 }

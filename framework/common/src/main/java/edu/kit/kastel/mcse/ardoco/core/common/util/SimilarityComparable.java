@@ -2,6 +2,12 @@ package edu.kit.kastel.mcse.ardoco.core.common.util;
 
 import java.util.Collection;
 
+/**
+ * Classes implementing this interface provide the functionality to determine whether an instance is similar to the provided type, and if collections of
+ * instances are similar to collections of the type.
+ *
+ * @param <T> the type
+ */
 public interface SimilarityComparable<T> {
     /**
      * {@return whether the instance is similar to the given object} Has to return true if {@link Object#equals} returns true. The result of this function

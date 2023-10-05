@@ -3,10 +3,10 @@ package edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.informants;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.eclipse.collections.api.list.ImmutableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
@@ -16,6 +16,10 @@ import edu.kit.kastel.mcse.ardoco.erid.api.diagraminconsistency.DiagramInconsist
 import edu.kit.kastel.mcse.ardoco.erid.api.models.tracelinks.LinkBetweenDeAndRi;
 import edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.types.MDEInconsistency;
 
+/**
+ * This informant punishes {@link MDEInconsistency MDEInconsistencies} by lowering the confidence of the recommended instance and rewards consistency by
+ * increasing the confidence. The adjustment is based on a configurable {@link #maximumReward} and {@link #maximumPunishment}.
+ */
 public class InfluenceByInconsistenciesInformant extends Informant {
     private final static Logger logger = LoggerFactory.getLogger(InfluenceByInconsistenciesInformant.class);
 
@@ -36,10 +40,8 @@ public class InfluenceByInconsistenciesInformant extends Informant {
         var diagramConnectionStates = dataRepository.getData(DiagramConnectionStates.ID, DiagramConnectionStates.class).orElseThrow();
         var diagramInconsistencyStates = dataRepository.getData(DiagramInconsistencyStates.ID, DiagramInconsistencyStates.class).orElseThrow();
         var recommendationStates = DataRepositoryHelper.getRecommendationStates(dataRepository);
-        var modelIds = modelStates.extractionModelIds();
-        for (var model : modelIds) {
-            var modelState = modelStates.getModelExtractionState(model);
-            Metamodel mm = modelState.getMetamodel();
+        var metamodels = modelStates.extractionModelIds().stream().map(m -> modelStates.getModelExtractionState(m).getMetamodel()).distinct().toList();
+        for (var mm : metamodels) {
             var diagramInconsistencyState = diagramInconsistencyStates.getDiagramInconsistencyState(mm);
             var diagramConnectionState = diagramConnectionStates.getDiagramConnectionState(mm);
             var allRecommendedInstances = recommendationStates.getRecommendationState(mm).getRecommendedInstances();
@@ -59,7 +61,7 @@ public class InfluenceByInconsistenciesInformant extends Informant {
         }
     }
 
-    public void punishInconsistency(double coverage, Set<MDEInconsistency> mdeInconsistencySet) {
+    private void punishInconsistency(double coverage, Set<MDEInconsistency> mdeInconsistencySet) {
         mdeInconsistencySet.forEach(mde -> {
             var old = mde.recommendedInstance().getProbability();
             //Punish more if coverage is high
@@ -68,7 +70,7 @@ public class InfluenceByInconsistenciesInformant extends Informant {
         });
     }
 
-    public void rewardConsistency(double coverage, Set<LinkBetweenDeAndRi> linkBetweenDeAndRiSet) {
+    private void rewardConsistency(double coverage, Set<LinkBetweenDeAndRi> linkBetweenDeAndRiSet) {
         linkBetweenDeAndRiSet.forEach(dl -> {
             var old = dl.getRecommendedInstance().getProbability();
             //Reward more if coverage is low

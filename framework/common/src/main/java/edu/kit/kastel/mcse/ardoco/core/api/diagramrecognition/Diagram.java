@@ -7,7 +7,14 @@ import java.util.List;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityComparable;
 
+/**
+ * Programmatically represents an informal diagram. A diagram is uniquely identified by its (resource) name and can contain an arbitrary number of diagram
+ * elements and connectors between them.
+ */
 public interface Diagram extends SimilarityComparable<Diagram>, Serializable {
+    /**
+     * {@return the (resource) name of the diagram, e.g. "some-diagram.jpg"}
+     */
     String getResourceName();
 
     File getLocation();

@@ -17,6 +17,11 @@ import org.eclipse.collections.impl.factory.Maps;
 import org.eclipse.collections.impl.list.mutable.FastList;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * This class provides functionality regarding confusables and homoglyphs of a {@link UnicodeCharacter}. The information is based on the <a
+ * href="https://www.unicode.org/Public/security/latest/confusablesSummary.txt">confusablesSummary.txt</a>, that is published as part of the <a
+ * href="https://www.unicode.org/reports/tr39/">Unicode Technical Standard</a>.
+ */
 public class ConfusablesHelper {
     private ConfusablesHelper() {
         throw new IllegalStateException("Cannot be instantiated");
@@ -28,11 +33,19 @@ public class ConfusablesHelper {
 
     private static final String separator = "	";
 
+    /**
+     * Parse the file
+     */
     static {
         parseConfusablesSummary();
     }
 
-    protected static @NotNull FastList<UnicodeCharacter> extractHomoglyphsFromLine(String line) {
+    /**
+     * {@return the list of homoglyphs contained in a line}
+     *
+     * @param line the line
+     */
+    static @NotNull FastList<UnicodeCharacter> extractHomoglyphsFromLine(String line) {
         if (!line.startsWith("#" + separator))
             return FastList.newList();
 
@@ -47,6 +60,9 @@ public class ConfusablesHelper {
                 .toList());
     }
 
+    /**
+     * Parses the confusablesSummary.txt line by line and build the confusables map.
+     */
     private static void parseConfusablesSummary() {
         try (InputStream is = ConfusablesHelper.class.getResourceAsStream(confusablesSummary)) {
             if (is == null)
@@ -70,10 +86,21 @@ public class ConfusablesHelper {
         }
     }
 
+    /**
+     * {@return the list of Unicode characters that are considered homoglyphs of the character}
+     *
+     * @param unicodeCharacter the character
+     */
     public static List<UnicodeCharacter> getHomoglyphs(UnicodeCharacter unicodeCharacter) {
         return homoglyphs.getOrDefault(unicodeCharacter, FastList.newList());
     }
 
+    /**
+     * {@return whether two Unicode characters are considered homoglyphs} Always true for equal characters. The relationship is symmetric, but not transitive.
+     *
+     * @param a the first character
+     * @param b the second character
+     */
     public static boolean areHomoglyphs(UnicodeCharacter a, UnicodeCharacter b) {
         return a.equals(b) || getHomoglyphs(a).contains(b);
     }

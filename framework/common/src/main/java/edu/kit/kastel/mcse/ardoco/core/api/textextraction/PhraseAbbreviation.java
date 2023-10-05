@@ -11,6 +11,9 @@ import edu.kit.kastel.mcse.ardoco.core.api.Disambiguation;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 
+/**
+ * An abbreviation with meanings that are phrases. For example, "ArDoCo" is an abbreviation of the phrase "Architecture Documentation Consistency".
+ */
 public class PhraseAbbreviation extends Disambiguation {
     private final MutableSet<Phrase> phrases;
 
@@ -20,11 +23,19 @@ public class PhraseAbbreviation extends Disambiguation {
         this.phrases = phrases;
     }
 
-    public void addPhrase(Phrase phrase) {
+    /**
+     * Adds a phrase as meaning to the abbreviation
+     *
+     * @param phrase the phrase
+     */
+    public void addPhrase(@NotNull Phrase phrase) {
         phrases.add(phrase);
     }
 
-    public ImmutableSet<Phrase> getPhrases() {
+    /**
+     * {@return the meanings, which are phrases}
+     */
+    public @NotNull ImmutableSet<Phrase> getPhrases() {
         return phrases.toImmutable();
     }
 }

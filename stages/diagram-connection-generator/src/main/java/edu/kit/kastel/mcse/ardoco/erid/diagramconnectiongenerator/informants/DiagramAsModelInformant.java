@@ -1,7 +1,5 @@
 package edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator.informants;
 
-import edu.kit.kastel.mcse.ardoco.erid.api.models.tracelinks.LinkBetweenDeAndRi;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +20,14 @@ import edu.kit.kastel.mcse.ardoco.core.models.ModelInstanceImpl;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator.DiagramConnectionState;
 import edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator.DiagramConnectionStates;
+import edu.kit.kastel.mcse.ardoco.erid.api.models.tracelinks.LinkBetweenDeAndRi;
 
+/**
+ * This informant creates temporary {@link ModelInstance ModelInstances} from each diagram element and uses ArDoCo's SAD SAM TLR approach, but instead of
+ * creating a SAD SAM trace link for a temporary model instance and recommended instance, a {@link LinkBetweenDeAndRi} is created for the source of the
+ * temporary model instance. The temporary model instances are created using the
+ * {@link edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.agents.DiagramReferenceAgent diagram element references}.
+ */
 public class DiagramAsModelInformant extends Informant {
     @Configurable
     private int minSimilarSurfaceWords = 1;
@@ -63,7 +68,7 @@ public class DiagramAsModelInformant extends Informant {
                 var mostLikelyRi = SimilarityUtils.getMostRecommendedInstancesToInstanceByReferences(pair.second(), recommendedInstances);
                 for (var recommendedInstance : mostLikelyRi) {
                     basedOnIncreasingMinimalProportionalThreshold.add(new LinkBetweenDeAndRi(recommendedInstance, pair.first(), projectName, this,
-                            DiagramUtil.calculateHighestSimilarity(pair.first(), recommendedInstance)));
+                            DiagramUtil.calculateSimilarityMap(pair.first(), recommendedInstance)));
                 }
             }
         }
@@ -84,15 +89,13 @@ public class DiagramAsModelInformant extends Informant {
                     //Add based on overall similarity
                     if (SimilarityUtils.isRecommendedInstanceSimilarToModelInstance(recommendedInstance, pair.second())) {
                         basedOnOverallSimilarity.add(new LinkBetweenDeAndRi(recommendedInstance, pair.first(), projectName, this,
-                                DiagramUtil.calculateHighestSimilarity(pair.first(), recommendedInstance)));
+                                DiagramUtil.calculateSimilarityMap(pair.first(), recommendedInstance)));
                     }
                     //Add based on surface words
                     var similarSurfaceWords = SimilarityUtils.getSimilarSurfaceWords(recommendedInstance, pair.second());
                     if (similarSurfaceWords.size() >= minSimilarSurfaceWords) {
-                        for (var similar : similarSurfaceWords) {
-                            basedOnSurfaceWords.add(new LinkBetweenDeAndRi(recommendedInstance, pair.first(), projectName, this,
-                                    DiagramUtil.calculateHighestSimilarity(pair.first(), recommendedInstance)));
-                        }
+                        basedOnSurfaceWords.add(new LinkBetweenDeAndRi(recommendedInstance, pair.first(), projectName, this,
+                                DiagramUtil.calculateSimilarityMap(pair.first(), recommendedInstance)));
                     }
                 }
             }

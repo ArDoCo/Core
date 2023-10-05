@@ -21,12 +21,15 @@ import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextStateStrategy;
 import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
+import org.jetbrains.annotations.NotNull;
+
 public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy {
 
     public PhraseConcerningTextStateStrategy(TextStateImpl textState) {
         super.setTextState(textState);
     }
 
+    @NotNull
     @Override
     public NounMapping addOrExtendNounMapping(Word word, MappingKind kind, Claimant claimant, double probability, ImmutableList<String> surfaceForms) {
         var nounMappingsWithWord = super.getTextState().getNounMappings().select(nm -> nm.getWords().contains(word));
@@ -49,9 +52,10 @@ public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy 
         return nounMapping;
     }
 
+    @NotNull
     @Override
-    public NounMappingImpl mergeNounMappingsStateless(NounMapping firstNounMapping, NounMapping secondNounMapping, ImmutableList<Word> referenceWords,
-            String reference, MappingKind mappingKind, Claimant claimant, double probability) {
+    public NounMappingImpl mergeNounMappingsStateless(@NotNull NounMapping firstNounMapping, @NotNull NounMapping secondNounMapping, ImmutableList<Word> referenceWords,
+            String reference, @NotNull MappingKind mappingKind, @NotNull Claimant claimant, double probability) {
 
         MutableSortedSet<Word> mergedWords = firstNounMapping.getWords().toSortedSet();
         mergedWords.addAllIterable(secondNounMapping.getWords());
@@ -100,6 +104,7 @@ public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy 
         return mergedNounMapping;
     }
 
+    @NotNull
     @Override
     public NounMappingImpl mergeNounMappings(NounMapping firstNounMapping, NounMapping secondNounMapping, ImmutableList<Word> referenceWords, String reference,
             MappingKind mappingKind, Claimant claimant, double probability) {

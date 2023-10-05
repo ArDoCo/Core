@@ -7,6 +7,9 @@ import java.util.stream.Collectors;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.Inconsistency;
 import edu.kit.kastel.mcse.ardoco.erid.api.diagraminconsistency.DiagramInconsistencyState;
 
+/**
+ * @see DiagramInconsistencyState
+ */
 public class DiagramInconsistencyStateImpl implements DiagramInconsistencyState {
     private final Set<Inconsistency> inconsistencies = new HashSet<>();
 

@@ -9,12 +9,21 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.ExecutionStage;
 import edu.kit.kastel.mcse.ardoco.erid.api.diagraminconsistency.DiagramInconsistencyStates;
-import edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.agents.InconsistencyAgent;
+import edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.agents.DiagramInconsistencyAgent;
 import edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.agents.RecommendedInstancesConfidenceAgent;
 
+/**
+ * This stage is responsible for creating the inconsistencies and uses them to adjust the confidence of recommended instances.
+ */
 public class DiagramInconsistencyChecker extends ExecutionStage {
+    /**
+     * Sole constructor of the stage.
+     *
+     * @param additionalConfigs the additional configs that should be used
+     * @param dataRepository    the data repository that should be used
+     */
     public DiagramInconsistencyChecker(SortedMap<String, String> additionalConfigs, DataRepository dataRepository) {
-        super(List.of(new InconsistencyAgent(dataRepository), new RecommendedInstancesConfidenceAgent(dataRepository)),
+        super(List.of(new DiagramInconsistencyAgent(dataRepository), new RecommendedInstancesConfidenceAgent(dataRepository)),
                 DiagramInconsistencyChecker.class.getSimpleName(), dataRepository, additionalConfigs);
     }
 
@@ -27,6 +36,9 @@ public class DiagramInconsistencyChecker extends ExecutionStage {
 
     private BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> previousCharacterMatchFunction;
 
+    /**
+     * Saves the previous character match function and sets a character match function capable of matching homoglyphs.
+     */
     @Override
     protected void before() {
         super.before();
@@ -34,6 +46,9 @@ public class DiagramInconsistencyChecker extends ExecutionStage {
         WordSimUtils.setCharacterMatchFunction(UnicodeCharacter.EQUAL_OR_HOMOGLYPH);
     }
 
+    /**
+     * Sets the character match function back to the previous function.
+     */
     @Override
     protected void after() {
         WordSimUtils.setCharacterMatchFunction(previousCharacterMatchFunction);

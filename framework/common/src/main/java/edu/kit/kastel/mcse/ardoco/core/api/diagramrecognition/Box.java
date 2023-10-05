@@ -34,19 +34,21 @@ public class Box extends DiagramElement implements Serializable {
     @JsonIgnore
     private MutableSet<String> references = Sets.mutable.empty();
 
-    public static String getUUID(BoundingBox boundingBox) {
-        return getUUID(boundingBox.toCoordinates());
-    }
-
-    public static String getUUID(int[] coordinates) {
+    private static @NotNull String calculateUUID(@NotNull int[] coordinates) {
         return String.format("Box [%s]", getBoundingBoxConcat(coordinates));
     }
 
-    public static String getBoundingBoxConcat(int[] coordinates) {
+    /**
+     * {@return the bounding box coordinates joined with hyphens}
+     *
+     * @param coordinates bounding box coordinates
+     */
+    public static @NotNull String getBoundingBoxConcat(@NotNull int[] coordinates) {
         return Arrays.stream(coordinates).mapToObj((Integer::toString)).reduce((l, r) -> l + "-" + r).orElseThrow();
     }
 
     // Jackson JSON
+    //FIXME I think this may be removed, not sure if it is really no longer in use though. There is a dedicated JSONCreator constructor, so it should be fine. Empty super constructor may also be removed if that is the case.
     private Box() {
         super();
     }
@@ -54,14 +56,15 @@ public class Box extends DiagramElement implements Serializable {
     /**
      * Create a new box that is detected on the image.
      *
+     * @param diagram         the diagram the box belongs to
      * @param coordinates     the coordinates of two corners of the box in pixel. (x1,y1,x2,y2)
      * @param confidence      a confidence value
      * @param classification  the classification (e.g., "LABEL"), see {@link Classification} for further details
      * @param textBoxes       the text boxes that are attached to this box
      * @param dominatingColor a dominating color in the box (iff present)
      */
-    public Box(@NotNull Diagram diagram, int[] coordinates, double confidence, String classification, List<TextBox> textBoxes, Color dominatingColor) {
-        super(diagram, getUUID(coordinates));
+    public Box(Diagram diagram, int[] coordinates, double confidence, String classification, List<TextBox> textBoxes, Color dominatingColor) {
+        super(diagram, calculateUUID(coordinates));
         this.coordinates = coordinates;
         this.confidence = confidence;
         this.classification = classification;
@@ -72,14 +75,15 @@ public class Box extends DiagramElement implements Serializable {
     /**
      * Create a new box that is detected on the image.
      *
+     * @param diagram        the diagram this box belongs to
      * @param coordinates    the coordinates of two corners of the box in pixel. (x1,y1,x2,y2)
      * @param confidence     a confidence value
      * @param classification the classification (e.g., "LABEL"), see {@link Classification} for further details
      */
     @JsonCreator
-    public Box(@NotNull @JacksonInject Diagram diagram, @JsonProperty("box") int[] coordinates, @JsonProperty("confidence") double confidence,
+    public Box(@JacksonInject Diagram diagram, @JsonProperty("box") int[] coordinates, @JsonProperty("confidence") double confidence,
             @JsonProperty("class") String classification) {
-        super(diagram, getUUID(coordinates));
+        super(diagram, calculateUUID(coordinates));
         this.coordinates = coordinates;
         this.confidence = confidence;
         this.classification = classification;
@@ -90,6 +94,7 @@ public class Box extends DiagramElement implements Serializable {
      *
      * @return the area of the box
      */
+    //TODO Delegate to bounding box class
     public int area() {
         return abs(coordinates[0] - coordinates[2]) * abs(coordinates[1] - coordinates[3]);
     }
@@ -99,7 +104,7 @@ public class Box extends DiagramElement implements Serializable {
      *
      * @return a UUID of the box
      */
-    public String getUUID() {
+    public @NotNull String getUUID() {
         return getName();
     }
 
@@ -126,7 +131,7 @@ public class Box extends DiagramElement implements Serializable {
      *
      * @return the classification
      */
-    public Classification getClassification() {
+    public @NotNull Classification getClassification() {
         return Classification.byString(classification);
     }
 
@@ -144,7 +149,7 @@ public class Box extends DiagramElement implements Serializable {
      *
      * @param textBox the textbox
      */
-    public void removeTextBox(TextBox textBox) {
+    public void removeTextBox(@NotNull TextBox textBox) {
         Objects.requireNonNull(textBox);
         this.textBoxes.removeIf(it -> it == textBox);
     }
@@ -154,23 +159,35 @@ public class Box extends DiagramElement implements Serializable {
      *
      * @return all associated text boxes
      */
-    public List<TextBox> getTexts() {
+    public @NotNull List<TextBox> getTexts() {
         return new ArrayList<>(textBoxes);
     }
 
-    public Set<String> getReferences() {
+    public @NotNull Set<String> getReferences() {
         return Collections.unmodifiableSet(references);
     }
 
-    public boolean addReference(String reference) {
+    /**
+     * Adds a new reference to the set of references.
+     *
+     * @param reference the reference string
+     * @return true if the reference wasn't already contained, false otherwise
+     */
+    public boolean addReference(@NotNull String reference) {
         return references.add(reference);
     }
 
-    public void setReferences(Set<String> references) {
+    public void setReferences(@NotNull Set<String> references) {
         this.references = Sets.mutable.ofAll(references);
     }
 
-    public boolean removeReference(String reference) {
+    /**
+     * Tries to remove the given reference from the references
+     *
+     * @param reference the reference
+     * @return true if removed, false otherwise
+     */
+    public boolean removeReference(@NotNull String reference) {
         return references.remove(reference);
     }
 
@@ -179,7 +196,7 @@ public class Box extends DiagramElement implements Serializable {
      *
      * @return the dominating color or {@code null} if not present
      */
-    public Color getDominatingColor() {
+    public @NotNull Color getDominatingColor() {
         return dominatingColor;
     }
 
@@ -188,13 +205,12 @@ public class Box extends DiagramElement implements Serializable {
      *
      * @param dominatingColor the dominating color
      */
-    public void setDominatingColor(Color dominatingColor) {
+    public void setDominatingColor(@NotNull Color dominatingColor) {
         this.dominatingColor = dominatingColor;
     }
 
-    @NotNull
     @Override
-    public BoundingBox getBoundingBox() {
+    public @NotNull BoundingBox getBoundingBox() {
         return new BoundingBox(coordinates[0], coordinates[1], coordinates[2], coordinates[3]);
     }
 
@@ -203,6 +219,12 @@ public class Box extends DiagramElement implements Serializable {
         return toString(true);
     }
 
+    /**
+     * Returns a string representation of the box, if wrap is set to true, the class name is appended before string
+     *
+     * @param wrap whether the class name should be appended
+     * @return a string representation of the box
+     */
     public String toString(boolean wrap) {
         var formatted = String.format("%s %s", Arrays.stream(coordinates).mapToObj((Integer::toString)).reduce((l, r) -> l + "-" + r).orElseThrow(),
                 getReferences().stream().findFirst().orElse("REFERENCES_NOT_SET"));

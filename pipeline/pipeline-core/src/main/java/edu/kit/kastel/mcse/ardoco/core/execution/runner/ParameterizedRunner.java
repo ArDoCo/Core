@@ -10,6 +10,11 @@ import org.slf4j.LoggerFactory;
 import edu.kit.kastel.mcse.ardoco.core.execution.PipelineMetaData;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
 
+/**
+ * An {@link ArDoCoRunner} that takes a record of type {@code <T>} to set itself up.
+ *
+ * @param <T> a record containing the parameters required to set up the runner
+ */
 public abstract class ParameterizedRunner<T extends Record> extends ArDoCoRunner implements Serializable {
     private static final Logger logger = LoggerFactory.getLogger(ParameterizedRunner.class);
 

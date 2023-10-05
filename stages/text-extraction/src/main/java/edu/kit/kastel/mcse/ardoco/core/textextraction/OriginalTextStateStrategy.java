@@ -22,12 +22,15 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
+import org.jetbrains.annotations.NotNull;
+
 public class OriginalTextStateStrategy extends DefaultTextStateStrategy implements Serializable {
 
     OriginalTextStateStrategy(TextStateImpl textState) {
         super.setTextState(textState);
     }
 
+    @NotNull
     @Override
     public NounMapping addOrExtendNounMapping(Word word, MappingKind kind, Claimant claimant, double probability, ImmutableList<String> surfaceForms) {
 
@@ -46,9 +49,10 @@ public class OriginalTextStateStrategy extends DefaultTextStateStrategy implemen
         return disposableNounMapping;
     }
 
+    @NotNull
     @Override
-    public NounMappingImpl mergeNounMappingsStateless(NounMapping firstNounMapping, NounMapping secondNounMapping, ImmutableList<Word> referenceWords,
-            String reference, MappingKind mappingKind, Claimant claimant, double probability) {
+    public NounMappingImpl mergeNounMappingsStateless(@NotNull NounMapping firstNounMapping, @NotNull NounMapping secondNounMapping, ImmutableList<Word> referenceWords,
+            String reference, @NotNull MappingKind mappingKind, @NotNull Claimant claimant, double probability) {
 
         MutableSortedSet<Word> mergedWords = firstNounMapping.getWords().toSortedSet();
         mergedWords.add(secondNounMapping.getReferenceWords().get(0));
@@ -77,6 +81,7 @@ public class OriginalTextStateStrategy extends DefaultTextStateStrategy implemen
                 mergedDistribution.toImmutable(), mergedReferenceWords.toImmutable(), mergedSurfaceForms.toImmutable(), mergedReference);
     }
 
+    @NotNull
     @Override
     public NounMappingImpl mergeNounMappings(NounMapping firstNounMapping, NounMapping secondNounMapping, ImmutableList<Word> referenceWords, String reference,
             MappingKind mappingKind, Claimant claimant, double probability) {

@@ -37,6 +37,9 @@ public abstract class ArDoCoRunner implements Serializable {
         }
     }
 
+    /**
+     * {@return the {@link DataRepository} produced by the run} The results are not saved to the output directory.
+     */
     public final DataRepository runWithoutSaving() {
         if (this.isSetUp()) {
             this.getArDoCo().run();

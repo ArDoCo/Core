@@ -17,6 +17,9 @@ import edu.kit.kastel.mcse.ardoco.core.data.AbstractState;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 import edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator.DiagramConnectionState;
 
+/**
+ * @see DiagramConnectionState
+ */
 public class DiagramConnectionStateImpl extends AbstractState implements DiagramConnectionState {
     private final Set<LinkBetweenDeAndRi> linksBetweenDeAndRi = new HashSet<>();
 
@@ -27,9 +30,9 @@ public class DiagramConnectionStateImpl extends AbstractState implements Diagram
     }
 
     @Override
-    public boolean addToLinksBetweenDeAndRi(@NotNull RecommendedInstance ri, @NotNull DiagramElement de, @NotNull String textIdentifier, @NotNull Claimant claimant,
-            @NotNull Map<Word, Double> confidenceMap) {
-        var newDL = new LinkBetweenDeAndRi(ri, de, textIdentifier, claimant, confidenceMap);
+    public boolean addToLinksBetweenDeAndRi(@NotNull RecommendedInstance recommendedInstance, @NotNull DiagramElement diagramElement, @NotNull String textIdentifier, @NotNull Claimant claimant,
+                                            @NotNull Map<Word, Double> confidenceMap) {
+        var newDL = new LinkBetweenDeAndRi(recommendedInstance, diagramElement, textIdentifier, claimant, confidenceMap);
         var added = linksBetweenDeAndRi.add(newDL);
 
         if (added)

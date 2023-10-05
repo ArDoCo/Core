@@ -14,6 +14,9 @@ import edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.agents.DiagramReferenc
 import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognitionStateImpl;
 import edu.kit.kastel.mcse.ardoco.tests.eval.GoldStandardDiagrams;
 
+/**
+ * This stage is responsible for mocking the {@link edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognition} stage.
+ */
 public class DiagramRecognitionMock extends ExecutionStage {
     private final GoldStandardDiagrams goldStandardProject;
 

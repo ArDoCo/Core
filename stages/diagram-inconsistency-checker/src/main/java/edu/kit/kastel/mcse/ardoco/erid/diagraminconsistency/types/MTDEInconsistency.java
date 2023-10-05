@@ -9,6 +9,12 @@ import org.jetbrains.annotations.NotNull;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.Inconsistency;
 
+/**
+ * {@link MTDEInconsistency} stands for Missing Text for Diagram Element Inconsistency and should be created for each {@link DiagramElement} that is not part of
+ * the {@link edu.kit.kastel.mcse.ardoco.core.api.text.Text Text}.
+ *
+ * @param diagramElement the {@link DiagramElement}
+ */
 public record MTDEInconsistency(DiagramElement diagramElement) implements Inconsistency, Comparable<MTDEInconsistency> {
     private final static String type = "MissingTextForDiagramElement";
 

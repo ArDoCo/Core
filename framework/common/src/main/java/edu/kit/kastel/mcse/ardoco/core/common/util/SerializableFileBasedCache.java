@@ -7,11 +7,23 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A {@link FileBasedCache} that is implemented using Java's default serialization.
+ *
+ * @param <T> serializable content
+ */
 public class SerializableFileBasedCache<T extends Serializable> extends FileBasedCache<T> {
     private static final Logger logger = LoggerFactory.getLogger(SerializableFileBasedCache.class);
 
     private final Class<? extends T> contentClass;
 
+    /**
+     * Creates a new serializable file based cache that contains content of the given class and is saved in a file with the given identifier and sub-folder.
+     *
+     * @param contentClass the class of serializable content
+     * @param identifier   the identifier of the cache
+     * @param subFolder    the sub-folder of the cache
+     */
     public SerializableFileBasedCache(Class<? extends T> contentClass, @NotNull String identifier, @NotNull String subFolder) {
         super(identifier, ".ser", subFolder + contentClass.getSimpleName() + "/");
         this.contentClass = contentClass;
@@ -28,14 +40,13 @@ public class SerializableFileBasedCache<T extends Serializable> extends FileBase
     }
 
     @Override
-    @SuppressWarnings("uncecked")
+    @SuppressWarnings("unchecked")
     protected @Nullable T read() throws CacheException {
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(getFile()))) {
             logger.info("Reading {} file", getIdentifier());
             var dObj = in.readObject();
             if (dObj == null || contentClass.isInstance(dObj)) {
-                var content = (T) dObj;
-                return content;
+                return (T) dObj;
             }
             throw new ClassCastException();
         } catch (InvalidClassException | ClassNotFoundException | ClassCastException | EOFException e) {

@@ -10,6 +10,11 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 
+/**
+ * Creates {@link edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.InstanceLink InstanceLinks} by partially ambiguating the recommended instances and model
+ * elements.
+ */
+//TODO Check if this can be removed, may no longer be required due to how ambiguations are treated by the similarity metrics
 public class AmbiguationConnectionInformant extends Informant {
     public AmbiguationConnectionInformant(DataRepository dataRepository) {
         super(AmbiguationConnectionInformant.class.getSimpleName(), dataRepository);
@@ -32,6 +37,15 @@ public class AmbiguationConnectionInformant extends Informant {
         }
     }
 
+    /**
+     * Creates trace links by partially ambiguating the names of recommended instances and searching for similar model instance names. E.g., a recommended
+     * instance may be named "DatabaseUserAcceptanceTesting" and a model instance may be name "DatabaseUAT". The function calculates "DatabaseUAT",
+     * "DBUserAcceptanceTesting" and "DBUAT". Thus the function finds a trace based on the similarity of "DatabaseUAT" (RI) and "DatabaseUAT" (ModelInstance).
+     *
+     * @param modelState          the model state
+     * @param recommendationState the recommendation state
+     * @param connectionState     the connection state
+     */
     private void ambiguateRecommendedInstances(ModelExtractionState modelState, RecommendationState recommendationState, ConnectionState connectionState) {
         for (var recommendedInstance : recommendationState.getRecommendedInstances()) {
             var riName = recommendedInstance.getName().toLowerCase();
@@ -45,6 +59,14 @@ public class AmbiguationConnectionInformant extends Informant {
         }
     }
 
+    /**
+     * Creates trace links by partially ambiguating the names of model instances and searching for similar recommended instance names.
+     *
+     * @param modelState          the model state
+     * @param recommendationState the recommendation state
+     * @param connectionState     the connection state
+     * @see #ambiguateRecommendedInstances(ModelExtractionState, RecommendationState, ConnectionState)
+     */
     private void ambiguateModelInstances(ModelExtractionState modelState, RecommendationState recommendationState, ConnectionState connectionState) {
         for (var instance : modelState.getInstances()) {
             var set = AbbreviationDisambiguationHelper.ambiguate(instance.getFullName().toLowerCase());

@@ -24,7 +24,7 @@ public class ModelDisambiguationInformant extends Informant {
             for (var instance : instances) {
                 var names = instance.getNameParts();
                 for (var name : names) {
-                    var abbreviations = AbbreviationDisambiguationHelper.getPossibleAbbreviations(name);
+                    var abbreviations = AbbreviationDisambiguationHelper.getAbbreviationCandidates(name);
                     var meaningsMap = abbreviations.stream().collect(Collectors.toMap(a -> a, AbbreviationDisambiguationHelper::disambiguate));
                     for (Map.Entry<String, Set<String>> e : meaningsMap.entrySet()) {
                         AbbreviationDisambiguationHelper.addTransient(new Disambiguation(e.getKey(), e.getValue().toArray(new String[0])));

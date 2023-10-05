@@ -1,12 +1,22 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.inconsistencyhelper;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
+
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
+import edu.kit.kastel.mcse.ardoco.core.data.DeepCopy;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.AnonymousRunner;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.PcmXmlModelConnector;
@@ -17,11 +27,11 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.baseline.InconsistencyBaseline;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.TextPreprocessingAgent;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.*;
 
+/**
+ * Produces the inconsistency detection runs. The first run uses all model elements for the baseline. For each subsequent run a single model element is removed
+ * to simulate a missing model element.
+ */
 public class HoldBackRunResultsProducer implements Serializable {
     protected File inputText;
     protected File inputModel;
@@ -33,14 +43,12 @@ public class HoldBackRunResultsProducer implements Serializable {
     }
 
     /**
-     * Runs ArDoCo or the ArDoCo-backed baseline approach multiple times to produce results. The first run calls ArDoCo normally, in further runs
-     * one element is
+     * Runs ArDoCo or the ArDoCo-backed baseline approach multiple times to produce results. The first run calls ArDoCo normally, in further runs one element is
      * held back each time (so that each element was held back once). This way, we can simulate missing elements.
      *
      * @param goldStandardProject the project that should be run
      * @param useBaselineApproach set to true if the baseline approach should be used instead of ArDoCo
-     * @return a map containing the mapping from ModelElement that was held back to the DataStructure that was produced when running ArDoCo without
-     * the
+     * @return a map containing the mapping from ModelElement that was held back to the DataStructure that was produced when running ArDoCo without the
      * ModelElement
      */
     public Map<ModelInstance, ArDoCoResult> produceHoldBackRunResults(GoldStandardProject goldStandardProject, boolean useBaselineApproach) {
@@ -53,15 +61,14 @@ public class HoldBackRunResultsProducer implements Serializable {
 
         var preRunDataRepository = runShared(goldStandardProject);
 
-        var baseRunData = new ArDoCoResult(runUnshared(goldStandardProject, holdElementsBackModelConnector, preRunDataRepository.deepCopy(),
-                useBaselineApproach));
+        var baseRunData = new ArDoCoResult(
+                runUnshared(goldStandardProject, holdElementsBackModelConnector, preRunDataRepository.deepCopy(), useBaselineApproach));
         runs.put(null, baseRunData);
 
         for (int i = 0; i < holdElementsBackModelConnector.numberOfActualInstances(); i++) {
             holdElementsBackModelConnector.setCurrentHoldBackIndex(i);
             var currentHoldBack = holdElementsBackModelConnector.getCurrentHoldBack();
-            var currentRunData = runUnshared(goldStandardProject, holdElementsBackModelConnector, preRunDataRepository.deepCopy(),
-                    useBaselineApproach);
+            var currentRunData = runUnshared(goldStandardProject, holdElementsBackModelConnector, preRunDataRepository.deepCopy(), useBaselineApproach);
             var result = new ArDoCoResult(currentRunData);
             runs.put(currentHoldBack, result);
         }
@@ -78,6 +85,12 @@ public class HoldBackRunResultsProducer implements Serializable {
         return new HoldElementsBackModelConnector(pcmModel);
     }
 
+    /**
+     * Runs the part that is shared by all runs.
+     *
+     * @param goldStandardProject the current project
+     * @return the data repository that is produced
+     */
     protected DataRepository runShared(GoldStandardProject goldStandardProject) {
         return new AnonymousRunner(goldStandardProject.getProjectName()) {
             @Override
@@ -97,9 +110,17 @@ public class HoldBackRunResultsProducer implements Serializable {
         }.runWithoutSaving();
     }
 
+    /**
+     * Runs the part that is specific to each run.
+     *
+     * @param goldStandardProject            the current project
+     * @param holdElementsBackModelConnector the model connector with the held-back model element
+     * @param preRunDataRepository           a deep copy of the data repository of the shared part
+     * @param useInconsistencyBaseline       whether the inconsistency baseline is used or ArDoCo's inconsistency checker
+     * @return the data repository that is produced
+     */
     protected DataRepository runUnshared(GoldStandardProject goldStandardProject, HoldElementsBackModelConnector holdElementsBackModelConnector,
-                                         DataRepository preRunDataRepository,
-                                         boolean useInconsistencyBaseline) {
+            @DeepCopy DataRepository preRunDataRepository, boolean useInconsistencyBaseline) {
         return new AnonymousRunner(goldStandardProject.getProjectName(), preRunDataRepository) {
             @Override
             public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) {

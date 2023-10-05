@@ -20,6 +20,8 @@ import edu.kit.kastel.mcse.ardoco.core.api.textextraction.WordAbbreviation;
 import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
+import org.jetbrains.annotations.NotNull;
+
 public abstract class DefaultTextStateStrategy implements TextStateStrategy {
 
     private TextStateImpl textState;
@@ -32,7 +34,15 @@ public abstract class DefaultTextStateStrategy implements TextStateStrategy {
         return textState;
     }
 
-    @Override
+    /**
+     * Creates a new noun mapping using the parameters without adding it to the state.
+     * @param words the words
+     * @param distribution the distribution of the mappings kinds
+     * @param referenceWords the reference words
+     * @param surfaceForms the surface forms
+     * @param reference the joined reference, nullable
+     * @return the created noun mapping
+     */
     public NounMapping createNounMappingStateless(ImmutableSortedSet<Word> words, ImmutableSortedMap<MappingKind, Confidence> distribution,
             ImmutableList<Word> referenceWords, ImmutableList<String> surfaceForms, String reference) {
         if (reference == null) {
@@ -42,6 +52,7 @@ public abstract class DefaultTextStateStrategy implements TextStateStrategy {
         return new NounMappingImpl(System.currentTimeMillis(), words, distribution.toImmutable(), referenceWords, surfaceForms, reference);
     }
 
+    @NotNull
     @Override
     public NounMapping addNounMapping(ImmutableSortedSet<Word> words, ImmutableSortedMap<MappingKind, Confidence> distribution,
             ImmutableList<Word> referenceWords, ImmutableList<String> surfaceForms, String reference) {
@@ -53,9 +64,10 @@ public abstract class DefaultTextStateStrategy implements TextStateStrategy {
         return nounMapping;
     }
 
+    @NotNull
     @Override
-    public NounMapping addNounMapping(ImmutableSortedSet<Word> words, MappingKind kind, Claimant claimant, double probability,
-            ImmutableList<Word> referenceWords, ImmutableList<String> surfaceForms, String reference) {
+    public NounMapping addNounMapping(@NotNull ImmutableSortedSet<Word> words, @NotNull MappingKind kind, @NotNull Claimant claimant, double probability,
+            @NotNull ImmutableList<Word> referenceWords, @NotNull ImmutableList<String> surfaceForms, String reference) {
         MutableSortedMap<MappingKind, Confidence> distribution = SortedMaps.mutable.empty();
         distribution.put(MappingKind.NAME, new Confidence(DEFAULT_AGGREGATOR));
         distribution.put(MappingKind.TYPE, new Confidence(DEFAULT_AGGREGATOR));

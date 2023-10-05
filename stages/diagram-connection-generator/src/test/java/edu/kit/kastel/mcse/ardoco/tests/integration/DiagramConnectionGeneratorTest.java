@@ -37,6 +37,10 @@ import edu.kit.kastel.mcse.ardoco.tests.Results;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 import edu.kit.kastel.mcse.ardoco.tests.eval.StageTest;
 
+/**
+ * This class is used for evaluating ERID's diagram-to-sentences TLR capabilities using the manually extracted diagrams
+ * ({@link edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.DiagramRecognitionMock DiagramRecognitionMock}).
+ */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionGenerator, DiagramProject, Results> {
@@ -52,7 +56,6 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
         var dataRepository = run(project, additionalConfigurations, cachePreRun);
         var text = dataRepository.getData(PreprocessingData.ID, PreprocessingData.class).orElseThrow().getText();
         var diagramConnectionStates = dataRepository.getData(DiagramConnectionStates.ID, DiagramConnectionStates.class).orElseThrow();
-        //TODO Get Metamodel properly
         var diagramConnectionState = diagramConnectionStates.getDiagramConnectionState(project.getMetamodel());
         var linksBetweenDeAndRi = diagramConnectionState.getLinksBetweenDeAndRi().stream().sorted().collect(Collectors.toCollection(TreeSet::new));
         var traceLinks = diagramConnectionState.getTraceLinks().stream().collect(Collectors.toCollection(TreeSet::new));

@@ -1,5 +1,8 @@
 package edu.kit.kastel.mcse.ardoco.erid.tests.integration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.kit.kastel.mcse.ardoco.core.api.InputDiagramData;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
@@ -17,20 +20,26 @@ import edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.DiagramInconsistency
 import edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.DiagramRecognitionMock;
 import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognition;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
-import java.util.ArrayList;
-import java.util.List;
 
+/**
+ * {@link HoldBackRunResultsProducer} that has been adapted to use the ERID pipeline with the {@link DiagramRecognition} or {@link DiagramRecognitionMock}
+ * stage.
+ */
 public class HoldBackRunResultsProducerERID extends HoldBackRunResultsProducer {
     boolean useDiagramRecognitionMock;
 
+    /**
+     * Sole constructor of the class.
+     *
+     * @param useDiagramRecognitionMock Whether {@link DiagramRecognitionMock} should be used
+     */
     public HoldBackRunResultsProducerERID(boolean useDiagramRecognitionMock) {
         this.useDiagramRecognitionMock = useDiagramRecognitionMock;
     }
 
     @Override
     protected DataRepository runUnshared(GoldStandardProject goldStandardProject, HoldElementsBackModelConnector holdElementsBackModelConnector,
-                                         DataRepository preRunDataRepository,
-                                         boolean useInconsistencyBaseline) {
+            DataRepository preRunDataRepository, boolean useInconsistencyBaseline) {
         var diagramProject = DiagramProject.getFromName(goldStandardProject.getProjectName()).orElseThrow();
         return new AnonymousRunner(goldStandardProject.getProjectName(), preRunDataRepository) {
             @Override

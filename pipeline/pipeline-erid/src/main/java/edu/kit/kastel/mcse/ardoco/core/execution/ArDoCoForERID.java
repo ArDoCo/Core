@@ -4,10 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.SortedMap;
 
+import edu.kit.kastel.mcse.ardoco.core.api.InputDiagramData;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
-import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
@@ -17,15 +17,10 @@ import edu.kit.kastel.mcse.ardoco.core.models.agents.ModelProviderAgent;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.TextPreprocessingAgent;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.DiagramBackedTextStateStrategy;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
-import edu.kit.kastel.mcse.ardoco.core.textextraction.TextStateImpl;
 import edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator.DiagramConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.DiagramInconsistencyChecker;
-import edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.DiagramRecognitionMock;
+import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognition;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
-
-import java.util.SortedMap;
 
 public class ArDoCoForERID extends ParameterizedRunner<ArDoCoForERID.Parameters> {
     public record Parameters(DiagramProject diagramProject, File inputText, File inputModelArchitecture, ArchitectureModelType inputArchitectureModelType,
@@ -51,14 +46,8 @@ public class ArDoCoForERID extends ParameterizedRunner<ArDoCoForERID.Parameters>
         pipelineSteps.add(TextPreprocessingAgent.get(p.additionalConfigs, dataRepository));
 
         pipelineSteps.add(ModelProviderAgent.get(p.inputModelArchitecture, p.inputArchitectureModelType, dataRepository));
-        pipelineSteps.add(new DiagramRecognitionMock(p.diagramProject, p.additionalConfigs, dataRepository));
-
-        var textState = new TextStateImpl();
-        var textStrategy = new DiagramBackedTextStateStrategy(textState, dataRepository);
-        textState.setTextStateStrategy(textStrategy);
-        dataRepository.addData(TextState.ID, textState);
-        pipelineSteps.add(TextExtraction.get(p.additionalConfigs, dataRepository));
-
+        dataRepository.addData(InputDiagramData.ID, new InputDiagramData(p.diagramProject.getDiagramData()));
+        pipelineSteps.add(DiagramRecognition.get(p.additionalConfigs, dataRepository));
         pipelineSteps.add(RecommendationGenerator.get(p.additionalConfigs, dataRepository));
         pipelineSteps.add(new DiagramConnectionGenerator(p.additionalConfigs, dataRepository));
         pipelineSteps.add(new DiagramInconsistencyChecker(p.additionalConfigs, dataRepository));

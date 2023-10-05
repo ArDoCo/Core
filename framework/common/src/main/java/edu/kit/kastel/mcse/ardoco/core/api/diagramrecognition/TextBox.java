@@ -11,6 +11,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityComparable;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 
+/**
+ * A text
+ */
 public class TextBox implements SimilarityComparable<TextBox>, Serializable {
     private static final double SIMILARITY_THRESHOLD = 0.85;
     private final BoundingBox boundingBox;

@@ -29,10 +29,6 @@ public class AbbreviationInformant extends Informant {
     @Configurable
     private int adjacencyLimit = 4;
     @Configurable
-    private int meaningPartsLimit = 6;
-    @Configurable
-    private int abbreviationPartsLimit = 6;
-    @Configurable
     private int characterLimit = 10;
     @Configurable
     private double multiplicativeOrderThreshold = 0.8;

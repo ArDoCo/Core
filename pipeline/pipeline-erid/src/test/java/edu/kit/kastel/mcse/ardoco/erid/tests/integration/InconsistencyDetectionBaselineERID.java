@@ -11,6 +11,9 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.InconsistencyDetectionEvaluationIT;
 
+/**
+ * Performs the inconsistency detection using the standard ArDoCo baseline.
+ */
 @Disabled
 public class InconsistencyDetectionBaselineERID extends InconsistencyDetectionEvaluationIT {
     @DisplayName("Evaluating MME-Inconsistency Detection (Mock)")

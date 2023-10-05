@@ -1,10 +1,10 @@
 package edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator.informants;
 
-import edu.kit.kastel.mcse.ardoco.erid.api.models.tracelinks.LinkBetweenDeAndRi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
+import edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
@@ -12,6 +12,9 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator.DiagramConnectionState;
 import edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator.DiagramConnectionStates;
 
+/**
+ * This informant filters the diagram elements and recommended instances that are below a configurable confidence threshold.
+ */
 public class LinkBetweenDeAndRiProbabilityFilter extends Informant {
     private final static Logger logger = LoggerFactory.getLogger(LinkBetweenDeAndRiProbabilityFilter.class);
 
@@ -37,10 +40,15 @@ public class LinkBetweenDeAndRiProbabilityFilter extends Informant {
         }
     }
 
+    /**
+     * Calculates the overall confidence in each trace link using {@link  AggregationFunctions#MAX} and removes all below a certain threshold.
+     *
+     * @param diagramConnectionState the diagram connection state
+     */
     private void filterByProbability(DiagramConnectionState diagramConnectionState) {
         var belowThreshold = diagramConnectionState.getLinksBetweenDeAndRi()
                 .stream()
-                .filter(linkBetweenDeAndRi -> linkBetweenDeAndRi.getConfidence(LinkBetweenDeAndRi.MAXIMUM_CONFIDENCE) < confidenceThreshold)
+                .filter(linkBetweenDeAndRi -> linkBetweenDeAndRi.getConfidence(AggregationFunctions.MAX) < confidenceThreshold)
                 .toList();
         logger.info("Removed {} Diagram Links due to low confidence", belowThreshold.size());
         belowThreshold.forEach(b -> logger.info(b.toString()));

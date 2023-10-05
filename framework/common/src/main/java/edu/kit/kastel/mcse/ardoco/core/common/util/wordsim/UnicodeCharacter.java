@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
  * and the Java {@link Character} documentation for an explanation of code points. Java {@link Character} instances and the corresponding primitive
  * {@code char} can not represent all unicode characters in a single instance due to historic reasons.
  */
+//TODO More documentation
 public final class UnicodeCharacter implements Serializable {
     private static final MutableMap<Integer, UnicodeCharacter> integerToUnicode = Maps.mutable.empty();
 

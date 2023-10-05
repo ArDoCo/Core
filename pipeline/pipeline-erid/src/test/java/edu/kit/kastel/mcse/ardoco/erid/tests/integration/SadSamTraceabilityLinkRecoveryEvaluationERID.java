@@ -30,9 +30,17 @@ import edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.DiagramRecognitionMock
 import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognition;
 import edu.kit.kastel.mcse.ardoco.tests.eval.GoldStandardDiagramsWithTLR;
 
+/**
+ * Pipeline definition for the SAD SAM TLR evaluation using ERID with and without the diagram recognition mock.
+ */
 public class SadSamTraceabilityLinkRecoveryEvaluationERID extends SadSamTraceabilityLinkRecoveryEvaluation<GoldStandardDiagramsWithTLR> {
-    boolean useDiagramRecognitionMock;
+    private final boolean useDiagramRecognitionMock;
 
+    /**
+     * Creates a new SAD SAM TLR evaluation using ERID.
+     *
+     * @param useDiagramRecognitionMock Whether {@link DiagramRecognitionMock} should be used
+     */
     public SadSamTraceabilityLinkRecoveryEvaluationERID(boolean useDiagramRecognitionMock) {
         this.useDiagramRecognitionMock = useDiagramRecognitionMock;
     }

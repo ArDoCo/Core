@@ -17,19 +17,42 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 public record ComparisonContext(@NotNull String firstString, @NotNull String secondString, Word firstWord, Word secondWord, boolean lemmatize,
                                 @NotNull BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> characterMatch) {
 
+    /**
+     * Constructs a string-based context with a given match function and no lemmatization.
+     * @param firstString the first string
+     * @param secondString the second string
+     * @param characterMatch the match function
+     */
     public ComparisonContext(@NotNull String firstString, @NotNull String secondString,
             @NotNull BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> characterMatch) {
         this(firstString, secondString, null, null, false, characterMatch);
     }
 
+    /**
+     * Constructs a string-based context with the default match function and no lemmatization.
+     * @param firstString the first string
+     * @param secondString the second string
+     */
     public ComparisonContext(@NotNull String firstString, @NotNull String secondString) {
         this(firstString, secondString, null, null, false, UnicodeCharacter.EQUAL);
     }
 
+    /**
+     * Constructs a string-based context with the default match function.
+     * @param firstString the first string
+     * @param secondString the second string
+     * @param lemmatize whether the string should be lemmatized
+     */
     public ComparisonContext(@NotNull String firstString, @NotNull String secondString, boolean lemmatize) {
         this(firstString, secondString, null, null, lemmatize, UnicodeCharacter.EQUAL);
     }
 
+    /**
+     * Constructs a word-based context with the default match function.
+     * @param firstWord the first word
+     * @param secondWord the second word
+     * @param lemmatize whether the words should be lemmatized
+     */
     public ComparisonContext(@NotNull Word firstWord, @NotNull Word secondWord, boolean lemmatize) {
         this(firstWord.getText(), secondWord.getText(), firstWord, secondWord, lemmatize, UnicodeCharacter.EQUAL);
     }
