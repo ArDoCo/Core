@@ -152,6 +152,19 @@ public final class JavaModel {
         }
     }
 
+    private void initDependencies() {
+        for (JavaType javaType : javaTypes) {
+            List<ITypeBinding> referencedBindings = javaType.referencedBindings();
+            SortedSet<Datatype> dependencies = new TreeSet<>();
+            for (ITypeBinding referencedBinding : referencedBindings) {
+                javaTypes.stream()
+                        .filter(otherJavaType -> otherJavaType.binding().getErasure().isEqualTo(referencedBinding.getErasure()))
+                        .findFirst().ifPresent(referencedJavaType -> dependencies.add(referencedJavaType.codeType()));
+            }
+            javaType.codeType().setDatatypeReference(dependencies);
+        }
+    }
+
     private static List<ITypeBinding> getReferencedBindings(AbstractTypeDeclaration abstractTypeDeclaration) {
         @SuppressWarnings("unchecked") List<BodyDeclaration> bodyDeclarations = abstractTypeDeclaration.bodyDeclarations();
         List<Type> referencedTypes = new ArrayList<>();
@@ -208,6 +221,7 @@ public final class JavaModel {
         initImplementedInterfaces();
         initExtendedInterfaces();
         initSuperclasses();
+        initDependencies();
 
         modelContent.addAll(mergedCodePackages);
 

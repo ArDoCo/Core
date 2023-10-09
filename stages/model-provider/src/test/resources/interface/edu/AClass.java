@@ -13,6 +13,11 @@ public class AClass<T> extends Superclass implements AnInterface<T>, OtherInterf
     }
 
     private Superclass s;
+    private int x;
+
+    private void aMethod() {
+        AnEnum anEnum = null;
+    }
 }
 
 class AnotherClass {
