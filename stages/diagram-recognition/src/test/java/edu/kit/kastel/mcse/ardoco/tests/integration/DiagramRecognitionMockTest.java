@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.SortedMap;
 
 import org.eclipse.collections.impl.factory.SortedMaps;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -56,7 +57,7 @@ public class DiagramRecognitionMockTest extends StageTest<DiagramRecognitionMock
     }
 
     @Override
-    protected DataRepository runPreTestRunner(GoldStandardDiagrams project) {
+    protected DataRepository runPreTestRunner(@NotNull GoldStandardDiagrams project) {
         return new AnonymousRunner(project.getProjectName()) {
             @Override
             public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) throws IOException {
@@ -68,8 +69,8 @@ public class DiagramRecognitionMockTest extends StageTest<DiagramRecognitionMock
     }
 
     @Override
-    protected DataRepository runTestRunner(GoldStandardDiagrams project, SortedMap<String, String> additionalConfigurations,
-            DataRepository preRunDataRepository) {
+    protected DataRepository runTestRunner(@NotNull GoldStandardDiagrams project, @NotNull SortedMap<String, String> additionalConfigurations,
+                                           @NotNull DataRepository preRunDataRepository) {
         return new AnonymousRunner(project.getProjectName(), preRunDataRepository) {
             @Override
             public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) {

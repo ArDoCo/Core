@@ -9,6 +9,7 @@ import java.util.SortedMap;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 import org.eclipse.collections.impl.factory.Lists;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -45,7 +46,7 @@ public class TextExtractionTest extends StageTest<TextExtraction, TextExtraction
     }
 
     @Override
-    protected DataRepository runPreTestRunner(TextProject project) {
+    protected DataRepository runPreTestRunner(@NotNull TextProject project) {
         return new AnonymousRunner(project.getProjectName()) {
             @Override
             public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) throws IOException {
@@ -64,7 +65,7 @@ public class TextExtractionTest extends StageTest<TextExtraction, TextExtraction
     }
 
     @Override
-    protected DataRepository runTestRunner(TextProject project, SortedMap<String, String> additionalConfigurations, DataRepository preRunDataRepository) {
+    protected DataRepository runTestRunner(@NotNull TextProject project, @NotNull SortedMap<String, String> additionalConfigurations, @NotNull DataRepository preRunDataRepository) {
         return new AnonymousRunner(project.getProjectName(), preRunDataRepository) {
             @Override
             public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) {

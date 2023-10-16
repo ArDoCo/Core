@@ -2,6 +2,7 @@ package edu.kit.kastel.mcse.ardoco.tests.integration;
 
 import java.io.File;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 import edu.kit.kastel.mcse.ardoco.tests.PreTestRunner;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 
@@ -20,69 +22,75 @@ import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@Disabled
 public class DiagramConnectionGeneratorEvaluation extends DiagramConnectionGeneratorTest {
     private static final Logger logger = LoggerFactory.getLogger(DiagramConnectionGeneratorEvaluation.class);
     private static final String OUTPUT_DIR = "src/test/resources/testout";
 
     @Override
-    protected DataRepository runPreTestRunner(DiagramProject project) {
+    protected ExpectedResults getExpectedResults(DiagramProject project) {
+        return project.getExpectedDiagramSentenceTlrResults();
+    }
+
+    @Override
+    protected DataRepository runPreTestRunner(@NotNull DiagramProject project) {
         logger.info("Run PreTestRunner for {}", project.name());
         var params = new PreTestRunner.Parameters(project, new File(OUTPUT_DIR), false);
         var runner = new PreTestRunner(project.name(), params);
         return runner.runWithoutSaving();
     }
 
-    @Disabled
-    @Test
     @Override
-    protected void evaluateAll() { super.evaluateAll(); }
+    @Test
+    @Disabled
+    protected void evaluateAll() {
+        super.evaluateAll();
+    }
 
-    @Disabled
-    @Test
     @Override
+    @Test
+    @Disabled
     protected void teammatesTest() {
         runComparable(DiagramProject.TEAMMATES, false);
     }
 
-    @Disabled
-    @Test
     @Override
+    @Test
+    @Disabled
     protected void teammatesHistTest() {
         runComparable(DiagramProject.TEAMMATES_HISTORICAL, false);
     }
 
-    @Disabled
-    @Test
     @Override
+    @Test
+    @Disabled
     protected void teastoreTest() {
         runComparable(DiagramProject.TEASTORE, false);
     }
 
-    @Disabled
-    @Test
     @Override
+    @Test
+    @Disabled
     protected void teastoreHistTest() {
         runComparable(DiagramProject.TEASTORE_HISTORICAL, false);
     }
 
-    @Disabled
-    @Test
     @Override
+    @Test
+    @Disabled
     protected void bbbTest() {
         runComparable(DiagramProject.BIGBLUEBUTTON, false);
     }
 
-    @Disabled
-    @Test
     @Override
+    @Test
+    @Disabled
     protected void bbbHistTest() {
         runComparable(DiagramProject.BIGBLUEBUTTON_HISTORICAL, false);
     }
 
-    @Disabled
-    @Test
     @Override
+    @Test
+    @Disabled
     protected void msTest() {
         runComparable(DiagramProject.MEDIASTORE, false);
     }

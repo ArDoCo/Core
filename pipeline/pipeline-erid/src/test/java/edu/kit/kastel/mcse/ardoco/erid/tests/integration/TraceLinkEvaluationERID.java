@@ -16,7 +16,6 @@ import edu.kit.kastel.mcse.ardoco.tests.eval.GoldStandardDiagramsWithTLR;
 /**
  * Performs the SAD SAM TLR using ERID with the diagram recognition.
  */
-@Disabled
 public class TraceLinkEvaluationERID extends TraceLinkEvaluationIT<GoldStandardDiagramsWithTLR> {
     protected static String OUTPUT = TraceLinkEvaluationIT.OUTPUT;
 
@@ -46,6 +45,11 @@ public class TraceLinkEvaluationERID extends TraceLinkEvaluationIT<GoldStandardD
     @Override
     @Disabled
     protected void evaluateSadSamCodeTlrIT(CodeProject codeProject) {
+    }
+
+    @Override
+    @Disabled
+    protected void evaluateSadSamCodeTlrFullIT(CodeProject project) {
     }
 
     @Override

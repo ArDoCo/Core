@@ -24,7 +24,7 @@ public class SerializableFileBasedCache<T extends Serializable> extends FileBase
      * @param identifier   the identifier of the cache
      * @param subFolder    the sub-folder of the cache
      */
-    public SerializableFileBasedCache(Class<? extends T> contentClass, @NotNull String identifier, @NotNull String subFolder) {
+    public SerializableFileBasedCache(@NotNull Class<? extends T> contentClass, @NotNull String identifier, @NotNull String subFolder) {
         super(identifier, ".ser", subFolder + contentClass.getSimpleName() + "/");
         this.contentClass = contentClass;
     }

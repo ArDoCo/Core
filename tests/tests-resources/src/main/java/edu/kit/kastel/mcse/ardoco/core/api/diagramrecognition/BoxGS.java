@@ -45,6 +45,12 @@ public class BoxGS extends Box implements Serializable {
         this.tracelinks = tracelinks;
     }
 
+    /**
+     * {@return the set of diagram-sentence trace links associated with this box} The sentences are used to resolve the sentence numbers to actual sentences
+     * from the document.
+     *
+     * @param sentences the sentences from the text
+     */
     public ImmutableSet<DiaGSTraceLink> getTraceLinks(List<Sentence> sentences) {
         var list = Arrays.stream(tracelinks)
                 .filter(t -> getDiagram().getDiagramProject().getTextResourceName().contains(t.name()))
@@ -55,10 +61,17 @@ public class BoxGS extends Box implements Serializable {
         return set;
     }
 
+    /**
+     * {@return the set of sub boxes contained by this box} Only direct children are returned. In comparison to {@link #getChildren()}, this entirely relies on
+     * the JSON structure of the gold standard file to determine the hierarchy of boxes.
+     */
     public BoxGS[] getSubBoxes() {
         return subBoxes;
     }
 
+    /**
+     * {@return the diagram this box belongs to}
+     */
     public @NotNull DiagramGS getDiagram() {
         return this.diagramGS;
     }

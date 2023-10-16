@@ -19,6 +19,7 @@ import edu.kit.kastel.mcse.ardoco.core.execution.runner.ArDoCoRunner;
 import edu.kit.kastel.mcse.ardoco.core.models.agents.ModelProviderAgent;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.SadSamTraceabilityLinkRecoveryEvaluation;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.TextPreprocessingAgent;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.DiagramBackedTextStateStrategy;
@@ -96,5 +97,13 @@ public class SadSamTraceabilityLinkRecoveryEvaluationERID extends SadSamTraceabi
         };
         runner.setOutputDirectory(outputDir);
         return runner;
+    }
+
+    @Override
+    protected ExpectedResults getExpectedResults(GoldStandardDiagramsWithTLR project) {
+        if (useDiagramRecognitionMock) {
+            return project.getExpectedSadSamResultsWithMock();
+        }
+        return project.getExpectedSadSamResults();
     }
 }

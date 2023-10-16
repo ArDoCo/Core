@@ -13,6 +13,7 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.impl.factory.SortedMaps;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
@@ -30,6 +31,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TraceType;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.AnonymousRunner;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 import edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator.DiagramConnectionStates;
 import edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator.DiagramConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.tests.PreTestRunner;
@@ -51,8 +53,12 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
         super(new DiagramConnectionGenerator(SortedMaps.mutable.empty(), null), DiagramProject.values());
     }
 
+    protected ExpectedResults getExpectedResults(DiagramProject project) {
+        return project.getExpectedDiagramSentenceTlrResultsWithMock();
+    }
+
     @Override
-    protected Results runComparable(DiagramProject project, SortedMap<String, String> additionalConfigurations, boolean cachePreRun) {
+    protected Results runComparable(@NotNull DiagramProject project, @NotNull SortedMap<String, String> additionalConfigurations, boolean cachePreRun) {
         var dataRepository = run(project, additionalConfigurations, cachePreRun);
         var text = dataRepository.getData(PreprocessingData.ID, PreprocessingData.class).orElseThrow().getText();
         var diagramConnectionStates = dataRepository.getData(DiagramConnectionStates.ID, DiagramConnectionStates.class).orElseThrow();
@@ -60,7 +66,7 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
         var linksBetweenDeAndRi = diagramConnectionState.getLinksBetweenDeAndRi().stream().sorted().collect(Collectors.toCollection(TreeSet::new));
         var traceLinks = diagramConnectionState.getTraceLinks().stream().collect(Collectors.toCollection(TreeSet::new));
         var mostSpecificTraceLinks = diagramConnectionState.getMostSpecificTraceLinks().stream().collect(Collectors.toCollection(TreeSet::new));
-        var altResult = Results.create(project, text, mostSpecificTraceLinks, project.getExpectedDiagramTraceLinkResults());
+        var altResult = Results.create(project, text, mostSpecificTraceLinks, getExpectedResults(project));
 
         var commonNoun = altResult.falsePositives().stream().filter(w -> {
             var related = w.getRelatedGSLinks();
@@ -93,13 +99,13 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
         }
 
         if (!altResult.equalsByConfusionMatrix(prevResults))
-            debugCache(cacheID, altResult);
+            debugCacheIfCachingFlag(cacheID, altResult);
 
         return altResult;
     }
 
     @Override
-    protected DataRepository runPreTestRunner(DiagramProject project) {
+    protected DataRepository runPreTestRunner(@NotNull DiagramProject project) {
         logger.info("Run PreTestRunner for {}", project.name());
         var params = new PreTestRunner.Parameters(project, new File(OUTPUT_DIR), true);
         var runner = new PreTestRunner(project.name(), params);
@@ -107,7 +113,7 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
     }
 
     @Override
-    protected DataRepository runTestRunner(DiagramProject project, SortedMap<String, String> additionalConfigurations, DataRepository preRunDataRepository) {
+    protected DataRepository runTestRunner(@NotNull DiagramProject project, @NotNull SortedMap<String, String> additionalConfigurations, @NotNull DataRepository preRunDataRepository) {
         logger.info("Run TestRunner for {}", project.name());
         var combinedConfigs = new TreeMap<>(project.getAdditionalConfigurations());
         combinedConfigs.putAll(additionalConfigurations);

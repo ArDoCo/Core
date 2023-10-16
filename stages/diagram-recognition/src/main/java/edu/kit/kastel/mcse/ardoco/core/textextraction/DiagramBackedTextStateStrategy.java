@@ -25,6 +25,13 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
+/**
+ * Extends the {@link OriginalTextStateStrategy} by further dividing similar mappings by their similarity to the available
+ * {@link edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement DiagramElements}. For example, consider that both a package diagram and the text
+ * contain "routeplanner" and "routeplannerui". If a "routeplanner" noun mapping exists and we want to add "routeplannerui", a combined mapping would be created
+ * due to similarity. By additionally comparing to the diagram elements, we find that they are related to different package diagram elements, and thus probably
+ * shouldn't be contained by the same mapping.
+ */
 public class DiagramBackedTextStateStrategy extends OriginalTextStateStrategy {
     private static final Logger logger = LoggerFactory.getLogger(DiagramBackedTextStateStrategy.class);
 
@@ -32,11 +39,22 @@ public class DiagramBackedTextStateStrategy extends OriginalTextStateStrategy {
     private DiagramRecognitionState diagramRecognitionState;
     private List<Box> boxes;
 
+    /**
+     * Sole constructor.
+     *
+     * @param textState      the text state this strategy works on
+     * @param dataRepository the data repository this strategy works with
+     */
     public DiagramBackedTextStateStrategy(TextStateImpl textState, DataRepository dataRepository) {
         super(textState);
         this.dataRepository = dataRepository;
     }
 
+    /**
+     * Tries to add a mapping to the state using the existing parameters. Searches for similar mappings using the similarity metrics. Additionally, checks the
+     * relationship between mappings and the available {@link edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement DiagramElements} to further
+     * subdivide them.
+     */
     @NotNull
     @Override
     public NounMapping addOrExtendNounMapping(Word word, MappingKind kind, Claimant claimant, double probability, ImmutableList<String> surfaceForms) {
@@ -54,11 +72,19 @@ public class DiagramBackedTextStateStrategy extends OriginalTextStateStrategy {
 
         var relatedToWordUnboxed = getMostSimilar(boxes, word).orElse(null);
         for (var existingNounMapping : getTextState().getNounMappings()) {
-            if (SimilarityUtils.areNounMappingsSimilar(disposableNounMapping, existingNounMapping) && isRelationToDiagramElementsSimilar(boxes,
-                    relatedToWordUnboxed, existingNounMapping)) {
-                return mergeNounMappings(existingNounMapping, disposableNounMapping, disposableNounMapping.getReferenceWords(),
-                        disposableNounMapping.getReference(), disposableNounMapping.getKind(), claimant, disposableNounMapping.getProbability(),
+            if (SimilarityUtils.areNounMappingsSimilar(disposableNounMapping, existingNounMapping) && isDiagramElementMostSimilar(boxes, relatedToWordUnboxed,
+                    existingNounMapping)) {
+
+                var mergedNounMapping = new DiagramBackedNounMappingImpl(
+                        mergeNounMappingsStateless(existingNounMapping, disposableNounMapping, disposableNounMapping.getReferenceWords(),
+                                disposableNounMapping.getReference(), disposableNounMapping.getKind(), claimant, disposableNounMapping.getProbability()),
                         relatedToWordUnboxed);
+
+                this.getTextState().removeNounMappingFromState(existingNounMapping, mergedNounMapping);
+                this.getTextState().removeNounMappingFromState(disposableNounMapping, mergedNounMapping);
+                this.getTextState().addNounMappingAddPhraseMapping(mergedNounMapping);
+
+                return mergedNounMapping;
             }
         }
 
@@ -69,20 +95,15 @@ public class DiagramBackedTextStateStrategy extends OriginalTextStateStrategy {
         return diagramNM;
     }
 
-    public NounMappingImpl mergeNounMappings(NounMapping firstNounMapping, NounMapping secondNounMapping, ImmutableList<Word> referenceWords, String reference,
-            MappingKind mappingKind, Claimant claimant, double probability, Box box) {
-        var mergedNounMapping = new DiagramBackedNounMappingImpl(
-                mergeNounMappingsStateless(firstNounMapping, secondNounMapping, referenceWords, reference, mappingKind, claimant, probability), box);
-
-        this.getTextState().removeNounMappingFromState(firstNounMapping, mergedNounMapping);
-        this.getTextState().removeNounMappingFromState(secondNounMapping, mergedNounMapping);
-        this.getTextState().addNounMappingAddPhraseMapping(mergedNounMapping);
-
-        return mergedNounMapping;
-    }
-
-    protected boolean isRelationToDiagramElementsSimilar(List<Box> diagramElements, Box relatedToWordUnboxed, NounMapping nounMapping) {
-        var relatedToWord = Optional.ofNullable(relatedToWordUnboxed);
+    /**
+     * {@return whether the diagram element is the most similar to the noun mapping}
+     *
+     * @param diagramElements the diagram elements to search, if the noun mappings relation to the diagram elements is unknown
+     * @param candidate       candidate for the most similar diagram element we want to check
+     * @param nounMapping     the noun mapping
+     */
+    protected boolean isDiagramElementMostSimilar(List<Box> diagramElements, Box candidate, NounMapping nounMapping) {
+        var relatedToWord = Optional.ofNullable(candidate);
 
         if (nounMapping instanceof DiagramBackedNounMappingImpl diagramBackedNounMapping) {
             return Objects.equals(relatedToWord, diagramBackedNounMapping.getDiagramElement());
@@ -92,6 +113,12 @@ public class DiagramBackedTextStateStrategy extends OriginalTextStateStrategy {
         }
     }
 
+    /**
+     * {@return the most similar diagram elements to the noun mapping}
+     *
+     * @param diagramElements the diagram elements to search
+     * @param nounMapping     the mapping
+     */
     protected Optional<Box> getMostSimilar(List<Box> diagramElements, NounMapping nounMapping) {
         var nounMapPairs = diagramElements.stream()
                 .map(box -> new Pair<>(DiagramUtil.calculateHighestSimilarity(nounMapping, box), box))
@@ -100,6 +127,12 @@ public class DiagramBackedTextStateStrategy extends OriginalTextStateStrategy {
         return nounMapPairs.stream().max(diagramElementSimilarity).map(Pair::second);
     }
 
+    /**
+     * {@return the most similar diagram element to the provided word}
+     *
+     * @param diagramElements the diagram elements to search
+     * @param word            the word
+     */
     protected Optional<Box> getMostSimilar(List<Box> diagramElements, Word word) {
         var wordPairs = diagramElements.stream()
                 .map(box -> new Pair<>(DiagramUtil.calculateHighestSimilarity(word, box), box))
@@ -108,6 +141,10 @@ public class DiagramBackedTextStateStrategy extends OriginalTextStateStrategy {
         return wordPairs.stream().max(diagramElementSimilarity).map(Pair::second);
     }
 
+    /**
+     * Used to compare the similarity diagram element pairs. Using {@link java.util.stream.Stream#max(Comparator)} with this returns the diagram element with
+     * the highest similarity and shortest reference length.
+     */
     protected static Comparator<Pair<Double, Box>> diagramElementSimilarity = (p1, p2) -> {
         var comp = Double.compare(p1.first(), p2.first());
         if (comp == 0) {

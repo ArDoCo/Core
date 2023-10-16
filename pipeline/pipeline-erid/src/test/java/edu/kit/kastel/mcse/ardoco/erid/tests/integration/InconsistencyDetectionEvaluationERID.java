@@ -1,6 +1,5 @@
 package edu.kit.kastel.mcse.ardoco.erid.tests.integration;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
@@ -11,11 +10,11 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.InconsistencyDetectionEvaluationIT;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.inconsistencyhelper.HoldBackRunResultsProducer;
+import edu.kit.kastel.mcse.ardoco.tests.eval.GoldStandardDiagramsWithTLR;
 
 /**
  * Performs the inconsistency detection using ERID with the diagram recognition.
  */
-@Disabled
 public class InconsistencyDetectionEvaluationERID extends InconsistencyDetectionEvaluationIT {
     @Override
     protected HoldBackRunResultsProducer getHoldBackRunResultsProducer() {
@@ -28,7 +27,10 @@ public class InconsistencyDetectionEvaluationERID extends InconsistencyDetection
     @Order(1)
     @Override
     protected void missingModelElementInconsistencyIT(GoldStandardProject goldStandardProject) {
-        super.missingModelElementInconsistencyIT(goldStandardProject);
+        if (goldStandardProject instanceof GoldStandardDiagramsWithTLR goldStandardDiagramProject)
+            runMissingModelElementInconsistencyEval(goldStandardProject, goldStandardDiagramProject.getExpectedMMEResults());
+        else
+            throw new IllegalArgumentException("Invalid method source");
     }
 
     @EnabledIfEnvironmentVariable(named = "testHistoric", matches = ".*")
@@ -38,7 +40,10 @@ public class InconsistencyDetectionEvaluationERID extends InconsistencyDetection
     @Order(2)
     @Override
     protected void missingModelElementInconsistencyHistoricIT(GoldStandardProject goldStandardProject) {
-        super.missingModelElementInconsistencyHistoricIT(goldStandardProject);
+        if (goldStandardProject instanceof GoldStandardDiagramsWithTLR goldStandardDiagramProject)
+            runMissingModelElementInconsistencyEval(goldStandardProject, goldStandardDiagramProject.getExpectedMMEResults());
+        else
+            throw new IllegalArgumentException("Invalid method source");
     }
 
     @EnabledIfEnvironmentVariable(named = "testBaseline", matches = ".*")

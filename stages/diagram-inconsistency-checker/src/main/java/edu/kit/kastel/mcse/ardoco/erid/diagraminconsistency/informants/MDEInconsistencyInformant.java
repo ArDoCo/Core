@@ -12,6 +12,11 @@ import edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.types.MDEInconsisten
  * This informant is responsible for finding the {@link MDEInconsistency MDEInconsistencies}
  */
 public class MDEInconsistencyInformant extends Informant {
+    /**
+     * Creates a new informant that acts on the specified data repository
+     *
+     * @param dataRepository the data repository
+     */
     public MDEInconsistencyInformant(DataRepository dataRepository) {
         super(MDEInconsistencyInformant.class.getSimpleName(), dataRepository);
     }

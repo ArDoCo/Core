@@ -24,6 +24,14 @@ public abstract class PipelineAgent extends Pipeline implements Agent {
     @ChildClassConfigurable
     private List<String> enabledInformants;
 
+    /**
+     * Creates a new pipeline agent with the specified id. During execution the pipeline agent sequentially runs its informants on the provided data
+     * repository.
+     *
+     * @param informants     the informants in order of execution (all enabled by default)
+     * @param id             the id
+     * @param dataRepository the data repository
+     */
     protected PipelineAgent(List<? extends Informant> informants, String id, DataRepository dataRepository) {
         super(id, dataRepository);
         this.informants = new ArrayList<>(informants);
@@ -39,6 +47,7 @@ public abstract class PipelineAgent extends Pipeline implements Agent {
     /**
      * Called before all informants
      */
+    @Override
     protected void before() {
         //Nothing by default
     }
@@ -46,6 +55,7 @@ public abstract class PipelineAgent extends Pipeline implements Agent {
     /**
      * Called after all informants
      */
+    @Override
     protected void after() {
         //Nothing by default
     }

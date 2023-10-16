@@ -206,18 +206,14 @@ public interface GoldStandardProject extends Serializable {
     }
 
     /**
-     * Returns the expected results for Traceability Link Recovery.
-     *
-     * @return the expectedTraceLinkResults
+     * {@return the expected results for Traceability Link Recovery}
      */
     default ExpectedResults getExpectedTraceLinkResults() {
         return getProjectOrThrow().getExpectedTraceLinkResults();
     }
 
     /**
-     * Returns the expected results for Inconsistency Detection.
-     *
-     * @return the expectedInconsistencyResults
+     * {@return the expected results for Inconsistency Detection}
      */
     default ExpectedResults getExpectedInconsistencyResults() {
         return getProjectOrThrow().getExpectedInconsistencyResults();

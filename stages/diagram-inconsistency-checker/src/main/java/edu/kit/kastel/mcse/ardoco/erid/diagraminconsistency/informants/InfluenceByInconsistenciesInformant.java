@@ -3,7 +3,6 @@ package edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.informants;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.eclipse.collections.api.list.ImmutableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,6 +28,11 @@ public class InfluenceByInconsistenciesInformant extends Informant {
     @Configurable
     private double maximumPunishment = -10d;
 
+    /**
+     * Creates a new informant that acts on the specified data repository
+     *
+     * @param dataRepository the data repository
+     */
     public InfluenceByInconsistenciesInformant(DataRepository dataRepository) {
         super(InfluenceByInconsistenciesInformant.class.getSimpleName(), dataRepository);
     }

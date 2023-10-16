@@ -96,7 +96,7 @@ public class InconsistencyDetectionEvaluationIT {
     @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_NONE, names = "^.*HISTORICAL$")
     @Order(1)
     protected void missingModelElementInconsistencyIT(GoldStandardProject goldStandardProject) {
-        runMissingModelElementInconsistencyEval(goldStandardProject);
+        runMissingModelElementInconsistencyEval(goldStandardProject, goldStandardProject.getExpectedInconsistencyResults());
     }
 
     @EnabledIfEnvironmentVariable(named = "testHistoric", matches = ".*")
@@ -105,10 +105,10 @@ public class InconsistencyDetectionEvaluationIT {
     @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_ALL, names = "^.*HISTORICAL$")
     @Order(2)
     protected void missingModelElementInconsistencyHistoricIT(GoldStandardProject goldStandardProject) {
-        runMissingModelElementInconsistencyEval(goldStandardProject);
+        runMissingModelElementInconsistencyEval(goldStandardProject, goldStandardProject.getExpectedInconsistencyResults());
     }
 
-    protected void runMissingModelElementInconsistencyEval(GoldStandardProject goldStandardProject) {
+    protected void runMissingModelElementInconsistencyEval(GoldStandardProject goldStandardProject, ExpectedResults expectedInconsistencyResults) {
         logger.info("Start evaluation of MME-inconsistency for {}", goldStandardProject.getProjectName());
         Map<ModelInstance, ArDoCoResult> runs = produceRuns(goldStandardProject);
 
@@ -118,7 +118,6 @@ public class InconsistencyDetectionEvaluationIT {
 
         EvaluationResults<String> weightedResults = ResultCalculatorUtil.calculateWeightedAverageResults(results.toImmutable());
 
-        var expectedInconsistencyResults = goldStandardProject.getExpectedInconsistencyResults();
         MME_RESULTS.put(goldStandardProject, Tuples.pair(weightedResults, expectedInconsistencyResults));
         logResultsMissingModelInconsistency(goldStandardProject, weightedResults, expectedInconsistencyResults);
         checkResults(weightedResults, expectedInconsistencyResults);

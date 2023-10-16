@@ -18,6 +18,7 @@ import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognitionStateImpl;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 import edu.kit.kastel.mcse.ardoco.tests.eval.GoldStandardDiagrams;
 import edu.kit.kastel.mcse.ardoco.tests.eval.StageTest;
+import org.jetbrains.annotations.NotNull;
 
 public class DiagramRecognitionTest extends StageTest<DiagramRecognition, GoldStandardDiagrams, DiagramRecognitionTest.DiagramRecognitionResult> {
 
@@ -34,7 +35,7 @@ public class DiagramRecognitionTest extends StageTest<DiagramRecognition, GoldSt
     }
 
     @Override
-    protected DataRepository runPreTestRunner(GoldStandardDiagrams project) {
+    protected DataRepository runPreTestRunner(@NotNull GoldStandardDiagrams project) {
         return new AnonymousRunner(project.getProjectName()) {
             @Override
             public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) throws IOException {
@@ -46,8 +47,8 @@ public class DiagramRecognitionTest extends StageTest<DiagramRecognition, GoldSt
     }
 
     @Override
-    protected DataRepository runTestRunner(GoldStandardDiagrams project, SortedMap<String, String> additionalConfigurations,
-            DataRepository preRunDataRepository) {
+    protected DataRepository runTestRunner(@NotNull GoldStandardDiagrams project, @NotNull SortedMap<String, String> additionalConfigurations,
+                                           @NotNull DataRepository preRunDataRepository) {
         return new AnonymousRunner(project.getProjectName(), preRunDataRepository) {
             @Override
             public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) {

@@ -9,6 +9,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.eclipse.collections.impl.factory.SortedMaps;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -66,7 +67,7 @@ public class DiagramInconsistencyCheckerTest extends StageTest<DiagramInconsiste
     }
 
     @Override
-    protected DataRepository runPreTestRunner(DiagramProject project) {
+    protected DataRepository runPreTestRunner(@NotNull DiagramProject project) {
         logger.info("Run PreTestRunner for {}", project.name());
         return new AnonymousRunner(project.name()) {
             @Override
@@ -99,7 +100,7 @@ public class DiagramInconsistencyCheckerTest extends StageTest<DiagramInconsiste
     }
 
     @Override
-    protected DataRepository runTestRunner(DiagramProject project, SortedMap<String, String> additionalConfigurations, DataRepository preRunDataRepository) {
+    protected DataRepository runTestRunner(@NotNull DiagramProject project, @NotNull SortedMap<String, String> additionalConfigurations, @NotNull DataRepository preRunDataRepository) {
         logger.info("Run TestRunner for {}", project.name());
         var combinedConfigs = new TreeMap<>(project.getAdditionalConfigurations());
         combinedConfigs.putAll(additionalConfigurations);

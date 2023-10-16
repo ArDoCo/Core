@@ -8,6 +8,19 @@ import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
+/**
+ * Deserializes a JSON bounding box node into a {@link BoundingBox}. For example the JSON node
+ * <pre>
+ * {@code
+ *  {
+ *      "x": 12,
+ *      "y": 30,
+ *      "w": 50,
+ *      "h": 60
+ *  }
+ * }</pre> is converted to a bounding box with {@code minX = 12, minY
+ * = 30, maxX = 62, maxY = 90}.
+ */
 public class BoundingBoxDeserializer extends StdDeserializer<BoundingBox> {
     public BoundingBoxDeserializer() {
         this(BoundingBox.class);

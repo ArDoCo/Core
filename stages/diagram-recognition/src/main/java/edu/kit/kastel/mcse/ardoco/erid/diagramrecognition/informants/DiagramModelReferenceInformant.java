@@ -1,40 +1,50 @@
 package edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.informants;
 
-import edu.kit.kastel.mcse.ardoco.core.common.util.DbPediaHelper;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.impl.factory.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramUtil;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.TextBox;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Triple;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
+import edu.kit.kastel.mcse.ardoco.core.common.util.DbPediaHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 
+/**
+ * Sets the references of {@link edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement DiagramElements}. A reference is supposed to represent
+ * the elements as best as possible with as little unnecessary information as possible. Multiples reference can be calculated for a single element. The
+ * relationship between diagram elements and model elements is used to further reduce the set of references.
+ */
 public class DiagramModelReferenceInformant extends Informant {
     private final static Logger logger = LoggerFactory.getLogger(DiagramModelReferenceInformant.class);
 
     @Configurable
     private double textBoxSimilarityThreshold = 0.5;
 
+    /**
+     * Creates a new informant that acts on the specified data repository
+     *
+     * @param dataRepository the data repository
+     */
     public DiagramModelReferenceInformant(DataRepository dataRepository) {
         super(DiagramModelReferenceInformant.class.getSimpleName(), dataRepository);
     }
 
+    /**
+     * Iterates over all diagram elements and sets their reference.
+     */
     @Override
     public void process() {
         var optModelStates = dataRepository.getData(ModelStates.ID, ModelStates.class);
@@ -45,31 +55,46 @@ public class DiagramModelReferenceInformant extends Informant {
 
         var boxes = Lists.mutable.fromStream(
                 DataRepositoryHelper.getDiagramRecognitionState(dataRepository).getDiagrams().stream().flatMap(d -> d.getBoxes().stream()));
-        setReferences(boxes, optModelStates.orElseThrow());
+        boxes.forEach(box -> setReferences(box, optModelStates.orElseThrow()));
     }
 
-    private void setReferences(MutableList<Box> boxes, ModelStates modelStates) {
+    /**
+     * Sets the references of each box. Individually calculates references for each text box first. Subsequently, calculates the most similar model instances
+     * for each text box and their references. If a text box is similar to a model instance, we assume that the diagram element may be the informal
+     * representation of the model instance. Thus, we remove all references except the references associated with the text box that is similar to the model
+     * instances.
+     *
+     * @param box         the box
+     * @param modelStates the model states
+     */
+    private void setReferences(Box box, ModelStates modelStates) {
         var modelIds = modelStates.extractionModelIds();
 
         for (var model : modelIds) {
             var modelState = modelStates.getModelExtractionState(model);
             var instances = modelState.getInstances();
-            for (var box : boxes) {
-                box.setReferences(Set.of());
-                var references = getReferencesPerTextBox(box);
-                var similar = similarModelInstance(instances, references);
-                similar.forEach(s -> logger.debug(box + " similar to " + s));
-                var isEmpty = similar.isEmpty();
-                for (var ref : references.entrySet()) {
-                    if (isEmpty || similar.stream().anyMatch(t -> t.first().equals(ref.getKey()))) {
-                        ref.getValue().forEach(box::addReference);
-                    }
+            box.setReferences(Set.of());
+            var references = getReferencesPerTextBox(box);
+            var similar = similarModelInstance(instances, references);
+            similar.forEach(s -> logger.debug(box + " similar to " + s));
+            var isEmpty = similar.isEmpty();
+            for (var ref : references.entrySet()) {
+                if (isEmpty || similar.stream().anyMatch(t -> t.first().equals(ref.getKey()))) {
+                    ref.getValue().forEach(box::addReference);
                 }
             }
         }
     }
 
-    private MutableList<Triple<TextBox, Double, ModelInstance>> similarModelInstance(ImmutableList<ModelInstance> modelInstances,
+    /**
+     * Tries to find the most similar model instance to all text boxes. If it exists, a triple is added to the list with the text box, the model instance and
+     * the similarity between them.
+     *
+     * @param modelInstances the model instances to search in
+     * @param references     the reference map
+     * @return the list of triples, empty if no model instance is similar to any text box
+     */
+    private List<Triple<TextBox, Double, ModelInstance>> similarModelInstance(ImmutableList<ModelInstance> modelInstances,
             Map<TextBox, Set<String>> references) {
         var list = Lists.mutable.<Triple<TextBox, Double, ModelInstance>>of();
         for (var entry : references.entrySet()) {
@@ -84,6 +109,15 @@ public class DiagramModelReferenceInformant extends Informant {
         return list;
     }
 
+    /**
+     * Tries to find the most similar model instance to a particular text box. Compares both the entire text of the text box and the references to the instances
+     * full name. The most similar instance and its similarity value are encapsulated in a pair tuple.
+     *
+     * @param modelInstances the model instances
+     * @param textBox        the text box
+     * @param references     the references associated with the text box
+     * @return the pair of model instance and similarity or an empty optional if none exists.
+     */
     private Optional<Pair<Double, ModelInstance>> getMostSimilarModelInstance(ImmutableList<ModelInstance> modelInstances, TextBox textBox,
             Set<String> references) {
         var max = Double.MIN_VALUE;
@@ -104,6 +138,12 @@ public class DiagramModelReferenceInformant extends Informant {
         return Optional.empty();
     }
 
+    /**
+     * {@return a map of references contained by the specified box} If a reference contains uppercase letters, its references take precedence over entirely
+     * lowercase references.
+     *
+     * @param box the box
+     */
     private Map<TextBox, Set<String>> getReferencesPerTextBox(Box box) {
         var map = new LinkedHashMap<TextBox, Set<String>>();
         var texts = box.getTexts();

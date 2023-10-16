@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaGSTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaTexTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaWordTraceLink;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TraceType;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
@@ -24,8 +23,8 @@ public record Results(DiagramProject project, SortedSet<DiaWordTraceLink> truePo
 
     public static Results create(DiagramProject project, Text text, Set<DiaWordTraceLink> wordTraceLinks, ExpectedResults expected) {
         var allGoldStandardTraceLinks = project.getDiagramTraceLinksAsMap(text.getSentences().toList());
-        TreeSet<DiaGSTraceLink> goldStandard = new TreeSet<>(allGoldStandardTraceLinks.getOrDefault(TraceType.ENTITY, List.of()));
-        goldStandard.addAll(allGoldStandardTraceLinks.getOrDefault(TraceType.ENTITY_COREFERENCE, List.of()));
+        TreeSet<DiaGSTraceLink> goldStandard = new TreeSet<>(
+                allGoldStandardTraceLinks.entrySet().stream().filter(e -> e.getKey().isActualPositive()).flatMap(e -> e.getValue().stream()).toList());
 
         var totalSentences = text.getSentences().size();
         var totalDiagramElements = project.getDiagramsGoldStandard().stream().flatMap(d -> d.getBoxes().stream()).toList().size();

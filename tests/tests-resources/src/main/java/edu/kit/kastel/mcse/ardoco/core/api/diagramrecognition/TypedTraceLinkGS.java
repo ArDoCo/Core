@@ -6,5 +6,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TraceType;
 
+/**
+ * Encapsulates a diagram-sentence trace link of a specific type.
+ * @param sentences
+ * @param traceType
+ */
 public record TypedTraceLinkGS(@JsonProperty("sentences") int[] sentences, @JsonProperty("traceType") TraceType traceType) implements Serializable {
 }

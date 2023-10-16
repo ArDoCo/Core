@@ -24,12 +24,24 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 
+/**
+ * Implementation of the {@link Diagram} interface used for JSON deserialization. Instances are created from a
+ * {@link edu.kit.kastel.mcse.ardoco.tests.eval.GoldStandardDiagrams GoldStandardDiagrams}.
+ */
 public class DiagramGS implements Diagram, Comparable<DiagramGS> {
     private String resourceName;
     private List<Box> properBoxes = new ArrayList<>();
     private List<TextBox> properTextBoxes = new ArrayList<>();
     private DiagramProject project;
 
+    /**
+     * JSON constructor for deserialization
+     *
+     * @param project      the project this diagram belongs to
+     * @param resourceName the resource name of this diagram
+     * @param boxesNode    the unprocessed JSON node representing the top-level diagram boxes
+     * @throws JsonProcessingException can occur during deserialization if the structure does not match
+     */
     @JsonCreator
     public DiagramGS(@JacksonInject DiagramProject project, @JsonProperty("path") String resourceName, @JsonProperty("boxes") JsonNode boxesNode)
             throws JsonProcessingException {
@@ -56,7 +68,7 @@ public class DiagramGS implements Diagram, Comparable<DiagramGS> {
         addBoxes(boxes);
     }
 
-    public DiagramGS(DiagramProject project, String path, BoxGS[] boxes) {
+    DiagramGS(DiagramProject project, String path, BoxGS[] boxes) {
         this.project = project;
         this.resourceName = path;
         addBoxes(boxes);
@@ -96,7 +108,7 @@ public class DiagramGS implements Diagram, Comparable<DiagramGS> {
         return resourceName.compareTo(o.resourceName);
     }
 
-    public String getShortPath() {
+    private String getShortPath() {
         var split = getResourceName().split("/|\\\\");
         return split[split.length - 1];
     }
@@ -151,6 +163,12 @@ public class DiagramGS implements Diagram, Comparable<DiagramGS> {
         throw new NotImplementedException();
     }
 
+    /**
+     * {@return the list of diagram-sentence trace links associated with this diagram} The sentences are used to resolve the sentence numbers to actual
+     * sentences from the document.
+     *
+     * @param sentences the sentences from the text
+     */
     public List<DiaGSTraceLink> getTraceLinks(List<Sentence> sentences) {
         var traceLinks = Lists.mutable.<DiaGSTraceLink>empty();
         for (Box box : properBoxes) {
