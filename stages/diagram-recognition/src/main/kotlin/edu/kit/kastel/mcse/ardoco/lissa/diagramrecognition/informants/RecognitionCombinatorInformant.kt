@@ -4,9 +4,9 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Classification
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.TextBox
+import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant
-import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognitionStateImpl
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.boundingBox
 import java.awt.Color
 import java.awt.image.BufferedImage
@@ -16,8 +16,7 @@ import java.util.stream.IntStream
 import javax.imageio.ImageIO
 
 class RecognitionCombinatorInformant(
-    private val diagramRecognitionState:
-    DiagramRecognitionStateImpl, dataRepository: DataRepository
+    dataRepository: DataRepository
 ) :
     Informant(
         ID,
@@ -32,6 +31,7 @@ class RecognitionCombinatorInformant(
     }
 
     override fun process() {
+        val diagramRecognitionState = DataRepositoryHelper.getDiagramRecognitionState(dataRepository)
         for (diagram in diagramRecognitionState.getUnprocessedDiagrams()) {
             val entities = diagram.boxes.filter { it.classification != Classification.LABEL }
             val texts = diagram.textBoxes

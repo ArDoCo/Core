@@ -1,12 +1,11 @@
 package edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.informants
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram
+import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
 import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognitionStateImpl
 
 abstract class ImageProcessingDockerInformant(
-    private val diagramRecognitionState:
-    DiagramRecognitionStateImpl,
     image: String,
     defaultPort: Int,
     useDocker: Boolean,
@@ -34,6 +33,7 @@ abstract class ImageProcessingDockerInformant(
     }
 
     private fun processImages() {
+        val diagramRecognitionState = DataRepositoryHelper.getDiagramRecognitionState(dataRepository)
         for (diagram in diagramRecognitionState.getUnprocessedDiagrams()) {
             logger.debug("Process {}", diagram.location)
             diagram.location.readBytes().let { imageStream ->

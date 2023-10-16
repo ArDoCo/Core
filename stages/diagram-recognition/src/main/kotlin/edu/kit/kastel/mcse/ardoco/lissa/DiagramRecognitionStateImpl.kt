@@ -9,13 +9,13 @@ class DiagramRecognitionStateImpl : DiagramRecognitionState {
     private val unprocessedDiagrams = mutableListOf<Diagram>()
     private val disambiguations = mutableListOf<Disambiguation>()
 
-    fun addUnprocessedDiagram(diagram: Diagram) {
+    override fun addUnprocessedDiagram(diagram: Diagram) {
         unprocessedDiagrams.add(diagram)
     }
 
-    fun getUnprocessedDiagrams(): MutableList<Diagram> = unprocessedDiagrams.toMutableList()
+    override fun getUnprocessedDiagrams(): List<Diagram> = unprocessedDiagrams.toList()
 
-    fun removeUnprocessedDiagram(diagram: Diagram): Boolean = unprocessedDiagrams
+    override fun removeUnprocessedDiagram(diagram: Diagram): Boolean = unprocessedDiagrams
         .remove(diagram)
 
     override fun addDiagram(diagram: Diagram) {

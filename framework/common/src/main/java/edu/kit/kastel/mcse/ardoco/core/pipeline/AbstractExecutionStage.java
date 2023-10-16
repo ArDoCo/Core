@@ -31,7 +31,6 @@ public abstract class AbstractExecutionStage extends Pipeline {
      * @param agents         the agents that could be executed by this pipeline
      * @param id             the id of the stage
      * @param dataRepository the {@link DataRepository} that should be used
-     * @param agents         the pipeline agents this stage supports
      */
     protected AbstractExecutionStage(List<? extends PipelineAgent> agents, String id, DataRepository dataRepository) {
         super(id, dataRepository);

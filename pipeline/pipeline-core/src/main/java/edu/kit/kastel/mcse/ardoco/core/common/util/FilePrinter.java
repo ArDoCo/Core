@@ -126,7 +126,7 @@ public final class FilePrinter {
 
         try (var myWriter = new FileWriter(target, StandardCharsets.UTF_8)) {
             var minSentenceNumber = 0;
-            for (Word node : text.getWords()) {
+            for (Word node : text.words()) {
                 var sentenceNumber = Integer.parseInt(String.valueOf(node.getSentenceNo()));
                 if (sentenceNumber + 1 > minSentenceNumber) {
                     myWriter.append(LINE_SEPARATOR).append(String.valueOf(sentenceNumber)).append(": ");

@@ -54,8 +54,8 @@ public class AbbreviationInformant extends Informant {
 
     @Override
     public void process() {
-        ImmutableList<Word> words = DataRepositoryHelper.getAnnotatedText(getDataRepository()).getWords();
-        ImmutableList<Phrase> phrases = DataRepositoryHelper.getAnnotatedText(dataRepository).getPhrases();
+        ImmutableList<Word> words = DataRepositoryHelper.getAnnotatedText(getDataRepository()).words();
+        ImmutableList<Phrase> phrases = DataRepositoryHelper.getAnnotatedText(dataRepository).phrases();
         var textState = DataRepositoryHelper.getTextState(getDataRepository());
         for (var word : words) {
             if (AbbreviationDisambiguationHelper.couldBeAbbreviation(word.getText(), upperCaseThreshold)) {

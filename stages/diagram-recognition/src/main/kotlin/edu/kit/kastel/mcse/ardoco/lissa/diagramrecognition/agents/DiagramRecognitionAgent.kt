@@ -2,10 +2,10 @@ package edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.agents
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState
+import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper
 import edu.kit.kastel.mcse.ardoco.core.common.util.SerializableFileBasedCache
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent
-import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognitionStateImpl
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.informants.ObjectDetectionInformant
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.informants.OcrInformant
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.informants.RecognitionCombinatorInformant
@@ -20,13 +20,12 @@ import java.io.FileOutputStream
  * This agent uses the [DiagramRecognitionState] to extract the diagrams and sketches from images.
  */
 class DiagramRecognitionAgent(
-    val diagramRecognitionState:
-    DiagramRecognitionStateImpl, dataRepository: DataRepository
+    dataRepository: DataRepository
 ) : PipelineAgent(
     listOf(
-        ObjectDetectionInformant(diagramRecognitionState, dataRepository),
-        OcrInformant(diagramRecognitionState, dataRepository),
-        RecognitionCombinatorInformant(diagramRecognitionState, dataRepository)
+        ObjectDetectionInformant(dataRepository),
+        OcrInformant(dataRepository),
+        RecognitionCombinatorInformant(dataRepository)
     ),
     ID,
     dataRepository
@@ -37,6 +36,7 @@ class DiagramRecognitionAgent(
     }
 
     override fun before() {
+        val diagramRecognitionState = DataRepositoryHelper.getDiagramRecognitionState(dataRepository)
         for (diagram in diagramRecognitionState.getUnprocessedDiagrams()) {
             val cached = SerializableFileBasedCache(
                 SketchRecognitionResult::class
@@ -59,6 +59,7 @@ class DiagramRecognitionAgent(
     }
 
     override fun after() {
+        val diagramRecognitionState = DataRepositoryHelper.getDiagramRecognitionState(dataRepository)
         for (diagram in diagramRecognitionState.getUnprocessedDiagrams()) {
             diagramRecognitionState.addDiagram(diagram)
 

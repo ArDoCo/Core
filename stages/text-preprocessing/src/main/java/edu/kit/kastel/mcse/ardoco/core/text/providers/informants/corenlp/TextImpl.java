@@ -2,6 +2,13 @@
 package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
+import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
+
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
@@ -9,22 +16,20 @@ import edu.stanford.nlp.pipeline.CoreDocument;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
 
-class TextImpl implements Text {
+public class TextImpl implements Text {
 
     private transient CoreDocument coreDocument;
     private ImmutableList<Sentence> sentences = Lists.immutable.empty();
     private ImmutableList<Word> words = Lists.immutable.empty();
+    private final SortedMap<Integer, Word> wordsIndex = new TreeMap<>();
 
-    TextImpl(CoreDocument coreDocument) {
+    public TextImpl(CoreDocument coreDocument) {
         this.coreDocument = coreDocument;
     }
 
     @Override
-    public ImmutableList<Word> getWords() {
+    public ImmutableList<Word> words() {
         if (words.isEmpty()) {
             iterateDocumentForWordsAndSentences();
         }
@@ -32,8 +37,11 @@ class TextImpl implements Text {
     }
 
     @Override
-    public ImmutableList<Phrase> getPhrases() {
-        return Lists.immutable.fromStream(getSentences().stream().flatMap(s -> s.getPhrases().stream()));
+    public synchronized Word getWord(int index) {
+        if (wordsIndex.isEmpty()) {
+            words();
+        }
+        return wordsIndex.get(index);
     }
 
     @Override
@@ -64,10 +72,15 @@ class TextImpl implements Text {
 
         sentences = sentenceList.toImmutable();
         words = wordList.toImmutable();
+        int index = 0;
+        for (Word word : words) {
+            wordsIndex.put(index, word);
+            index++;
+        }
     }
 
     private void writeObject(ObjectOutputStream out) throws IOException {
-        getWords(); //Initialize words
+        words(); //Initialize words
         getSentences(); //Initialize sentences
         out.defaultWriteObject();
         /* It is a lot cheaper to serialize the phrases (up to 70x less storage space and much

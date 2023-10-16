@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
 
+import org.jetbrains.annotations.NotNull;
+
 import edu.kit.kastel.mcse.ardoco.core.api.InputDiagramData;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState;
@@ -14,16 +16,14 @@ import edu.kit.kastel.mcse.ardoco.core.execution.runner.AnonymousRunner;
 import edu.kit.kastel.mcse.ardoco.core.models.agents.ModelProviderAgent;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
 import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognition;
-import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognitionStateImpl;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 import edu.kit.kastel.mcse.ardoco.tests.eval.GoldStandardDiagrams;
 import edu.kit.kastel.mcse.ardoco.tests.eval.StageTest;
-import org.jetbrains.annotations.NotNull;
 
 public class DiagramRecognitionTest extends StageTest<DiagramRecognition, GoldStandardDiagrams, DiagramRecognitionTest.DiagramRecognitionResult> {
 
     public DiagramRecognitionTest() {
-        super(new DiagramRecognition(new DiagramRecognitionStateImpl(), new DataRepository()), DiagramProject.values());
+        super(new DiagramRecognition(new DataRepository()), DiagramProject.values());
     }
 
     @Override
@@ -48,13 +48,13 @@ public class DiagramRecognitionTest extends StageTest<DiagramRecognition, GoldSt
 
     @Override
     protected DataRepository runTestRunner(@NotNull GoldStandardDiagrams project, @NotNull SortedMap<String, String> additionalConfigurations,
-                                           @NotNull DataRepository preRunDataRepository) {
+            @NotNull DataRepository preRunDataRepository) {
         return new AnonymousRunner(project.getProjectName(), preRunDataRepository) {
             @Override
             public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) {
                 var pipelineSteps = new ArrayList<AbstractPipelineStep>();
                 dataRepository.addData(InputDiagramData.ID, new InputDiagramData(project.getDiagramData()));
-                pipelineSteps.add(new DiagramRecognition(new DiagramRecognitionStateImpl(), dataRepository));
+                pipelineSteps.add(new DiagramRecognition(dataRepository));
                 return pipelineSteps;
             }
         }.runWithoutSaving();

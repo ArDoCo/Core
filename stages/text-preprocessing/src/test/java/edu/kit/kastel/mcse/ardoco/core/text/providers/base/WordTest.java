@@ -18,7 +18,7 @@ public abstract class WordTest {
     void beforeEach() {
         var provider = getProvider();
         var text = provider.getAnnotatedText();
-        word = text.getWords().get(WORD_INDEX);
+        word = text.words().get(WORD_INDEX);
     }
 
     protected abstract NlpInformant getProvider();

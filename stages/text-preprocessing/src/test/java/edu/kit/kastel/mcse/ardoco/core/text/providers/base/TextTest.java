@@ -23,7 +23,7 @@ public abstract class TextTest {
 
     @Test
     void getWordsTest() {
-        var words = text.getWords();
+        var words = text.words();
         Word word = words.get(739);
 
         Assertions.assertAll(//
@@ -42,6 +42,6 @@ public abstract class TextTest {
         Assertions.assertAll(//
                 () -> Assertions.assertEquals("The TeaStore is a test application.", sentence.getText()), //
                 () -> Assertions.assertEquals(7, words.size()), //
-                () -> Assertions.assertEquals(text.getWords().get(739), words.get(4)));
+                () -> Assertions.assertEquals(text.words().get(739), words.get(4)));
     }
 }

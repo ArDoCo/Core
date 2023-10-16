@@ -33,7 +33,7 @@ public class CompoundAgentInformant extends Informant {
     public void process() {
         var text = DataRepositoryHelper.getAnnotatedText(getDataRepository());
         var textState = getDataRepository().getData(TextState.ID, TextStateImpl.class).orElseThrow();
-        for (var word : text.getWords()) {
+        for (var word : text.words()) {
             createNounMappingIfCompoundWord(word, textState);
             createNounMappingIfSpecialNamedEntity(word, textState);
         }

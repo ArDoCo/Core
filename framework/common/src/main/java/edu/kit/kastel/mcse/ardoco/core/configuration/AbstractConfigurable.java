@@ -66,7 +66,7 @@ public abstract class AbstractConfigurable implements IConfigurable, Serializabl
     /**
      * Returns the key (for the configuration file) of a field. If the field is marked as ChildClassConfigurable, the key is based on the class of the
      * configurable object. Otherwise, the key is based on the class where the field is defined.
-     *
+     * 
      * @param configurable            the configurable object
      * @param currentClassInHierarchy the class where the field is defined
      * @param field                   the field

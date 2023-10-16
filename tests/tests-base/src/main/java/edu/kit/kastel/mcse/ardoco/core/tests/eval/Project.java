@@ -218,6 +218,7 @@ public enum Project implements GoldStandardProject {
             logger.error(e.getMessage(), e);
         }
         goldLinks.remove(0);
+        goldLinks.removeIf(String::isBlank);
         return Lists.immutable.ofAll(goldLinks);
     }
 
@@ -236,6 +237,7 @@ public enum Project implements GoldStandardProject {
             logger.error(e.getMessage(), e);
         }
         goldLinks.remove("missingModelElementID");
+        goldLinks.removeIf(String::isBlank);
         return Lists.mutable.ofAll(goldLinks);
     }
 

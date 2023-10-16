@@ -54,6 +54,16 @@ public class InstanceLink extends EndpointTuple {
     }
 
     /**
+     * Add confidence to this link.
+     * 
+     * @param claimant   the claimant that wants to change the confidence
+     * @param confidence the confidence value to add
+     */
+    public final void addConfidence(Claimant claimant, double confidence) {
+        this.confidence.addAgentConfidence(claimant, confidence);
+    }
+
+    /**
      * Returns the probability of the correctness of this link.
      *
      * @return the probability of this link

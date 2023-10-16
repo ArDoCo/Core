@@ -22,10 +22,8 @@ import java.net.URI
 import java.util.*
 
 class OcrInformant(
-    diagramRecognitionState: DiagramRecognitionStateImpl,
     dataRepository: DataRepository
 ) : ImageProcessingDockerInformant(
-    diagramRecognitionState,
     DOCKER_OCR,
     DEFAULT_PORT,
     DOCKER_OCR_VIA_DOCKER,

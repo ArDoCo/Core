@@ -8,6 +8,7 @@ import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.stanford.nlp.trees.Tree;
 import java.util.Comparator;
 import java.util.Objects;
+
 import org.eclipse.collections.api.RichIterable;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.SortedMaps;
@@ -16,6 +17,13 @@ import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.api.map.sorted.ImmutableSortedMap;
 import org.eclipse.collections.api.map.sorted.MutableSortedMap;
+
+import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
+import edu.kit.kastel.mcse.ardoco.core.api.text.PhraseType;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
+import edu.stanford.nlp.trees.Tree;
+
 import org.jetbrains.annotations.NotNull;
 
 @Deterministic

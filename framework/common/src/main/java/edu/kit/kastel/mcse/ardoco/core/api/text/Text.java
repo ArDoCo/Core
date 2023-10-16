@@ -3,6 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.api.text;
 
 import java.io.Serializable;
 
+import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 
 /**
@@ -16,7 +17,7 @@ public interface Text extends Serializable {
      * @return the length
      */
     default int getLength() {
-        return getWords().size();
+        return words().size();
     }
 
     /**
@@ -24,14 +25,24 @@ public interface Text extends Serializable {
      *
      * @return the words
      */
-    ImmutableList<Word> getWords();
+    ImmutableList<Word> words();
 
     /**
      * Gets all phrases of the text (ordered).
      *
      * @return the phrases
      */
-    ImmutableList<Phrase> getPhrases();
+    default ImmutableList<Phrase> phrases() {
+        return Lists.immutable.fromStream(getSentences().stream().flatMap(s -> s.getPhrases().stream()));
+    }
+
+    /**
+     * Returns the word at the given index
+     *
+     * @param index the index
+     * @return the word at the given index
+     */
+    Word getWord(int index);
 
     /**
      * Returns the sentences of the text, ordered by appearance.

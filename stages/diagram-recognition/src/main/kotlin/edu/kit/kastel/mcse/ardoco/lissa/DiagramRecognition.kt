@@ -14,11 +14,10 @@ import java.util.*
 import java.util.function.BiFunction
 
 class DiagramRecognition(
-    private val diagramRecognitionState: DiagramRecognitionStateImpl,
     dataRepository: DataRepository
 ) : AbstractExecutionStage(
     listOf(
-        DiagramRecognitionAgent(diagramRecognitionState, dataRepository),
+        DiagramRecognitionAgent(dataRepository),
         DiagramDisambiguationAgent(dataRepository),
         DiagramReferenceAgent(dataRepository)
     ),
@@ -44,7 +43,6 @@ class DiagramRecognition(
             dataRepository: DataRepository?
         ): DiagramRecognition {
             val diagramDetection = DiagramRecognition(
-                DiagramRecognitionStateImpl(),
                 dataRepository!!
             )
             diagramDetection.applyConfiguration(additionalConfigs)
@@ -53,6 +51,7 @@ class DiagramRecognition(
     }
 
     override fun initializeState() {
+        val diagramRecognitionState = DiagramRecognitionStateImpl()
         dataRepository.addData(DiagramRecognitionState.ID, diagramRecognitionState)
 
         val inputDiagrams =

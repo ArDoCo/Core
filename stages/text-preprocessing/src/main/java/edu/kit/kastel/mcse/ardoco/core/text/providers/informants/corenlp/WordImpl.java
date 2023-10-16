@@ -87,7 +87,7 @@ class WordImpl implements Word {
     public Word getPreWord() {
         int preWordIndex = index - 1;
         if (preWord == null && preWordIndex > 0) {
-            preWord = parent.getWords().get(preWordIndex);
+            preWord = parent.getWord(preWordIndex);
         }
         return preWord;
     }
@@ -96,7 +96,7 @@ class WordImpl implements Word {
     public Word getNextWord() {
         int nextWordIndex = index + 1;
         if (nextWord == null && nextWordIndex < parent.getLength()) {
-            nextWord = parent.getWords().get(nextWordIndex);
+            nextWord = parent.getWord(nextWordIndex);
         }
         return nextWord;
     }
@@ -104,10 +104,6 @@ class WordImpl implements Word {
     @Override
     public int getPosition() {
         return index;
-    }
-
-    protected int getPositionInSentence() {
-        return this.token.index();
     }
 
     protected int getBeginCharPosition() {
@@ -151,7 +147,7 @@ class WordImpl implements Word {
 
     private Word getCorrespondingWordForFirstTokenBasedOnSecondToken(CoreLabel firstToken, CoreLabel secondToken) {
         var firstTokenIndex = (firstToken.index() - secondToken.index()) + index;
-        return parent.getWords().get(firstTokenIndex);
+        return parent.getWord(firstTokenIndex);
     }
 
     private List<TypedDependency> getDependenciesOfType(DependencyTag dependencyTag) {

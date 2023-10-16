@@ -17,10 +17,8 @@ import java.io.InputStream
 import java.util.*
 
 class ObjectDetectionInformant(
-    diagramRecognitionState: DiagramRecognitionStateImpl,
     dataRepository: DataRepository
 ) : ImageProcessingDockerInformant(
-    diagramRecognitionState,
     DOCKER_SKETCH_RECOGNITION,
     DEFAULT_PORT,
     DOCKER_SKETCH_RECOGNITION_VIA_DOCKER,
@@ -65,6 +63,6 @@ class ObjectDetectionInformant(
         val uploadFile = HttpPost(getUri())
         val multipart: HttpEntity = builder.build()
         uploadFile.entity = multipart
-        return executeRequest(uploadFile)
+        return executeRequest(uploadFile, true)
     }
 }

@@ -48,7 +48,7 @@ class SentenceImpl implements Sentence {
     public ImmutableList<Word> getWords() {
         if (words.isEmpty()) {
             this.words =
-                    Lists.mutable.ofAll(parent.getWords().select(w -> w.getSentenceNo() == sentenceNumber));
+                    Lists.mutable.ofAll(parent.words().select(w -> w.getSentenceNo() == sentenceNumber));
         }
         return words.toImmutable();
     }
@@ -88,7 +88,7 @@ class SentenceImpl implements Sentence {
         var index = findIndexOfFirstWordInPhrase(coreLabels.get(0), this);
         logger.debug("phrase starting position: {}", index);
         for (int wordIndexInSentence = 0; wordIndexInSentence < coreLabels.size(); wordIndexInSentence++) {
-            var phraseWord = parent.getWords().get(index++);
+            var phraseWord = parent.words().get(index++);
             phraseWords.add(phraseWord);
         }
         return phraseWords;
