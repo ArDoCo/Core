@@ -156,6 +156,7 @@ public enum CodeProject {
             String codeElementId = parts[2];
             goldStandard.add(TraceLinkUtilities.createTraceLinkString(modelElementId, codeElementId));
         }
+        goldStandard.removeIf(String::isBlank);
         return goldStandard.toImmutable();
     }
 
