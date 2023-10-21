@@ -9,7 +9,6 @@ import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.model.DiagramImpl
 import java.util.SortedMap
 
 class DiagramRecognition(dataRepository: DataRepository) : AbstractExecutionStage(listOf(DiagramRecognitionAgent(dataRepository)), ID, dataRepository) {
-
     companion object {
         const val ID = "DiagramRecognition"
 
@@ -21,7 +20,10 @@ class DiagramRecognition(dataRepository: DataRepository) : AbstractExecutionStag
          * @return a DiagramRecognition with the provided diagrams
          */
         @JvmStatic
-        fun get(additionalConfigs: SortedMap<String?, String?>?, dataRepository: DataRepository?): DiagramRecognition? {
+        fun get(
+            additionalConfigs: SortedMap<String?, String?>?,
+            dataRepository: DataRepository?
+        ): DiagramRecognition? {
             val diagramDetection = DiagramRecognition(dataRepository!!)
             diagramDetection.applyConfiguration(additionalConfigs)
             return diagramDetection

@@ -7,8 +7,9 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 
 fun createObjectMapper(): ObjectMapper {
-    val objectMapper: ObjectMapper = ObjectMapper().configure(SerializationFeature.INDENT_OUTPUT, true)
-        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+    val objectMapper: ObjectMapper =
+        ObjectMapper().configure(SerializationFeature.INDENT_OUTPUT, true)
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
     objectMapper.setVisibility(
         objectMapper.serializationConfig.defaultVisibilityChecker //
             .withFieldVisibility(JsonAutoDetect.Visibility.ANY) //
@@ -25,7 +26,10 @@ fun <E> List<E>.with(other: E): List<E> {
     return list.toList()
 }
 
-fun <K, V> Map<K, V>.with(key: K, value: V): Map<K, V> {
+fun <K, V> Map<K, V>.with(
+    key: K,
+    value: V
+): Map<K, V> {
     val map = this.toMutableMap()
     map[key] = value
     return map.toMap()

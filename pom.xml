@@ -464,7 +464,6 @@
               <editorConfigPath>.editorconfig</editorConfigPath>
             </ktlint>
           </kotlin>
-          <ratchetFrom>origin/main</ratchetFrom>
         </configuration>
       </plugin>
       <plugin>

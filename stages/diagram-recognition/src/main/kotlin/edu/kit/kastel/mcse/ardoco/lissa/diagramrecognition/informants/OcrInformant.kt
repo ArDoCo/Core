@@ -15,7 +15,7 @@ import org.apache.hc.core5.net.URIBuilder
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 import java.net.URI
-import java.util.*
+import java.util.SortedMap
 
 class OcrInformant(dataRepository: DataRepository) : ImageProcessingDockerInformant(
     DOCKER_OCR,
@@ -39,30 +39,44 @@ class OcrInformant(dataRepository: DataRepository) : ImageProcessingDockerInform
         // Not needed
     }
 
-    override fun processImage(diagram: Diagram, imageData: ByteArray) {
+    override fun processImage(
+        diagram: Diagram,
+        imageData: ByteArray
+    ) {
         val textsWithHints = detectTextBoxes(ByteArrayInputStream(imageData), diagram.boxes.filter { it.classification == Classification.LABEL })
         val textsWithoutHints = detectTextBoxes(ByteArrayInputStream(imageData), listOf())
         val texts = mergeTexts(textsWithHints, textsWithoutHints)
         texts.forEach { diagram.addTextBox(it) }
     }
 
-    private fun mergeTexts(textsWithHints: List<TextBox>, textsWithoutHints: List<TextBox>): List<TextBox> {
+    private fun mergeTexts(
+        textsWithHints: List<TextBox>,
+        textsWithoutHints: List<TextBox>
+    ): List<TextBox> {
         logger.debug("Merging ${textsWithHints.size} TextsWithHint and ${textsWithoutHints.size} TextsWithoutHint")
         // TODO Impl
         return textsWithHints
     }
 
-    private fun detectTextBoxes(image: InputStream, detectedBoxesOfObjectDetection: List<Box>): List<TextBox> {
-        val textRecognition = sendOCRRequest(
-            image,
-            container.apiPort,
-            detectedBoxesOfObjectDetection.filter { it.classification == Classification.LABEL }
-        )
+    private fun detectTextBoxes(
+        image: InputStream,
+        detectedBoxesOfObjectDetection: List<Box>
+    ): List<TextBox> {
+        val textRecognition =
+            sendOCRRequest(
+                image,
+                container.apiPort,
+                detectedBoxesOfObjectDetection.filter { it.classification == Classification.LABEL }
+            )
         logger.debug("Processed OCRService Request")
         return oom.readValue(textRecognition)
     }
 
-    private fun sendOCRRequest(image: InputStream, port: Int, labels: List<Box>): String {
+    private fun sendOCRRequest(
+        image: InputStream,
+        port: Int,
+        labels: List<Box>
+    ): String {
         val boxCoordinates = enhanceLabels(labels).flatMap { it.box.toList() }.joinToString(",")
 
         val builder = MultipartEntityBuilder.create()
@@ -89,12 +103,13 @@ class OcrInformant(dataRepository: DataRepository) : ImageProcessingDockerInform
 
     private fun expandPixels(box: Box): Box {
         // TODO Better expansion mechanism based on area
-        val newPositions = listOf(
-            box.box[0] - EXPANSION_IN_PX,
-            box.box[1] - EXPANSION_IN_PX,
-            box.box[2] + EXPANSION_IN_PX,
-            box.box[3] + EXPANSION_IN_PX
-        )
+        val newPositions =
+            listOf(
+                box.box[0] - EXPANSION_IN_PX,
+                box.box[1] - EXPANSION_IN_PX,
+                box.box[2] + EXPANSION_IN_PX,
+                box.box[3] + EXPANSION_IN_PX
+            )
         // Copy References here. No Copies!
         return Box(box.uuid, newPositions.toIntArray(), box.confidence, box.classification.classificationString, box.texts, null)
     }

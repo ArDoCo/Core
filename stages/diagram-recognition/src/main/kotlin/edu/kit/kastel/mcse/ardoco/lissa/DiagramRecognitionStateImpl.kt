@@ -5,6 +5,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognition
 
 class DiagramRecognitionStateImpl : DiagramRecognitionState {
     private val diagrams = mutableListOf<Diagram>()
+
     override fun addDiagram(diagram: Diagram) {
         diagrams.add(diagram)
     }
