@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
+import org.jetbrains.annotations.NotNull;
+
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.config.ConfigManager;
 import edu.kit.kastel.mcse.ardoco.core.textproviderjson.converter.DtoToObjectConverter;
@@ -26,20 +28,30 @@ public class TextProcessorService {
      */
     public Text processText(String inputText) throws IOException, InvalidJsonException, NotConvertableException {
         TextDto textDto;
-        String jsonText = sendCorenlpRequest(inputText);
+        String jsonText = sendCoreNlpRequest(inputText);
         textDto = JsonConverter.fromJsonString(jsonText);
         return new DtoToObjectConverter().convertText(textDto);
     }
 
-    private String sendCorenlpRequest(String inputText) throws IOException {
-        inputText = URLEncoder.encode(inputText, StandardCharsets.UTF_8);
+    private String sendCoreNlpRequest(String inputText) throws IOException {
+        String encodedText = encodeText(inputText);
         ConfigManager configManager = ConfigManager.INSTANCE;
-        String requestUrl = configManager.getMicroserviceUrl() + configManager.getCorenlpService() + inputText;
-        return sendAuthenticatedGetRequest(requestUrl);
+        String requestUrl = configManager.getMicroserviceUrl() + configManager.getCorenlpService();
+        return sendAuthenticatedPostRequest(requestUrl, encodedText);
     }
 
-    private String sendAuthenticatedGetRequest(String requestUrl) throws IOException {
+    private static String encodeText(String inputText) {
+        return URLEncoder.encode(inputText, StandardCharsets.UTF_8);
+    }
+
+    private String sendAuthenticatedPostRequest(String requestUrl, String encodedText) throws IOException {
         HttpCommunicator httpCommunicator = new HttpCommunicator();
-        return httpCommunicator.sendAuthenticatedGetRequest(requestUrl);
+        String body = getRequestBodyString(encodedText);
+        return httpCommunicator.sendAuthenticatedPostRequest(requestUrl, body);
+    }
+
+    @NotNull
+    private static String getRequestBodyString(String encodedText) {
+        return "{\"text\": \"" + encodedText + "\"}";
     }
 }

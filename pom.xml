@@ -71,7 +71,7 @@
   </distributionManagement>
 
   <properties>
-    <revision>0.23.0.local-SNAPSHOT</revision>
+    <revision>0.26.0.local-SNAPSHOT</revision>
     <ardoco.version>${revision}</ardoco.version>
 
     <project.source.encoding>UTF-8</project.source.encoding>
@@ -86,13 +86,13 @@
     <kotlin.version>1.9.10</kotlin.version>
 
     <!-- Plugin Versions -->
-    <slf4j.version>2.0.7</slf4j.version>
-    <spotless.version>2.39.0</spotless.version>
+    <slf4j.version>2.0.9</slf4j.version>
+    <spotless.version>2.40.0</spotless.version>
     <junit.version>5.10.0</junit.version>
     <eclipse-collections.version>12.0.0.M3</eclipse-collections.version>
-    <jackson.version>2.15.2</jackson.version>
-    <javaparser.version>3.25.4</javaparser.version>
-    <error-prone.version>2.21.1</error-prone.version>
+    <jackson.version>2.15.3</jackson.version>
+    <javaparser.version>3.25.5</javaparser.version>
+    <error-prone.version>2.22.0</error-prone.version>
     <mockito.version>5.2.0</mockito.version>
 
     <sonar.projectKey>ArDoCo_Core</sonar.projectKey>
@@ -103,7 +103,7 @@
       ${project.basedir}/../../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
     <aggregate.report.dir>report/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.dir>
     <argLine>-Xmx4g -Xss256m</argLine>
-    <stanford.corenlp.version>4.5.4</stanford.corenlp.version>
+    <stanford.corenlp.version>4.5.5</stanford.corenlp.version>
   </properties>
 
   <dependencyManagement>
@@ -139,7 +139,7 @@
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
-        <version>2.13.0</version>
+        <version>2.14.0</version>
       </dependency>
 
       <!-- Commons -->
@@ -180,7 +180,7 @@
       <dependency>
         <groupId>org.eclipse.jgit</groupId>
         <artifactId>org.eclipse.jgit</artifactId>
-        <version>6.6.0.202305301015-r</version>
+        <version>6.7.0.202309050840-r</version>
       </dependency>
       <dependency>
         <groupId>org.jetbrains.kotlin</groupId>
@@ -477,7 +477,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.5.0</version>
+        <version>3.6.0</version>
         <executions>
           <execution>
             <id>attach-javadocs</id>
@@ -560,7 +560,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>versions-maven-plugin</artifactId>
-        <version>2.16.0</version>
+        <version>2.16.1</version>
         <configuration>
           <ruleSet>
             <rule>
@@ -590,7 +590,7 @@
       <plugin>
         <groupId>org.jetbrains.dokka</groupId>
         <artifactId>dokka-maven-plugin</artifactId>
-        <version>1.8.20</version>
+        <version>1.9.0</version>
         <configuration>
           <failOnWarning>false</failOnWarning>
           <reportUndocumented>false</reportUndocumented>

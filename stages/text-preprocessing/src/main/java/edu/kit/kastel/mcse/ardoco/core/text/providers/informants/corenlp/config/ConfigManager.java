@@ -32,7 +32,7 @@ public enum ConfigManager {
             logger.warn("Could not load config file. ", e);
             properties.setProperty(PROPERTY_MICROSERVICE_URL, "http://localhost:8080");
             properties.setProperty(PROPERTY_NLP_PROVIDER_SOURCE, "local");
-            properties.setProperty(PROPERTY_CORENLP_SERVICE, "/stanfordnlp?text=");
+            properties.setProperty(PROPERTY_CORENLP_SERVICE, "/stanfordnlp");
             properties.setProperty(PROPERTY_HEALTH_SERVICE, "/stanfordnlp/health");
         }
         if (System.getenv("MICROSERVICE_URL") != null) {

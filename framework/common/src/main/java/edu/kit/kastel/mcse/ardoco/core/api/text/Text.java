@@ -25,6 +25,14 @@ public interface Text {
     ImmutableList<Word> words();
 
     /**
+     * Returns the word at the given index
+     *
+     * @param index the index
+     * @return the word at the given index
+     */
+    Word getWord(int index);
+
+    /**
      * Returns the sentences of the text, ordered by appearance.
      *
      * @return the sentences of the text, ordered by appearance.
