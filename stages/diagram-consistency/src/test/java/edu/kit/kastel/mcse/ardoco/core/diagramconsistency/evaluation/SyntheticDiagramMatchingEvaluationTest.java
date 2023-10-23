@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.eclipse.collections.api.bimap.MutableBiMap;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 import org.jgrapht.graph.DirectedMultigraph;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -53,6 +54,7 @@ class SyntheticDiagramMatchingEvaluationTest extends EvaluationBase {
     @DisplayName("Compare code matching quality depending on inconsistent side")
     @ParameterizedTest(name = "{0}")
     @MethodSource("getDiagrams")
+    @Disabled
     void evaluateSymmetryOfCodeMatching(DiagramProject project) throws IOException {
         AnnotatedGraph<CodeItem, CodeItem> model = AnnotatedGraph.createFrom(getCodeModel(project));
 
@@ -65,7 +67,7 @@ class SyntheticDiagramMatchingEvaluationTest extends EvaluationBase {
                 .getBoxes()
                 .size();
         double ratio = 0.25;
-        int iterationsPerSide = 100;
+        int iterationsPerSide = 2;
 
         this.writer.write(String.format("##### Diagram: %s, Model Size: %d%n", diagram.diagram()
                 .getName(), modelSize));

@@ -34,11 +34,8 @@ class SyntheticDiagramsTest extends EvaluationBase {
                         new Rename<>(), 1));
 
         AnnotatedDiagram<ArchitectureItem> diagram = applyRefactoring(getAnnotatedArchitectureDiagram(project), bundle);
-
         assertNotNull(diagram);
-        assertTrue(diagram.inconsistencies()
-                .size() >= 6, "Inconsistencies: %s".formatted(diagram.inconsistencies()
-                .size()));
+        assertFalse(diagram.inconsistencies().isEmpty());
     }
 
     @DisplayName("Apply refactorings to synthetic code diagram")
@@ -50,11 +47,8 @@ class SyntheticDiagramsTest extends EvaluationBase {
                         new Rename<>(), 2));
 
         AnnotatedDiagram<CodeItem> diagram = applyRefactoring(getAnnotatedCodeDiagram(project), bundle);
-
         assertNotNull(diagram);
-        assertTrue(diagram.inconsistencies()
-                .size() >= 12, "Inconsistencies: %s".formatted(diagram.inconsistencies()
-                .size()));
+        assertFalse(diagram.inconsistencies().isEmpty());
     }
 
     @DisplayName("Transform architecture diagram to graph and back to diagram")

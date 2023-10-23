@@ -64,5 +64,11 @@
             <version>0.26.0.local-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>io.github.ardoco.core</groupId>
+            <artifactId>diagram-recognition</artifactId>
+            <version>0.26.0.local-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>

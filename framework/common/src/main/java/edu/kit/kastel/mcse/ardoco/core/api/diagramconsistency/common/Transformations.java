@@ -3,6 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.data.diagram.Box;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.data.diagram.Diagram;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.data.diagram.Line;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Connector;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureComponent;
@@ -27,6 +28,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Utility to transform diagrams and models to graphs.
@@ -291,5 +293,55 @@ import java.util.function.Function;
         } else {
             throw new IllegalArgumentException("Unknown model type: " + model.getClass());
         }
+    }
+
+    public static Diagram transform(edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram diagram) {
+        Diagram newDiagram = new Diagram("", diagram.getLocation().getAbsolutePath());
+
+        Map<String, Box> boxes = new LinkedHashMap<>();
+        for (edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box box : diagram.getBoxes()) {
+            String text = box.getTexts().stream().map(edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.TextBox::getText).collect(Collectors.joining(" "));
+
+            Box newBox = newDiagram.addBox(text);
+            boxes.put(box.getUUID(), newBox);
+        }
+
+        for (Connector connector : diagram.getConnectors()) {
+            List<String> connected = connector.getConnectedBoxes();
+            Box source = boxes.get(connected.get(0));
+
+            for (int i = 1; i < connected.size(); i++) {
+                Box target = boxes.get(connector.getConnectedBoxes().get(i));
+                source.addLineTo(target);
+            }
+        }
+
+        for (edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box box : diagram.getBoxes()) {
+            edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box parent = null;
+            int overlap = 0;
+
+            for (edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box other : diagram.getBoxes()) {
+                if (box == other) {
+                    continue;
+                }
+
+                if (box.getBox()[0] >= other.getBox()[0] && box.getBox()[1] >= other.getBox()[1] && box.getBox()[2] <= other.getBox()[2] && box.getBox()[3] <= other.getBox()[3]) {
+                    int newOverlap = (box.getBox()[2] - box.getBox()[0]) * (box.getBox()[3] - box.getBox()[1]);
+                    if (newOverlap > overlap) {
+                        parent = other;
+                        overlap = newOverlap;
+                    }
+                }
+            }
+
+            if (parent != null) {
+                Box newBox = boxes.get(box.getUUID());
+                Box newParent = boxes.get(parent.getUUID());
+
+                newParent.addContainedBox(newBox);
+            }
+        }
+
+        return newDiagram;
     }
 }
