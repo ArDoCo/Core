@@ -1,0 +1,98 @@
+{
+  "name": "bigbluebutton",
+  "source": "http://web.archive.org/web/20230315102607/https://docs.bigbluebutton.org/2.4/architecture.html#high-level-architecture",
+  "boxes": [
+    {
+      "text": "kurento",
+      "id": 0,
+      "lines_to": [
+        1
+      ]
+    },
+    {
+      "text": "webrtc-sfu",
+      "id": 1,
+      "lines_to": [
+        2
+      ]
+    },
+    {
+      "text": "redis pubsub",
+      "id": 2,
+      "lines_to": [
+        4,
+        6,
+        7,
+        8
+      ]
+    },
+    {
+      "text": "html5 client",
+      "id": 3
+    },
+    {
+      "text": "html5 server",
+      "id": 4,
+      "lines_to": [
+        3
+      ]
+    },
+    {
+      "text": "presentation conversion",
+      "id": 5,
+      "lines_to": [
+        2
+      ]
+    },
+    {
+      "text": "apps",
+      "id": 6,
+      "lines_to": [
+        2,
+        10
+      ]
+    },
+    {
+      "text": "fsesl",
+      "id": 7,
+      "lines_to": [
+        2,
+        11
+      ]
+    },
+    {
+      "text": "bbb-web",
+      "id": 8,
+      "lines_to": [
+        2,
+        5,
+        12
+      ]
+    },
+    {
+      "text": "recording service",
+      "id": 9,
+      "lines_to": [
+        10
+      ]
+    },
+    {
+      "text": "redis db",
+      "id": 10
+    },
+    {
+      "text": "freeswitch",
+      "id": 11,
+      "lines_to": [
+        7
+      ]
+    },
+    {
+      "text": "3rd party",
+      "id": 12,
+      "lines_to": [
+        8
+      ]
+    }
+  ]
+}

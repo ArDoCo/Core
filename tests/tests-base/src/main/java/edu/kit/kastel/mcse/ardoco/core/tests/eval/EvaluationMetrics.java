@@ -8,8 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class EvaluationMetrics {
-    private static Logger logger = LoggerFactory.getLogger(EvaluationMetrics.class);
-
     private EvaluationMetrics() throws IllegalAccessException {
         throw new IllegalAccessException();
     }
@@ -208,7 +206,7 @@ public class EvaluationMetrics {
      * @return the specificity
      */
     public static double calculateSpecificity(int trueNegatives, int falsePositives) {
-        double specificity = ((double) trueNegatives) / ((double) trueNegatives + falsePositives);
+        double specificity = trueNegatives / ((double) trueNegatives + falsePositives);
         if (Double.isNaN(specificity)) {
             return 1.0;
         }

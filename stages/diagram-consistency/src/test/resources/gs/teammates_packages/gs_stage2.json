@@ -1,0 +1,117 @@
+{
+  "name": "teammates_packages",
+  "links": [
+    {
+      "diagram_id": 0,
+      "model_id": "teammates.common.util",
+      "role": "code:package"
+    },
+    {
+      "diagram_id": 1,
+      "model_id": "teammates.common.exception",
+      "role": "code:package"
+    },
+    {
+      "diagram_id": 2,
+      "model_id": "teammates.common.datatransfer",
+      "role": "code:package"
+    },
+    {
+      "diagram_id": 3,
+      "model_id": "teammates.common",
+      "role": "code:package"
+    },
+    {
+      "diagram_id": 4,
+      "model_id": "teammates.ui.webapi",
+      "role": "code:package"
+    },
+    {
+      "diagram_id": 6,
+      "model_id": "teammates.ui",
+      "role": "code:package"
+    },
+    {
+      "diagram_id": 7,
+      "model_id": "teammates.logic.core",
+      "role": "code:package"
+    },
+    {
+      "diagram_id": 8,
+      "model_id": "teammates.logic.api",
+      "role": "code:package"
+    },
+    {
+      "diagram_id": 9,
+      "model_id": "teammates.logic.external",
+      "role": "code:package"
+    },
+    {
+      "text": "Logic",
+      "diagram_id": 10,
+      "model_id": "teammates.logic",
+      "role": "code:package"
+    },
+    {
+      "diagram_id": 11,
+      "model_id": "teammates.storage.entity",
+      "role": "code:package"
+    },
+    {
+      "diagram_id": 12,
+      "model_id": "teammates.storage.api",
+      "role": "code:package"
+    },
+    {
+      "diagram_id": 13,
+      "model_id": "teammates.storage.search",
+      "role": "code:package"
+    },
+    {
+      "diagram_id": 14,
+      "model_id": "teammates.storage",
+      "role": "code:package"
+    },
+    {
+      "text": "test",
+      "diagram_id": 15,
+      "model_id": "teammates.test",
+      "role": "code:package"
+    },
+    {
+      "diagram_id": 17,
+      "model_id": "teammates.e2e.pageobjects",
+      "role": "code:package"
+    },
+    {
+      "diagram_id": 18,
+      "model_id": "teammates.e2e.cases",
+      "role": "code:package"
+    },
+    {
+      "diagram_id": 19,
+      "model_id": "teammates.e2e.util",
+      "role": "code:package"
+    },
+    {
+      "diagram_id": 20,
+      "model_id": "teammates.e2e",
+      "role": "code:package"
+    },
+    {
+      "diagram_id": 21,
+      "model_id": "teammates.client.scripts",
+      "role": "code:package"
+    },
+    {
+      "diagram_id": 22,
+      "model_id": "teammates.client.connector",
+      "role": "code:package"
+    },
+    {
+      "diagram_id": 23,
+      "model_id": "teammates.client",
+      "role": "code:package"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "name": "TeaStore",
+  "source": "https://ieeexplore.ieee.org/document/8526888",
+  "boxes": [
+    {
+      "text": "WebUI",
+      "id": 0,
+      "lines_to": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "text": "Registry",
+      "id": 1,
+      "lines_to": []
+    },
+    {
+      "text": "ImageProvider",
+      "id": 2,
+      "lines_to": [
+        1,
+        4
+      ]
+    },
+    {
+      "text": "Auth",
+      "id": 3,
+      "lines_to": [
+        1,
+        4
+      ]
+    },
+    {
+      "text": "Persistence",
+      "id": 4,
+      "lines_to": [
+        1
+      ]
+    },
+    {
+      "text": "Recommender",
+      "id": 5,
+      "lines_to": [
+        1,
+        4
+      ]
+    }
+  ]
+}

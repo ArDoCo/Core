@@ -1,0 +1,98 @@
+{
+  "name": "MediaStore",
+  "inconsistencies": [
+    {
+      "type": "missing_box",
+      "model_id": "_S-lawHDqEeSqnN80MQ2uGw2"
+    },
+    {
+      "type": "missing_box",
+      "model_id": "_S-lawHDqEeSqnN80MQ2uGw"
+    },
+    {
+      "type": "missing_box",
+      "model_id": "_Fslt8OXSEeSa__lJ2-JCxw"
+    },
+    {
+      "type": "missing_box",
+      "model_id": "_st2Y0HDrEeSqnN80MQ2uGw"
+    },
+    {
+      "type": "missing_line",
+      "line_id": [
+        2,
+        4
+      ]
+    },
+    {
+      "type": "missing_line",
+      "line_id": [
+        2,
+        8
+      ]
+    },
+    {
+      "type": "unexpected_box",
+      "diagram_id": 3,
+      "model_id": null
+    },
+    {
+      "type": "missing_line",
+      "line_id": [
+        4,
+        5
+      ]
+    },
+    {
+      "type": "missing_line",
+      "line_id": [
+        4,
+        8
+      ]
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 5,
+      "model_id": "_o10-YHDrEeSqnN80MQ2uGw",
+      "name_inconsistency": {
+        "expected": "Reencoding"
+      }
+    },
+    {
+      "type": "missing_line",
+      "line_id": [
+        5,
+        2
+      ]
+    },
+    {
+      "type": "missing_line",
+      "line_id": [
+        5,
+        4
+      ]
+    },
+    {
+      "type": "missing_line",
+      "line_id": [
+        7,
+        2
+      ]
+    },
+    {
+      "type": "missing_line",
+      "line_id": [
+        7,
+        5
+      ]
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 10,
+      "model_id": "_qxAiILg7EeSNPorBlo7x9g",
+      "name_inconsistency": {
+        "expected": "FileStorage"
+      }
+    }
+  ]
+}

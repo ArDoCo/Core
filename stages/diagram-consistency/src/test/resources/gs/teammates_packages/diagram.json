@@ -1,0 +1,180 @@
+{
+  "name": "teammates_packages",
+  "source": "https://teammates.github.io/teammates/design.html",
+  "boxes": [
+    {
+      "text": "common:util",
+      "id": 0
+    },
+    {
+      "text": "common::exception",
+      "id": 1
+    },
+    {
+      "text": "common::datatransfer",
+      "id": 2,
+      "lines_to": [
+        11
+      ]
+    },
+    {
+      "text": "Common",
+      "id": 3,
+      "contains": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "text": "ui::webapi",
+      "id": 4,
+      "lines_to": [
+        8
+      ]
+    },
+    {
+      "text": "ui::website",
+      "id": 5
+    },
+    {
+      "text": "UI",
+      "id": 6,
+      "contains": [
+        4,
+        5
+      ],
+      "lines_to": [
+        3
+      ]
+    },
+    {
+      "text": "logic::core",
+      "id": 7,
+      "lines_to": [
+        12
+      ]
+    },
+    {
+      "text": "logic::api",
+      "id": 8,
+      "lines_to": [
+        7,
+        9
+      ]
+    },
+    {
+      "text": "logic::external",
+      "id": 9
+    },
+    {
+      "text": "Logic",
+      "id": 10,
+      "contains": [
+        7,
+        8,
+        9
+      ],
+      "lines_to": [
+        3
+      ]
+    },
+    {
+      "text": "storage::entity",
+      "id": 11
+    },
+    {
+      "text": "storage::api",
+      "id": 12,
+      "lines_to": [
+        11,
+        13,
+        24
+      ]
+    },
+    {
+      "text": "storage::search",
+      "id": 13,
+      "lines_to": [
+        12
+      ]
+    },
+    {
+      "text": "Storage",
+      "id": 14,
+      "contains": [
+        11,
+        12,
+        13
+      ],
+      "lines_to": [
+        3
+      ]
+    },
+    {
+      "text": "test",
+      "id": 15
+    },
+    {
+      "text": "TestDriver",
+      "id": 16,
+      "contains": [
+        15
+      ]
+    },
+    {
+      "text": "e2e::pageobjects",
+      "id": 17,
+      "lines_to": [
+        5
+      ]
+    },
+    {
+      "text": "e2e::cases",
+      "id": 18,
+      "lines_to": [
+        17,
+        19
+      ]
+    },
+    {
+      "text": "e2e::util",
+      "id": 19
+    },
+    {
+      "text": "E2E",
+      "id": 20,
+      "contains": [
+        17,
+        18,
+        19
+      ]
+    },
+    {
+      "text": "client::scripts",
+      "id": 21,
+      "lines_to": [
+        22
+      ]
+    },
+    {
+      "text": "client::connector",
+      "id": 22,
+      "lines_to": [
+        24
+      ]
+    },
+    {
+      "text": "Client",
+      "id": 23,
+      "contains": [
+        21,
+        22
+      ]
+    },
+    {
+      "text": "Google Cloud Datastore",
+      "id": 24
+    }
+  ]
+}

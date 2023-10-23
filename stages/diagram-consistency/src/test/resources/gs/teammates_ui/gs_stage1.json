@@ -1,0 +1,106 @@
+{
+  "name": "teammates_ui",
+  "elements": [
+    {
+      "diagram_id": 2,
+      "occurrences": [
+        {
+          "id": "teammates.e2e.pageobjects.Browser[src/e2e/java/teammates/e2e/pageobjects/Browser.java]",
+          "role": "code:class"
+        }
+      ]
+    },
+    {
+      "diagram_id": 4,
+      "occurrences": [
+        {
+          "role": "architecture:interface",
+          "id": "_0kie8KESEeu-mYqkDskRow"
+        },
+        {
+          "role": "architecture:component",
+          "id": "_1lMqsKESEeu-mYqkDskRow"
+        },
+        {
+          "role": "code:package",
+          "id": "teammates.ui"
+        }
+      ]
+    },
+    {
+      "diagram_id": 5,
+      "occurrences": [
+        {
+          "role": "code:package",
+          "id": "teammates.ui.webapi"
+        }
+      ]
+    },
+    {
+      "diagram_id": 7,
+      "occurrences": [
+        {
+          "role": "code:class",
+          "id": "teammates.ui.servlets.WebApiServlet[src/main/java/teammates/ui/servlets/WebApiServlet.java]"
+        }
+      ]
+    },
+    {
+      "diagram_id": 8,
+      "occurrences": [
+        {
+          "role": "code:class",
+          "id": "teammates.ui.servlets.WebPageServlet[src/main/java/teammates/ui/servlets/WebPageServlet.java]"
+        }
+      ]
+    },
+    {
+      "diagram_id": 9,
+      "occurrences": [
+        {
+          "role": "code:class",
+          "id": "teammates.ui.webapi.ActionFactory[src/main/java/teammates/ui/webapi/ActionFactory.java]"
+        }
+      ]
+    },
+    {
+      "diagram_id": 10,
+      "occurrences": [
+        {
+          "role": "code:class",
+          "id": "teammates.ui.webapi.Action[src/main/java/teammates/ui/webapi/Action.java]"
+        }
+      ]
+    },
+    {
+      "diagram_id": 12,
+      "occurrences": [
+        {
+          "role": "code:class",
+          "id": "teammates.ui.webapi.ActionResult[src/main/java/teammates/ui/webapi/ActionResult.java]"
+        }
+      ]
+    },
+    {
+      "diagram_id": 24,
+      "occurrences": [
+        {
+          "role": "architecture:interface",
+          "id": "_2dI_UKESEeu-mYqkDskRow"
+        },
+        {
+          "role": "architecture:component",
+          "id": "_3LCnIKESEeu-mYqkDskRow"
+        },
+        {
+          "role": "code:package",
+          "id": "teammates.logic"
+        },
+        {
+          "role": "code:class",
+          "id": "teammates.logic.api.Logic[src/main/java/teammates/logic/api/Logic.java]"
+        }
+      ]
+    }
+  ]
+}

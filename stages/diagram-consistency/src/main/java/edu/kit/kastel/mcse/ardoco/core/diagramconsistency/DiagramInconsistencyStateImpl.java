@@ -1,0 +1,39 @@
+package edu.kit.kastel.mcse.ardoco.core.diagramconsistency;
+
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.DiagramModelInconsistencyState;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.Inconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelType;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Implementation of {@link DiagramModelInconsistencyState}.
+ */
+public class DiagramInconsistencyStateImpl implements DiagramModelInconsistencyState {
+    private final transient Map<ModelType, List<Inconsistency<Integer, String>>> inconsistencies = new LinkedHashMap<>();
+    private final transient Map<ModelType, List<Inconsistency<Integer, String>>> extendedInconsistencies = new LinkedHashMap<>();
+
+    @Override
+    public void addInconsistency(ModelType modelType, Inconsistency<Integer, String> inconsistency) {
+        this.inconsistencies.computeIfAbsent(modelType, k -> new ArrayList<>())
+                .add(inconsistency);
+    }
+
+    @Override
+    public List<Inconsistency<Integer, String>> getInconsistencies(ModelType modelType) {
+        return this.inconsistencies.getOrDefault(modelType, List.of());
+    }
+
+    @Override
+    public void setExtendedInconsistencies(ModelType modelType, List<Inconsistency<Integer, String>> inconsistencies) {
+        this.extendedInconsistencies.put(modelType, inconsistencies);
+    }
+
+    @Override
+    public List<Inconsistency<Integer, String>> getExtendedInconsistencies(ModelType modelType) {
+        return this.extendedInconsistencies.getOrDefault(modelType, this.getInconsistencies(modelType));
+    }
+}

@@ -1,0 +1,45 @@
+{
+  "name": "teammates_architecture",
+  "links": [
+    {
+      "diagram_id": 1,
+      "model_id": "_EIoe8KETEeu-mYqkDskRow",
+      "role": "architecture:component"
+    },
+    {
+      "diagram_id": 5,
+      "model_id": "_Bae2oKETEeu-mYqkDskRow",
+      "role": "architecture:component"
+    },
+    {
+      "diagram_id": 7,
+      "model_id": "_GaP8QKETEeu-mYqkDskRow",
+      "role": "architecture:component"
+    },
+    {
+      "diagram_id": 9,
+      "model_id": "_1lMqsKESEeu-mYqkDskRow",
+      "role": "architecture:component"
+    },
+    {
+      "diagram_id": 10,
+      "model_id": "_zUmhEKESEeu-mYqkDskRow",
+      "role": "architecture:component"
+    },
+    {
+      "diagram_id": 11,
+      "model_id": "_3LCnIKESEeu-mYqkDskRow",
+      "role": "architecture:component"
+    },
+    {
+      "diagram_id": 12,
+      "model_id": "_9JlCIKESEeu-mYqkDskRow",
+      "role": "architecture:component"
+    },
+    {
+      "diagram_id": 14,
+      "model_id": "_KGVMcKETEeu-mYqkDskRow",
+      "role": "architecture:component"
+    }
+  ]
+}

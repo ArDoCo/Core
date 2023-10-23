@@ -1,0 +1,131 @@
+{
+  "name": "teammates_ui",
+  "inconsistencies": [
+    {
+      "type": "unexpected_box",
+      "diagram_id": 0,
+      "model_id": null
+    },
+    {
+      "type": "unexpected_box",
+      "diagram_id": 1,
+      "model_id": null
+    },
+    {
+      "type": "unexpected_box",
+      "diagram_id": 3,
+      "model_id": null
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 4,
+      "model_id": "teammates.ui",
+      "name_inconsistency": {
+        "expected": "ui"
+      }
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 5,
+      "model_id": "teammates.ui.webapi",
+      "name_inconsistency": {
+        "expected": "webapi"
+      }
+    },
+    {
+      "type": "unexpected_box",
+      "diagram_id": 6,
+      "model_id": null
+    },
+    {
+      "type": "unexpected_line",
+      "line_id": [
+        7,
+        9
+      ]
+    },
+    {
+      "type": "unexpected_line",
+      "line_id": [
+        7,
+        12
+      ]
+    },
+    {
+      "type": "unexpected_line",
+      "line_id": [
+        9,
+        10
+      ]
+    },
+    {
+      "type": "unexpected_line",
+      "line_id": [
+        10,
+        12
+      ]
+    },
+    {
+      "type": "unexpected_line",
+      "line_id": [
+        10,
+        24
+      ]
+    },
+    {
+      "type": "unexpected_box",
+      "diagram_id": 11,
+      "model_id": null
+    },
+    {
+      "type": "unexpected_box",
+      "diagram_id": 13,
+      "model_id": null
+    },
+    {
+      "type": "unexpected_box",
+      "diagram_id": 14,
+      "model_id": null
+    },
+    {
+      "type": "unexpected_box",
+      "diagram_id": 16,
+      "model_id": null
+    },
+    {
+      "type": "unexpected_box",
+      "diagram_id": 17,
+      "model_id": null
+    },
+    {
+      "type": "unexpected_box",
+      "diagram_id": 18,
+      "model_id": null
+    },
+    {
+      "type": "unexpected_box",
+      "diagram_id": 19,
+      "model_id": null
+    },
+    {
+      "type": "unexpected_box",
+      "diagram_id": 20,
+      "model_id": null
+    },
+    {
+      "type": "unexpected_box",
+      "diagram_id": 21,
+      "model_id": null
+    },
+    {
+      "type": "unexpected_box",
+      "diagram_id": 22,
+      "model_id": null
+    },
+    {
+      "type": "unexpected_box",
+      "diagram_id": 23,
+      "model_id": null
+    }
+  ]
+}
