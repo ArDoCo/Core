@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
+
 import org.eclipse.collections.api.bimap.MutableBiMap;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 import org.jgrapht.graph.DirectedMultigraph;
@@ -21,7 +23,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.similarityf
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.similarityflooding.PropagationCoefficientFormula;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.similarityflooding.SimilarityFloodingAlgorithm;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.similarityflooding.SimilarityMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.data.diagram.Box;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItem;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.AnnotatedDiagram;
@@ -54,7 +55,7 @@ class SyntheticDiagramMatchingEvaluationTest extends EvaluationBase {
     @DisplayName("Compare code matching quality depending on inconsistent side")
     @ParameterizedTest(name = "{0}")
     @MethodSource("getDiagrams")
-    @Disabled
+    @Disabled("Requires a lot of memory")
     void evaluateSymmetryOfCodeMatching(DiagramProject project) throws IOException {
         AnnotatedGraph<CodeItem, CodeItem> model = AnnotatedGraph.createFrom(getCodeModel(project));
 
@@ -69,8 +70,7 @@ class SyntheticDiagramMatchingEvaluationTest extends EvaluationBase {
         double ratio = 0.25;
         int iterationsPerSide = 2;
 
-        this.writer.write(String.format("##### Diagram: %s, Model Size: %d%n", diagram.diagram()
-                .getName(), modelSize));
+        this.writer.write(String.format("##### Diagram: %s, Model Size: %d%n", diagram.diagram().getLocation().toString(), modelSize));
 
         int count = (int) (modelSize * ratio);
         assertNotEquals(0, count);

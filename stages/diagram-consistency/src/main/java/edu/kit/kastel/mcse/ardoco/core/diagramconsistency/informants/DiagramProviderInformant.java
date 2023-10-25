@@ -9,11 +9,12 @@ import java.util.Optional;
 import java.util.SortedMap;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.DiagramState;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.data.JsonMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.data.diagram.Diagram;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.JsonMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.DiagramStateImpl;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
+import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.model.DiagramImpl;
 
 /**
  * Loads a diagram from a file.
@@ -49,7 +50,7 @@ public class DiagramProviderInformant extends Informant {
 
         try (InputStream stream = new FileInputStream(file)) {
             String text = new String(stream.readAllBytes(), StandardCharsets.UTF_8);
-            diagram = JsonMapping.OBJECT_MAPPER.readValue(text, Diagram.class);
+            diagram = JsonMapping.OBJECT_MAPPER.readValue(text, DiagramImpl.class);
         }
 
         return diagram;

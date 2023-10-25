@@ -22,7 +22,7 @@ public interface DiagramModelInconsistencyState extends PipelineStepData {
      * @param inconsistency
      *         The inconsistency to add.
      */
-    void addInconsistency(ModelType modelType, Inconsistency<Integer, String> inconsistency);
+    void addInconsistency(ModelType modelType, Inconsistency<String, String> inconsistency);
 
     /**
      * Returns all found inconsistencies.
@@ -30,7 +30,7 @@ public interface DiagramModelInconsistencyState extends PipelineStepData {
      * @param modelType The model type to get inconsistencies for.
      * @return All inconsistencies.
      */
-    List<Inconsistency<Integer, String>> getInconsistencies(ModelType modelType);
+    List<Inconsistency<String, String>> getInconsistencies(ModelType modelType);
 
     /**
      * Set the extended inconsistencies. The extended inconsistency list is based on the basic inconsistency list but a
@@ -41,7 +41,7 @@ public interface DiagramModelInconsistencyState extends PipelineStepData {
      * @param inconsistencies
      *         The inconsistencies to set.
      */
-    void setExtendedInconsistencies(ModelType modelType, List<Inconsistency<Integer, String>> inconsistencies);
+    void setExtendedInconsistencies(ModelType modelType, List<Inconsistency<String, String>> inconsistencies);
 
     /**
      * Returns the extended inconsistencies. If no extended inconsistencies are set, the basic inconsistencies are
@@ -51,5 +51,5 @@ public interface DiagramModelInconsistencyState extends PipelineStepData {
      *         The model type to get the inconsistencies for.
      * @return The extended inconsistencies.
      */
-    List<Inconsistency<Integer, String>> getExtendedInconsistencies(ModelType modelType);
+    List<Inconsistency<String, String>> getExtendedInconsistencies(ModelType modelType);
 }

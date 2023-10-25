@@ -9,6 +9,9 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.DiagramUtility;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram;
 import org.eclipse.collections.api.bimap.MutableBiMap;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -22,9 +25,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.DiagramModelLinkSt
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.DiagramState;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.Inconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.InconsistencyType;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.data.JsonMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.data.diagram.Box;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.data.diagram.Diagram;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.JsonMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
@@ -48,8 +49,6 @@ import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactoring
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactoring.Refactoring;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactoring.RefactoringBundle;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactoring.Rename;
-import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.informants.DiagramElementOccurrenceFinderInformant;
-import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.informants.DiagramProviderInformant;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Extractions;
 
 class DiagramConsistencyTest extends EvaluationBase {
@@ -500,7 +499,7 @@ class DiagramConsistencyTest extends EvaluationBase {
                 project.getIdentificationStage(), ElementIdentification.class);
 
         for (var element : expectedIdentifications.elements()) {
-            var actualOccurrences = selection.getOccurrences(element.boxId());
+            var actualOccurrences = selection.getOccurrences(String.valueOf(element.boxId()));
             Set<Occurrence> missingOccurrences = new LinkedHashSet<>(List.of(element.occurrences()));
 
             for (var actualOccurrence : actualOccurrences) {
@@ -605,7 +604,7 @@ class DiagramConsistencyTest extends EvaluationBase {
     }
 
     private Metrics runAndEvaluateStage2(DiagramProject project, Refactoring<Box, Box> refactoring, double ratio,
-            SortedMap<String, String> config) throws IOException {
+                                         SortedMap<String, String> config) throws IOException {
         DiagramConsistency runner = this.setupAndRun(project, refactoring, ratio, config, r -> {
             DiagramMatchingModelSelectionStateImpl modelSelection = new DiagramMatchingModelSelectionStateImpl();
             modelSelection.setSelection(Set.of(project.getModelType()));
@@ -617,10 +616,10 @@ class DiagramConsistencyTest extends EvaluationBase {
             return null;
         }
 
-        MutableBiMap<Integer, String> expectedLinks = JsonMapping.OBJECT_MAPPER.readValue(project.getLinkingStage(),
+        MutableBiMap<String, String> expectedLinks = JsonMapping.OBJECT_MAPPER.readValue(project.getLinkingStage(),
                         ElementLinks.class)
                 .toBiMap();
-        MutableBiMap<Integer, String> foundLinks = runner.getDataRepository()
+        MutableBiMap<String, String> foundLinks = runner.getDataRepository()
                 .getData(DiagramModelLinkState.ID, DiagramModelLinkState.class)
                 .orElseThrow()
                 .getLinks(project.getModelType());
@@ -650,7 +649,7 @@ class DiagramConsistencyTest extends EvaluationBase {
 
     private Metrics runAndEvaluateStage3(DiagramProject project, Refactoring<Box, Box> refactoring, double ratio,
             SortedMap<String, String> config, boolean skipPreviousStages) throws IOException {
-        MutableBiMap<Integer, String> expectedLinks = JsonMapping.OBJECT_MAPPER.readValue(project.getLinkingStage(),
+        MutableBiMap<String, String> expectedLinks = JsonMapping.OBJECT_MAPPER.readValue(project.getLinkingStage(),
                         ElementLinks.class)
                 .toBiMap();
 
@@ -689,15 +688,18 @@ class DiagramConsistencyTest extends EvaluationBase {
         List<Inconsistency<Box, Entity>> expected = JsonMapping.OBJECT_MAPPER.readValue(project.getValidationStage(),
                         DiagramInconsistencies.class)
                 .toInconsistencies(diagram, model);
+
+        Map<String, Box> boxes = DiagramUtility.getBoxes(diagram);
+
         List<Inconsistency<Box, Entity>> found = inconsistencyState.getInconsistencies(project.getModelType())
                 .stream()
-                .map(inconsistency -> inconsistency.map(diagram::getBox, model::get))
+                .map(inconsistency -> inconsistency.map(boxes::get, model::get))
                 .toList();
 
         List<Inconsistency<Box, Entity>> extendedFound = inconsistencyState.getExtendedInconsistencies(
                         project.getModelType())
                 .stream()
-                .map(inconsistency -> inconsistency.map(diagram::getBox, model::get))
+                .map(inconsistency -> inconsistency.map(boxes::get, model::get))
                 .toList();
 
         for (var inconsistency : extendedFound) {

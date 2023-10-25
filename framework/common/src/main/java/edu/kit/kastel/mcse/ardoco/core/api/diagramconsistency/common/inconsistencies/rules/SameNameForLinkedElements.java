@@ -2,9 +2,10 @@ package edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsiste
 
 import java.util.List;
 
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.DiagramUtility;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.Inconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.NameInconsistency;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.data.diagram.Box;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 
 /**
@@ -17,11 +18,11 @@ public class SameNameForLinkedElements extends Rule {
             return List.of();
         }
 
-        if (box.getText()
+        if (DiagramUtility.getBoxText(box)
                 .equals(entity.getName())) {
             return List.of();
         }
 
-        return List.of(new NameInconsistency<>(box, entity, entity.getName(), box.getText()));
+        return List.of(new NameInconsistency<>(box, entity, entity.getName(), DiagramUtility.getBoxText(box)));
     }
 }

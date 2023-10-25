@@ -45,11 +45,11 @@ public class InconsistencyGroupingInformant extends Informant {
         }
 
         for (var selectedModelType : selection.getSelection()) {
-            List<Inconsistency<Integer, String>> inconsistencies = inconsistencyState.getExtendedInconsistencies(
+            List<Inconsistency<String, String>> inconsistencies = inconsistencyState.getExtendedInconsistencies(
                     selectedModelType);
 
-            Map<Integer, List<Inconsistency<Integer, String>>> groups = new LinkedHashMap<>();
-            List<Inconsistency<Integer, String>> ungrouped = new ArrayList<>();
+            Map<String, List<Inconsistency<String, String>>> groups = new LinkedHashMap<>();
+            List<Inconsistency<String, String>> ungrouped = new ArrayList<>();
 
             for (var inconsistency : inconsistencies) {
                 if (inconsistency.getBox() != null) {
@@ -60,7 +60,7 @@ public class InconsistencyGroupingInformant extends Informant {
                 }
             }
 
-            List<Inconsistency<Integer, String>> newInconsistencies = new ArrayList<>(ungrouped);
+            List<Inconsistency<String, String>> newInconsistencies = new ArrayList<>(ungrouped);
             for (var group : groups.entrySet()) {
                 if (group.getValue()
                         .size() > 1) {

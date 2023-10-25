@@ -73,7 +73,7 @@ import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
      * @param modelID   The ID of the model element.
      * @param role      The role of the model element.
      */
-    void addOccurrence(int diagramID, ModelType modelType, String modelID, ElementRole role);
+    void addOccurrence(String diagramID, ModelType modelType, String modelID, ElementRole role);
 
     /**
      * Get all occurrences of a diagram element in a model.
@@ -82,7 +82,7 @@ import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
      * @param modelType The model to get the occurrences in.
      * @return The occurrences.
      */
-    List<Occurrence> getOccurrences(int diagramID, ModelType modelType);
+    List<Occurrence> getOccurrences(String diagramID, ModelType modelType);
 
     /**
      * Get all occurrences of a diagram element in all models.
@@ -91,7 +91,7 @@ import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
      *         The ID of the diagram element.
      * @return The occurrences.
      */
-    List<Occurrence> getOccurrences(int diagramID);
+    List<Occurrence> getOccurrences(String diagramID);
 
     /**
      * Gets the explanation why the model type was selected.

@@ -6,13 +6,13 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nullable;
+
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
 
 import org.eclipse.collections.api.bimap.MutableBiMap;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
@@ -24,7 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.Inconsistency;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.data.diagram.Box;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureModel;
@@ -121,20 +120,17 @@ public class EvaluationBase {
 
         boolean successful = refactoring.applyTo(graph);
 
-        return successful ? AnnotatedDiagram.createFrom(diagram.diagram()
-                .getName(), diagram.diagram()
-                .getSource(), graph) : null;
+        return successful ? AnnotatedDiagram.createFrom(diagram.diagram().getLocation().toString(), graph) : null;
     }
 
     protected static AnnotatedDiagram<ArchitectureItem> getAnnotatedArchitectureDiagram(DiagramProject project) {
-        AnnotatedDiagram<ArchitectureItem> diagram = AnnotatedDiagram.createFrom(project.toString(), "",
-                getArchitectureModel(project));
+        AnnotatedDiagram<ArchitectureItem> diagram = AnnotatedDiagram.createFrom(project.toString(), getArchitectureModel(project));
         assertNotNull(diagram);
         return diagram;
     }
 
     protected static AnnotatedDiagram<CodeItem> getAnnotatedCodeDiagram(DiagramProject project) {
-        AnnotatedDiagram<CodeItem> diagram = AnnotatedDiagram.createFrom(project.toString(), "", getCodeModel(project));
+        AnnotatedDiagram<CodeItem> diagram = AnnotatedDiagram.createFrom(project.toString(), getCodeModel(project));
         assertNotNull(diagram);
         return diagram;
     }

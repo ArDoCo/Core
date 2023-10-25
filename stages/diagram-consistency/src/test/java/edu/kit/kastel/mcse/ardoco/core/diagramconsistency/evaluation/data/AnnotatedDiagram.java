@@ -1,19 +1,22 @@
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data;
 
-import java.util.HashMap;
-import java.util.HashSet;
+import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.DiagramUtility;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram;
+
+import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.model.DiagramImpl;
+
 import org.eclipse.collections.api.bimap.MutableBiMap;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.Inconsistency;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.data.diagram.Box;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.data.diagram.Diagram;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItem;
@@ -55,23 +58,19 @@ public record AnnotatedDiagram<M>(Diagram diagram, MutableBiMap<Box, M> links,
     /**
      * Creates a diagram from an architecture model.
      *
-     * @param name
-     *         The name of the diagram.
-     * @param source
-     *         The source of the diagram.
-     * @param model
-     *         The architecture model.
+     * @param source The source of the diagram.
+     * @param model The architecture model.
      * @return The diagram.
      */
-    public static AnnotatedDiagram<ArchitectureItem> createFrom(String name, String source, ArchitectureModel model) {
-        Diagram diagram = new Diagram(name, source);
+    public static AnnotatedDiagram<ArchitectureItem> createFrom(String source, ArchitectureModel model) {
+        Diagram diagram = new DiagramImpl(new File(source));
         MutableBiMap<ArchitectureItem, Box> links = new HashBiMap<>();
 
         Transformations.transform(model, (item) -> {
-            Box box = diagram.addBox(item.getName());
+            Box box = DiagramUtility.addBox(diagram, item.getName());
             links.put(item, box);
             return box;
-        }, Box::addLineTo, (child, parent) -> parent.addContainedBox(child));
+        }, (from, to) -> DiagramUtility.addConnector(diagram, from, to), (child, parent) -> parent.addContainedBox(child));
 
         return new AnnotatedDiagram<>(diagram, links.inverse(), new LinkedHashSet<>());
     }
@@ -79,23 +78,19 @@ public record AnnotatedDiagram<M>(Diagram diagram, MutableBiMap<Box, M> links,
     /**
      * Creates a diagram from a code model.
      *
-     * @param name
-     *         The name of the diagram.
-     * @param source
-     *         The source of the diagram.
-     * @param model
-     *         The code model.
+     * @param source The source of the diagram.
+     * @param model The code model.
      * @return The diagram.
      */
-    public static AnnotatedDiagram<CodeItem> createFrom(String name, String source, CodeModel model) {
-        Diagram diagram = new Diagram(name, source);
+    public static AnnotatedDiagram<CodeItem> createFrom(String source, CodeModel model) {
+        Diagram diagram = new DiagramImpl(new File(source));
         MutableBiMap<CodeItem, Box> links = new HashBiMap<>();
 
         Transformations.transform(model, (item) -> {
-            Box box = diagram.addBox(item.getName());
+            Box box = DiagramUtility.addBox(diagram, item.getName());
             links.put(item, box);
             return box;
-        }, Box::addLineTo, (child, parent) -> parent.addContainedBox(child));
+        }, (from, to) -> DiagramUtility.addConnector(diagram, from, to), (child, parent) -> parent.addContainedBox(child));
 
         return new AnnotatedDiagram<>(diagram, links.inverse(), new LinkedHashSet<>());
     }
@@ -103,23 +98,18 @@ public record AnnotatedDiagram<M>(Diagram diagram, MutableBiMap<Box, M> links,
     /**
      * Creates a diagram from a graph.
      *
-     * @param name
-     *         The name of the diagram.
-     * @param source
-     *         The source of the diagram.
-     * @param graph
-     *         The graph.
-     * @param <T>
-     *         The element type of the graph.
+     * @param <T>   The element type of the graph.
+     * @param source  The source of the diagram.
+     * @param graph The graph.
      * @return The diagram.
      */
-    public static <T> AnnotatedDiagram<T> createFrom(String name, String source, AnnotatedGraph<Box, T> graph) {
-        Diagram diagram = new Diagram(name, source);
+    public static <T> AnnotatedDiagram<T> createFrom(String source, AnnotatedGraph<Box, T> graph) {
+        Diagram diagram = new DiagramImpl(new File(source));
         Map<Vertex<Box>, Box> vertexToBox = new LinkedHashMap<>();
 
         for (Vertex<Box> vertex : graph.graph()
                 .vertexSet()) {
-            Box box = diagram.addBox(vertex.getName());
+            Box box = DiagramUtility.addBox(diagram, vertex.getName());
             vertexToBox.put(vertex, box);
         }
 
@@ -133,7 +123,7 @@ public record AnnotatedDiagram<M>(Diagram diagram, MutableBiMap<Box, M> links,
                 case DEFAULT -> {
                     Box targetBox = vertexToBox.get(graph.graph()
                             .getEdgeTarget(edge));
-                    box.addLineTo(targetBox);
+                    DiagramUtility.addConnector(diagram, box, targetBox);
                 }
                 case HIERARCHY -> {
                     Box parentBox = vertexToBox.get(graph.graph()
@@ -165,11 +155,11 @@ public record AnnotatedDiagram<M>(Diagram diagram, MutableBiMap<Box, M> links,
      *         A function that provides the id of a model element.
      * @return The links.
      */
-    public MutableBiMap<Integer, String> getIdBasedLinks(Function<M, String> idProvider) {
-        MutableBiMap<Integer, String> idBasedLinks = new HashBiMap<>();
+    public MutableBiMap<String, String> getIdBasedLinks(Function<M, String> idProvider) {
+        MutableBiMap<String, String> idBasedLinks = new HashBiMap<>();
         for (Map.Entry<Box, M> entry : this.links.entrySet()) {
             idBasedLinks.put(entry.getKey()
-                    .getId(), idProvider.apply(entry.getValue()));
+                    .getUUID(), idProvider.apply(entry.getValue()));
         }
         return idBasedLinks;
     }

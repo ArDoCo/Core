@@ -24,7 +24,7 @@ public interface DiagramModelLinkState extends PipelineStepData {
      * @param modelID
      *         The ID of the model element.
      */
-    void addLink(ModelType modelType, int diagramID, String modelID);
+    void addLink(ModelType modelType, String diagramID, String modelID);
 
     /**
      * Get all currently stored links between the diagram and a model.
@@ -33,5 +33,5 @@ public interface DiagramModelLinkState extends PipelineStepData {
      *         The type of the model.
      * @return The links.
      */
-    MutableBiMap<Integer, String> getLinks(ModelType modelType);
+    MutableBiMap<String, String> getLinks(ModelType modelType);
 }

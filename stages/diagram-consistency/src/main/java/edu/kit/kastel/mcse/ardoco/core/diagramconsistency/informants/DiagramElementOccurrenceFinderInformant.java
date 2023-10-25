@@ -7,9 +7,10 @@ import java.util.function.Function;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.DiagramMatchingModelSelectionState;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.DiagramState;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.DiagramUtility;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.ElementRole;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.TextSimilarity;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.data.diagram.Diagram;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelType;
@@ -54,8 +55,8 @@ public class DiagramElementOccurrenceFinderInformant extends Informant {
         for (var box : input.diagram()
                 .getBoxes()) {
             for (var element : input.elements()) {
-                if (similarity.apply(box.getText(), element.getName()) > threshold) {
-                    selection.addOccurrence(box.getId(),input.modelType(), input.idProvider()
+                if (similarity.apply(DiagramUtility.getBoxText(box), element.getName()) > threshold) {
+                    selection.addOccurrence(box.getUUID(),input.modelType(), input.idProvider()
                             .apply(element), role);
                 }
             }

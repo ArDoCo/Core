@@ -12,16 +12,16 @@ import java.util.Map;
  */
 public class DiagramModelLinkStateImpl implements DiagramModelLinkState {
 
-    private final Map<String, MutableBiMap<Integer, String>> links = new HashBiMap<>();
+    private final Map<String, MutableBiMap<String, String>> links = new HashBiMap<>();
 
     @Override
-    public void addLink(ModelType modelType, int diagramID, String modelID) {
+    public void addLink(ModelType modelType, String diagramID, String modelID) {
         this.links.computeIfAbsent(modelType.getModelId(), k -> new HashBiMap<>())
                 .put(diagramID, modelID);
     }
 
     @Override
-    public MutableBiMap<Integer, String> getLinks(ModelType modelType) {
+    public MutableBiMap<String, String> getLinks(ModelType modelType) {
         return this.links.getOrDefault(modelType.getModelId(), new HashBiMap<>());
     }
 
@@ -33,7 +33,7 @@ public class DiagramModelLinkStateImpl implements DiagramModelLinkState {
      * @param links
      *         The links to set. Will overwrite existing links.
      */
-    public void setLinks(ModelType modelType, MutableBiMap<Integer, String> links) {
+    public void setLinks(ModelType modelType, MutableBiMap<String, String> links) {
         this.links.put(modelType.getModelId(), links);
     }
 }

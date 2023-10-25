@@ -4,11 +4,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.DiagramUtility;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.data.diagram.Box;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItem;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.AnnotatedDiagram;
@@ -59,17 +61,15 @@ class SyntheticDiagramsTest extends EvaluationBase {
         Set<String> texts = diagram.diagram()
                 .getBoxes()
                 .stream()
-                .map(Box::getText)
+                .map(DiagramUtility::getBoxText)
                 .collect(Collectors.toSet());
 
         AnnotatedGraph<Box, ArchitectureItem> graph = AnnotatedGraph.createFrom(diagram);
-        diagram = AnnotatedDiagram.createFrom(diagram.diagram()
-                .getName(), diagram.diagram()
-                .getSource(), graph);
+        diagram = AnnotatedDiagram.createFrom(diagram.diagram().getLocation().toString(), graph);
         assertEquals(texts, diagram.diagram()
                 .getBoxes()
                 .stream()
-                .map(Box::getText)
+                .map(DiagramUtility::getBoxText)
                 .collect(Collectors.toSet()));
     }
 
@@ -81,17 +81,15 @@ class SyntheticDiagramsTest extends EvaluationBase {
         Set<String> texts = diagram.diagram()
                 .getBoxes()
                 .stream()
-                .map(Box::getText)
+                .map(DiagramUtility::getBoxText)
                 .collect(Collectors.toSet());
 
         AnnotatedGraph<Box, CodeItem> graph = AnnotatedGraph.createFrom(diagram);
-        diagram = AnnotatedDiagram.createFrom(diagram.diagram()
-                .getName(), diagram.diagram()
-                .getSource(), graph);
+        diagram = AnnotatedDiagram.createFrom(diagram.diagram().getLocation().toString(), graph);
         assertEquals(texts, diagram.diagram()
                 .getBoxes()
                 .stream()
-                .map(Box::getText)
+                .map(DiagramUtility::getBoxText)
                 .collect(Collectors.toSet()));
     }
 }

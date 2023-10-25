@@ -12,7 +12,7 @@ import java.util.*;
  */
 public class DiagramMatchingModelSelectionStateImpl implements DiagramMatchingModelSelectionState {
 
-    private final Map<ModelType, Map<Integer, List<Occurrence>>> occurrences = new LinkedHashMap<>();
+    private final Map<ModelType, Map<String, List<Occurrence>>> occurrences = new LinkedHashMap<>();
     private transient Set<ModelType> availableModelTypes = null;
     private transient Set<ModelType> selectedModelTypes = null;
     private transient Map<ModelType, Double> explanation = null;
@@ -49,14 +49,14 @@ public class DiagramMatchingModelSelectionStateImpl implements DiagramMatchingMo
     }
 
     @Override
-    public void addOccurrence(int diagramID, ModelType modelType, String modelID, ElementRole role) {
+    public void addOccurrence(String diagramID, ModelType modelType, String modelID, ElementRole role) {
         this.occurrences.computeIfAbsent(modelType, k -> new TreeMap<>())
                 .computeIfAbsent(diagramID, k -> new ArrayList<>())
                 .add(new Occurrence(modelID, role));
     }
 
     @Override
-    public List<Occurrence> getOccurrences(int diagramID, ModelType modelType) {
+    public List<Occurrence> getOccurrences(String diagramID, ModelType modelType) {
         var occurrencesPerBox = this.occurrences.get(modelType);
 
         if (occurrencesPerBox == null) {
@@ -69,7 +69,7 @@ public class DiagramMatchingModelSelectionStateImpl implements DiagramMatchingMo
     }
 
     @Override
-    public List<Occurrence> getOccurrences(int diagramID) {
+    public List<Occurrence> getOccurrences(String diagramID) {
         var allOccurrences = new ArrayList<Occurrence>();
         for (var occurrencesPerBox : this.occurrences.values()) {
             var requestedOccurrences = occurrencesPerBox.get(diagramID);

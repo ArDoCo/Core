@@ -2,6 +2,7 @@ package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.stage
 
 import org.eclipse.collections.api.bimap.MutableBiMap;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 
 /**
  * All links between the diagram elements and the model elements.
@@ -17,10 +18,10 @@ public record ElementLinks(@JsonProperty("name") String name, @JsonProperty("lin
      *
      * @return The bidirectional map.
      */
-    public MutableBiMap<Integer, String> toBiMap() {
-        var biMap = org.eclipse.collections.impl.bimap.mutable.HashBiMap.<Integer, String> newMap();
+    public MutableBiMap<String, String> toBiMap() {
+        HashBiMap<String, String> biMap = org.eclipse.collections.impl.bimap.mutable.HashBiMap.newMap();
         for (var link : this.links) {
-            biMap.put(link.boxId(), link.modelElementId());
+            biMap.put(String.valueOf(link.boxId()), link.modelElementId());
         }
         return biMap;
     }

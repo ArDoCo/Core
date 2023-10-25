@@ -7,9 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.DiagramUtility;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.Inconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.MissingBoxInconsistency;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.data.diagram.Box;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodePackage;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Transformations;
@@ -21,6 +22,7 @@ import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
  */
 @Deterministic public class PackagesMustContainAllSubpackagesIfOneIsEmpty extends Rule {
     private Map<Entity, Set<Entity>> packageToSubpackages = null;
+    private Map<String, Box> boxes = null;
 
     @Override
     public Runnable setup() {
@@ -38,7 +40,12 @@ import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
             }
         });
 
-        return () -> this.packageToSubpackages = null;
+        this.boxes = DiagramUtility.getBoxes(this.getDiagram());
+
+        return () -> {
+            this.packageToSubpackages = null;
+            this.boxes = null;
+        };
     }
 
     @Override
@@ -53,7 +60,7 @@ import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
             return List.of();
         }
 
-        Set<Box> childBoxes = box.getContainedBoxes();
+        List<Box> childBoxes = DiagramUtility.getContainedBoxes(box, this.boxes);
         boolean isDisplaying = childBoxes.stream()
                 .anyMatch(this::isDisplaying);
 

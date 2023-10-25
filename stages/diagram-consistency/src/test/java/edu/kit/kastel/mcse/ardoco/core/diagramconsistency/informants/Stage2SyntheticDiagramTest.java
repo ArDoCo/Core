@@ -326,9 +326,9 @@ class Stage2SyntheticDiagramTest extends SyntheticTestBase {
         Optional<ModelStates> models = data.getData(ModelStates.ID, ModelStates.class);
         assertTrue(models.isPresent());
 
-        MutableBiMap<Integer, String> foundLinks = matchingState.get()
+        MutableBiMap<String, String> foundLinks = matchingState.get()
                 .getLinks(modelType);
-        MutableBiMap<Integer, String> expectedLinks = diagram.getIdBasedLinks(modelType == CodeModelType.CODE_MODEL
+        MutableBiMap<String, String> expectedLinks = diagram.getIdBasedLinks(modelType == CodeModelType.CODE_MODEL
                 ? element -> Extractions.getPath((CodeItem) element)
                 : element -> ((ArchitectureItem) element).getId());
 

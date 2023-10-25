@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.data.diagram.Diagram;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.CodeModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelType;

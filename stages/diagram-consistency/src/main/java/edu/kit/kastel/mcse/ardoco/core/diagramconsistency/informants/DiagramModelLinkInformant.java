@@ -4,6 +4,9 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.function.Function;
 
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram;
+
 import org.eclipse.collections.api.bimap.MutableBiMap;
 import org.jgrapht.graph.DirectedMultigraph;
 
@@ -16,8 +19,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.similarityf
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.similarityflooding.PropagationCoefficientFormula;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.similarityflooding.SimilarityFloodingAlgorithm;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.similarityflooding.SimilarityMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.data.diagram.Box;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.data.diagram.Diagram;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
@@ -159,7 +160,7 @@ public class DiagramModelLinkInformant extends Informant {
                     .getRepresented();
 
             if (box != null && item != null) {
-                matching.addLink(modelType, box.getId(), idExtractor.apply(item));
+                matching.addLink(modelType, box.getUUID(), idExtractor.apply(item));
             }
         }
     }

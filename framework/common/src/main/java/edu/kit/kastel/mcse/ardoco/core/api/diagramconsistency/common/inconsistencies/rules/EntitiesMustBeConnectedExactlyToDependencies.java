@@ -7,11 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.DiagramUtility;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.Inconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Connector;
+
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.MissingLineInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.UnexpectedLineInconsistency;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.data.diagram.Box;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.data.diagram.Line;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Transformations;
 import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
@@ -49,17 +51,19 @@ import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
             Box dependencyBox = this.getLinks()
                     .inverse()
                     .get(dependency);
-            if (dependencyBox != null && !box.hasLineTo(dependencyBox)) {
+            if (dependencyBox != null && !DiagramUtility.hasConnectionBetween(this.getDiagram(), box, dependencyBox)) {
                 inconsistencies.add(new MissingLineInconsistency<>(box, dependencyBox));
             }
         }
 
-        for (Line line : box.getOutgoingLines()) {
-            Box target = line.target();
-            Entity targetEntity = this.getLinks()
-                    .get(target);
-            if (targetEntity != null && !dependencies.contains(targetEntity)) {
-                inconsistencies.add(new UnexpectedLineInconsistency<>(box, target));
+        Map<String, Box> boxes = DiagramUtility.getBoxes(this.getDiagram());
+        for (Connector connector : DiagramUtility.getOutgoingConnectors(getDiagram(), box)) {
+            for (Box target : DiagramUtility.getTargets(connector, boxes)) {
+                Entity targetEntity = this.getLinks()
+                        .get(target);
+                if (targetEntity != null && !dependencies.contains(targetEntity)) {
+                    inconsistencies.add(new UnexpectedLineInconsistency<>(box, target));
+                }
             }
         }
 

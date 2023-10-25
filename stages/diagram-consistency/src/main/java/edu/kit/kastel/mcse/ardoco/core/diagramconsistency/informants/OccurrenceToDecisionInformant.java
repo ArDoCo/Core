@@ -8,7 +8,7 @@ import java.util.SortedMap;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.DiagramMatchingModelSelectionState;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.DiagramState;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.data.diagram.Diagram;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelType;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
@@ -114,7 +114,7 @@ public class OccurrenceToDecisionInformant extends Informant {
         int numberOfElementsWithOccurrences = 0;
 
         for (var box : diagram.getBoxes()) {
-            if (!selection.getOccurrences(box.getId(), modelType)
+            if (!selection.getOccurrences(box.getUUID(), modelType)
                     .isEmpty()) {
                 numberOfElementsWithOccurrences++;
             }

@@ -11,13 +11,14 @@ import java.util.stream.Collectors;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.DiagramMatchingModelSelectionState;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.DiagramModelInconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.DiagramState;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.DiagramUtility;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.Inconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.refinement.Casing;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.refinement.LineInversion;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.refinement.NameExtension;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.refinement.Swap;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.data.diagram.Box;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.data.diagram.Diagram;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelType;
@@ -43,11 +44,11 @@ public class InconsistencyRefinementInformant extends Informant {
         super(InconsistencyRefinementInformant.class.getSimpleName(), data);
     }
 
-    private static Map<Integer, String> getBoxNames(DiagramState diagramState) {
+    private static Map<String, String> getBoxNames(DiagramState diagramState) {
         Diagram diagram = diagramState.getDiagram();
         return diagram.getBoxes()
                 .stream()
-                .collect(Collectors.toMap(Box::getId, Box::getText));
+                .collect(Collectors.toMap(Box::getUUID, DiagramUtility::getBoxText));
     }
 
     private static Map<String, String> getEntityNames(ModelStates models, ModelType selectedModelType) {
@@ -84,13 +85,13 @@ public class InconsistencyRefinementInformant extends Informant {
         }
 
         for (var selectedModelType : selection.getSelection()) {
-            List<Inconsistency<Integer, String>> inconsistencies = new ArrayList<>(
+            List<Inconsistency<String, String>> inconsistencies = new ArrayList<>(
                     inconsistencyState.getInconsistencies(selectedModelType));
 
-            Map<Integer, String> boxIdToName = getBoxNames(diagram);
+            Map<String, String> boxIdToName = getBoxNames(diagram);
             Map<String, String> entityIdToName = getEntityNames(models, selectedModelType);
 
-            List<UnaryOperator<List<Inconsistency<Integer, String>>>> rules = List.of(LineInversion::discover,
+            List<UnaryOperator<List<Inconsistency<String, String>>>> rules = List.of(LineInversion::discover,
                     list -> NameExtension.discover(list, boxIdToName::get, entityIdToName::get), Casing::discover,
                     Swap::discover);
 

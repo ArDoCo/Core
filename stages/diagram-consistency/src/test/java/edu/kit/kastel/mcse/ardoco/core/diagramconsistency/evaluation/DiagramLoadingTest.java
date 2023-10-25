@@ -1,21 +1,17 @@
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
+
+import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.model.DiagramImpl;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.data.JsonMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.data.diagram.Diagram;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.JsonMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureComponent;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
@@ -59,7 +55,7 @@ class DiagramLoadingTest extends EvaluationBase {
         String text = project.getDiagram();
 
         assertDoesNotThrow(() -> {
-            var diagram = JsonMapping.OBJECT_MAPPER.readValue(text, Diagram.class);
+            var diagram = JsonMapping.OBJECT_MAPPER.readValue(text, DiagramImpl.class);
             assertNotNull(diagram);
         });
     }

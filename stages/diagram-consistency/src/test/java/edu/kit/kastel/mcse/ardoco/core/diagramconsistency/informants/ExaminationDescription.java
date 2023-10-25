@@ -1,6 +1,6 @@
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.informants;
 
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.data.diagram.Box;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItem;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.DiagramProject;

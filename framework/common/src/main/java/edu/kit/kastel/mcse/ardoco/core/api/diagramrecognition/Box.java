@@ -25,7 +25,10 @@ public final class Box implements Serializable {
     private double confidence;
     @JsonProperty("class")
     private String classification;
-    private transient List<TextBox> textBoxes = new ArrayList<>();
+    @JsonProperty("texts")
+    private List<TextBox> textBoxes = new ArrayList<>();
+    @JsonProperty("contained")
+    private List<String> containedBoxes = new ArrayList<>();
     private transient Integer dominatingColor = null;
 
     private Box() {
@@ -103,6 +106,25 @@ public final class Box implements Serializable {
      */
     public void addTextBox(TextBox textBox) {
         this.textBoxes.add(Objects.requireNonNull(textBox));
+    }
+
+    /**
+     * Mark another box as contained in this box.
+     *
+     * @param box the contained box
+     */
+    public void addContainedBox(Box box) {
+        this.containedBoxes.add(Objects.requireNonNull(box.getUUID()));
+    }
+
+    /**
+     * Get all boxes that have been marked as contained in this box.
+     * More boxes might be contained, to find these the overlapping area of the boxes has to be calculated.
+     *
+     * @return all contained boxes
+     */
+    public List<String> getContainedBoxes() {
+        return new ArrayList<>(containedBoxes);
     }
 
     /**

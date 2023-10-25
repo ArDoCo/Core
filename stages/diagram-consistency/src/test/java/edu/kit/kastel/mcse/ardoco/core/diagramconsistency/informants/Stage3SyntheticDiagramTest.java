@@ -3,13 +3,14 @@ package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.informants;
 import java.io.IOException;
 import java.util.List;
 
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
+
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.DiagramModelInconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.Inconsistency;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.data.diagram.Box;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItem;
@@ -67,14 +68,14 @@ class Stage3SyntheticDiagramTest extends SyntheticTestBase {
 
     @Override
     protected Metrics getResultsOfExamination(AnnotatedDiagram<?> diagram, ModelType modelType, DataRepository data) {
-        List<Inconsistency<Integer, String>> found = data.getData(DiagramModelInconsistencyState.ID,
+        List<Inconsistency<String, String>> found = data.getData(DiagramModelInconsistencyState.ID,
                         DiagramModelInconsistencyState.class)
                 .orElseThrow()
                 .getInconsistencies(modelType);
 
-        List<Inconsistency<Integer, String>> expected = diagram.inconsistencies()
+        List<Inconsistency<String, String>> expected = diagram.inconsistencies()
                 .stream()
-                .map(inconsistency -> inconsistency.map(Box::getId, entity -> {
+                .map(inconsistency -> inconsistency.map(Box::getUUID, entity -> {
                     if (entity instanceof CodeItem codeItem) {
                         return Extractions.getPath(codeItem);
                     } else if (entity instanceof Entity item) {

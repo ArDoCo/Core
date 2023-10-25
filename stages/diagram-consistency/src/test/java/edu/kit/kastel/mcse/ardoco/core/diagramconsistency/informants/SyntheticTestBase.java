@@ -11,10 +11,11 @@ import java.util.Optional;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
+
 import org.jetbrains.annotations.Nullable;
 
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.data.JsonMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.data.diagram.Box;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.JsonMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.CodeModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelType;

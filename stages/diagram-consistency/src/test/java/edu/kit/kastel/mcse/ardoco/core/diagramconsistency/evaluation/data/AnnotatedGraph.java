@@ -1,19 +1,18 @@
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data;
 
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
+
 import org.eclipse.collections.api.bimap.MutableBiMap;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 import org.jgrapht.graph.DirectedMultigraph;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.Inconsistency;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.data.diagram.Box;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItem;

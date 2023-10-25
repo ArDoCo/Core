@@ -6,9 +6,10 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.DiagramUtility;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.Inconsistency;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.data.diagram.Box;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.data.diagram.Diagram;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 
 /**
@@ -35,7 +36,7 @@ public record DiagramInconsistencies(@JsonProperty("name") String name,
      */
     public List<Inconsistency<Box, Entity>> toInconsistencies(Diagram diagram, Map<String, Entity> model) {
         return Arrays.stream(this.inconsistencies)
-                .map(inconsistency -> inconsistency.toInconsistency(diagram, model))
+                .map(inconsistency -> inconsistency.toInconsistency(DiagramUtility.getBoxes(diagram), model))
                 .toList();
     }
 }

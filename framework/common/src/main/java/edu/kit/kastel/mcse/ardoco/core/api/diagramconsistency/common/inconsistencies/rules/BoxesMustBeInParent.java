@@ -5,9 +5,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.DiagramUtility;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.HierarchyInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.Inconsistency;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.data.diagram.Box;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Transformations;
 import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
@@ -28,9 +29,10 @@ import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
         }, (child, parent) -> this.entityToParent.put(child, parent));
 
         this.boxToParent = new LinkedHashMap<>();
+        Map<String, Box> boxes = DiagramUtility.getBoxes(this.getDiagram());
         for (Box parent : this.getDiagram()
                 .getBoxes()) {
-            for (Box child : parent.getContainedBoxes()) {
+            for (Box child : DiagramUtility.getContainedBoxes(parent, boxes)) {
                 this.boxToParent.put(child, parent);
             }
         }

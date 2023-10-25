@@ -7,6 +7,9 @@ import java.util.Objects;
 import java.util.SortedMap;
 import java.util.stream.Collectors;
 
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.DiagramUtility;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
+
 import org.eclipse.collections.api.bimap.MutableBiMap;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 
@@ -22,7 +25,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsisten
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.rules.PackagesMustContainAllSubpackagesIfOneIsEmpty;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.rules.Rule;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.rules.SameNameForLinkedElements;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.data.diagram.Box;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelType;
@@ -62,8 +64,8 @@ public class DiagramModelInconsistencyInformant extends Informant {
         return combined;
     }
 
-    private static MutableBiMap<Box, Entity> getTranslatedLinks(MutableBiMap<Integer, String> links,
-            Map<Integer, Box> boxes, Map<String, Entity> entities) {
+    private static MutableBiMap<Box, Entity> getTranslatedLinks(MutableBiMap<String, String> links,
+            Map<String, Box> boxes, Map<String, Entity> entities) {
         MutableBiMap<Box, Entity> translatedLinks = new HashBiMap<>();
         for (var link : links.entrySet()) {
             Box box = boxes.get(link.getKey());
@@ -73,7 +75,7 @@ public class DiagramModelInconsistencyInformant extends Informant {
         return translatedLinks;
     }
 
-    private static void checkRulesForLinkedElements(MutableBiMap<Integer, String> links, Map<Integer, Box> boxes,
+    private static void checkRulesForLinkedElements(MutableBiMap<String, String> links, Map<String, Box> boxes,
             Map<String, Entity> entities, Context context) {
         for (var link : links.entrySet()) {
             Box box = boxes.remove(link.getKey());
@@ -87,7 +89,7 @@ public class DiagramModelInconsistencyInformant extends Informant {
         }
     }
 
-    private static void checkRulesForLooseBoxes(Map<Integer, Box> boxes, Context context) {
+    private static void checkRulesForLooseBoxes(Map<String, Box> boxes, Context context) {
         for (var box : boxes.values()) {
             for (Rule rule : context.rules()) {
                 for (var inconsistency : rule.check(box, null)) {
@@ -151,12 +153,9 @@ public class DiagramModelInconsistencyInformant extends Informant {
                     .stream()
                     .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
 
-            Map<Integer, Box> boxes = diagram.getDiagram()
-                    .getBoxes()
-                    .stream()
-                    .collect(Collectors.toMap(Box::getId, box -> box));
+            Map<String, Box> boxes = DiagramUtility.getBoxes(diagram.getDiagram());
 
-            MutableBiMap<Integer, String> links = matching.getLinks(selectedModelType);
+            MutableBiMap<String, String> links = matching.getLinks(selectedModelType);
             MutableBiMap<Box, Entity> translatedLinks = getTranslatedLinks(links, boxes, entities);
 
             rules.forEach(rule -> rule.setup(diagram.getDiagram(), model, translatedLinks));
@@ -173,7 +172,7 @@ public class DiagramModelInconsistencyInformant extends Informant {
     private record Context(ModelType modelType, Map<Entity, String> entityToId, List<Rule> rules,
                            DiagramModelInconsistencyState inconsistencies) {
         public void addInconsistency(Inconsistency<Box, Entity> inconsistency) {
-            this.inconsistencies.addInconsistency(this.modelType, inconsistency.map(Box::getId, this.entityToId::get));
+            this.inconsistencies.addInconsistency(this.modelType, inconsistency.map(Box::getUUID, this.entityToId::get));
         }
     }
 

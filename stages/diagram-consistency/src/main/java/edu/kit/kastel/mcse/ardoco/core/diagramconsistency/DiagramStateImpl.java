@@ -1,7 +1,7 @@
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.DiagramState;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.data.diagram.Diagram;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram;
 
 /**
  * Implementation of {@link DiagramState}.

@@ -10,6 +10,8 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.Consumer;
 
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram;
+
 import org.eclipse.collections.api.bimap.MutableBiMap;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 import org.jgrapht.alg.util.Pair;
@@ -19,16 +21,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.DiagramMatchingModelSelectionState;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.data.JsonMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.data.diagram.Diagram;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.JsonMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.CodeModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelElement;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItem;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.DiagramConsistency;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.DiagramMatchingModelSelectionStateImpl;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.AnnotatedDiagram;
@@ -38,9 +37,8 @@ import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactoring
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactoring.Rename;
 
 class Stage1SyntheticDiagramTest extends SyntheticTestBase {
-    private static Result calculateResult(Diagram syntheticDiagram, DiagramMatchingModelSelectionState selectionState,
-            ArchitectureModel architectureModel, MutableBiMap<Integer, String> expectedLinksInArchitecture,
-            CodeModel codeModel, MutableBiMap<Integer, String> expectedLinksInCode, GeneralModelType selected,
+    private static Result calculateResult(Diagram syntheticDiagram, DiagramMatchingModelSelectionState selectionState, MutableBiMap<String, String> expectedLinksInArchitecture,
+            MutableBiMap<String, String> expectedLinksInCode, GeneralModelType selected,
             boolean selectionIsArchitecture, Decision expected) {
         int countInArchitecture = 0;
         int countInCode = 0;
@@ -50,11 +48,11 @@ class Stage1SyntheticDiagramTest extends SyntheticTestBase {
 
         for (var box : syntheticDiagram.getBoxes()) {
             List<DiagramMatchingModelSelectionState.Occurrence> occurrencesInArchitecture = selectionState.getOccurrences(
-                    box.getId(), ArchitectureModelType.UML);
+                    box.getUUID(), ArchitectureModelType.UML);
             if (!occurrencesInArchitecture.isEmpty()) {
                 countInArchitecture++;
 
-                var expectedLink = expectedLinksInArchitecture.get(box.getId());
+                var expectedLink = expectedLinksInArchitecture.get(box.getUUID());
 
                 for (var occurrence : occurrencesInArchitecture) {
                     if (!occurrence.modelID()
@@ -64,11 +62,11 @@ class Stage1SyntheticDiagramTest extends SyntheticTestBase {
                 }
             }
             List<DiagramMatchingModelSelectionState.Occurrence> occurrencesInCode = selectionState.getOccurrences(
-                    box.getId(), CodeModelType.CODE_MODEL);
+                    box.getUUID(), CodeModelType.CODE_MODEL);
             if (!occurrencesInCode.isEmpty()) {
                 countInCode++;
 
-                var expectedLink = expectedLinksInCode.get(box.getId());
+                var expectedLink = expectedLinksInCode.get(box.getUUID());
 
                 for (var occurrence : occurrencesInCode) {
                     if (!occurrence.modelID()
@@ -134,7 +132,7 @@ class Stage1SyntheticDiagramTest extends SyntheticTestBase {
             return null;
         }
         Diagram syntheticDiagram = preparedDiagram.getFirst();
-        MutableBiMap<Integer, String> expectedLinks = preparedDiagram.getSecond();
+        MutableBiMap<String, String> expectedLinks = preparedDiagram.getSecond();
 
         Decision expected = new Decision(generalModelType, (double) expectedLinks.size() / syntheticDiagram.getBoxes()
                 .size(), 0.0);
@@ -162,20 +160,15 @@ class Stage1SyntheticDiagramTest extends SyntheticTestBase {
                 .contains(ArchitectureModelType.UML);
         GeneralModelType selected = selectionIsArchitecture ? GeneralModelType.ARCHITECTURE : GeneralModelType.CODE;
 
-        ArchitectureModel architectureModel = (ArchitectureModel) models.getModel(
-                ArchitectureModelType.UML.getModelId());
-        CodeModel codeModel = (CodeModel) models.getModel(CodeModelType.CODE_MODEL.getModelId());
-
-        MutableBiMap<Integer, String> expectedLinksInArchitecture = selectionIsArchitecture
+        MutableBiMap<String, String> expectedLinksInArchitecture = selectionIsArchitecture
                 ? expectedLinks
                 : new HashBiMap<>();
-        MutableBiMap<Integer, String> expectedLinksInCode = selectionIsArchitecture ? new HashBiMap<>() : expectedLinks;
+        MutableBiMap<String, String> expectedLinksInCode = selectionIsArchitecture ? new HashBiMap<>() : expectedLinks;
 
-        return calculateResult(syntheticDiagram, selectionState, architectureModel, expectedLinksInArchitecture,
-                codeModel, expectedLinksInCode, selected, selectionIsArchitecture, expected);
+        return calculateResult(syntheticDiagram, selectionState, expectedLinksInArchitecture, expectedLinksInCode, selected, selectionIsArchitecture, expected);
     }
 
-    private Pair<Diagram, MutableBiMap<Integer, String>> prepareDiagram(DiagramProject project,
+    private Pair<Diagram, MutableBiMap<String, String>> prepareDiagram(DiagramProject project,
             GeneralModelType generalModelType) {
         switch (generalModelType) {
         case ARCHITECTURE -> {
