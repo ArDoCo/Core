@@ -1,11 +1,12 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator;
 
 import java.util.EnumMap;
 import java.util.Map;
 
+import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator.DiagramConnectionState;
 import edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator.DiagramConnectionStates;
-import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 
 /**
  * @see DiagramConnectionStates

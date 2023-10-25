@@ -142,7 +142,7 @@ public class TestUtil {
      */
     public static String createResultLogString(String name, EvaluationResults<?> results) {
         return String.format(Locale.ENGLISH, """
-                                
+
                 %s:
                 %s""", name, results);
     }
@@ -160,7 +160,7 @@ public class TestUtil {
      */
     public static void logExplicitResults(Logger logger, String name, EvaluationResults<?> results) {
         var logString = String.format(Locale.ENGLISH, """
-                                
+
                 %s:
                 %s
                 %s""", name, results, results.getExplicitResultString());
@@ -177,7 +177,7 @@ public class TestUtil {
      */
     public static void logResultsWithExpected(Logger logger, String name, EvaluationResults<?> results, ExpectedResults expectedResults) {
         var infoString = String.format(Locale.ENGLISH, """
-                                
+
                 %s:
                 %s""", name, results.getResultStringWithExpected(expectedResults));
         logger.info(infoString);
@@ -185,7 +185,7 @@ public class TestUtil {
 
     public static void logExtendedResultsWithExpected(Logger logger, String name, EvaluationResults<?> results, ExpectedResults expectedResults) {
         var infoString = String.format(Locale.ENGLISH, """
-                                
+
                 %s:
                 %s""", name, results.getExtendedResultStringWithExpected(expectedResults));
         logger.info(infoString);
@@ -194,7 +194,7 @@ public class TestUtil {
     public static void logExtendedResultsWithExpected(Logger logger, Object testClass, String name, EvaluationResults<?> results,
             ExpectedResults expectedResults) {
         var infoString = String.format(Locale.ENGLISH, """
-                                
+
                 %s (%s):
                 %s""", name, testClass.getClass().getSimpleName(), results.getExtendedResultStringWithExpected(expectedResults));
         logger.info(infoString);

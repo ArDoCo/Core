@@ -23,9 +23,11 @@ public class TLGoldStandardFile {
         Path path = goldStandardProject.getTlrGoldStandardFile().toPath();
         List<String> lines = Files.readAllLines(path);
 
-        return Lists.mutable.ofAll(lines.stream().skip(1) // skip csv header
+        return Lists.mutable.ofAll(lines.stream()
+                .skip(1) // skip csv header
                 .map(line -> line.split(",")) // modelElementId,sentenceNr
-                .map(array -> new TestLink(array[0], Integer.parseInt(array[1]))).map(link -> new TestLink(link.modelId(), link.sentenceNr() - 1))
+                .map(array -> new TestLink(array[0], Integer.parseInt(array[1])))
+                .map(link -> new TestLink(link.modelId(), link.sentenceNr() - 1))
                 // ^ goldstandard sentences start with 1 while ISentences are zero indexed
                 .toList());
     }

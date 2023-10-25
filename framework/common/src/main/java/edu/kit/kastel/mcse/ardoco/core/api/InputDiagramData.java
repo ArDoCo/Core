@@ -1,13 +1,13 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api;
 
-import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
+import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
 
 /**
@@ -55,7 +55,8 @@ public class InputDiagramData implements PipelineStepData {
      * @return a list of image files ordered by name
      */
     public List<Pair<String, File>> getDiagramData() {
-        if (diagramFiles != null) return diagramFiles;
+        if (diagramFiles != null)
+            return diagramFiles;
         if (pathToDiagrams == null)
             return List.of();
         File directoryOfDiagrams = new File(pathToDiagrams);
@@ -68,7 +69,8 @@ public class InputDiagramData implements PipelineStepData {
         List<Pair<String, File>> diagrams = Arrays.stream(allFiles)
                 .filter(File::isFile)
                 .filter(f -> ALLOWED_FILE_TYPES.stream().anyMatch(t -> f.getName().toLowerCase().endsWith("." + t)))
-                .sorted(Comparator.comparing(File::getName)).map(f -> new Pair<>(f.getName(), f))
+                .sorted(Comparator.comparing(File::getName))
+                .map(f -> new Pair<>(f.getName(), f))
                 .toList();
         logger.info("Found {} diagrams to consider.", diagrams.size());
         return diagrams;

@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency;
 
 import java.util.List;
@@ -23,8 +24,8 @@ public class DiagramInconsistencyChecker extends ExecutionStage {
      * @param dataRepository    the data repository that should be used
      */
     public DiagramInconsistencyChecker(SortedMap<String, String> additionalConfigs, DataRepository dataRepository) {
-        super(List.of(new DiagramInconsistencyAgent(dataRepository), new RecommendedInstancesConfidenceAgent(dataRepository)),
-                DiagramInconsistencyChecker.class.getSimpleName(), dataRepository, additionalConfigs);
+        super(List.of(new DiagramInconsistencyAgent(dataRepository), new RecommendedInstancesConfidenceAgent(dataRepository)), DiagramInconsistencyChecker.class
+                .getSimpleName(), dataRepository, additionalConfigs);
     }
 
     @Override

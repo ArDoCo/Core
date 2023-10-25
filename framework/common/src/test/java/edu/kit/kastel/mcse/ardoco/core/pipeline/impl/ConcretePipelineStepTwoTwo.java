@@ -1,17 +1,17 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline.impl;
 
-import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
-
-import edu.kit.kastel.mcse.ardoco.core.data.impl.ProcessedTextData;
-import edu.kit.kastel.mcse.ardoco.core.data.impl.ResultData;
-import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
-
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
+import edu.kit.kastel.mcse.ardoco.core.data.impl.ProcessedTextData;
+import edu.kit.kastel.mcse.ardoco.core.data.impl.ResultData;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
 
 /**
  * Example implementation of {@link AbstractPipelineStep}
@@ -28,8 +28,7 @@ public class ConcretePipelineStepTwoTwo extends AbstractPipelineStep {
 
     private void fetchAndInitializeData() {
         var dataRepository = getDataRepository();
-        processedTextData =
-                dataRepository.getData("ProcessedTextData", ProcessedTextData.class).orElseThrow();
+        processedTextData = dataRepository.getData("ProcessedTextData", ProcessedTextData.class).orElseThrow();
         resultData = new ResultData();
         dataRepository.addData("ResultData", resultData);
     }
@@ -39,8 +38,7 @@ public class ConcretePipelineStepTwoTwo extends AbstractPipelineStep {
         fetchAndInitializeData();
         logger.info("Greetings from {} with id {}", this.getClass().getSimpleName(), getId());
         var tokens = processedTextData.getImportantTokens();
-        var tokenWithLength = tokens.stream().collect(Collectors.toMap(e -> e, String::length,
-                (o1, o2) -> o1, TreeMap::new));
+        var tokenWithLength = tokens.stream().collect(Collectors.toMap(e -> e, String::length, (o1, o2) -> o1, TreeMap::new));
         var firstEntry = tokenWithLength.firstKey();
         resultData.setResult(firstEntry);
     }

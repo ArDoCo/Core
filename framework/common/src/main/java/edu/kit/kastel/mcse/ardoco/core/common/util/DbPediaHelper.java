@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
 import java.io.IOException;
@@ -12,6 +13,7 @@ import org.apache.jena.query.ResultSet;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -48,7 +50,7 @@ public class DbPediaHelper extends FileBasedCache<DbPediaHelper.DbPediaData> {
                 prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
                 PREFIX dbo:     <http://dbpedia.org/ontology/>
                 PREFIX yago: <http://dbpedia.org/class/yago/>
-                                
+
                 SELECT ?label
                 WHERE {
                         {
@@ -87,7 +89,7 @@ public class DbPediaHelper extends FileBasedCache<DbPediaHelper.DbPediaData> {
                 prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
                 PREFIX dbo:     <http://dbpedia.org/ontology/>
                 PREFIX yago: <http://dbpedia.org/class/yago/>
-                                
+
                 SELECT ?label
                 WHERE {
                         ?pl dbo:abstract ?abstract .
@@ -114,7 +116,7 @@ public class DbPediaHelper extends FileBasedCache<DbPediaHelper.DbPediaData> {
                 prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#>
                 PREFIX dbo:     <http://dbpedia.org/ontology/>
                 PREFIX yago: <http://dbpedia.org/class/yago/>
-                                
+
                 SELECT ?label
                 WHERE {
                         ?p rdf:type dbo:Software .

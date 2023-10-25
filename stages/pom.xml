@@ -9,12 +9,12 @@
 
   <artifactId>stages</artifactId>
   <packaging>pom</packaging>
-    <modules>
-        <module>diagram-connection-generator</module>
-        <module>diagram-inconsistency-checker</module>
-    </modules>
+  <modules>
+    <module>diagram-connection-generator</module>
+    <module>diagram-inconsistency-checker</module>
+  </modules>
 
-    <profiles>
+  <profiles>
     <profile>
       <id>complete</id>
       <activation>

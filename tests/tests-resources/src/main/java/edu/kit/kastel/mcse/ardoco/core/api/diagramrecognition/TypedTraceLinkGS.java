@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
 import java.io.Serializable;
@@ -8,6 +9,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TraceType;
 
 /**
  * Encapsulates a diagram-sentence trace link of a specific type.
+ * 
  * @param sentences
  * @param traceType
  */

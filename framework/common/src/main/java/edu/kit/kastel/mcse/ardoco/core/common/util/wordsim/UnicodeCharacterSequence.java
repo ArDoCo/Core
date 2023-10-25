@@ -1,8 +1,10 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim;
 
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.stream.IntStream;
+
 import org.eclipse.collections.api.list.ImmutableList;
 import org.jetbrains.annotations.NotNull;
 

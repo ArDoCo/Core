@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api;
 
 import java.io.IOException;
@@ -13,6 +14,7 @@ import org.eclipse.collections.api.map.ImmutableMap;
 import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.impl.factory.Maps;
 import org.jetbrains.annotations.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -118,8 +120,7 @@ public class Disambiguation implements Comparable<Disambiguation>, Serializable 
      * @param disambiguations a list of disambiguations, may be empty
      * @return an immutable map
      */
-    public @NotNull
-    static ImmutableMap<String, Disambiguation> toMap(@NotNull List<Disambiguation> disambiguations) {
+    public @NotNull static ImmutableMap<String, Disambiguation> toMap(@NotNull List<Disambiguation> disambiguations) {
         var map = Maps.mutable.<String, Disambiguation>empty();
         for (var disambiguation : disambiguations) {
             map.merge(disambiguation.getAbbreviation(), disambiguation, Disambiguation::addMeanings);

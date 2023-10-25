@@ -49,7 +49,7 @@ public class HoldBackRunResultsProducer implements Serializable {
      * @param goldStandardProject the project that should be run
      * @param useBaselineApproach set to true if the baseline approach should be used instead of ArDoCo
      * @return a map containing the mapping from ModelElement that was held back to the DataStructure that was produced when running ArDoCo without the
-     * ModelElement
+     *         ModelElement
      */
     public Map<ModelInstance, ArDoCoResult> produceHoldBackRunResults(GoldStandardProject goldStandardProject, boolean useBaselineApproach) {
         Map<ModelInstance, ArDoCoResult> runs = new HashMap<>();
@@ -61,8 +61,8 @@ public class HoldBackRunResultsProducer implements Serializable {
 
         var preRunDataRepository = runShared(goldStandardProject);
 
-        var baseRunData = new ArDoCoResult(
-                runUnshared(goldStandardProject, holdElementsBackModelConnector, preRunDataRepository.deepCopy(), useBaselineApproach));
+        var baseRunData = new ArDoCoResult(runUnshared(goldStandardProject, holdElementsBackModelConnector, preRunDataRepository.deepCopy(),
+                useBaselineApproach));
         runs.put(null, baseRunData);
 
         for (int i = 0; i < holdElementsBackModelConnector.numberOfActualInstances(); i++) {

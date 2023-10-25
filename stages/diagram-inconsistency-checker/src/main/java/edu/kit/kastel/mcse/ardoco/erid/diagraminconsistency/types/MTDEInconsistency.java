@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.types;
 
 import java.util.Locale;
@@ -20,8 +21,8 @@ public record MTDEInconsistency(DiagramElement diagramElement) implements Incons
 
     @Override
     public String getReason() {
-        return String.format(Locale.US, "Diagram \"%s\" contains a Diagram Element \"%s\" that seems to be undocumented.",
-                diagramElement.getDiagram().getResourceName(), diagramElement.getName());
+        return String.format(Locale.US, "Diagram \"%s\" contains a Diagram Element \"%s\" that seems to be undocumented.", diagramElement.getDiagram()
+                .getResourceName(), diagramElement.getName());
     }
 
     @Override

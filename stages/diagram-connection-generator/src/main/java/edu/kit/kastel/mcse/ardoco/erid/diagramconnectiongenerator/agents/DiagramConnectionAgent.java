@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator.agents;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public class DiagramConnectionAgent extends PipelineAgent {
      * @param dataRepository the data repository that should be used
      */
     public DiagramConnectionAgent(DataRepository dataRepository) {
-        super(List.of(new DiagramAsModelInformant(dataRepository), new DiagramTextInformant(dataRepository),
-                new LinkBetweenDeAndRiProbabilityFilter(dataRepository)), DiagramConnectionAgent.class.getSimpleName(), dataRepository);
+        super(List.of(new DiagramAsModelInformant(dataRepository), new DiagramTextInformant(dataRepository), new LinkBetweenDeAndRiProbabilityFilter(
+                dataRepository)), DiagramConnectionAgent.class.getSimpleName(), dataRepository);
     }
 }

@@ -61,8 +61,8 @@ public class SentenceImpl implements Sentence {
             return true;
         if (!(o instanceof SentenceImpl sentence))
             return false;
-        return sentenceNumber == sentence.sentenceNumber && Objects.equals(words, sentence.words) && Objects.equals(phrases,
-                sentence.phrases) && Objects.equals(text, sentence.text);
+        return sentenceNumber == sentence.sentenceNumber && Objects.equals(words, sentence.words) && Objects.equals(phrases, sentence.phrases) && Objects
+                .equals(text, sentence.text);
     }
 
     @Override

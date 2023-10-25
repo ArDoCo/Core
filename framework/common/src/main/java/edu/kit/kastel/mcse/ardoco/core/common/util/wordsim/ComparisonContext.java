@@ -19,8 +19,9 @@ public record ComparisonContext(@NotNull String firstString, @NotNull String sec
 
     /**
      * Constructs a string-based context with a given match function and no lemmatization.
-     * @param firstString the first string
-     * @param secondString the second string
+     * 
+     * @param firstString    the first string
+     * @param secondString   the second string
      * @param characterMatch the match function
      */
     public ComparisonContext(@NotNull String firstString, @NotNull String secondString,
@@ -30,7 +31,8 @@ public record ComparisonContext(@NotNull String firstString, @NotNull String sec
 
     /**
      * Constructs a string-based context with the default match function and no lemmatization.
-     * @param firstString the first string
+     * 
+     * @param firstString  the first string
      * @param secondString the second string
      */
     public ComparisonContext(@NotNull String firstString, @NotNull String secondString) {
@@ -39,9 +41,10 @@ public record ComparisonContext(@NotNull String firstString, @NotNull String sec
 
     /**
      * Constructs a string-based context with the default match function.
-     * @param firstString the first string
+     * 
+     * @param firstString  the first string
      * @param secondString the second string
-     * @param lemmatize whether the string should be lemmatized
+     * @param lemmatize    whether the string should be lemmatized
      */
     public ComparisonContext(@NotNull String firstString, @NotNull String secondString, boolean lemmatize) {
         this(firstString, secondString, null, null, lemmatize, UnicodeCharacter.EQUAL);
@@ -49,9 +52,10 @@ public record ComparisonContext(@NotNull String firstString, @NotNull String sec
 
     /**
      * Constructs a word-based context with the default match function.
-     * @param firstWord the first word
+     * 
+     * @param firstWord  the first word
      * @param secondWord the second word
-     * @param lemmatize whether the words should be lemmatized
+     * @param lemmatize  whether the words should be lemmatized
      */
     public ComparisonContext(@NotNull Word firstWord, @NotNull Word secondWord, boolean lemmatize) {
         this(firstWord.getText(), secondWord.getText(), firstWord, secondWord, lemmatize, UnicodeCharacter.EQUAL);

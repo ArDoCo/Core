@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.tests.integration;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -113,7 +114,8 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
     }
 
     @Override
-    protected DataRepository runTestRunner(@NotNull DiagramProject project, @NotNull SortedMap<String, String> additionalConfigurations, @NotNull DataRepository preRunDataRepository) {
+    protected DataRepository runTestRunner(@NotNull DiagramProject project, @NotNull SortedMap<String, String> additionalConfigurations,
+            @NotNull DataRepository preRunDataRepository) {
         logger.info("Run TestRunner for {}", project.name());
         var combinedConfigs = new TreeMap<>(project.getAdditionalConfigurations());
         combinedConfigs.putAll(additionalConfigurations);
@@ -181,8 +183,10 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
                         .collect(Collectors.joining(" & ")) + "\\\\")
                 .forEach(System.out::println);
         System.out.println("Average & " + avg.values().stream().map(d -> String.format(Locale.ENGLISH, "%.2f", d)).collect(Collectors.joining(" & ")) + "\\\\");
-        System.out.println(
-                "w. Average & " + avgWeighted.values().stream().map(d -> String.format(Locale.ENGLISH, "%.2f", d)).collect(Collectors.joining(" & ")) + "\\\\");
+        System.out.println("w. Average & " + avgWeighted.values()
+                .stream()
+                .map(d -> String.format(Locale.ENGLISH, "%.2f", d))
+                .collect(Collectors.joining(" & ")) + "\\\\");
     }
 
     @Disabled

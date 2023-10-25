@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
 import java.util.Comparator;
@@ -28,8 +29,7 @@ public abstract class DiagramElement extends Entity implements SimilarityCompara
         protected DiagramElement initialize() {
             var all = getDiagram().getBoxes();
             return all.stream()
-                    .filter(de -> !de.equals(DiagramElement.this) && de.getBoundingBox()
-                            .containsEntirely(getBoundingBox())) //Find boxes containing this element
+                    .filter(de -> !de.equals(DiagramElement.this) && de.getBoundingBox().containsEntirely(getBoundingBox())) //Find boxes containing this element
                     .min(Comparator.comparingDouble(de -> de.getBoundingBox().area()))
                     .orElse(null);
         }

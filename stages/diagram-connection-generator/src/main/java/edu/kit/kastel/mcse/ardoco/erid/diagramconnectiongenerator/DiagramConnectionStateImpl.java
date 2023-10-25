@@ -1,6 +1,5 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator;
-
-import edu.kit.kastel.mcse.ardoco.erid.api.models.tracelinks.LinkBetweenDeAndRi;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -16,6 +15,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.data.AbstractState;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 import edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator.DiagramConnectionState;
+import edu.kit.kastel.mcse.ardoco.erid.api.models.tracelinks.LinkBetweenDeAndRi;
 
 /**
  * @see DiagramConnectionState
@@ -30,8 +30,8 @@ public class DiagramConnectionStateImpl extends AbstractState implements Diagram
     }
 
     @Override
-    public boolean addToLinksBetweenDeAndRi(@NotNull RecommendedInstance recommendedInstance, @NotNull DiagramElement diagramElement, @NotNull String textIdentifier, @NotNull Claimant claimant,
-                                            @NotNull Map<Word, Double> confidenceMap) {
+    public boolean addToLinksBetweenDeAndRi(@NotNull RecommendedInstance recommendedInstance, @NotNull DiagramElement diagramElement,
+            @NotNull String textIdentifier, @NotNull Claimant claimant, @NotNull Map<Word, Double> confidenceMap) {
         var newDL = new LinkBetweenDeAndRi(recommendedInstance, diagramElement, textIdentifier, claimant, confidenceMap);
         var added = linksBetweenDeAndRi.add(newDL);
 

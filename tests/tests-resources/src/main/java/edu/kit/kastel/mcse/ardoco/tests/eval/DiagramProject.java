@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -174,7 +175,7 @@ public enum DiagramProject implements GoldStandardDiagramsWithTLR {
      */
     public Metamodel getMetamodel() {
         return switch (architectureModelType) {
-            case PCM, UML -> Metamodel.ARCHITECTURE;
+        case PCM, UML -> Metamodel.ARCHITECTURE;
         };
     }
 
@@ -311,4 +312,3 @@ public enum DiagramProject implements GoldStandardDiagramsWithTLR {
         return getDiagramResourceNames().stream().map(rn -> new Pair<>(rn, ProjectHelper.loadFileFromResources(rn))).toList();
     }
 }
-

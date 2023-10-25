@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.textextraction;
 
 import java.util.LinkedHashSet;
@@ -18,8 +19,9 @@ public class PhraseAbbreviation extends Disambiguation {
     private final MutableSet<Phrase> phrases;
 
     public PhraseAbbreviation(@NotNull String abbreviation, @NotNull MutableSet<Phrase> phrases) {
-        super(abbreviation, new LinkedHashSet<>(
-                phrases.stream().map(phrase -> phrase.getContainedWords().stream().map(Word::getText).collect(Collectors.joining(" "))).toList()));
+        super(abbreviation, new LinkedHashSet<>(phrases.stream()
+                .map(phrase -> phrase.getContainedWords().stream().map(Word::getText).collect(Collectors.joining(" ")))
+                .toList()));
         this.phrases = phrases;
     }
 

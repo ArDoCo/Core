@@ -9,6 +9,7 @@ import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.sorted.ImmutableSortedMap;
 import org.eclipse.collections.api.map.sorted.MutableSortedMap;
 import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
+import org.jetbrains.annotations.NotNull;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
@@ -19,8 +20,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextStateStrategy;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.WordAbbreviation;
 import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
-
-import org.jetbrains.annotations.NotNull;
 
 public abstract class DefaultTextStateStrategy implements TextStateStrategy {
 
@@ -36,11 +35,12 @@ public abstract class DefaultTextStateStrategy implements TextStateStrategy {
 
     /**
      * Creates a new noun mapping using the parameters without adding it to the state.
-     * @param words the words
-     * @param distribution the distribution of the mappings kinds
+     * 
+     * @param words          the words
+     * @param distribution   the distribution of the mappings kinds
      * @param referenceWords the reference words
-     * @param surfaceForms the surface forms
-     * @param reference the joined reference, nullable
+     * @param surfaceForms   the surface forms
+     * @param reference      the joined reference, nullable
      * @return the created noun mapping
      */
     public NounMapping createNounMappingStateless(ImmutableSortedSet<Word> words, ImmutableSortedMap<MappingKind, Confidence> distribution,

@@ -3,7 +3,6 @@ package edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.informants
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
-import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognitionStateImpl
 
 abstract class ImageProcessingDockerInformant(
     image: String,
@@ -13,13 +12,13 @@ abstract class ImageProcessingDockerInformant(
     dataRepository: DataRepository,
     endpoint: String
 ) : DockerInformant(
-    image,
-    defaultPort,
-    useDocker,
-    id,
-    dataRepository,
-    endpoint
-) {
+        image,
+        defaultPort,
+        useDocker,
+        id,
+        dataRepository,
+        endpoint
+    ) {
     final override fun process() {
         try {
             start()
@@ -42,5 +41,8 @@ abstract class ImageProcessingDockerInformant(
         }
     }
 
-    protected abstract fun processImage(diagram: Diagram, imageData: ByteArray)
+    protected abstract fun processImage(
+        diagram: Diagram,
+        imageData: ByteArray
+    )
 }

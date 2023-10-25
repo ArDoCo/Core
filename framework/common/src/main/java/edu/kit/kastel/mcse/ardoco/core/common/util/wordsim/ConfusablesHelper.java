@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim;
 
 import java.io.BufferedReader;
@@ -73,8 +74,8 @@ public class ConfusablesHelper {
                     var extracted = extractHomoglyphsFromLine(line);
                     if (!extracted.isEmpty()) {
                         for (var unicodeCharacter : extracted) {
-                            homoglyphs.merge(unicodeCharacter, extracted,
-                                    (oldL, newL) -> FastList.newList(Stream.concat(oldL.stream(), newL.stream()).toList()));
+                            homoglyphs.merge(unicodeCharacter, extracted, (oldL, newL) -> FastList.newList(Stream.concat(oldL.stream(), newL.stream())
+                                    .toList()));
                         }
                     }
                 }

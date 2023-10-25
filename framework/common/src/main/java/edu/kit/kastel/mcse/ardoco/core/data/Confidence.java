@@ -19,7 +19,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
  * This class represents a confidence for a certain (intermediate) result. Different {@link Claimant Claimants} can add their confidences that get aggregated
  * via one of the {@link AggregationFunctions} to a single confidence value.
  */
- @Deterministic
+@Deterministic
 public final class Confidence implements Comparable<Confidence>, ICopyable<Confidence>, Serializable {
 
     private final AggregationFunctions confidenceAggregator;

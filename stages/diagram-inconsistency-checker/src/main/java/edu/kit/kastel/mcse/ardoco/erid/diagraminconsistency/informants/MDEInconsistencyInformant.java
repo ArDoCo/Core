@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.informants;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;

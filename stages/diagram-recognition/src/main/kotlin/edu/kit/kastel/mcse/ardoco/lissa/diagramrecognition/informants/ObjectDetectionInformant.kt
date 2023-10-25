@@ -5,7 +5,6 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
-import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognitionStateImpl
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.createObjectMapper
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.executeRequest
 import org.apache.hc.client5.http.classic.methods.HttpPost
@@ -14,18 +13,18 @@ import org.apache.hc.core5.http.ContentType
 import org.apache.hc.core5.http.HttpEntity
 import java.io.ByteArrayInputStream
 import java.io.InputStream
-import java.util.*
+import java.util.SortedMap
 
 class ObjectDetectionInformant(
     dataRepository: DataRepository
 ) : ImageProcessingDockerInformant(
-    DOCKER_SKETCH_RECOGNITION,
-    DEFAULT_PORT,
-    DOCKER_SKETCH_RECOGNITION_VIA_DOCKER,
-    ID,
-    dataRepository,
-    "sketches"
-) {
+        DOCKER_SKETCH_RECOGNITION,
+        DEFAULT_PORT,
+        DOCKER_SKETCH_RECOGNITION_VIA_DOCKER,
+        ID,
+        dataRepository,
+        "sketches"
+    ) {
     companion object {
         const val DOCKER_SKETCH_RECOGNITION = "ghcr.io/lissa-approach/detectron2-sr:latest"
         const val DEFAULT_PORT = 5005
@@ -38,15 +37,21 @@ class ObjectDetectionInformant(
         // Not needed
     }
 
-    override fun processImage(diagram: Diagram, imageData: ByteArray) {
+    override fun processImage(
+        diagram: Diagram,
+        imageData: ByteArray
+    ) {
         val boxes = detectEntities(diagram, ByteArrayInputStream(imageData))
         boxes.forEach { diagram.addBox(it) }
     }
 
-    fun detectEntities(diagram: Diagram, image: InputStream): List<Box> {
+    fun detectEntities(
+        diagram: Diagram,
+        image: InputStream
+    ): List<Box> {
         val sketchRecognition = sendSketchRecognitionRequest(image)
         logger.debug("Processed DiagramRecognition request")
-        val oom = createObjectMapper();
+        val oom = createObjectMapper()
         oom.setInjectableValues(
             InjectableValues.Std().addValue(
                 Diagram::class.java,

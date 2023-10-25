@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.informants;
 
 import java.util.*;
@@ -53,8 +54,10 @@ public class DiagramModelReferenceInformant extends Informant {
             return;
         }
 
-        var boxes = Lists.mutable.fromStream(
-                DataRepositoryHelper.getDiagramRecognitionState(dataRepository).getDiagrams().stream().flatMap(d -> d.getBoxes().stream()));
+        var boxes = Lists.mutable.fromStream(DataRepositoryHelper.getDiagramRecognitionState(dataRepository)
+                .getDiagrams()
+                .stream()
+                .flatMap(d -> d.getBoxes().stream()));
         boxes.forEach(box -> setReferences(box, optModelStates.orElseThrow()));
     }
 

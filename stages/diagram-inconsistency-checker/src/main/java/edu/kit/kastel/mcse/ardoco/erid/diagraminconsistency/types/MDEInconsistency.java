@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.types;
 
 import java.util.Locale;
@@ -10,7 +11,9 @@ import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.Inconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 
 /**
- * {@link MDEInconsistency} stands for Missing Diagram Element Inconsistency and should be created for each {@link RecommendedInstance} that is not part of a {@link edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram Diagram}.
+ * {@link MDEInconsistency} stands for Missing Diagram Element Inconsistency and should be created for each {@link RecommendedInstance} that is not part of a
+ * {@link edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram Diagram}.
+ * 
  * @param recommendedInstance the {@link RecommendedInstance}
  */
 public record MDEInconsistency(RecommendedInstance recommendedInstance) implements Inconsistency, Comparable<MDEInconsistency> {
@@ -18,8 +21,8 @@ public record MDEInconsistency(RecommendedInstance recommendedInstance) implemen
 
     @Override
     public String getReason() {
-        return String.format(Locale.ENGLISH, "Text indicates an Entity \"%s\" (confidence: %.2f) that is not contained by a diagram.", recommendedInstance.getName(),
-                recommendedInstance.getProbability());
+        return String.format(Locale.ENGLISH, "Text indicates an Entity \"%s\" (confidence: %.2f) that is not contained by a diagram.", recommendedInstance
+                .getName(), recommendedInstance.getProbability());
     }
 
     @Override

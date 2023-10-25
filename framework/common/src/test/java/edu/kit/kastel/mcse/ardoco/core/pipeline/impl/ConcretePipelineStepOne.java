@@ -1,15 +1,17 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline.impl;
 
-import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
-import edu.kit.kastel.mcse.ardoco.core.data.impl.TextData;
-import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
 import java.util.Arrays;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.function.Predicate;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
+import edu.kit.kastel.mcse.ardoco.core.data.impl.TextData;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
 
 /**
  * Example implementation of {@link AbstractPipelineStep}

@@ -22,14 +22,14 @@ import java.io.FileOutputStream
 class DiagramRecognitionAgent(
     dataRepository: DataRepository
 ) : PipelineAgent(
-    listOf(
-        ObjectDetectionInformant(dataRepository),
-        OcrInformant(dataRepository),
-        RecognitionCombinatorInformant(dataRepository)
-    ),
-    ID,
-    dataRepository
-) {
+        listOf(
+            ObjectDetectionInformant(dataRepository),
+            OcrInformant(dataRepository),
+            RecognitionCombinatorInformant(dataRepository)
+        ),
+        ID,
+        dataRepository
+    ) {
     companion object {
         const val ID = "DiagramRecognitionAgent"
         const val ENV_DEBUG_VISUALIZE = "debugVisualize"
@@ -38,10 +38,13 @@ class DiagramRecognitionAgent(
     override fun before() {
         val diagramRecognitionState = DataRepositoryHelper.getDiagramRecognitionState(dataRepository)
         for (diagram in diagramRecognitionState.getUnprocessedDiagrams()) {
-            val cached = SerializableFileBasedCache(
-                SketchRecognitionResult::class
-                    .java, diagram.resourceName, "diagram-recognition/"
-            ).getOrRead()
+            val cached =
+                SerializableFileBasedCache(
+                    SketchRecognitionResult::class
+                        .java,
+                    diagram.resourceName,
+                    "diagram-recognition/"
+                ).getOrRead()
             if (cached == null) {
                 logger.info("${diagram.resourceName} is not cached")
             } else {
@@ -66,7 +69,9 @@ class DiagramRecognitionAgent(
             logger.info("Caching {}", diagram.resourceName)
             SerializableFileBasedCache(
                 SketchRecognitionResult::class
-                    .java, diagram.resourceName, "diagram-recognition/"
+                    .java,
+                diagram.resourceName,
+                "diagram-recognition/"
             ).use {
                 it.cache(
                     SketchRecognitionResult(

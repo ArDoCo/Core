@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
 import java.util.Optional;
@@ -20,8 +21,8 @@ public class DiagramBackedNounMappingImpl extends NounMappingImpl {
      * @param diagramElement the diagram element, nullable if none is associated
      */
     public DiagramBackedNounMappingImpl(@NotNull NounMappingImpl nounMapping, @Nullable DiagramElement diagramElement) {
-        super(NounMappingImpl.earliestCreationTime(nounMapping), nounMapping.getWords(), nounMapping.getDistribution().toSortedMap().toImmutable(),
-                nounMapping.getReferenceWords(), nounMapping.getSurfaceForms(), nounMapping.getReference());
+        super(NounMappingImpl.earliestCreationTime(nounMapping), nounMapping.getWords(), nounMapping.getDistribution().toSortedMap().toImmutable(), nounMapping
+                .getReferenceWords(), nounMapping.getSurfaceForms(), nounMapping.getReference());
         this.diagramElement = diagramElement;
     }
 

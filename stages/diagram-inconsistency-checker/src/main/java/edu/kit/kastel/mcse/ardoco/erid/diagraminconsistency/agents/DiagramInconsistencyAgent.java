@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.agents;
 
 import java.util.List;
@@ -15,7 +16,7 @@ import edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.informants.MTDEIncon
 public class DiagramInconsistencyAgent extends PipelineAgent {
 
     public DiagramInconsistencyAgent(DataRepository dataRepository) {
-        super(List.of(new MDEInconsistencyInformant(dataRepository), new MTDEInconsistencyInformant(dataRepository)),
-                DiagramInconsistencyAgent.class.getSimpleName(), dataRepository);
+        super(List.of(new MDEInconsistencyInformant(dataRepository), new MTDEInconsistencyInformant(dataRepository)), DiagramInconsistencyAgent.class
+                .getSimpleName(), dataRepository);
     }
 }

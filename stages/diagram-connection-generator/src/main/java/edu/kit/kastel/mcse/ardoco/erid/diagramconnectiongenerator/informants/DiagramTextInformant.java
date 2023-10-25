@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator.informants;
 
 import java.util.Locale;
@@ -73,10 +74,10 @@ public class DiagramTextInformant extends Informant {
                 for (var tBox : texts) {
                     var ris = recommendationState.getRecommendedInstances();
                     for (var recommendedInstance : ris) {
-                        if (AbbreviationDisambiguationHelper.isInitialismOf(recommendedInstance.getName().toLowerCase(Locale.ENGLISH),
-                                tBox.getText().toLowerCase(Locale.ENGLISH), initialismThreshold)) {
-                            diagramConnectionState.addToLinksBetweenDeAndRi(recommendedInstance, box, projectName, this,
-                                    DiagramUtil.calculateSimilarityMap(box, recommendedInstance));
+                        if (AbbreviationDisambiguationHelper.isInitialismOf(recommendedInstance.getName().toLowerCase(Locale.ENGLISH), tBox.getText()
+                                .toLowerCase(Locale.ENGLISH), initialismThreshold)) {
+                            diagramConnectionState.addToLinksBetweenDeAndRi(recommendedInstance, box, projectName, this, DiagramUtil.calculateSimilarityMap(box,
+                                    recommendedInstance));
                         }
                     }
                 }

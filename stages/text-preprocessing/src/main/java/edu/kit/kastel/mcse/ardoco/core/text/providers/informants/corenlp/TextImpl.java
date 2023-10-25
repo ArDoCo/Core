@@ -1,7 +1,9 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp;
 
-import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -13,9 +15,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.stanford.nlp.pipeline.CoreDocument;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 
 public class TextImpl implements Text {
 

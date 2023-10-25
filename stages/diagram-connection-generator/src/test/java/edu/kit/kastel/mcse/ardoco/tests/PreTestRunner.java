@@ -1,4 +1,10 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.tests;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import edu.kit.kastel.mcse.ardoco.core.api.InputDiagramData;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
@@ -16,57 +22,45 @@ import edu.kit.kastel.mcse.ardoco.core.textextraction.TextStateImpl;
 import edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.DiagramRecognitionMock;
 import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognition;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class PreTestRunner extends ParameterizedRunner<PreTestRunner.Parameters> {
-  public PreTestRunner(String projectName, Parameters parameters) {
-    super(projectName, parameters);
-  }
-
-  public record Parameters(DiagramProject diagramProject, File outputDir, boolean useMockDiagrams) {
-  }
-
-  @Override
-  public List<AbstractPipelineStep> initializePipelineSteps(Parameters p) throws IOException {
-    var pipelineSteps = new ArrayList<AbstractPipelineStep>();
-
-    ArDoCo arDoCo = getArDoCo();
-    var dataRepository = arDoCo.getDataRepository();
-
-    var text = CommonUtilities.readInputText(p.diagramProject.getTextFile());
-    if (text.isBlank()) {
-      throw new IllegalArgumentException("Cannot deal with empty input text. Maybe there was an " +
-              "error reading the file.");
-    }
-    DataRepositoryHelper.putInputText(dataRepository, text);
-    pipelineSteps.add(TextPreprocessingAgent.get(p.diagramProject.getAdditionalConfigurations(),
-            dataRepository));
-
-    pipelineSteps.add(ModelProviderAgent.get(p.diagramProject.getModelFile(),
-            p.diagramProject.getArchitectureModelType(), dataRepository));
-
-    if (p.useMockDiagrams) {
-      pipelineSteps.add(new DiagramRecognitionMock(p.diagramProject,
-              p.diagramProject.getAdditionalConfigurations(), dataRepository));
-    } else {
-      dataRepository.addData(InputDiagramData.ID,
-              new InputDiagramData(p.diagramProject.getDiagramData()));
-      pipelineSteps.add(DiagramRecognition.get(p.diagramProject.getAdditionalConfigurations(),
-              dataRepository));
+    public PreTestRunner(String projectName, Parameters parameters) {
+        super(projectName, parameters);
     }
 
-    var textState = new TextStateImpl();
-    var textStrategy = new DiagramBackedTextStateStrategy(textState, dataRepository);
-    textState.setTextStateStrategy(textStrategy);
-    dataRepository.addData(TextState.ID, textState);
-    pipelineSteps.add(TextExtraction.get(p.diagramProject.getAdditionalConfigurations(),
-            dataRepository));
+    public record Parameters(DiagramProject diagramProject, File outputDir, boolean useMockDiagrams) {
+    }
 
-    pipelineSteps.add(RecommendationGenerator.get(p.diagramProject.getAdditionalConfigurations(),
-            dataRepository));
-    return pipelineSteps;
-  }
+    @Override
+    public List<AbstractPipelineStep> initializePipelineSteps(Parameters p) throws IOException {
+        var pipelineSteps = new ArrayList<AbstractPipelineStep>();
+
+        ArDoCo arDoCo = getArDoCo();
+        var dataRepository = arDoCo.getDataRepository();
+
+        var text = CommonUtilities.readInputText(p.diagramProject.getTextFile());
+        if (text.isBlank()) {
+            throw new IllegalArgumentException("Cannot deal with empty input text. Maybe there was an " + "error reading the file.");
+        }
+        DataRepositoryHelper.putInputText(dataRepository, text);
+        pipelineSteps.add(TextPreprocessingAgent.get(p.diagramProject.getAdditionalConfigurations(), dataRepository));
+
+        pipelineSteps.add(ModelProviderAgent.get(p.diagramProject.getModelFile(), p.diagramProject.getArchitectureModelType(), dataRepository));
+
+        if (p.useMockDiagrams) {
+            pipelineSteps.add(new DiagramRecognitionMock(p.diagramProject, p.diagramProject.getAdditionalConfigurations(), dataRepository));
+        } else {
+            dataRepository.addData(InputDiagramData.ID, new InputDiagramData(p.diagramProject.getDiagramData()));
+            pipelineSteps.add(DiagramRecognition.get(p.diagramProject.getAdditionalConfigurations(), dataRepository));
+        }
+
+        var textState = new TextStateImpl();
+        var textStrategy = new DiagramBackedTextStateStrategy(textState, dataRepository);
+        textState.setTextStateStrategy(textStrategy);
+        dataRepository.addData(TextState.ID, textState);
+        pipelineSteps.add(TextExtraction.get(p.diagramProject.getAdditionalConfigurations(), dataRepository));
+
+        pipelineSteps.add(RecommendationGenerator.get(p.diagramProject.getAdditionalConfigurations(), dataRepository));
+        return pipelineSteps;
+    }
 }

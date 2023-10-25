@@ -11,7 +11,7 @@ import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.boundingBox
 import java.awt.Color
 import java.awt.image.BufferedImage
 import java.io.ByteArrayInputStream
-import java.util.*
+import java.util.SortedMap
 import java.util.stream.IntStream
 import javax.imageio.ImageIO
 
@@ -19,9 +19,9 @@ class RecognitionCombinatorInformant(
     dataRepository: DataRepository
 ) :
     Informant(
-        ID,
-        dataRepository
-    ) {
+            ID,
+            dataRepository
+        ) {
     companion object {
         const val ID = "RecognitionCombinatorInformant"
     }
@@ -46,13 +46,16 @@ class RecognitionCombinatorInformant(
         diagram.boxes.filter { it.classification == Classification.LABEL }.forEach(diagram::removeBox)
     }
 
-    private fun combineBoxesAndText(entities: List<Box>, textsUnfiltered: List<TextBox>) {
-        //Boxes without parents are tree roots
+    private fun combineBoxesAndText(
+        entities: List<Box>,
+        textsUnfiltered: List<TextBox>
+    ) {
+        // Boxes without parents are tree roots
         var boxes = entities.filter { it.parent.isEmpty }
         var texts = textsUnfiltered.filter { it.text.length >= 2 }
 
         for (box in boxes) {
-            //TODO Could also only pass the remaining texts here instead of passing all texts to each node, but will leave it like this for now, not sure of the impact
+            // TODO Could also only pass the remaining texts here instead of passing all texts to each node, but will leave it like this for now, not sure of the impact
             combineBoxesAndTextForTree(box, texts)
         }
     }
@@ -60,7 +63,10 @@ class RecognitionCombinatorInformant(
     /**
      * Depth first search
      */
-    private fun combineBoxesAndTextForTree(root: Box, texts: List<TextBox>): List<TextBox> {
+    private fun combineBoxesAndTextForTree(
+        root: Box,
+        texts: List<TextBox>
+    ): List<TextBox> {
         val children = root.children
 
         var remainingTexts = texts
@@ -86,12 +92,18 @@ class RecognitionCombinatorInformant(
         return mutableRemainingTexts
     }
 
-    private fun calculateDominatingColors(imageData: ByteArray, boxes: List<Box>) {
+    private fun calculateDominatingColors(
+        imageData: ByteArray,
+        boxes: List<Box>
+    ) {
         val image = ByteArrayInputStream(imageData).use { ImageIO.read(it) }
         boxes.forEach { calculateDominatingColorForBox(image, it) }
     }
 
-    private fun calculateDominatingColorForBox(image: BufferedImage, box: Box) {
+    private fun calculateDominatingColorForBox(
+        image: BufferedImage,
+        box: Box
+    ) {
         val pixels = getPixels(image, box.box.toTypedArray())
 
         val count = pixels.size
@@ -106,7 +118,10 @@ class RecognitionCombinatorInformant(
         setColorsOfTexts(image, box)
     }
 
-    private fun getPixels(image: BufferedImage, box: Array<Int>): List<Int> {
+    private fun getPixels(
+        image: BufferedImage,
+        box: Array<Int>
+    ): List<Int> {
         val result = mutableListOf<Int>()
         for (x in IntStream.range(box[0], box[2])) for (y in IntStream.range(
             box[1],
@@ -117,7 +132,10 @@ class RecognitionCombinatorInformant(
         return result
     }
 
-    private fun setColorsOfTexts(image: BufferedImage, box: Box) {
+    private fun setColorsOfTexts(
+        image: BufferedImage,
+        box: Box
+    ) {
         for (text in box.texts) {
             val pixels = getPixels(image, text.absoluteBox().toTypedArray())
             val count = pixels.size

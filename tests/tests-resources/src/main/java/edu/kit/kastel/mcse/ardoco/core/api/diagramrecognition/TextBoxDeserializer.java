@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
 import java.io.IOException;
@@ -19,9 +20,9 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
  *              "y": 30,
  *              "w": 50,
  *              "h": 60
- *          }
- *      }
- *  ]
+ * }
+ * }
+ * ]
  * }</pre> is converted to a text box with {@code text = "User Management"} and its bounding box with {@code minX = 12, minY
  * = 30, maxX = 62, maxY = 90}.
  */

@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
@@ -11,6 +12,7 @@ public interface DiagramConnectionStates extends PipelineStepData {
 
     /**
      * {@return the state for the specified metamodel}
+     * 
      * @param mm the metamodel
      */
     DiagramConnectionState getDiagramConnectionState(Metamodel mm);

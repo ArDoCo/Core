@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

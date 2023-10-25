@@ -80,8 +80,8 @@ public class LevenshteinMeasure implements WordSimMeasure {
         //FIXME cast to lower case seems unwarranted given that this is delegated to WordSimUtils already
         var firstWord = UnicodeCharacterSequence.valueOf(ctx.firstTerm().toLowerCase());
         var secondWord = UnicodeCharacterSequence.valueOf(ctx.secondTerm().toLowerCase());
-        return 1.0 - this.levenshteinDistance.apply(ctx.firstTerm(), ctx.secondTerm(), ctx.characterMatch()) / (double) Math.max(
-                Math.max(firstWord.length(), secondWord.length()), 1);
+        return 1.0 - this.levenshteinDistance.apply(ctx.firstTerm(), ctx.secondTerm(), ctx.characterMatch()) / (double) Math.max(Math.max(firstWord.length(),
+                secondWord.length()), 1);
     }
 
 }

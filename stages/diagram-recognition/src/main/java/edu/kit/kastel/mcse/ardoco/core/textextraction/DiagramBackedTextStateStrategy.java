@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
 import java.util.Comparator;
@@ -75,10 +76,9 @@ public class DiagramBackedTextStateStrategy extends OriginalTextStateStrategy {
             if (SimilarityUtils.areNounMappingsSimilar(disposableNounMapping, existingNounMapping) && isDiagramElementMostSimilar(boxes, relatedToWordUnboxed,
                     existingNounMapping)) {
 
-                var mergedNounMapping = new DiagramBackedNounMappingImpl(
-                        mergeNounMappingsStateless(existingNounMapping, disposableNounMapping, disposableNounMapping.getReferenceWords(),
-                                disposableNounMapping.getReference(), disposableNounMapping.getKind(), claimant, disposableNounMapping.getProbability()),
-                        relatedToWordUnboxed);
+                var mergedNounMapping = new DiagramBackedNounMappingImpl(mergeNounMappingsStateless(existingNounMapping, disposableNounMapping,
+                        disposableNounMapping.getReferenceWords(), disposableNounMapping.getReference(), disposableNounMapping.getKind(), claimant,
+                        disposableNounMapping.getProbability()), relatedToWordUnboxed);
 
                 this.getTextState().removeNounMappingFromState(existingNounMapping, mergedNounMapping);
                 this.getTextState().removeNounMappingFromState(disposableNounMapping, mergedNounMapping);

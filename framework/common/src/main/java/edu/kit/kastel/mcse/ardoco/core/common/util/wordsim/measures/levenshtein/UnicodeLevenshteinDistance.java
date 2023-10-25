@@ -1,19 +1,4 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.levenshtein;
 
 import java.util.Arrays;
@@ -66,13 +51,13 @@ public class UnicodeLevenshteinDistance {
      * </p>
      *
      * <pre>
-     * limitedCompare(null, *, *)             = IllegalArgumentException
-     * limitedCompare(*, null, *)             = IllegalArgumentException
-     * limitedCompare(*, *, -1)               = IllegalArgumentException
-     * limitedCompare("","", 0)               = 0
-     * limitedCompare("aaapppp", "", 8)       = 7
-     * limitedCompare("aaapppp", "", 7)       = 7
-     * limitedCompare("aaapppp", "", 6))      = -1
+     * limitedCompare(null, *, *) = IllegalArgumentException
+     * limitedCompare(*, null, *) = IllegalArgumentException
+     * limitedCompare(*, *, -1) = IllegalArgumentException
+     * limitedCompare("","", 0) = 0
+     * limitedCompare("aaapppp", "", 8) = 7
+     * limitedCompare("aaapppp", "", 7) = 7
+     * limitedCompare("aaapppp", "", 6)) = -1
      * limitedCompare("elephant", "hippo", 7) = 7
      * limitedCompare("elephant", "hippo", 6) = -1
      * limitedCompare("hippo", "elephant", 7) = 7
@@ -243,17 +228,17 @@ public class UnicodeLevenshteinDistance {
      * <p>This implementation only need one single-dimensional arrays of length s.length() + 1</p>
      *
      * <pre>
-     * unlimitedCompare(null, *)             = IllegalArgumentException
-     * unlimitedCompare(*, null)             = IllegalArgumentException
-     * unlimitedCompare("","")               = 0
-     * unlimitedCompare("","a")              = 1
-     * unlimitedCompare("aaapppp", "")       = 7
-     * unlimitedCompare("frog", "fog")       = 1
-     * unlimitedCompare("fly", "ant")        = 3
+     * unlimitedCompare(null, *) = IllegalArgumentException
+     * unlimitedCompare(*, null) = IllegalArgumentException
+     * unlimitedCompare("","") = 0
+     * unlimitedCompare("","a") = 1
+     * unlimitedCompare("aaapppp", "") = 7
+     * unlimitedCompare("frog", "fog") = 1
+     * unlimitedCompare("fly", "ant") = 3
      * unlimitedCompare("elephant", "hippo") = 7
      * unlimitedCompare("hippo", "elephant") = 7
      * unlimitedCompare("hippo", "zzzzzzzz") = 8
-     * unlimitedCompare("hello", "hallo")    = 1
+     * unlimitedCompare("hello", "hallo") = 1
      * </pre>
      *
      * @param left           the first UnicodeCharacterSequence, must not be null
@@ -364,17 +349,17 @@ public class UnicodeLevenshteinDistance {
      * href="http://www.merriampark.com/ldjava.htm">http://www.merriampark.com/ldjava.htm</a></p>
      *
      * <pre>
-     * distance.apply(null, *)             = IllegalArgumentException
-     * distance.apply(*, null)             = IllegalArgumentException
-     * distance.apply("","")               = 0
-     * distance.apply("","a")              = 1
-     * distance.apply("aaapppp", "")       = 7
-     * distance.apply("frog", "fog")       = 1
-     * distance.apply("fly", "ant")        = 3
+     * distance.apply(null, *) = IllegalArgumentException
+     * distance.apply(*, null) = IllegalArgumentException
+     * distance.apply("","") = 0
+     * distance.apply("","a") = 1
+     * distance.apply("aaapppp", "") = 7
+     * distance.apply("frog", "fog") = 1
+     * distance.apply("fly", "ant") = 3
      * distance.apply("elephant", "hippo") = 7
      * distance.apply("hippo", "elephant") = 7
      * distance.apply("hippo", "zzzzzzzz") = 8
-     * distance.apply("hello", "hallo")    = 1
+     * distance.apply("hello", "hallo") = 1
      * </pre>
      *
      * @param left  the first string, must not be null

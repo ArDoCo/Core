@@ -2,15 +2,14 @@ package edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect
 import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.InjectableValues
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject
 
 fun createObjectMapper(): ObjectMapper {
-    val objectMapper: ObjectMapper = ObjectMapper().configure(SerializationFeature.INDENT_OUTPUT, true)
-        .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+    val objectMapper: ObjectMapper =
+        ObjectMapper().configure(SerializationFeature.INDENT_OUTPUT, true)
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
     objectMapper.setVisibility(
         objectMapper.serializationConfig.defaultVisibilityChecker //
             .withFieldVisibility(JsonAutoDetect.Visibility.ANY) //
@@ -27,7 +26,10 @@ fun <E> List<E>.with(other: E): List<E> {
     return list.toList()
 }
 
-fun <K, V> Map<K, V>.with(key: K, value: V): Map<K, V> {
+fun <K, V> Map<K, V>.with(
+    key: K,
+    value: V
+): Map<K, V> {
     val map = this.toMutableMap()
     map[key] = value
     return map.toMap()

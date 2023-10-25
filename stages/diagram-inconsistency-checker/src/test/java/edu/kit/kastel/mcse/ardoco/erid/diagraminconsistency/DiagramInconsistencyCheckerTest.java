@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency;
 
 import java.io.IOException;
@@ -100,7 +101,8 @@ public class DiagramInconsistencyCheckerTest extends StageTest<DiagramInconsiste
     }
 
     @Override
-    protected DataRepository runTestRunner(@NotNull DiagramProject project, @NotNull SortedMap<String, String> additionalConfigurations, @NotNull DataRepository preRunDataRepository) {
+    protected DataRepository runTestRunner(@NotNull DiagramProject project, @NotNull SortedMap<String, String> additionalConfigurations,
+            @NotNull DataRepository preRunDataRepository) {
         logger.info("Run TestRunner for {}", project.name());
         var combinedConfigs = new TreeMap<>(project.getAdditionalConfigurations());
         combinedConfigs.putAll(additionalConfigurations);

@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.tests;
 
 import java.io.Serializable;
@@ -17,14 +18,18 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 
 public record Results(DiagramProject project, SortedSet<DiaWordTraceLink> truePositives, SortedSet<DiaWordTraceLink> falsePositives,
-                      SortedSet<DiaGSTraceLink> falseNegatives, long TN, ExpectedResults expectedResults, SortedSet<DiaWordTraceLink> all)
-        implements Serializable {
+                      SortedSet<DiaGSTraceLink> falseNegatives, long TN, ExpectedResults expectedResults, SortedSet<DiaWordTraceLink> all) implements
+        Serializable {
+
     private final static Logger logger = LoggerFactory.getLogger(Results.class);
 
     public static Results create(DiagramProject project, Text text, Set<DiaWordTraceLink> wordTraceLinks, ExpectedResults expected) {
         var allGoldStandardTraceLinks = project.getDiagramTraceLinksAsMap(text.getSentences().toList());
-        TreeSet<DiaGSTraceLink> goldStandard = new TreeSet<>(
-                allGoldStandardTraceLinks.entrySet().stream().filter(e -> e.getKey().isActualPositive()).flatMap(e -> e.getValue().stream()).toList());
+        TreeSet<DiaGSTraceLink> goldStandard = new TreeSet<>(allGoldStandardTraceLinks.entrySet()
+                .stream()
+                .filter(e -> e.getKey().isActualPositive())
+                .flatMap(e -> e.getValue().stream())
+                .toList());
 
         var totalSentences = text.getSentences().size();
         var totalDiagramElements = project.getDiagramsGoldStandard().stream().flatMap(d -> d.getBoxes().stream()).toList().size();
@@ -213,8 +218,9 @@ public record Results(DiagramProject project, SortedSet<DiaWordTraceLink> truePo
             return false;
         if (this == other)
             return true;
-        return Objects.equals(this.TN(), other.TN()) && Objects.equals(this.truePositives().size(), other.truePositives().size()) && Objects.equals(
-                this.falsePositives().size(), other.falsePositives().size()) && Objects.equals(this.falseNegatives().size(), other.falseNegatives().size());
+        return Objects.equals(this.TN(), other.TN()) && Objects.equals(this.truePositives().size(), other.truePositives().size()) && Objects.equals(this
+                .falsePositives()
+                .size(), other.falsePositives().size()) && Objects.equals(this.falseNegatives().size(), other.falseNegatives().size());
     }
 
     @Override

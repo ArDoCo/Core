@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction.informants;
 
 import java.util.ArrayList;
@@ -76,8 +77,9 @@ public class AbbreviationInformant extends Informant {
         if (optBracket.isEmpty())
             return;
         var bracket = optBracket.orElseThrow();
-        var optPrev = findFurthestWithSharedInitial(Word::getPreWord, bracket, initial,
-                adjacencyLimit - (word.getPosition() - bracket.getPosition()) + word.getText().length(), brackets);
+        var optPrev = findFurthestWithSharedInitial(Word::getPreWord, bracket, initial, adjacencyLimit - (word.getPosition() - bracket.getPosition()) + word
+                .getText()
+                .length(), brackets);
         if (optPrev.isPresent()) {
             var meaningList = between(optPrev.orElseThrow(), word);
             if (!requireSpecialCharacter || meaningList.stream().anyMatch(w -> !Character.isLetter(w.getText().toCharArray()[0]))) {

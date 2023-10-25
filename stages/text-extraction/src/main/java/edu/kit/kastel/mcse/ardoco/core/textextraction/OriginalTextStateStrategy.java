@@ -13,6 +13,7 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.sorted.MutableSortedMap;
 import org.eclipse.collections.api.set.sorted.MutableSortedSet;
+import org.jetbrains.annotations.NotNull;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
@@ -21,8 +22,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextStateStrategy;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
-
-import org.jetbrains.annotations.NotNull;
 
 public class OriginalTextStateStrategy extends DefaultTextStateStrategy implements Serializable {
 
@@ -40,8 +39,8 @@ public class OriginalTextStateStrategy extends DefaultTextStateStrategy implemen
         for (var existingNounMapping : super.getTextState().getNounMappings()) {
             if (SimilarityUtils.areNounMappingsSimilar(disposableNounMapping, existingNounMapping)) {
 
-                return mergeNounMappings(existingNounMapping, disposableNounMapping, disposableNounMapping.getReferenceWords(),
-                        disposableNounMapping.getReference(), disposableNounMapping.getKind(), claimant, disposableNounMapping.getProbability());
+                return mergeNounMappings(existingNounMapping, disposableNounMapping, disposableNounMapping.getReferenceWords(), disposableNounMapping
+                        .getReference(), disposableNounMapping.getKind(), claimant, disposableNounMapping.getProbability());
             }
         }
 
@@ -51,8 +50,8 @@ public class OriginalTextStateStrategy extends DefaultTextStateStrategy implemen
 
     @NotNull
     @Override
-    public NounMappingImpl mergeNounMappingsStateless(@NotNull NounMapping firstNounMapping, @NotNull NounMapping secondNounMapping, ImmutableList<Word> referenceWords,
-            String reference, @NotNull MappingKind mappingKind, @NotNull Claimant claimant, double probability) {
+    public NounMappingImpl mergeNounMappingsStateless(@NotNull NounMapping firstNounMapping, @NotNull NounMapping secondNounMapping,
+            ImmutableList<Word> referenceWords, String reference, @NotNull MappingKind mappingKind, @NotNull Claimant claimant, double probability) {
 
         MutableSortedSet<Word> mergedWords = firstNounMapping.getWords().toSortedSet();
         mergedWords.add(secondNounMapping.getReferenceWords().get(0));
@@ -60,10 +59,11 @@ public class OriginalTextStateStrategy extends DefaultTextStateStrategy implemen
 
         var existingNounMappingDistribution = firstNounMapping.getDistribution();
         var disposableNounMappingDistribution = secondNounMapping.getDistribution();
-        var mergedRawMap = Arrays.stream(MappingKind.values()).collect(Collectors.toMap( //
-                kind -> kind, //
-                kind -> putAllConfidencesTogether(existingNounMappingDistribution.get(kind), disposableNounMappingDistribution.get(kind)) //
-        ));
+        var mergedRawMap = Arrays.stream(MappingKind.values())
+                .collect(Collectors.toMap( //
+                        kind -> kind, //
+                        kind -> putAllConfidencesTogether(existingNounMappingDistribution.get(kind), disposableNounMappingDistribution.get(kind)) //
+                ));
         MutableSortedMap<MappingKind, Confidence> mergedDistribution = SortedMaps.mutable.withSortedMap(mergedRawMap);
 
         MutableList<String> mergedSurfaceForms = firstNounMapping.getSurfaceForms().toList();

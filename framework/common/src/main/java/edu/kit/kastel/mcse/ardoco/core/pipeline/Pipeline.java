@@ -1,12 +1,13 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline;
 
-import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
+
+import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 
 /**
  * Class that represents a pipeline that can consist of multiple {@link AbstractPipelineStep
@@ -37,8 +38,7 @@ public class Pipeline extends AbstractPipelineStep {
      * @param pipelineSteps  List of {@link AbstractPipelineStep} that should be added to the
      *                       constructed pipeline
      */
-    public Pipeline(String id, DataRepository dataRepository,
-                    List<AbstractPipelineStep> pipelineSteps) {
+    public Pipeline(String id, DataRepository dataRepository, List<AbstractPipelineStep> pipelineSteps) {
         super(id, dataRepository);
         this.pipelineSteps = pipelineSteps;
     }
@@ -79,14 +79,12 @@ public class Pipeline extends AbstractPipelineStep {
                 int millisPart = duration.toMillisPart();
                 String durationString;
                 if (minutesPart > 0) {
-                    durationString = String.format("%02d:%02d.%03d", minutesPart, secondsPart,
-                            millisPart);
+                    durationString = String.format("%02d:%02d.%03d", minutesPart, secondsPart, millisPart);
                 } else {
                     durationString = String.format("%01d.%03d s", secondsPart, millisPart);
                 }
 
-                logger.info("Finished {} - {} in {}", this.getId(), pipelineStep.getId(),
-                        durationString);
+                logger.info("Finished {} - {} in {}", this.getId(), pipelineStep.getId(), durationString);
             }
         }
     }

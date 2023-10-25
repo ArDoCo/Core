@@ -113,12 +113,12 @@ public class CompoundRecommendationInformant extends Informant {
         MutableSortedSet<String> similarModelTypes = SortedSets.mutable.empty();
         var typeIdentifiers = CommonUtilities.getTypeIdentifiers(modelState);
         for (var typeMapping : typeMappings) {
-            var currSimilarTypes = Lists.immutable.fromStream(
-                    typeIdentifiers.stream().filter(typeId -> SimilarityUtils.areWordsSimilar(typeId, typeMapping.getReference())));
+            var currSimilarTypes = Lists.immutable.fromStream(typeIdentifiers.stream()
+                    .filter(typeId -> SimilarityUtils.areWordsSimilar(typeId, typeMapping.getReference())));
             similarModelTypes.addAll(currSimilarTypes.toList());
             for (var word : typeMapping.getWords()) {
-                currSimilarTypes = Lists.immutable.fromStream(
-                        typeIdentifiers.stream().filter(typeId -> SimilarityUtils.areWordsSimilar(typeId, word.getLemma())));
+                currSimilarTypes = Lists.immutable.fromStream(typeIdentifiers.stream()
+                        .filter(typeId -> SimilarityUtils.areWordsSimilar(typeId, word.getLemma())));
                 similarModelTypes.addAll(currSimilarTypes.toList());
             }
         }

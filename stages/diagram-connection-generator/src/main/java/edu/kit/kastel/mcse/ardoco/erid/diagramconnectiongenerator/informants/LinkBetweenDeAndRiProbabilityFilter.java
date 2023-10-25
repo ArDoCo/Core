@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator.informants;
 
 import org.slf4j.Logger;
@@ -41,7 +42,7 @@ public class LinkBetweenDeAndRiProbabilityFilter extends Informant {
     }
 
     /**
-     * Calculates the overall confidence in each trace link using {@link  AggregationFunctions#MAX} and removes all below a certain threshold.
+     * Calculates the overall confidence in each trace link using {@link AggregationFunctions#MAX} and removes all below a certain threshold.
      *
      * @param diagramConnectionState the diagram connection state
      */

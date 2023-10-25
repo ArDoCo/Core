@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.erid.api.models.tracelinks;
 
 import java.util.HashSet;
@@ -136,7 +137,8 @@ public class LinkBetweenDeAndRi extends EndpointTuple implements Claimant, Compa
      * @return immutable set of diagram text tracelinks
      */
     public @NotNull ImmutableSet<DiaWordTraceLink> toTraceLinks() {
-        return Sets.immutable.fromStream(
-                getConfidenceMap().entrySet().stream().map(e -> new DiaWordTraceLink(getDiagramElement(), e.getKey(), projectName, e.getValue(), this)));
+        return Sets.immutable.fromStream(getConfidenceMap().entrySet()
+                .stream()
+                .map(e -> new DiaWordTraceLink(getDiagramElement(), e.getKey(), projectName, e.getValue(), this)));
     }
 }

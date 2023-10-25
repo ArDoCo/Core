@@ -215,9 +215,9 @@ public class WordSimUtils {
         if (measures.isEmpty())
             measures.add(new EqualityMeasure());
 
-        return strategy.getSimilarity(
-                new ComparisonContext(ignoreCase ? firstWord.toLowerCase() : firstWord, ignoreCase ? secondWord.toLowerCase() : secondWord, null, null, false,
-                        characterMatch), measures);
+        return strategy.getSimilarity(new ComparisonContext(ignoreCase ? firstWord.toLowerCase() : firstWord, ignoreCase ?
+                secondWord.toLowerCase() :
+                secondWord, null, null, false, characterMatch), measures);
     }
 
     /**

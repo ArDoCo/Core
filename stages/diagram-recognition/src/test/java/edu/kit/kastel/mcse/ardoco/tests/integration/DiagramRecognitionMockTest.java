@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.tests.integration;
 
 import java.io.IOException;
@@ -70,7 +71,7 @@ public class DiagramRecognitionMockTest extends StageTest<DiagramRecognitionMock
 
     @Override
     protected DataRepository runTestRunner(@NotNull GoldStandardDiagrams project, @NotNull SortedMap<String, String> additionalConfigurations,
-                                           @NotNull DataRepository preRunDataRepository) {
+            @NotNull DataRepository preRunDataRepository) {
         return new AnonymousRunner(project.getProjectName(), preRunDataRepository) {
             @Override
             public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) {

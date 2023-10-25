@@ -19,12 +19,6 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
-import java.util.Objects;
-import java.util.SortedMap;
-import java.util.function.BinaryOperator;
-import java.util.function.UnaryOperator;
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.MutableList;
 
 /**
  * This informant looks for (parts of) the project's name within RecommendedInstances and if it finds the project's name, influences the
@@ -127,7 +121,7 @@ public class ProjectNameInformant extends Informant {
     }
 
     private void expandWordForName(String name, Word currWord, MutableList<Word> words, UnaryOperator<Word> wordExpansion,
-                                   BinaryOperator<String> concatenation) {
+            BinaryOperator<String> concatenation) {
         Objects.requireNonNull(name);
         if (words.isEmpty()) {
             throw new IllegalArgumentException(ERROR_EMPTY_LIST);

@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks;
 
 import java.util.Objects;
@@ -58,9 +59,8 @@ public class DiaGSTraceLink extends DiaTexTraceLink {
         if (this == obj)
             return true;
         if (obj instanceof DiaGSTraceLink other) {
-            return Objects.equals(getGoldStandard(), other.getGoldStandard()) && Objects.equals(getDiagramElement(),
-                    other.getDiagramElement()) && Objects.equals(getSentenceNo(), other.getSentenceNo()) && Objects.equals(getTraceType(),
-                    other.getTraceType());
+            return Objects.equals(getGoldStandard(), other.getGoldStandard()) && Objects.equals(getDiagramElement(), other.getDiagramElement()) && Objects
+                    .equals(getSentenceNo(), other.getSentenceNo()) && Objects.equals(getTraceType(), other.getTraceType());
         }
         return super.equals(obj);
     }

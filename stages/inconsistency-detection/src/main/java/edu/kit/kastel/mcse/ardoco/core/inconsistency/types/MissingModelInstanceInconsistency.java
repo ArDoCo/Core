@@ -1,10 +1,6 @@
 /* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.types;
 
-import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
-
-import edu.kit.kastel.mcse.ardoco.core.inconsistency.MissingElementInconsistencyCandidate;
-
 import java.util.Locale;
 import java.util.Objects;
 
@@ -13,8 +9,10 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.TextInconsistency;
+import edu.kit.kastel.mcse.ardoco.core.inconsistency.MissingElementInconsistencyCandidate;
 
-public record MissingModelInstanceInconsistency(String name, int sentence, double confidence, MissingElementInconsistencyCandidate origin) implements TextInconsistency {
+public record MissingModelInstanceInconsistency(String name, int sentence, double confidence, MissingElementInconsistencyCandidate origin) implements
+        TextInconsistency {
 
     private static final String INCONSISTENCY_TYPE_NAME = "MissingModelInstance";
 

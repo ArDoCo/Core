@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.configuration;
 
 import static edu.kit.kastel.mcse.ardoco.core.configuration.AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR;
@@ -64,7 +65,9 @@ public class ConfigurationUtility {
     public static Map<Class<? extends PipelineAgent>, Set<Class<? extends Informant>>> getInformantsMap(AbstractExecutionStage stage) {
         return stage.getAgents()
                 .stream()
-                .collect(Collectors.toMap(PipelineAgent::getClass,
-                        agent -> agent.getInformants().stream().map(Informant::getClass).collect(Collectors.toSet())));
+                .collect(Collectors.toMap(PipelineAgent::getClass, agent -> agent.getInformants()
+                        .stream()
+                        .map(Informant::getClass)
+                        .collect(Collectors.toSet())));
     }
 }

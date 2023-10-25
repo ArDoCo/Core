@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator.informants;
 
 import java.util.ArrayList;
@@ -67,8 +68,8 @@ public class DiagramAsModelInformant extends Informant {
             for (Pair<Box, ModelInstance> pair : diagramModelInstances) {
                 var mostLikelyRi = SimilarityUtils.getMostRecommendedInstancesToInstanceByReferences(pair.second(), recommendedInstances);
                 for (var recommendedInstance : mostLikelyRi) {
-                    basedOnIncreasingMinimalProportionalThreshold.add(new LinkBetweenDeAndRi(recommendedInstance, pair.first(), projectName, this,
-                            DiagramUtil.calculateSimilarityMap(pair.first(), recommendedInstance)));
+                    basedOnIncreasingMinimalProportionalThreshold.add(new LinkBetweenDeAndRi(recommendedInstance, pair.first(), projectName, this, DiagramUtil
+                            .calculateSimilarityMap(pair.first(), recommendedInstance)));
                 }
             }
         }
@@ -88,14 +89,14 @@ public class DiagramAsModelInformant extends Informant {
                 for (Pair<Box, ModelInstance> pair : diagramModelInstances) {
                     //Add based on overall similarity
                     if (SimilarityUtils.isRecommendedInstanceSimilarToModelInstance(recommendedInstance, pair.second())) {
-                        basedOnOverallSimilarity.add(new LinkBetweenDeAndRi(recommendedInstance, pair.first(), projectName, this,
-                                DiagramUtil.calculateSimilarityMap(pair.first(), recommendedInstance)));
+                        basedOnOverallSimilarity.add(new LinkBetweenDeAndRi(recommendedInstance, pair.first(), projectName, this, DiagramUtil
+                                .calculateSimilarityMap(pair.first(), recommendedInstance)));
                     }
                     //Add based on surface words
                     var similarSurfaceWords = SimilarityUtils.getSimilarSurfaceWords(recommendedInstance, pair.second());
                     if (similarSurfaceWords.size() >= minSimilarSurfaceWords) {
-                        basedOnSurfaceWords.add(new LinkBetweenDeAndRi(recommendedInstance, pair.first(), projectName, this,
-                                DiagramUtil.calculateSimilarityMap(pair.first(), recommendedInstance)));
+                        basedOnSurfaceWords.add(new LinkBetweenDeAndRi(recommendedInstance, pair.first(), projectName, this, DiagramUtil.calculateSimilarityMap(
+                                pair.first(), recommendedInstance)));
                     }
                 }
             }

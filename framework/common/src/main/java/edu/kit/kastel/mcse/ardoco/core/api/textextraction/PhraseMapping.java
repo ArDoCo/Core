@@ -5,11 +5,11 @@ import java.io.Serializable;
 
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.map.sorted.ImmutableSortedMap;
+import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.PhraseType;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
-import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 
 public interface PhraseMapping extends Serializable {
 

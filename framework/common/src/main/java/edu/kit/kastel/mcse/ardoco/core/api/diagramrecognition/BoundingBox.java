@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
 import java.io.Serializable;
@@ -16,6 +17,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityComparable;
  * @param maxY y coordinate of the bottom bounding box edge
  */
 public record BoundingBox(int minX, int minY, int maxX, int maxY) implements SimilarityComparable<BoundingBox>, Serializable {
+
     /**
      * Threshold used by the IoU to determine whether bounding boxes are similar using {@link #similar(BoundingBox)}.
      */
@@ -31,8 +33,8 @@ public record BoundingBox(int minX, int minY, int maxX, int maxY) implements Sim
     public @NotNull Optional<BoundingBox> intersect(@NotNull BoundingBox other) {
         if (minX() > other.maxX() || maxX() < other.minX() || minY() > other.maxY() || maxY() < other.minY())
             return Optional.empty();
-        return Optional.of(new BoundingBox(Math.max(minX(), other.minX()), Math.max(minY(), other.minY()), Math.min(maxX(), other.maxX()),
-                Math.min(maxY(), other.maxY())));
+        return Optional.of(new BoundingBox(Math.max(minX(), other.minX()), Math.max(minY(), other.minY()), Math.min(maxX(), other.maxX()), Math.min(maxY(),
+                other.maxY())));
     }
 
     /**

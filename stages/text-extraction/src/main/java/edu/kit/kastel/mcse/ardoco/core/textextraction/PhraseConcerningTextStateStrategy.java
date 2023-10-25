@@ -13,6 +13,7 @@ import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.sorted.MutableSortedMap;
 import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 import org.eclipse.collections.api.set.sorted.MutableSortedSet;
+import org.jetbrains.annotations.NotNull;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
@@ -20,8 +21,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextStateStrategy;
 import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
-
-import org.jetbrains.annotations.NotNull;
 
 public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy {
 
@@ -54,8 +53,8 @@ public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy 
 
     @NotNull
     @Override
-    public NounMappingImpl mergeNounMappingsStateless(@NotNull NounMapping firstNounMapping, @NotNull NounMapping secondNounMapping, ImmutableList<Word> referenceWords,
-            String reference, @NotNull MappingKind mappingKind, @NotNull Claimant claimant, double probability) {
+    public NounMappingImpl mergeNounMappingsStateless(@NotNull NounMapping firstNounMapping, @NotNull NounMapping secondNounMapping,
+            ImmutableList<Word> referenceWords, String reference, @NotNull MappingKind mappingKind, @NotNull Claimant claimant, double probability) {
 
         MutableSortedSet<Word> mergedWords = firstNounMapping.getWords().toSortedSet();
         mergedWords.addAllIterable(secondNounMapping.getWords());

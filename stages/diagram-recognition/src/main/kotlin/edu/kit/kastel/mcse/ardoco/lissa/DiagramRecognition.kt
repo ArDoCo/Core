@@ -10,21 +10,20 @@ import edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.agents.DiagramDisambig
 import edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.agents.DiagramReferenceAgent
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.agents.DiagramRecognitionAgent
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.model.DiagramImpl
-import java.util.*
+import java.util.SortedMap
 import java.util.function.BiFunction
 
 class DiagramRecognition(
     dataRepository: DataRepository
 ) : AbstractExecutionStage(
-    listOf(
-        DiagramRecognitionAgent(dataRepository),
-        DiagramDisambiguationAgent(dataRepository),
-        DiagramReferenceAgent(dataRepository)
-    ),
-    ID,
-    dataRepository
-) {
-
+        listOf(
+            DiagramRecognitionAgent(dataRepository),
+            DiagramDisambiguationAgent(dataRepository),
+            DiagramReferenceAgent(dataRepository)
+        ),
+        ID,
+        dataRepository
+    ) {
     private lateinit var previousCharacterMatchFunction: BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean>
 
     companion object {
@@ -42,9 +41,10 @@ class DiagramRecognition(
             additionalConfigs: SortedMap<String?, String?>?,
             dataRepository: DataRepository?
         ): DiagramRecognition {
-            val diagramDetection = DiagramRecognition(
-                dataRepository!!
-            )
+            val diagramDetection =
+                DiagramRecognition(
+                    dataRepository!!
+                )
             diagramDetection.applyConfiguration(additionalConfigs)
             return diagramDetection
         }

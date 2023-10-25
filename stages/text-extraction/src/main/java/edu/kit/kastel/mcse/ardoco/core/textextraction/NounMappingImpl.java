@@ -3,6 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
 import static edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions.AVERAGE;
 
+import java.util.*;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashSet;
@@ -10,26 +11,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.factory.SortedMaps;
-import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.map.sorted.ImmutableSortedMap;
-import org.eclipse.collections.api.map.sorted.MutableSortedMap;
-import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
-
-import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
-import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
-import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
-import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMappingChangeListener;
-import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
-import edu.kit.kastel.mcse.ardoco.core.architecture.NoHashCodeEquals;
-import edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions;
-import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
-import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicLong;
 import org.apache.commons.lang3.concurrent.ConcurrentException;
 import org.apache.commons.lang3.concurrent.LazyInitializer;
 import org.eclipse.collections.api.factory.Lists;
@@ -42,7 +23,16 @@ import org.eclipse.collections.api.map.sorted.MutableSortedMap;
 import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 
-import static edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions.AVERAGE;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMappingChangeListener;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
+import edu.kit.kastel.mcse.ardoco.core.architecture.NoHashCodeEquals;
+import edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions;
+import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 /**
  * The Class NounMapping is a basic realization of {@link NounMapping}.
@@ -84,9 +74,8 @@ public class NounMappingImpl implements NounMapping {
      * @param referenceWords the reference words
      * @param surfaceForms   the surface forms
      */
-    public NounMappingImpl(ImmutableSortedSet<Word> words, MappingKind kind, Claimant claimant, double probability,
-                           ImmutableList<Word> referenceWords,
-                           ImmutableList<String> surfaceForms) {
+    public NounMappingImpl(ImmutableSortedSet<Word> words, MappingKind kind, Claimant claimant, double probability, ImmutableList<Word> referenceWords,
+            ImmutableList<String> surfaceForms) {
         this(CREATION_TIME_COUNTER.incrementAndGet(), words, kind, claimant, probability, referenceWords, surfaceForms);
     }
 
@@ -100,9 +89,8 @@ public class NounMappingImpl implements NounMapping {
      * @param reference      the String reference
      */
 
-    public NounMappingImpl(ImmutableSortedSet<Word> words, ImmutableSortedMap<MappingKind, Confidence> distribution,
-                           ImmutableList<Word> referenceWords,
-                           ImmutableList<String> surfaceForms, String reference) {
+    public NounMappingImpl(ImmutableSortedSet<Word> words, ImmutableSortedMap<MappingKind, Confidence> distribution, ImmutableList<Word> referenceWords,
+            ImmutableList<String> surfaceForms, String reference) {
         this(CREATION_TIME_COUNTER.incrementAndGet(), words, distribution, referenceWords, surfaceForms, reference);
     }
 
@@ -118,7 +106,7 @@ public class NounMappingImpl implements NounMapping {
      */
 
     public NounMappingImpl(Long earliestCreationTime, ImmutableSortedSet<Word> words, ImmutableSortedMap<MappingKind, Confidence> distribution,
-                           ImmutableList<Word> referenceWords, ImmutableList<String> surfaceForms, String reference) {
+            ImmutableList<Word> referenceWords, ImmutableList<String> surfaceForms, String reference) {
         this.earliestCreationTime = earliestCreationTime;
         this.words = words;
         this.distribution = distribution.toSortedMap();
@@ -141,9 +129,9 @@ public class NounMappingImpl implements NounMapping {
      * @param surfaceForms         the surface forms
      */
     public NounMappingImpl(Long earliestCreationTime, ImmutableSortedSet<Word> words, MappingKind kind, Claimant claimant, double probability,
-                           ImmutableList<Word> referenceWords, ImmutableList<String> surfaceForms) {
-        this(earliestCreationTime, words.toSortedSet().toImmutable(), SortedMaps.immutable.empty(), referenceWords, surfaceForms,
-                calculateReference(referenceWords));
+            ImmutableList<Word> referenceWords, ImmutableList<String> surfaceForms) {
+        this(earliestCreationTime, words.toSortedSet().toImmutable(), SortedMaps.immutable.empty(), referenceWords, surfaceForms, calculateReference(
+                referenceWords));
 
         Objects.requireNonNull(claimant);
         this.distribution.putIfAbsent(MappingKind.NAME, new Confidence(DEFAULT_AGGREGATOR));
@@ -232,8 +220,7 @@ public class NounMappingImpl implements NounMapping {
 
     @Override
     public String toString() {
-        return "NounMapping [" + "distribution=" + distribution.keyValuesView().collect(entry -> entry.getOne() + ":" + entry.getTwo()).makeString(
-                ",") + //
+        return "NounMapping [" + "distribution=" + distribution.keyValuesView().collect(entry -> entry.getOne() + ":" + entry.getTwo()).makeString(",") + //
                 ", reference=" + getReference() + //
                 ", node=" + String.join(", ", surfaceForms) + //
                 ", position=" + String.join(", ", getWords().collect(word -> String.valueOf(word.getPosition()))) + //

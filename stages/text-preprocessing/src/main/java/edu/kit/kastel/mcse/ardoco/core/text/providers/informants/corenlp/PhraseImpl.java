@@ -1,11 +1,6 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp;
 
-import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
-import edu.kit.kastel.mcse.ardoco.core.api.text.PhraseType;
-import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
-import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
-import edu.stanford.nlp.trees.Tree;
 import java.util.Comparator;
 import java.util.Objects;
 
@@ -17,14 +12,13 @@ import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.api.map.sorted.ImmutableSortedMap;
 import org.eclipse.collections.api.map.sorted.MutableSortedMap;
+import org.jetbrains.annotations.NotNull;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.PhraseType;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.stanford.nlp.trees.Tree;
-
-import org.jetbrains.annotations.NotNull;
 
 @Deterministic
 public class PhraseImpl implements Phrase {
@@ -122,8 +116,8 @@ public class PhraseImpl implements Phrase {
             return true;
         if (!(obj instanceof Phrase other))
             return false;
-        return this.getSentenceNo() == other.getSentenceNo() && Objects.equals(this.getText(), other.getText()) && Objects.equals(this.getPhraseType(),
-                other.getPhraseType()) && this.getContainedWords().get(0).getPosition() == other.getContainedWords().get(0).getPosition();
+        return this.getSentenceNo() == other.getSentenceNo() && Objects.equals(this.getText(), other.getText()) && Objects.equals(this.getPhraseType(), other
+                .getPhraseType()) && this.getContainedWords().get(0).getPosition() == other.getContainedWords().get(0).getPosition();
     }
 
     @Override
@@ -133,6 +127,10 @@ public class PhraseImpl implements Phrase {
 
     @Override
     public int compareTo(@NotNull Phrase o) {
-        return Comparator.comparing(Phrase::getSentenceNo).thenComparing(Phrase::getText).thenComparing(Phrase::getPhraseType).thenComparingInt(p -> p.getContainedWords().get(0).getPosition()).compare(this, o);
+        return Comparator.comparing(Phrase::getSentenceNo)
+                .thenComparing(Phrase::getText)
+                .thenComparing(Phrase::getPhraseType)
+                .thenComparingInt(p -> p.getContainedWords().get(0).getPosition())
+                .compare(this, o);
     }
 }

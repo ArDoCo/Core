@@ -114,8 +114,8 @@ public class TextStateImpl extends AbstractState implements TextState {
 
     @Override
     public ImmutableList<NounMapping> getNounMappingsByPhraseMapping(PhraseMapping phraseMapping) {
-        return getNounMappings().select(
-                nm -> Comparators.collectionsEqualsAnyOrder(phraseMapping.getPhrases().castToCollection(), nm.getPhrases().castToCollection()));
+        return getNounMappings().select(nm -> Comparators.collectionsEqualsAnyOrder(phraseMapping.getPhrases().castToCollection(), nm.getPhrases()
+                .castToCollection()));
     }
 
     /**
@@ -137,8 +137,8 @@ public class TextStateImpl extends AbstractState implements TextState {
 
     @Override
     public void mergeNounMappings(NounMapping nounMapping, NounMapping otherNounMapping, Claimant claimant, ImmutableList<Word> referenceWords) {
-        strategy.mergeNounMappings(nounMapping, otherNounMapping, referenceWords, null, nounMapping.getKind(), claimant,
-                nounMapping.getProbabilityForKind(nounMapping.getKind()));
+        strategy.mergeNounMappings(nounMapping, otherNounMapping, referenceWords, null, nounMapping.getKind(), claimant, nounMapping.getProbabilityForKind(
+                nounMapping.getKind()));
     }
 
     @Override
@@ -215,8 +215,8 @@ public class TextStateImpl extends AbstractState implements TextState {
 
     @Override
     public NounMapping mergeNounMappings(NounMapping nounMapping, NounMapping textuallyEqualNounMapping, Claimant claimant) {
-        return strategy.mergeNounMappings(nounMapping, textuallyEqualNounMapping, null, null, nounMapping.getKind(), claimant,
-                nounMapping.getProbabilityForKind(nounMapping.getKind()));
+        return strategy.mergeNounMappings(nounMapping, textuallyEqualNounMapping, null, null, nounMapping.getKind(), claimant, nounMapping
+                .getProbabilityForKind(nounMapping.getKind()));
 
     }
 

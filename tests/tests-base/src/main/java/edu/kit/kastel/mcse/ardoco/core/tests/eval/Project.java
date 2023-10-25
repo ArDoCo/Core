@@ -6,9 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.Optional;
 import java.util.SortedMap;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -156,16 +154,16 @@ public enum Project implements GoldStandardProject {
     @Override
     public File getModelFile(ArchitectureModelType modelType) {
         return switch (modelType) {
-            case PCM -> getModelFile();
-            case UML -> ProjectHelper.loadFileFromResources(model.replace("/pcm/", "/uml/").replace(".repository", ".uml"));
+        case PCM -> getModelFile();
+        case UML -> ProjectHelper.loadFileFromResources(model.replace("/pcm/", "/uml/").replace(".repository", ".uml"));
         };
     }
 
     @Override
     public String getModelResourceName(ArchitectureModelType modelType) {
         return switch (modelType) {
-            case PCM -> model;
-            case UML -> model.replace("/pcm/", "/uml/").replace(".repository", ".uml");
+        case PCM -> model;
+        case UML -> model.replace("/pcm/", "/uml/").replace(".repository", ".uml");
         };
     }
 

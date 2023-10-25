@@ -15,8 +15,9 @@ class DiagramRecognitionStateImpl : DiagramRecognitionState {
 
     override fun getUnprocessedDiagrams(): List<Diagram> = unprocessedDiagrams.toList()
 
-    override fun removeUnprocessedDiagram(diagram: Diagram): Boolean = unprocessedDiagrams
-        .remove(diagram)
+    override fun removeUnprocessedDiagram(diagram: Diagram): Boolean =
+        unprocessedDiagrams
+            .remove(diagram)
 
     override fun addDiagram(diagram: Diagram) {
         diagrams.add(diagram)
@@ -25,7 +26,7 @@ class DiagramRecognitionStateImpl : DiagramRecognitionState {
     override fun getDiagrams(): MutableList<Diagram> = diagrams.toMutableList()
 
     override fun addDisambiguation(disambiguation: Disambiguation): Boolean {
-        return disambiguations.add(disambiguation);
+        return disambiguations.add(disambiguation)
     }
 
     override fun getDisambiguations(): MutableList<Disambiguation> = disambiguations.toMutableList()

@@ -19,7 +19,7 @@ public class InstanceConnectionAgent extends PipelineAgent {
      * @param dataRepository the {@link DataRepository}
      */
     public InstanceConnectionAgent(DataRepository dataRepository) {
-        super(List.of(new InstantConnectionInformant(dataRepository), new AmbiguationConnectionInformant(dataRepository)),
-                InstanceConnectionAgent.class.getSimpleName(), dataRepository);
+        super(List.of(new InstantConnectionInformant(dataRepository), new AmbiguationConnectionInformant(dataRepository)), InstanceConnectionAgent.class
+                .getSimpleName(), dataRepository);
     }
 }
