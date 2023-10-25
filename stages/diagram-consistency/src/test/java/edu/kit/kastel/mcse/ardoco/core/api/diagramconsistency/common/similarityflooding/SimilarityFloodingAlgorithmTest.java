@@ -46,11 +46,11 @@ class SimilarityFloodingAlgorithmTest {
     @DisplayName("Match a large graph with itself")
     @Test
     void largeGraph() {
-        int size = 2000;
+        int size = 500;
         DirectedMultigraph<Integer, Edge> a = this.buildLargeGraph(size);
         DirectedMultigraph<Integer, Edge> b = this.buildLargeGraph(size);
 
-        SimilarityFloodingAlgorithm<Integer, Integer, Label> algorithm = new SimilarityFloodingAlgorithm<>(0.1, 100,
+        SimilarityFloodingAlgorithm<Integer, Integer, Label> algorithm = new SimilarityFloodingAlgorithm<>(0.0, size,
                 PropagationCoefficientFormula.getInverseProductFormula(), FixpointFormula.getBasicFormula());
         SimilarityMapping<Integer, Integer> initialMapping = new SimilarityMapping<>(0.0);
         initialMapping.updateSimilarity(new Pair<>(0, 0), 1.0);
@@ -61,7 +61,7 @@ class SimilarityFloodingAlgorithmTest {
 
         assertEquals(size, finalMapping.size());
         for (int i = 0; i < size; i++) {
-            assertTrue(finalMapping.contains(new Pair<>(i, i)));
+            assertEquals(i, finalMapping.get(i));
         }
     }
 
