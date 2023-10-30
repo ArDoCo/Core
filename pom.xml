@@ -487,7 +487,6 @@
         <version>3.6.0</version>
         <configuration>
           <!-- Neither of these locale options works for me, but a solution should be figured out, because locale is important for javadoc generation -->
-          <additionalJOption>-locale en_US</additionalJOption>
           <locale>en_US</locale>
           <doclint>${doclint.options}</doclint>
         </configuration>
