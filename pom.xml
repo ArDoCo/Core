@@ -71,7 +71,7 @@
   </distributionManagement>
 
   <properties>
-    <revision>0.26.0-SNAPSHOT</revision>
+    <revision>0.28.0-SNAPSHOT</revision>
     <ardoco.version>${revision}</ardoco.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -91,9 +91,9 @@
     <spotless.version>2.40.0</spotless.version>
     <junit.version>5.10.0</junit.version>
     <eclipse-collections.version>12.0.0.M3</eclipse-collections.version>
-    <jackson.version>2.15.2</jackson.version>
+    <jackson.version>2.16.0-rc1</jackson.version>
     <javaparser.version>3.25.5</javaparser.version>
-    <error-prone.version>2.22.0</error-prone.version>
+    <error-prone.version>2.23.0</error-prone.version>
     <mockito.version>5.2.0</mockito.version>
     <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
 
@@ -337,7 +337,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
-          <version>3.1.2</version>
+          <version>3.2.1</version>
           <executions>
             <execution>
               <goals>
@@ -368,7 +368,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>3.1.2</version>
+          <version>3.2.1</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
@@ -589,7 +589,7 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.8.10</version>
+        <version>0.8.11</version>
         <executions>
           <execution>
             <id>prepare-agent</id>
@@ -603,7 +603,7 @@
       <plugin>
         <groupId>org.jetbrains.dokka</groupId>
         <artifactId>dokka-maven-plugin</artifactId>
-        <version>1.9.0</version>
+        <version>1.9.10</version>
         <configuration>
           <failOnWarning>false</failOnWarning>
           <reportUndocumented>false</reportUndocumented>
