@@ -17,15 +17,13 @@ import java.awt.Graphics2D
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
-import java.lang.Double.max
-import java.lang.Double.min
 import java.util.concurrent.TimeUnit
 import javax.imageio.ImageIO
+import kotlin.math.max
+import kotlin.math.min
 
-private val colors =
-    listOf(Color.RED, Color.GREEN, Color.YELLOW, Color.BLUE, Color.BLACK, Color.ORANGE)
-private val logger: Logger =
-    LoggerFactory.getLogger("${DiagramRecognition::class.java.packageName}.Helpers")
+private val colors = listOf(Color.RED, Color.GREEN, Color.YELLOW, Color.BLUE, Color.BLACK, Color.ORANGE)
+private val logger: Logger = LoggerFactory.getLogger("${DiagramRecognition::class.java.packageName}.Helpers")
 
 fun executeRequest(
     postRequest: HttpPost,

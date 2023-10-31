@@ -1,7 +1,7 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.Serializable;
 import java.util.Objects;
 

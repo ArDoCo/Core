@@ -111,9 +111,7 @@ class OcrInformant(
         port: Int,
         labels: List<Box>
     ): String {
-        val boxCoordinates =
-            enhanceLabels(diagram, labels).flatMap { it.box.toList() }
-                .joinToString(",")
+        val boxCoordinates = enhanceLabels(diagram, labels).flatMap { it.box.toList() }.joinToString(",")
 
         val builder = MultipartEntityBuilder.create()
         builder.addBinaryBody("file", image, ContentType.APPLICATION_OCTET_STREAM, "image")
