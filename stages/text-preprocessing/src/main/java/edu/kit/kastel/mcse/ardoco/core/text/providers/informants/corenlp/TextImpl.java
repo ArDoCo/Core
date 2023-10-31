@@ -1,6 +1,9 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp;
 
+import java.util.SortedMap;
+import java.util.TreeMap;
+
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
@@ -10,13 +13,14 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.stanford.nlp.pipeline.CoreDocument;
 
-class TextImpl implements Text {
+public class TextImpl implements Text {
 
     final CoreDocument coreDocument;
     private ImmutableList<Sentence> sentences = Lists.immutable.empty();
     private ImmutableList<Word> words = Lists.immutable.empty();
+    private final SortedMap<Integer, Word> wordsIndex = new TreeMap<>();
 
-    TextImpl(CoreDocument coreDocument) {
+    public TextImpl(CoreDocument coreDocument) {
         this.coreDocument = coreDocument;
     }
 
@@ -26,6 +30,14 @@ class TextImpl implements Text {
             iterateDocumentForWordsAndSentences();
         }
         return words;
+    }
+
+    @Override
+    public synchronized Word getWord(int index) {
+        if (wordsIndex.isEmpty()) {
+            words();
+        }
+        return wordsIndex.get(index);
     }
 
     @Override
@@ -56,6 +68,11 @@ class TextImpl implements Text {
 
         sentences = sentenceList.toImmutable();
         words = wordList.toImmutable();
+        int index = 0;
+        for (Word word : words) {
+            wordsIndex.put(index, word);
+            index++;
+        }
     }
 
 }

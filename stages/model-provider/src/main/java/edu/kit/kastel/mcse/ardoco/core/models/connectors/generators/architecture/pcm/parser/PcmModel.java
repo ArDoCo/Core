@@ -33,7 +33,7 @@ public class PcmModel {
         try (repositoryStream) {
             XML2Object xml2Object = new XML2Object();
             xml2Object.registerClasses(PcmRepository.class, PcmComponent.class, PcmInterface.class, PcmSignature.class, PcmComponent.InterfaceId.class,
-                    PcmDatatype.class, PcmParameter.class);
+                    PcmDatatype.class, PcmParameter.class, PcmComponent.ComponentId.class);
             repository = xml2Object.parseXML(repositoryStream, PcmRepository.class);
             repository.init();
         } catch (ReflectiveOperationException | IOException | XMLException e) {
