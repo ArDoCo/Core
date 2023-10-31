@@ -19,13 +19,17 @@ import java.io.InputStream
 import java.io.OutputStream
 import java.lang.Double.max
 import java.lang.Double.min
-import java.util.*
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.imageio.ImageIO
 
 private val colors = listOf(Color.RED, Color.GREEN, Color.YELLOW, Color.BLUE, Color.BLACK, Color.ORANGE)
 private val logger: Logger = LoggerFactory.getLogger("${DiagramRecognition::class.java.packageName}.Helpers")
-fun executeRequest(postRequest: HttpPost, modifyTimeout: Boolean = true): String {
+
+fun executeRequest(
+    postRequest: HttpPost,
+    modifyTimeout: Boolean = true
+): String {
     HttpClients.createDefault().use {
         try {
             if (modifyTimeout) {
@@ -42,7 +46,11 @@ fun executeRequest(postRequest: HttpPost, modifyTimeout: Boolean = true): String
     }
 }
 
-fun visualize(imageStream: InputStream, diagram: Diagram, destination: OutputStream) {
+fun visualize(
+    imageStream: InputStream,
+    diagram: Diagram,
+    destination: OutputStream
+) {
     val image = ImageIO.read(imageStream)
     val g2d: Graphics2D = image.createGraphics()
     g2d.stroke = BasicStroke(2F)
@@ -70,14 +78,15 @@ fun visualize(imageStream: InputStream, diagram: Diagram, destination: OutputStr
     ImageIO.write(image, "png", destination)
 }
 
-private fun TextBox.toBox(rawBox: Boolean): Box = Box(
-    UUID.randomUUID().toString(),
-    this.absoluteBox().map { value -> value }.toIntArray(),
-    1.0,
-    if (rawBox) "RAWTEXT" else "TEXT",
-    mutableListOf(this),
-    null
-)
+private fun TextBox.toBox(rawBox: Boolean): Box =
+    Box(
+        UUID.randomUUID().toString(),
+        this.absoluteBox().map { value -> value }.toIntArray(),
+        1.0,
+        if (rawBox) "RAWTEXT" else "TEXT",
+        mutableListOf(this),
+        null
+    )
 
 data class BoundingBox(val x1: Double, val y1: Double, val x2: Double, val y2: Double) {
     fun iou(bb: BoundingBox) = intersectionOverUnion(this, bb)
@@ -89,7 +98,10 @@ data class BoundingBox(val x1: Double, val y1: Double, val x2: Double, val y2: D
  * @param bb2 the second bounding box
  * @return the intersection over union information
  */
-fun intersectionOverUnion(bb1: BoundingBox, bb2: BoundingBox): IntersectionUnionData {
+fun intersectionOverUnion(
+    bb1: BoundingBox,
+    bb2: BoundingBox
+): IntersectionUnionData {
     val xIntersectRight = max(bb1.x1, bb2.x1)
     val yIntersectDown = max(bb1.y1, bb2.y1)
 

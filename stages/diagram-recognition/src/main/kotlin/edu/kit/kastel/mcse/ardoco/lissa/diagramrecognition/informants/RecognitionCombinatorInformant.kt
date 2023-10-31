@@ -10,7 +10,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.boundingBox
 import java.awt.image.BufferedImage
 import java.io.ByteArrayInputStream
-import java.util.*
+import java.util.SortedMap
 import java.util.stream.IntStream
 import javax.imageio.ImageIO
 
@@ -34,7 +34,10 @@ class RecognitionCombinatorInformant(dataRepository: DataRepository) : Informant
         }
     }
 
-    private fun combineBoxesAndText(entities: List<Box>, texts: List<TextBox>) {
+    private fun combineBoxesAndText(
+        entities: List<Box>,
+        texts: List<TextBox>
+    ) {
         for (text in texts) {
             if (text.text.length < 3) continue
 
@@ -47,12 +50,18 @@ class RecognitionCombinatorInformant(dataRepository: DataRepository) : Informant
         }
     }
 
-    private fun calculateDominatingColors(imageData: ByteArray, boxes: List<Box>) {
+    private fun calculateDominatingColors(
+        imageData: ByteArray,
+        boxes: List<Box>
+    ) {
         val image = ByteArrayInputStream(imageData).use { ImageIO.read(it) }
         boxes.forEach { calculateDominatingColorForBox(image, it) }
     }
 
-    private fun calculateDominatingColorForBox(image: BufferedImage, box: Box) {
+    private fun calculateDominatingColorForBox(
+        image: BufferedImage,
+        box: Box
+    ) {
         val pixels = getPixels(image, box.box.toTypedArray())
 
         val count = pixels.size
@@ -66,7 +75,10 @@ class RecognitionCombinatorInformant(dataRepository: DataRepository) : Informant
         setColorsOfTexts(image, box)
     }
 
-    private fun getPixels(image: BufferedImage, box: Array<Int>): List<Int> {
+    private fun getPixels(
+        image: BufferedImage,
+        box: Array<Int>
+    ): List<Int> {
         val result = mutableListOf<Int>()
         for (x in IntStream.range(box[0], box[2])) for (y in IntStream.range(box[1], box[3])) result.add(
             image.getRGB(x, y)
@@ -74,7 +86,10 @@ class RecognitionCombinatorInformant(dataRepository: DataRepository) : Informant
         return result
     }
 
-    private fun setColorsOfTexts(image: BufferedImage, box: Box) {
+    private fun setColorsOfTexts(
+        image: BufferedImage,
+        box: Box
+    ) {
         for (text in box.texts) {
             val pixels = getPixels(image, text.absoluteBox().toTypedArray())
             val count = pixels.size
