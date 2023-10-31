@@ -2,6 +2,7 @@ package edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.informants
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Classification
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.TextBox
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
@@ -9,7 +10,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.boundingBox
 import java.awt.image.BufferedImage
 import java.io.ByteArrayInputStream
-import java.util.*
+import java.util.SortedMap
 import java.util.stream.IntStream
 import javax.imageio.ImageIO
 
@@ -29,10 +30,14 @@ class RecognitionCombinatorInformant(dataRepository: DataRepository) : Informant
             val texts = diagram.textBoxes
             combineBoxesAndText(entities, texts)
             calculateDominatingColors(diagram.location.readBytes(), entities)
+            combineTextBoxesInBoxes(diagram)
         }
     }
 
-    private fun combineBoxesAndText(entities: List<Box>, texts: List<TextBox>) {
+    private fun combineBoxesAndText(
+        entities: List<Box>,
+        texts: List<TextBox>
+    ) {
         for (text in texts) {
             if (text.text.length < 3) continue
 
@@ -45,12 +50,18 @@ class RecognitionCombinatorInformant(dataRepository: DataRepository) : Informant
         }
     }
 
-    private fun calculateDominatingColors(imageData: ByteArray, boxes: List<Box>) {
+    private fun calculateDominatingColors(
+        imageData: ByteArray,
+        boxes: List<Box>
+    ) {
         val image = ByteArrayInputStream(imageData).use { ImageIO.read(it) }
         boxes.forEach { calculateDominatingColorForBox(image, it) }
     }
 
-    private fun calculateDominatingColorForBox(image: BufferedImage, box: Box) {
+    private fun calculateDominatingColorForBox(
+        image: BufferedImage,
+        box: Box
+    ) {
         val pixels = getPixels(image, box.box.toTypedArray())
 
         val count = pixels.size
@@ -64,7 +75,10 @@ class RecognitionCombinatorInformant(dataRepository: DataRepository) : Informant
         setColorsOfTexts(image, box)
     }
 
-    private fun getPixels(image: BufferedImage, box: Array<Int>): List<Int> {
+    private fun getPixels(
+        image: BufferedImage,
+        box: Array<Int>
+    ): List<Int> {
         val result = mutableListOf<Int>()
         for (x in IntStream.range(box[0], box[2])) for (y in IntStream.range(box[1], box[3])) result.add(
             image.getRGB(x, y)
@@ -72,7 +86,10 @@ class RecognitionCombinatorInformant(dataRepository: DataRepository) : Informant
         return result
     }
 
-    private fun setColorsOfTexts(image: BufferedImage, box: Box) {
+    private fun setColorsOfTexts(
+        image: BufferedImage,
+        box: Box
+    ) {
         for (text in box.texts) {
             val pixels = getPixels(image, text.absoluteBox().toTypedArray())
             val count = pixels.size
@@ -80,6 +97,32 @@ class RecognitionCombinatorInformant(dataRepository: DataRepository) : Informant
             val pixelCount = pixels.groupingBy { it }.eachCount().toList().sortedByDescending { it.second }
             val textColor = pixelCount.find { (rgba, _) -> rgba != box.dominatingColor }
             if (textColor != null) text.dominatingColor = textColor.first
+        }
+    }
+
+    private fun combineTextBoxesInBoxes(diagram: Diagram) {
+        val boxes = diagram.boxes.filter { it.classification != Classification.LABEL }
+        for (box in boxes) {
+            if (box.texts.size <= 1) continue
+
+            // Use ARGB(0,0,0,0) as replacement for null
+            val textGroups = box.texts.sortedBy { it.xCoordinate }.sortedBy { it.yCoordinate }.groupBy { it.dominatingColor ?: 0 }
+
+            for ((_, texts) in textGroups) {
+                val text = texts.joinToString(" ") { it.text }.replace(Regex("\\s+"), " ")
+                val x1 = texts.map { it.xCoordinate }.min()
+                val y1 = texts.map { it.yCoordinate }.min()
+                val x2 = texts.map { it.xCoordinate + it.width }.max()
+                val y2 = texts.map { it.yCoordinate + it.height }.max()
+                val width = x2 - x1
+                val height = y2 - y1
+                val confidence = texts.map { it.confidence }.average()
+                val dominantColor = texts.firstNotNullOfOrNull { it.dominatingColor }
+
+                val textBox = TextBox(x1, y1, width, height, confidence, text, dominantColor)
+                texts.forEach { box.removeTextBox(it) }
+                box.addTextBox(textBox)
+            }
         }
     }
 }
