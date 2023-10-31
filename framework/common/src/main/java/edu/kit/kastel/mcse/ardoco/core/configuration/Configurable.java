@@ -7,10 +7,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.Map;
+import java.util.SortedMap;
 
 /**
  * Marks a field as configurable. Should be used in conjunction with {@link IConfigurable}. The annotated field should not be marked as final or static, since
- * the purpose of the field is to be written using an implementation of {@link IConfigurable#applyConfiguration(Map)}.
+ * the purpose of the field is to be written using an implementation of {@link IConfigurable#applyConfiguration(SortedMap)}.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Documented

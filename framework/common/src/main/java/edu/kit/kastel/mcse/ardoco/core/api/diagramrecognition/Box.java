@@ -7,19 +7,17 @@ import java.awt.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
-import org.eclipse.collections.api.set.MutableSet;
-import org.eclipse.collections.impl.factory.Sets;
 import org.jetbrains.annotations.NotNull;
-
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
 
 /**
  * This class represents a box that is detected by the image recognition.
@@ -33,7 +31,7 @@ public class Box extends DiagramElement implements Serializable {
     private List<TextBox> textBoxes = new ArrayList<>();
     private Color dominatingColor = null;
     @JsonIgnore
-    private MutableSet<String> references = Sets.mutable.empty();
+    private LinkedHashSet<String> references = new LinkedHashSet<>();
 
     private static @NotNull String calculateUUID(@NotNull int[] coordinates) {
         return String.format("Box [%s]", getBoundingBoxConcat(coordinates));
@@ -164,8 +162,8 @@ public class Box extends DiagramElement implements Serializable {
         return new ArrayList<>(textBoxes);
     }
 
-    public @NotNull Set<String> getReferences() {
-        return Collections.unmodifiableSet(references);
+    public @NotNull UnmodifiableLinkedHashSet<String> getReferences() {
+        return new UnmodifiableLinkedHashSet<>(references);
     }
 
     /**
@@ -178,8 +176,8 @@ public class Box extends DiagramElement implements Serializable {
         return references.add(reference);
     }
 
-    public void setReferences(@NotNull Set<String> references) {
-        this.references = Sets.mutable.ofAll(references);
+    public void setReferences(@NotNull List<String> references) {
+        this.references = new LinkedHashSet<>(references);
     }
 
     /**

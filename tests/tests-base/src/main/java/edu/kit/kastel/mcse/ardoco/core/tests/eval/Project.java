@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Set;
 import java.util.SortedMap;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -17,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
 import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 
@@ -121,7 +121,7 @@ public enum Project implements GoldStandardProject {
     private final String goldStandardMissingTextForModelElement;
     private final ExpectedResults expectedTraceLinkResults;
     private final ExpectedResults expectedInconsistencyResults;
-    private final Set<String> resourceNames;
+    private final UnmodifiableLinkedHashSet<String> resourceNames;
 
     Project(String alias, String model, String textFile, String goldStandardTraceabilityLinkRecovery, String configurationsFile,
             String goldStandardMissingTextForModelElement, ExpectedResults expectedTraceLinkResults, ExpectedResults expectedInconsistencyResults) {
@@ -133,7 +133,8 @@ public enum Project implements GoldStandardProject {
         this.goldStandardMissingTextForModelElement = goldStandardMissingTextForModelElement;
         this.expectedTraceLinkResults = expectedTraceLinkResults;
         this.expectedInconsistencyResults = expectedInconsistencyResults;
-        resourceNames = Set.of(model, textFile, goldStandardTraceabilityLinkRecovery, configurationsFile, goldStandardMissingTextForModelElement);
+        resourceNames = new UnmodifiableLinkedHashSet<>(
+                List.of(model, textFile, goldStandardTraceabilityLinkRecovery, configurationsFile, goldStandardMissingTextForModelElement));
     }
 
     @Override
@@ -154,16 +155,16 @@ public enum Project implements GoldStandardProject {
     @Override
     public File getModelFile(ArchitectureModelType modelType) {
         return switch (modelType) {
-        case PCM -> getModelFile();
-        case UML -> ProjectHelper.loadFileFromResources(model.replace("/pcm/", "/uml/").replace(".repository", ".uml"));
+            case PCM -> getModelFile();
+            case UML -> ProjectHelper.loadFileFromResources(model.replace("/pcm/", "/uml/").replace(".repository", ".uml"));
         };
     }
 
     @Override
     public String getModelResourceName(ArchitectureModelType modelType) {
         return switch (modelType) {
-        case PCM -> model;
-        case UML -> model.replace("/pcm/", "/uml/").replace(".repository", ".uml");
+            case PCM -> model;
+            case UML -> model.replace("/pcm/", "/uml/").replace(".repository", ".uml");
         };
     }
 
@@ -265,7 +266,7 @@ public enum Project implements GoldStandardProject {
     }
 
     @Override
-    public Set<String> getResourceNames() {
+    public UnmodifiableLinkedHashSet<String> getResourceNames() {
         return resourceNames;
     }
 }

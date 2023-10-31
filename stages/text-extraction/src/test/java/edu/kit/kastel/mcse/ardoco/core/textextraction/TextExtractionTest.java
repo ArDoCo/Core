@@ -4,7 +4,6 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.SortedMap;
 
 import org.eclipse.collections.api.list.ImmutableList;
@@ -19,6 +18,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 import edu.kit.kastel.mcse.ardoco.core.api.Disambiguation;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.PhraseAbbreviation;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.WordAbbreviation;
+import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
@@ -104,31 +104,32 @@ public class TextExtractionTest extends StageTest<TextExtraction, TextExtraction
         ), //
         TEASTORE( //
                 Project.TEASTORE, //
-                List.of(new Disambiguation("LFU", new String[] { "Least Frequently Used" }), new Disambiguation("CRUD", new String[] {
-                        "Create Read Update Delete" })) //
+                List.of(new Disambiguation("LFU", new String[] { "Least Frequently Used" }),
+                        new Disambiguation("CRUD", new String[] { "Create Read Update Delete" })) //
         ), //
         TEAMMATES( //
                 Project.TEAMMATES, //
                 List.of(new Disambiguation("GAE", new String[] { "Google App Engine" }), new Disambiguation("POJOs", new String[] { "Plain Old Java Objects" }),
-                        new Disambiguation("CRUD", new String[] { "Create, Read, Update, Delete" }), new Disambiguation("L&P", new String[] {
-                                "Load & Performance" })) //
+                        new Disambiguation("CRUD", new String[] { "Create, Read, Update, Delete" }),
+                        new Disambiguation("L&P", new String[] { "Load & Performance" })) //
         ), //
         BIGBLUEBUTTON( //
                 Project.BIGBLUEBUTTON, //
-                List.of(new Disambiguation("LMS", new String[] { "learning management system" }), new Disambiguation("fsels", new String[] {
-                        "FreeSWITCH Event Socket Layer" }), new Disambiguation("SVG", new String[] { "scalable vector graphics" }))  //
+                List.of(new Disambiguation("LMS", new String[] { "learning management system" }),
+                        new Disambiguation("fsels", new String[] { "FreeSWITCH Event Socket Layer" }),
+                        new Disambiguation("SVG", new String[] { "scalable vector graphics" }))  //
         ), //
         TEASTORE_HISTORICAL( //
                 Project.TEASTORE_HISTORICAL, //
-                List.of(new Disambiguation("REST", new String[] { "representational state transfer" }), new Disambiguation("JSP", new String[] {
-                        "Java Server Page" }), new Disambiguation("JSPs", new String[] { "Java Server Pages" }), new Disambiguation("OPEN.xtrace",
-                                new String[] { "Open Execution Trace " + "Exchange" })) //
+                List.of(new Disambiguation("REST", new String[] { "representational state transfer" }),
+                        new Disambiguation("JSP", new String[] { "Java Server Page" }), new Disambiguation("JSPs", new String[] { "Java Server Pages" }),
+                        new Disambiguation("OPEN.xtrace", new String[] { "Open Execution Trace " + "Exchange" })) //
         ), //
         TEAMMATES_HISTORICAL( //
                 Project.TEAMMATES_HISTORICAL, //
                 List.of(new Disambiguation("GAE", new String[] { "Google App Engine" }), new Disambiguation("JSP", new String[] { "Java Server Pages" }),
-                        new Disambiguation("POJOs", new String[] { "Plain Old Java Objects" }), new Disambiguation("CRUD", new String[] {
-                                "Create Read Update Delete" })) //
+                        new Disambiguation("POJOs", new String[] { "Plain Old Java Objects" }),
+                        new Disambiguation("CRUD", new String[] { "Create Read Update Delete" })) //
         ), //
         BIGBLUEBUTTON_HISTORICAL( //
                 Project.BIGBLUEBUTTON_HISTORICAL, //
@@ -149,7 +150,7 @@ public class TextExtractionTest extends StageTest<TextExtraction, TextExtraction
         }
 
         @Override
-        public Set<String> getResourceNames() {
+        public UnmodifiableLinkedHashSet<String> getResourceNames() {
             return project.getResourceNames();
         }
     }

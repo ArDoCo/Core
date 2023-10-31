@@ -7,7 +7,6 @@ import java.io.Serializable;
 import java.util.MissingResourceException;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.SortedMap;
 import java.util.prefs.Preferences;
 
@@ -18,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 
 /**
@@ -32,7 +32,7 @@ public interface GoldStandardProject extends Serializable {
     /**
      * {@return the name of all resources associated with instances relative to the class}
      */
-    Set<String> getResourceNames();
+    UnmodifiableLinkedHashSet<String> getResourceNames();
 
     /**
      * {@return the version of the source files of this project}

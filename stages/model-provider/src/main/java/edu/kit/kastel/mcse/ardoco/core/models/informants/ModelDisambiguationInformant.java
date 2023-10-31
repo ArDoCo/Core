@@ -1,10 +1,6 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.models.informants;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import edu.kit.kastel.mcse.ardoco.core.api.Disambiguation;
 import edu.kit.kastel.mcse.ardoco.core.common.util.AbbreviationDisambiguationHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
@@ -26,9 +22,10 @@ public class ModelDisambiguationInformant extends Informant {
                 var names = instance.getNameParts();
                 for (var name : names) {
                     var abbreviations = AbbreviationDisambiguationHelper.getAbbreviationCandidates(name);
-                    var meaningsMap = abbreviations.stream().collect(Collectors.toMap(a -> a, AbbreviationDisambiguationHelper::disambiguate));
-                    for (Map.Entry<String, Set<String>> e : meaningsMap.entrySet()) {
-                        AbbreviationDisambiguationHelper.addTransient(new Disambiguation(e.getKey(), e.getValue().toArray(new String[0])));
+                    for (var abbreviation : abbreviations) {
+                        var disambiguation = AbbreviationDisambiguationHelper.disambiguate(abbreviation);
+                        //TODO Add to state?
+                        AbbreviationDisambiguationHelper.addTransient(new Disambiguation(abbreviation, disambiguation.toArray(new String[0])));
                     }
                 }
             }

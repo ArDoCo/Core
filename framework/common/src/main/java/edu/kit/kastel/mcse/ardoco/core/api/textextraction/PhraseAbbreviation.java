@@ -1,6 +1,8 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.textextraction;
 
+import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
+
 import java.util.LinkedHashSet;
 import java.util.stream.Collectors;
 
@@ -16,9 +18,9 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
  * An abbreviation with meanings that are phrases. For example, "ArDoCo" is an abbreviation of the phrase "Architecture Documentation Consistency".
  */
 public class PhraseAbbreviation extends Disambiguation {
-    private final MutableSet<Phrase> phrases;
+    private final LinkedHashSet<Phrase> phrases;
 
-    public PhraseAbbreviation(@NotNull String abbreviation, @NotNull MutableSet<Phrase> phrases) {
+    public PhraseAbbreviation(@NotNull String abbreviation, @NotNull LinkedHashSet<Phrase> phrases) {
         super(abbreviation, new LinkedHashSet<>(phrases.stream()
                 .map(phrase -> phrase.getContainedWords().stream().map(Word::getText).collect(Collectors.joining(" ")))
                 .toList()));
@@ -37,7 +39,7 @@ public class PhraseAbbreviation extends Disambiguation {
     /**
      * {@return the meanings, which are phrases}
      */
-    public @NotNull ImmutableSet<Phrase> getPhrases() {
-        return phrases.toImmutable();
+    public @NotNull UnmodifiableLinkedHashSet<Phrase> getPhrases() {
+        return new UnmodifiableLinkedHashSet<>(phrases);
     }
 }

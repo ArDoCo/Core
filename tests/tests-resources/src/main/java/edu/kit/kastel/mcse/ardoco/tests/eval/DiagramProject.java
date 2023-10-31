@@ -4,7 +4,7 @@ package edu.kit.kastel.mcse.ardoco.tests.eval;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
 import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -25,6 +24,8 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaGSTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TraceType;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
+import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.ProjectHelper;
@@ -43,7 +44,7 @@ public enum DiagramProject implements GoldStandardDiagramsWithTLR {
             new ExpectedResults(.89, .72, .68, .94, .72, .96), //Expected MME results (No-Mock)
             new ExpectedResults(.76, .79, .77, .97, .76, 1), //Expected SAD-SAM TLR results (Mock),
             new ExpectedResults(.76, .79, .77, .97, .76, .99), //Expected SAD-SAM TLR results (No-Mock),
-            Set.of("/benchmark/mediastore/diagrams_2016/ArchitectureWithCache.png") //
+            List.of("/benchmark/mediastore/diagrams_2016/ArchitectureWithCache.png") //
     ), //
     TEASTORE( //
             Project.TEASTORE, //
@@ -54,7 +55,7 @@ public enum DiagramProject implements GoldStandardDiagramsWithTLR {
             new ExpectedResults(.96, .70, .78, .95, .80, 1), //Expected MME results (No-Mock)
             new ExpectedResults(1, .74, .85, .98, .85, 1), //Expected SAD-SAM TLR results (Mock),
             new ExpectedResults(1, .74, .85, .98, .85, 1), //Expected SAD-SAM TLR results (No-Mock),
-            Set.of("/benchmark/teastore/diagrams_2018/Overview.jpg") //
+            List.of("/benchmark/teastore/diagrams_2018/Overview.jpg") //
     ), //
     TEAMMATES( //
             Project.TEAMMATES, //
@@ -65,7 +66,7 @@ public enum DiagramProject implements GoldStandardDiagramsWithTLR {
             new ExpectedResults(.61, .70, .53, .96, .58, .97), //Expected MME results (No-Mock)
             new ExpectedResults(.73, .88, .80, .98, .79, 1), //Expected SAD-SAM TLR results (Mock),
             new ExpectedResults(.73, .88, .80, .98, .79, .99), //Expected SAD-SAM TLR results (No-Mock),
-            Set.of("/benchmark/teammates/diagrams_2023/highlevelArchitecture.png", "/benchmark/teammates/diagrams_2023/packageDiagram.png") //
+            List.of("/benchmark/teammates/diagrams_2023/highlevelArchitecture.png", "/benchmark/teammates/diagrams_2023/packageDiagram.png") //
     ), //
     BIGBLUEBUTTON( //
             Project.BIGBLUEBUTTON, //
@@ -76,7 +77,7 @@ public enum DiagramProject implements GoldStandardDiagramsWithTLR {
             new ExpectedResults(.93, .38, .39, .96, .55, .99), //Expected MME results (No-Mock)
             new ExpectedResults(.87, .82, .85, .98, .84, 1), //Expected SAD-SAM TLR results (Mock),
             new ExpectedResults(.87, .82, .85, .98, .84, .99), //Expected SAD-SAM TLR results (No-Mock),
-            Set.of("/benchmark/bigbluebutton/diagrams_2021/bbb-arch-overview.png") //
+            List.of("/benchmark/bigbluebutton/diagrams_2021/bbb-arch-overview.png") //
     ), //
     TEASTORE_HISTORICAL( //
             Project.TEASTORE_HISTORICAL, //
@@ -87,7 +88,7 @@ public enum DiagramProject implements GoldStandardDiagramsWithTLR {
             new ExpectedResults(.84, .91, .87, .98, .86, .99), //Expected MME results (No-Mock)
             new ExpectedResults(1, .93, .96, .99, .96, 1), //Expected SAD-SAM TLR results (Mock),
             new ExpectedResults(1, .93, .96, .99, .96, 1), //Expected SAD-SAM TLR results (No-Mock),
-            Set.of("/benchmark/teastore/diagrams_2018/Overview.jpg") //
+            List.of("/benchmark/teastore/diagrams_2018/Overview.jpg") //
     ), //
     TEAMMATES_HISTORICAL( //
             Project.TEAMMATES_HISTORICAL, //
@@ -98,7 +99,7 @@ public enum DiagramProject implements GoldStandardDiagramsWithTLR {
             new ExpectedResults(.45, .69, .49, .95, .53, .96), //Expected MME results (No-Mock)
             new ExpectedResults(.72, .76, .74, .98, .73, 1), //Expected SAD-SAM TLR results (Mock),
             new ExpectedResults(.68, .76, .72, .98, .71, .99), //Expected SAD-SAM TLR results (No-Mock),
-            Set.of("/benchmark/teammates/diagrams_2015/highlevelArchitecture.png", "/benchmark/teammates/diagrams_2015/packageDiagram.png") //
+            List.of("/benchmark/teammates/diagrams_2015/highlevelArchitecture.png", "/benchmark/teammates/diagrams_2015/packageDiagram.png") //
     ), //
     BIGBLUEBUTTON_HISTORICAL( //
             Project.BIGBLUEBUTTON_HISTORICAL, //
@@ -109,7 +110,7 @@ public enum DiagramProject implements GoldStandardDiagramsWithTLR {
             new ExpectedResults(.07, .20, .10, .73, -0.01, .79), //Expected MME results (No-Mock)
             new ExpectedResults(.77, .61, .68, .97, .68, 1), //Expected SAD-SAM TLR results (Mock),
             new ExpectedResults(.77, .61, .68, .97, .68, .99), //Expected SAD-SAM TLR results (No-Mock),
-            Set.of("/benchmark/bigbluebutton/diagrams_2015/bbb-arch-overview.png") //
+            List.of("/benchmark/bigbluebutton/diagrams_2015/bbb-arch-overview.png") //
     );
 
     private final Project baseProject;
@@ -122,10 +123,10 @@ public enum DiagramProject implements GoldStandardDiagramsWithTLR {
     private final ExpectedResults expectedSadSamTlrResultsMock;
     private final ExpectedResults expectedSadSamTlrResultsNoMock;
 
-    private final Set<String> diagramResourceNames;
+    private final UnmodifiableLinkedHashSet<String> diagramResourceNames;
 
     private final ArchitectureModelType architectureModelType;
-    private final Set<String> resourceNames;
+    private final UnmodifiableLinkedHashSet<String> resourceNames;
 
     /**
      * Sole constructor for a project with diagrams.
@@ -142,7 +143,7 @@ public enum DiagramProject implements GoldStandardDiagramsWithTLR {
      */
     DiagramProject(Project project, String goldStandardDiagrams, ExpectedResults expectedDiagramSentenceTlrResultsMock,
             ExpectedResults expectedDiagramSentenceTlrResultsNoMock, ExpectedResults expectedMMEResultsMock, ExpectedResults expectedMMEResultsNoMock,
-            ExpectedResults expectedSadSamTlrResultsMock, ExpectedResults expectedSadSamTlrResultsNoMock, Set<String> diagramResourceNames) {
+            ExpectedResults expectedSadSamTlrResultsMock, ExpectedResults expectedSadSamTlrResultsNoMock, List<String> diagramResourceNames) {
         //We need to keep the paths as well, because the actual files are just temporary at this point due to jar packaging
         this.goldStandardDiagrams = goldStandardDiagrams;
         this.baseProject = project;
@@ -152,12 +153,12 @@ public enum DiagramProject implements GoldStandardDiagramsWithTLR {
         this.expectedMMEResultsNoMock = expectedMMEResultsNoMock;
         this.expectedSadSamTlrResultsMock = expectedSadSamTlrResultsMock;
         this.expectedSadSamTlrResultsNoMock = expectedSadSamTlrResultsNoMock;
-        this.diagramResourceNames = diagramResourceNames;
+        this.diagramResourceNames = new UnmodifiableLinkedHashSet<>(diagramResourceNames);
         this.architectureModelType = setupArchitectureModelType();
-        var set = new HashSet<>(project.getResourceNames());
+        var set = new LinkedHashSet<>(project.getResourceNames());
         set.add(goldStandardDiagrams);
         set.addAll(diagramResourceNames);
-        resourceNames = set;
+        resourceNames = new UnmodifiableLinkedHashSet<>(set);
     }
 
     @Override
@@ -165,8 +166,9 @@ public enum DiagramProject implements GoldStandardDiagramsWithTLR {
         return this.name();
     }
 
+    @Deterministic
     @Override
-    public Set<String> getResourceNames() {
+    public UnmodifiableLinkedHashSet<String> getResourceNames() {
         return resourceNames;
     }
 
@@ -175,7 +177,7 @@ public enum DiagramProject implements GoldStandardDiagramsWithTLR {
      */
     public Metamodel getMetamodel() {
         return switch (architectureModelType) {
-        case PCM, UML -> Metamodel.ARCHITECTURE;
+            case PCM, UML -> Metamodel.ARCHITECTURE;
         };
     }
 
@@ -291,19 +293,19 @@ public enum DiagramProject implements GoldStandardDiagramsWithTLR {
     }
 
     @Override
-    public Set<DiagramGS> getDiagramsGoldStandard() {
+    public UnmodifiableLinkedHashSet<DiagramGS> getDiagramsGoldStandard() {
         try {
             var objectMapper = new ObjectMapper();
             var file = getDiagramsGoldStandardFile();
             objectMapper.setInjectableValues(new InjectableValues.Std().addValue(DiagramProject.class, this));
-            return Set.of(objectMapper.readValue(file, DiagramsGS.class).diagrams);
+            return new UnmodifiableLinkedHashSet<>(List.of(objectMapper.readValue(file, DiagramsGS.class).diagrams));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public Set<String> getDiagramResourceNames() {
+    public UnmodifiableLinkedHashSet<String> getDiagramResourceNames() {
         return diagramResourceNames;
     }
 

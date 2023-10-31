@@ -7,19 +7,17 @@ import java.util.*;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
-import org.eclipse.collections.api.factory.Maps;
-import org.eclipse.collections.api.map.ImmutableMap;
-import org.eclipse.collections.api.map.MutableMap;
 import org.jetbrains.annotations.NotNull;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.kit.kastel.mcse.ardoco.core.api.Disambiguation;
+import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashMap;
+import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 
@@ -30,7 +28,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
  * lookups. Such disambiguations are saved in the persistent cache. The transient cache is populated by the stages. When comparing two words, it is generally
  * advised to ambiguate both rather than disambiguating.
  */
-public final class AbbreviationDisambiguationHelper extends FileBasedCache<MutableMap<String, Disambiguation>> {
+public final class AbbreviationDisambiguationHelper extends FileBasedCache<LinkedHashMap<String, Disambiguation>> {
     /**
      * Matches abbreviations with up to 1 lowercase letter between uppercase letters. Accounts for camelCase by lookahead, e.g. UserDBAdapter is matched as "DB"
      * rather than "DBA". Matches abbreviations at any point in the word, including at the start and end.
@@ -48,7 +46,7 @@ public final class AbbreviationDisambiguationHelper extends FileBasedCache<Mutab
     private static final String acronymFinderCom = "https://www.acronymfinder" + ".com/Information-Technology/";
     private static AbbreviationDisambiguationHelper instance;
     private static LinkedHashMap<String, String> ambiguated = new LinkedHashMap<>();
-    private static final MutableMap<String, Disambiguation> local = Maps.mutable.empty();
+    private static final LinkedHashMap<String, Disambiguation> local = new LinkedHashMap<>();
 
     /**
      * {@return the singleton instance of this class}
@@ -91,7 +89,6 @@ public final class AbbreviationDisambiguationHelper extends FileBasedCache<Mutab
         var disambiguations = getPersistent();
         disambiguations.merge(disambiguation.getAbbreviation(), disambiguation, Disambiguation::addMeanings);
         getInstance().cache(disambiguations);
-
         ambiguated = new LinkedHashMap<>();
     }
 
@@ -101,7 +98,7 @@ public final class AbbreviationDisambiguationHelper extends FileBasedCache<Mutab
      * @param abbreviation the abbreviation
      * @return a set of meanings
      */
-    public static @NotNull Set<String> disambiguate(@NotNull String abbreviation) {
+    public static @NotNull UnmodifiableLinkedHashSet<String> disambiguate(@NotNull String abbreviation) {
         //Specifically check. We do not want to mess up our files.
         Objects.requireNonNull(abbreviation);
         if (abbreviation.isBlank())
@@ -141,7 +138,7 @@ public final class AbbreviationDisambiguationHelper extends FileBasedCache<Mutab
      */
     private static String replaceAllMeanings(@NotNull String text, boolean ignoreCase) {
         var replaced = text;
-        var disambiguations = getAll();
+        var disambiguations = getAll().values();
         for (var disambiguation : disambiguations) {
             replaced = disambiguation.replaceMeaningWithAbbreviation(replaced, ignoreCase);
         }
@@ -155,11 +152,11 @@ public final class AbbreviationDisambiguationHelper extends FileBasedCache<Mutab
      * @return a set of partially ambiguated strings
      */
     //TODO Check if this can be removed, may no longer be required due to how ambiguations are treated by the similarity metrics
-    public static Set<String> ambiguate(@NotNull String text) {
-        var set = new HashSet<String>();
+    public static UnmodifiableLinkedHashSet<String> ambiguate(@NotNull String text) {
+        var set = new LinkedHashSet<String>();
         var crossProduct = similarAbbreviations(text);
         if (crossProduct.isEmpty())
-            return set;
+            return UnmodifiableLinkedHashSet.of(set);
         for (var abbreviationPairs : crossProduct) {
             var tempText = text;
             for (var pair : abbreviationPairs) {
@@ -167,22 +164,22 @@ public final class AbbreviationDisambiguationHelper extends FileBasedCache<Mutab
             }
             set.add(tempText);
         }
-        return set;
+        return UnmodifiableLinkedHashSet.of(set);
     }
 
-    private static MutableMap<String, Disambiguation> getPersistent() {
+    private static LinkedHashMap<String, Disambiguation> getPersistent() {
         return getInstance().getOrRead();
     }
 
     /**
      * {@return all disambiguations merged from both caches}
      */
-    public static ImmutableMap<String, Disambiguation> getAll() {
-        return Disambiguation.merge(local, getPersistent()).toImmutable();
+    public static UnmodifiableLinkedHashMap<String, Disambiguation> getAll() {
+        return new UnmodifiableLinkedHashMap<>(Disambiguation.merge(new UnmodifiableLinkedHashMap<>(local), new UnmodifiableLinkedHashMap<>(getPersistent())));
     }
 
     private static List<List<Pair<String, String>>> similarAbbreviations(@NotNull String meaning) {
-        var disambiguations = getAll();
+        var disambiguations = getAll().values();
         var allAbbrevs = new ArrayList<List<Pair<String, String>>>();
         for (var disambiguation : disambiguations) {
             var listOfPairs = disambiguation.getMeanings()
@@ -254,11 +251,11 @@ public final class AbbreviationDisambiguationHelper extends FileBasedCache<Mutab
     }
 
     @Override
-    protected @NotNull MutableMap<String, Disambiguation> read() throws CacheException {
+    protected @NotNull LinkedHashMap<String, Disambiguation> read() throws CacheException {
         try {
             logger.info("Reading abbreviations file");
-            var read = toMutableMap(new ObjectMapper().readValue(getFile(), Disambiguation[].class));
-            logger.info("Found {} cached abbreviation", read.keysView().size());
+            var read = toLinkedHashMap(new ObjectMapper().readValue(getFile(), Disambiguation[].class));
+            logger.info("Found {} cached abbreviation", read.size());
             return read;
         } catch (IOException e) {
             throw new CacheException(e);
@@ -266,13 +263,13 @@ public final class AbbreviationDisambiguationHelper extends FileBasedCache<Mutab
     }
 
     @Override
-    public MutableMap<String, Disambiguation> getDefault() {
-        return Maps.mutable.empty();
+    public LinkedHashMap<String, Disambiguation> getDefault() {
+        return new LinkedHashMap<>();
     }
 
     @Override
-    protected void write(MutableMap<String, Disambiguation> content) {
-        Collection<Disambiguation> values = content.valuesView().toList();
+    protected void write(LinkedHashMap<String, Disambiguation> content) {
+        Collection<Disambiguation> values = content.values();
         try (PrintWriter out = new PrintWriter(getFile())) {
             //Parse before writing to the file, so we don't mess up the entire file due to a parsing error
             String json = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(values);
@@ -283,12 +280,12 @@ public final class AbbreviationDisambiguationHelper extends FileBasedCache<Mutab
         }
     }
 
-    private static @NotNull MutableMap<String, Disambiguation> toMutableMap(@NotNull Disambiguation[] abbreviations) {
-        var all = new HashMap<String, Disambiguation>();
+    private static @NotNull LinkedHashMap<String, Disambiguation> toLinkedHashMap(@NotNull Disambiguation[] abbreviations) {
+        var all = new LinkedHashMap<String, Disambiguation>();
         for (var abbr : abbreviations) {
             all.put(abbr.getAbbreviation(), abbr);
         }
-        return Maps.mutable.ofMap(all);
+        return all;
     }
 
     /**
@@ -335,9 +332,9 @@ public final class AbbreviationDisambiguationHelper extends FileBasedCache<Mutab
      * @param text the text
      * @return a set of possible abbreviations
      */
-    public static @NotNull Set<String> getAbbreviationCandidates(String text) {
+    public static @NotNull UnmodifiableLinkedHashSet<String> getAbbreviationCandidates(String text) {
         var matcher = abbreviationsPattern.matcher(text);
-        return new LinkedHashSet<>(matcher.results().map(MatchResult::group).toList());
+        return UnmodifiableLinkedHashSet.of(matcher.results().map(MatchResult::group).toList());
     }
 
     /**

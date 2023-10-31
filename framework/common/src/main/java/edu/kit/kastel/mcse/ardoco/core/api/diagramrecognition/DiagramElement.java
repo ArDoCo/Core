@@ -8,9 +8,9 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.concurrent.ConcurrentException;
 import org.apache.commons.lang3.concurrent.LazyInitializer;
-import org.eclipse.collections.api.set.ImmutableSet;
-import org.eclipse.collections.api.set.MutableSet;
-import org.eclipse.collections.impl.factory.Sets;
+import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
+import org.eclipse.collections.api.set.sorted.MutableSortedSet;
+import org.eclipse.collections.impl.factory.SortedSets;
 import org.jetbrains.annotations.NotNull;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
@@ -29,19 +29,21 @@ public abstract class DiagramElement extends Entity implements SimilarityCompara
         protected DiagramElement initialize() {
             var all = getDiagram().getBoxes();
             return all.stream()
-                    .filter(de -> !de.equals(DiagramElement.this) && de.getBoundingBox().containsEntirely(getBoundingBox())) //Find boxes containing this element
+                    .filter(de -> !de.equals(DiagramElement.this) && de.getBoundingBox()
+                            .containsEntirely(getBoundingBox())) //Find boxes containing this element
                     .min(Comparator.comparingDouble(de -> de.getBoundingBox().area()))
                     .orElse(null);
         }
     };
 
-    private final transient LazyInitializer<MutableSet<DiagramElement>> children = new LazyInitializer<>() {
+    private final transient LazyInitializer<MutableSortedSet<DiagramElement>> children = new LazyInitializer<>() {
         @Override
-        protected MutableSet<DiagramElement> initialize() {
+        protected MutableSortedSet<DiagramElement> initialize() {
             var all = getDiagram().getBoxes();
-            return Sets.mutable.fromStream(all.stream()
+            return SortedSets.mutable.withAll(all.stream()
                     .filter(de -> !de.equals(DiagramElement.this) && de.getParent().map(p -> p == DiagramElement.this).orElse(false))
-                    .map(b -> (DiagramElement) b));
+                    .map(b -> (DiagramElement) b)
+                    .toList());
         }
     };
 
@@ -85,7 +87,7 @@ public abstract class DiagramElement extends Entity implements SimilarityCompara
      *
      * @see #getParent()
      */
-    public @NotNull ImmutableSet<DiagramElement> getChildren() {
+    public @NotNull ImmutableSortedSet<DiagramElement> getChildren() {
         try {
             return children.get().toImmutable();
         } catch (ConcurrentException e) {

@@ -6,16 +6,14 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.collections.api.factory.Sets;
-import org.eclipse.collections.api.set.ImmutableSet;
 import org.jetbrains.annotations.NotNull;
-
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaGSTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
+import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
 
 /**
  * Connector for the {@link Box} JSON representation.
@@ -53,12 +51,12 @@ public class BoxGS extends Box implements Serializable {
      *
      * @param sentences the sentences from the text
      */
-    public ImmutableSet<DiaGSTraceLink> getTraceLinks(List<Sentence> sentences) {
+    public UnmodifiableLinkedHashSet<DiaGSTraceLink> getTraceLinks(List<Sentence> sentences) {
         var list = Arrays.stream(tracelinks)
                 .filter(t -> getDiagram().getDiagramProject().getTextResourceName().contains(t.name()))
                 .flatMap(t -> t.toTraceLinks(this, sentences).stream())
                 .toList();
-        var set = Sets.immutable.ofAll(list);
+        var set = new UnmodifiableLinkedHashSet<>(list);
         assert set.size() == list.size();
         return set;
     }

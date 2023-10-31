@@ -13,6 +13,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashMap;
+import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
 import edu.kit.kastel.mcse.ardoco.core.configuration.ConfigurationUtility;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.data.DeepCopy;
@@ -59,8 +61,8 @@ public abstract class StageTest<T extends AbstractExecutionStage, U extends Gold
     private static final Logger logger = LoggerFactory.getLogger(StageTest.class);
     private transient final T stage;
     private transient final List<U> allProjects;
-    private transient final Set<Class<? extends PipelineAgent>> agents;
-    private transient final Map<Class<? extends PipelineAgent>, Set<Class<? extends Informant>>> informantsMap;
+    private transient final UnmodifiableLinkedHashSet<Class<? extends PipelineAgent>> agents;
+    private transient final UnmodifiableLinkedHashMap<Class<? extends PipelineAgent>, UnmodifiableLinkedHashSet<Class<? extends Informant>>> informantsMap;
     private transient final Map<U, TestDataRepositoryCache<U>> dataRepositoryCaches = new HashMap<>();
 
     /**
@@ -216,8 +218,8 @@ public abstract class StageTest<T extends AbstractExecutionStage, U extends Gold
             return this.setup(project);
         }
 
-        try (TestDataRepositoryCache<U> drCache = dataRepositoryCaches.computeIfAbsent(project, dp -> new TestDataRepositoryCache<>(stage.getClass(),
-                project))) {
+        try (TestDataRepositoryCache<U> drCache = dataRepositoryCaches.computeIfAbsent(project,
+                dp -> new TestDataRepositoryCache<>(stage.getClass(), project))) {
             return drCache.get(this::setup);
         }
     }
@@ -347,7 +349,7 @@ public abstract class StageTest<T extends AbstractExecutionStage, U extends Gold
         var results = new ArrayList<V>(repetitions);
         for (var i = 0; i < repetitions; i++) {
             logger.info("Agent {} repetition {}/{}", clazzAgent.getSimpleName(), i + 1, repetitions);
-            results.add(runComparable(allProjects.get(0), ConfigurationUtility.enableAgents(stage.getClass(), Set.of(clazzAgent))));
+            results.add(runComparable(allProjects.get(0), ConfigurationUtility.enableAgents(stage.getClass(), UnmodifiableLinkedHashSet.of(clazzAgent))));
         }
         Assertions.assertEquals(1, results.stream().distinct().toList().size());
     }
@@ -366,7 +368,7 @@ public abstract class StageTest<T extends AbstractExecutionStage, U extends Gold
         var results = new ArrayList<V>(repetitions);
         for (var i = 0; i < repetitions; i++) {
             logger.info("Informant {} repetition {}/{}", clazzInformant.getSimpleName(), i + 1, repetitions);
-            results.add(runComparable(allProjects.get(0), ConfigurationUtility.enableInformants(stage, Set.of(clazzInformant))));
+            results.add(runComparable(allProjects.get(0), ConfigurationUtility.enableInformants(stage, UnmodifiableLinkedHashSet.of(clazzInformant))));
         }
         Assertions.assertEquals(1, results.stream().distinct().toList().size());
     }

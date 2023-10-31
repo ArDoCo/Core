@@ -2,7 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator;
 
 import java.util.HashSet;
-import java.util.Map;
+import java.util.LinkedHashMap;
 import java.util.Set;
 
 import org.eclipse.collections.api.factory.Sets;
@@ -31,7 +31,7 @@ public class DiagramConnectionStateImpl extends AbstractState implements Diagram
 
     @Override
     public boolean addToLinksBetweenDeAndRi(@NotNull RecommendedInstance recommendedInstance, @NotNull DiagramElement diagramElement,
-            @NotNull String textIdentifier, @NotNull Claimant claimant, @NotNull Map<Word, Double> confidenceMap) {
+            @NotNull String textIdentifier, @NotNull Claimant claimant, @NotNull LinkedHashMap<Word, Double> confidenceMap) {
         var newDL = new LinkBetweenDeAndRi(recommendedInstance, diagramElement, textIdentifier, claimant, confidenceMap);
         var added = linksBetweenDeAndRi.add(newDL);
 

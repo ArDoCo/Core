@@ -76,7 +76,7 @@ public class DiagramModelReferenceInformant extends Informant {
         for (var model : modelIds) {
             var modelState = modelStates.getModelExtractionState(model);
             var instances = modelState.getInstances();
-            box.setReferences(Set.of());
+            box.setReferences(List.of());
             var references = getReferencesPerTextBox(box);
             var similar = similarModelInstance(instances, references);
             similar.forEach(s -> logger.debug(box + " similar to " + s));

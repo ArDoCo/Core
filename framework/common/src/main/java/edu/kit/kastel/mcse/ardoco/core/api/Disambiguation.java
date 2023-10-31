@@ -4,23 +4,21 @@ package edu.kit.kastel.mcse.ardoco.core.api;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.Objects;
 
-import org.eclipse.collections.api.map.ImmutableMap;
-import org.eclipse.collections.api.map.MutableMap;
-import org.eclipse.collections.impl.factory.Maps;
 import org.jetbrains.annotations.NotNull;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashMap;
+import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
 
 /**
  * This class represents an abbreviation with a known set of meanings. An abbreviation is a string such as "ArDoCo" and has the meaning "Architecture
@@ -36,13 +34,28 @@ public class Disambiguation implements Comparable<Disambiguation>, Serializable 
         return abbreviation;
     }
 
-    public @NotNull Set<String> getMeanings() {
-        return Collections.unmodifiableSet(meanings);
+    public @NotNull UnmodifiableLinkedHashSet<String> getMeanings() {
+        return new UnmodifiableLinkedHashSet<>(meanings);
     }
 
     @Override
     public int compareTo(@NotNull Disambiguation o) {
         return abbreviation.compareTo(o.abbreviation);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj instanceof Disambiguation other) {
+            return getAbbreviation().equals(other.getAbbreviation());
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getAbbreviation());
     }
 
     /**
@@ -120,12 +133,13 @@ public class Disambiguation implements Comparable<Disambiguation>, Serializable 
      * @param disambiguations a list of disambiguations, may be empty
      * @return an immutable map
      */
-    public @NotNull static ImmutableMap<String, Disambiguation> toMap(@NotNull List<Disambiguation> disambiguations) {
-        var map = Maps.mutable.<String, Disambiguation>empty();
+    public @NotNull
+    static UnmodifiableLinkedHashMap<String, Disambiguation> toMap(@NotNull List<Disambiguation> disambiguations) {
+        var map = new LinkedHashMap<String, Disambiguation>();
         for (var disambiguation : disambiguations) {
             map.merge(disambiguation.getAbbreviation(), disambiguation, Disambiguation::addMeanings);
         }
-        return map.toImmutable();
+        return new UnmodifiableLinkedHashMap<>(map);
     }
 
     /**
@@ -136,8 +150,9 @@ public class Disambiguation implements Comparable<Disambiguation>, Serializable 
      * @return a mutable map
      */
     @NotNull
-    public static MutableMap<String, Disambiguation> merge(@NotNull Map<String, Disambiguation> a, @NotNull Map<String, Disambiguation> b) {
-        var mergedMap = Maps.mutable.ofMap(a);
+    public static LinkedHashMap<String, Disambiguation> merge(@NotNull UnmodifiableLinkedHashMap<String, Disambiguation> a,
+            @NotNull UnmodifiableLinkedHashMap<String, Disambiguation> b) {
+        var mergedMap = new LinkedHashMap<>(a);
         for (var entry : b.entrySet()) {
             mergedMap.merge(entry.getKey(), entry.getValue(), Disambiguation::merge);
         }

@@ -116,8 +116,8 @@ public class PhraseImpl implements Phrase {
             return true;
         if (!(obj instanceof Phrase other))
             return false;
-        return this.getSentenceNo() == other.getSentenceNo() && Objects.equals(this.getText(), other.getText()) && Objects.equals(this.getPhraseType(), other
-                .getPhraseType()) && this.getContainedWords().get(0).getPosition() == other.getContainedWords().get(0).getPosition();
+        return this.getSentenceNo() == other.getSentenceNo() && Objects.equals(this.getText(), other.getText()) && Objects.equals(this.getPhraseType(),
+                other.getPhraseType()) && this.getContainedWords().get(0).getPosition() == other.getContainedWords().get(0).getPosition();
     }
 
     @Override
@@ -127,6 +127,8 @@ public class PhraseImpl implements Phrase {
 
     @Override
     public int compareTo(@NotNull Phrase o) {
+        if (this == o)
+            return 0;
         return Comparator.comparing(Phrase::getSentenceNo)
                 .thenComparing(Phrase::getText)
                 .thenComparing(Phrase::getPhraseType)
