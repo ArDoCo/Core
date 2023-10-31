@@ -3,6 +3,7 @@ package edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Classification
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.TextBox
 import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognition
 import org.apache.hc.client5.http.classic.methods.HttpPost
 import org.apache.hc.client5.http.config.RequestConfig
@@ -18,13 +19,17 @@ import java.io.InputStream
 import java.io.OutputStream
 import java.lang.Double.max
 import java.lang.Double.min
-import java.util.*
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.imageio.ImageIO
 
 private val colors = listOf(Color.RED, Color.GREEN, Color.YELLOW, Color.BLUE, Color.BLACK, Color.ORANGE)
 private val logger: Logger = LoggerFactory.getLogger("${DiagramRecognition::class.java.packageName}.Helpers")
-fun executeRequest(postRequest: HttpPost, modifyTimeout: Boolean = true): String {
+
+fun executeRequest(
+    postRequest: HttpPost,
+    modifyTimeout: Boolean = true
+): String {
     HttpClients.createDefault().use {
         try {
             if (modifyTimeout) {
@@ -41,7 +46,11 @@ fun executeRequest(postRequest: HttpPost, modifyTimeout: Boolean = true): String
     }
 }
 
-fun visualize(imageStream: InputStream, diagram: Diagram, destination: OutputStream) {
+fun visualize(
+    imageStream: InputStream,
+    diagram: Diagram,
+    destination: OutputStream
+) {
     val image = ImageIO.read(imageStream)
     val g2d: Graphics2D = image.createGraphics()
     g2d.stroke = BasicStroke(2F)
@@ -49,19 +58,7 @@ fun visualize(imageStream: InputStream, diagram: Diagram, destination: OutputStr
     val colorMap = mutableMapOf<Classification, Color>()
     var currentColor = 0
 
-    val textBoxes = diagram.textBoxes.map {
-        val tb = Box(
-            UUID.randomUUID().toString(),
-            it.absoluteBox().map { value -> value }.toIntArray(),
-            1.0,
-            "TEXT",
-            mutableListOf(it),
-            null
-        )
-        tb
-    }
-
-    for (box in diagram.boxes + textBoxes) {
+    for (box in diagram.boxes + diagram.textBoxes.map { it.toBox(true) } + diagram.boxes.flatMap { it.texts.map { tb -> tb.toBox(false) } }) {
         if (!colorMap.containsKey(box.classification)) {
             colorMap[box.classification] = colors[currentColor]!!
             currentColor++
@@ -69,7 +66,7 @@ fun visualize(imageStream: InputStream, diagram: Diagram, destination: OutputStr
         g2d.color = colorMap[box.classification]
         val coordinates = box.box
         g2d.drawRect(coordinates[0], coordinates[1], coordinates[2] - coordinates[0], coordinates[3] - coordinates[1])
-        if (box.classification == Classification.TEXT) {
+        if (box.classification == Classification.TEXT || box.classification == Classification.RAWTEXT) {
             g2d.drawString(
                 box.texts.joinToString { it.text },
                 coordinates[0],
@@ -81,6 +78,16 @@ fun visualize(imageStream: InputStream, diagram: Diagram, destination: OutputStr
     ImageIO.write(image, "png", destination)
 }
 
+private fun TextBox.toBox(rawBox: Boolean): Box =
+    Box(
+        UUID.randomUUID().toString(),
+        this.absoluteBox().map { value -> value }.toIntArray(),
+        1.0,
+        if (rawBox) "RAWTEXT" else "TEXT",
+        mutableListOf(this),
+        null
+    )
+
 data class BoundingBox(val x1: Double, val y1: Double, val x2: Double, val y2: Double) {
     fun iou(bb: BoundingBox) = intersectionOverUnion(this, bb)
 }
@@ -91,7 +98,10 @@ data class BoundingBox(val x1: Double, val y1: Double, val x2: Double, val y2: D
  * @param bb2 the second bounding box
  * @return the intersection over union information
  */
-fun intersectionOverUnion(bb1: BoundingBox, bb2: BoundingBox): IntersectionUnionData {
+fun intersectionOverUnion(
+    bb1: BoundingBox,
+    bb2: BoundingBox
+): IntersectionUnionData {
     val xIntersectRight = max(bb1.x1, bb2.x1)
     val yIntersectDown = max(bb1.y1, bb2.y1)
 
