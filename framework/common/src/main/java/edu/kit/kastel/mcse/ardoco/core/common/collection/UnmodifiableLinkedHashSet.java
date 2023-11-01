@@ -56,9 +56,7 @@ public class UnmodifiableLinkedHashSet<E> implements Set<E>, Serializable {
     }
 
     public static <E> UnmodifiableLinkedHashSet<E> of(Stream<E> stream) {
-        var set = new LinkedHashSet<E>();
-        stream.forEachOrdered(set::add);
-        return new UnmodifiableLinkedHashSet<>(set);
+        return of(stream.toList());
     }
 
     @Override
