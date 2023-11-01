@@ -7,14 +7,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.eclipse.collections.api.factory.Sets;
-import org.eclipse.collections.api.set.ImmutableSet;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaGSTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TraceType;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
+import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
 
 /**
  * Encapsulates the diagram-sentence trace links to its parent diagram element. Used for deserialization purposes.
@@ -32,7 +30,7 @@ public record TraceLinkGS(@JsonProperty("name") String name, @JsonProperty("sent
      * @param boxGS     the box this trace link points to
      * @param sentences the sentences from the text
      */
-    public ImmutableSet<DiaGSTraceLink> toTraceLinks(BoxGS boxGS, List<Sentence> sentences) {
+    public UnmodifiableLinkedHashSet<DiaGSTraceLink> toTraceLinks(BoxGS boxGS, List<Sentence> sentences) {
         //From sentences, set default trace type ENTITY
         var list = toTraceLinks(boxGS, sentences, sentenceIds, TraceType.ENTITY);
         //From typed trace links
@@ -41,7 +39,7 @@ public record TraceLinkGS(@JsonProperty("name") String name, @JsonProperty("sent
             typedList = Arrays.stream(typedTracelinks).flatMap(typed -> toTraceLinks(boxGS, sentences, typed.sentences(), typed.traceType()).stream()).toList();
         list.addAll(typedList);
 
-        var set = Sets.immutable.ofAll(list);
+        var set = UnmodifiableLinkedHashSet.of(list);
         assert set.size() == list.size(); //Otherwise there are duplicates in the goldstandard
         return set;
     }

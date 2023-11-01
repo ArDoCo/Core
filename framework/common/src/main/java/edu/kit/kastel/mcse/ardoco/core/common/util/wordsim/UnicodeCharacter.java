@@ -3,25 +3,24 @@ package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
 
 import org.eclipse.collections.api.list.ImmutableList;
-import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.impl.factory.Lists;
-import org.eclipse.collections.impl.factory.Maps;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a Unicode character corresponding to a particular Unicode code point. Refer to the
  * <a href="http://www.unicode.org/glossary/">Unicode Glossary</a>
- * and the Java {@link Character} documentation for an explanation of code points. Java {@link Character} instances and the corresponding primitive
- * {@code char} can not represent all unicode characters in a single instance due to historic reasons.
+ * and the Java {@link Character} documentation for an explanation of code points. Java {@link Character} instances and the corresponding primitive {@code char}
+ * can not represent all unicode characters in a single instance due to historic reasons.
  */
 //TODO More documentation
 public final class UnicodeCharacter implements Serializable {
-    private static final MutableMap<Integer, UnicodeCharacter> integerToUnicode = Maps.mutable.empty();
+    private static final LinkedHashMap<Integer, UnicodeCharacter> integerToUnicode = new LinkedHashMap<>();
 
     public static final BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> EQUAL = (BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> & Serializable) UnicodeCharacter::equals;
     public static final BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> EQUAL_OR_HOMOGLYPH = (BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> & Serializable) (
@@ -78,7 +77,6 @@ public final class UnicodeCharacter implements Serializable {
     private UnicodeCharacter(int codePoint, @NotNull String representation) {
         this.codePoint = codePoint;
         this.representation = representation;
-        integerToUnicode.put(codePoint, this);
     }
 
     @Override

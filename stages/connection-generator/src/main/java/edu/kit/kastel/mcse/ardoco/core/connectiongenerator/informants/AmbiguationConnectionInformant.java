@@ -1,6 +1,8 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.informants;
 
+import java.util.Locale;
+
 import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelExtractionState;
@@ -49,7 +51,7 @@ public class AmbiguationConnectionInformant extends Informant {
      */
     private void ambiguateRecommendedInstances(ModelExtractionState modelState, RecommendationState recommendationState, ConnectionState connectionState) {
         for (var recommendedInstance : recommendationState.getRecommendedInstances()) {
-            var riName = recommendedInstance.getName().toLowerCase();
+            var riName = recommendedInstance.getName().toLowerCase(Locale.ENGLISH);
             var set = AbbreviationDisambiguationHelper.ambiguate(riName);
             if (set.isEmpty())
                 continue;
@@ -70,7 +72,7 @@ public class AmbiguationConnectionInformant extends Informant {
      */
     private void ambiguateModelInstances(ModelExtractionState modelState, RecommendationState recommendationState, ConnectionState connectionState) {
         for (var instance : modelState.getInstances()) {
-            var set = AbbreviationDisambiguationHelper.ambiguate(instance.getFullName().toLowerCase());
+            var set = AbbreviationDisambiguationHelper.ambiguate(instance.getFullName().toLowerCase(Locale.ENGLISH));
             if (set.isEmpty())
                 continue;
 

@@ -20,7 +20,7 @@ public final class ConfigurationInstantiatorUtils {
 
     /**
      * Create an AbstractConfigurable by Reflection.
-     * 
+     *
      * @param clazz the class of the AbstractConfigurable
      * @return the abstract configurable
      * @throws InvocationTargetException if constructor execution does not work
@@ -55,8 +55,8 @@ public final class ConfigurationInstantiatorUtils {
         if (result != null)
             return result;
 
-        throw new IllegalStateException("Not reachable code reached for class " + clazz.getName());
-
+        var c = constructors.stream().findFirst().orElseThrow(() -> new IllegalStateException("Not reachable code reached for class " + clazz.getName()));
+        return (AbstractConfigurable) c.newInstance(new Object[c.getParameterCount()]);
     }
 
     @SuppressWarnings("java:S3011")

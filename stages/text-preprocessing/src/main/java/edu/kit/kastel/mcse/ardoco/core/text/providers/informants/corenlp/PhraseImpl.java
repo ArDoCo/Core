@@ -127,6 +127,8 @@ public class PhraseImpl implements Phrase {
 
     @Override
     public int compareTo(@NotNull Phrase o) {
+        if (this == o)
+            return 0;
         return Comparator.comparing(Phrase::getSentenceNo)
                 .thenComparing(Phrase::getText)
                 .thenComparing(Phrase::getPhraseType)

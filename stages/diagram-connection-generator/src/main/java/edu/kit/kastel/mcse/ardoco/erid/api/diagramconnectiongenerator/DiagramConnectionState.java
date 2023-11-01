@@ -1,8 +1,8 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator;
 
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Sets;
@@ -70,7 +70,7 @@ public interface DiagramConnectionState extends IConfigurable {
      * @return true, if the link wasn't already contained, false else
      */
     boolean addToLinksBetweenDeAndRi(@NotNull RecommendedInstance recommendedInstance, @NotNull DiagramElement diagramElement, @NotNull String projectName,
-            @NotNull Claimant claimant, @NotNull Map<Word, Double> confidenceMap);
+            @NotNull Claimant claimant, @NotNull LinkedHashMap<Word, Double> confidenceMap);
 
     /**
      * Trys to add the diagram link to the state. Returns true if a link with the same properties wasn't already contained by the state.

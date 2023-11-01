@@ -3,9 +3,9 @@ package edu.kit.kastel.mcse.ardoco.tests.eval;
 
 import java.io.File;
 import java.util.List;
-import java.util.Set;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramGS;
+import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
 
@@ -27,12 +27,12 @@ public interface GoldStandardDiagrams extends GoldStandardProject {
     /**
      * {@return the set of manually extracted diagrams from the gold standard}
      */
-    Set<DiagramGS> getDiagramsGoldStandard();
+    UnmodifiableLinkedHashSet<DiagramGS> getDiagramsGoldStandard();
 
     /**
      * {@return the set of diagram-related resources} For example, the list contains the names of the diagram image resources.
      */
-    Set<String> getDiagramResourceNames();
+    UnmodifiableLinkedHashSet<String> getDiagramResourceNames();
 
     /**
      * {@return the list of diagram-related resources as name and file pair} For example, the list contains a pair with the name and file of each diagram image

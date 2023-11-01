@@ -305,6 +305,8 @@ class MappingCombinerTest implements Claimant {
         preTextState.addNounMapping(dog1, MappingKind.NAME, this, 0.5);
         preTextState.addNounMapping(doggy5, MappingKind.TYPE, this, 0.5);
 
+        var dog = dogPhrase1.compareTo(dogPhrase3);
+
         Assertions.assertFalse(phraseMappingsAreSimilar(preTextState, dog1, doggy5));
 
         textState = createCopy(preTextState);
@@ -391,7 +393,10 @@ class MappingCombinerTest implements Claimant {
         var nm0 = textState.getNounMappingByWord(word1);
         var nm1 = textState.getNounMappingByWord(word2);
 
-        return SimilarityUtils.getPhraseMappingSimilarity(textState, textState.getPhraseMappingByNounMapping(nm0), textState.getPhraseMappingByNounMapping(nm1),
+        var pm0 = textState.getPhraseMappingByNounMapping(nm0);
+        var pm1 = textState.getPhraseMappingByNounMapping(nm1);
+
+        return SimilarityUtils.getPhraseMappingSimilarity(textState, pm0, pm1,
                 PhraseMappingAggregatorStrategy.MAX_SIMILARITY) > MappingCombinerTest.MIN_COSINE_SIMILARITY;
     }
 
@@ -433,6 +438,7 @@ class MappingCombinerTest implements Claimant {
         Mockito.when(phrase.getContainedWords()).thenReturn(containedWords);
         Mockito.when(phrase.getPhraseVector()).thenCallRealMethod();
         Mockito.when(phrase.toString()).thenCallRealMethod();
+        Mockito.when(phrase.compareTo(Mockito.any())).thenCallRealMethod();
     }
 
     private void mockWord(Word word, String text, String lemma, int sentenceNumber, Phrase phrase, int position) {

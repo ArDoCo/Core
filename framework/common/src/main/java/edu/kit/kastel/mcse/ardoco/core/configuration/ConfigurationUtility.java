@@ -3,14 +3,10 @@ package edu.kit.kastel.mcse.ardoco.core.configuration;
 
 import static edu.kit.kastel.mcse.ardoco.core.configuration.AbstractConfigurable.CLASS_ATTRIBUTE_CONNECTOR;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
+import java.util.*;
 
+import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashMap;
+import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
@@ -25,13 +21,14 @@ public class ConfigurationUtility {
      *
      * @param enabledAgents Set of agents that should be enabled
      */
-    public static SortedMap<String, String> enableAgents(Class<? extends AbstractExecutionStage> stage, Set<Class<? extends PipelineAgent>> enabledAgents) {
+    public static SortedMap<String, String> enableAgents(Class<? extends AbstractExecutionStage> stage,
+            UnmodifiableLinkedHashSet<Class<? extends PipelineAgent>> enabledAgents) {
         var map = new TreeMap<String, String>();
         for (var agent : enabledAgents) {
             var listString = List.of(agent.getSimpleName()).toString();
             map.put(stage.getSimpleName() + CLASS_ATTRIBUTE_CONNECTOR + "enabledAgents", listString.substring(1, listString.length() - 1));
         }
-        return map;
+        return Collections.unmodifiableSortedMap(map);
     }
 
     /**
@@ -39,9 +36,10 @@ public class ConfigurationUtility {
      *
      * @param enabledInformant Set of informants that should be enabled
      */
-    public static SortedMap<String, String> enableInformants(AbstractExecutionStage stage, Set<Class<? extends Informant>> enabledInformant) {
+    public static SortedMap<String, String> enableInformants(AbstractExecutionStage stage,
+            UnmodifiableLinkedHashSet<Class<? extends Informant>> enabledInformant) {
         var map = new TreeMap<String, String>();
-        var agentsToEnable = new HashSet<Class<? extends PipelineAgent>>();
+        var agentsToEnable = new LinkedHashSet<Class<? extends PipelineAgent>>();
         for (var informant : enabledInformant) {
             getInformantsMap(stage).entrySet().stream().filter(e -> e.getValue().contains(informant)).forEach(e -> {
                 agentsToEnable.add(e.getKey());
@@ -50,24 +48,38 @@ public class ConfigurationUtility {
             });
         }
         //Make sure we enable the agents which run the informants
-        map.putAll(enableAgents(stage.getClass(), agentsToEnable));
-        return map;
+        map.putAll(enableAgents(stage.getClass(), UnmodifiableLinkedHashSet.of(agentsToEnable)));
+        return Collections.unmodifiableSortedMap(map);
     }
 
-    public static Set<Class<? extends PipelineAgent>> getAgents(AbstractExecutionStage stage) {
-        return stage.getAgents().stream().map(PipelineAgent::getClass).collect(Collectors.toSet());
+    public static UnmodifiableLinkedHashSet<Class<? extends PipelineAgent>> getAgents(AbstractExecutionStage stage) {
+        var agents = stage.getAgents();
+        var clazzes = new ArrayList<Class<? extends PipelineAgent>>();
+        for (var agent : agents) {
+            var clazz = agent.getClass();
+            clazzes.add(clazz);
+        }
+        return UnmodifiableLinkedHashSet.of(clazzes);
     }
 
-    public static Set<Class<? extends Informant>> getInformants(PipelineAgent agent) {
-        return agent.getInformants().stream().map(Informant::getClass).collect(Collectors.toSet());
+    public static UnmodifiableLinkedHashSet<Class<? extends Informant>> getInformants(PipelineAgent agent) {
+        var informants = agent.getInformants();
+        var clazzes = new ArrayList<Class<? extends Informant>>();
+        for (var informant : informants) {
+            var clazz = informant.getClass();
+            clazzes.add(clazz);
+        }
+        return UnmodifiableLinkedHashSet.of(clazzes);
     }
 
-    public static Map<Class<? extends PipelineAgent>, Set<Class<? extends Informant>>> getInformantsMap(AbstractExecutionStage stage) {
-        return stage.getAgents()
-                .stream()
-                .collect(Collectors.toMap(PipelineAgent::getClass, agent -> agent.getInformants()
-                        .stream()
-                        .map(Informant::getClass)
-                        .collect(Collectors.toSet())));
+    public static UnmodifiableLinkedHashMap<Class<? extends PipelineAgent>, UnmodifiableLinkedHashSet<Class<? extends Informant>>> getInformantsMap(
+            AbstractExecutionStage stage) {
+        var map = new LinkedHashMap<Class<? extends PipelineAgent>, UnmodifiableLinkedHashSet<Class<? extends Informant>>>();
+        var agents = stage.getAgents();
+        for (var agent : agents) {
+            map.put(agent.getClass(), getInformants(agent));
+        }
+
+        return new UnmodifiableLinkedHashMap<>(map);
     }
 }

@@ -23,8 +23,8 @@ public class DiagramRecognitionMock extends ExecutionStage {
     private final GoldStandardDiagrams goldStandardProject;
 
     public DiagramRecognitionMock(GoldStandardDiagrams goldStandardProject, SortedMap<String, String> additionalConfigs, DataRepository dataRepository) {
-        super(List.of(new DiagramDisambiguationAgent(dataRepository), new DiagramReferenceAgent(dataRepository)), "DiagramRecognitionMock", dataRepository,
-                additionalConfigs);
+        super(List.of(new DiagramDisambiguationAgent(dataRepository), new DiagramReferenceAgent(dataRepository)), DiagramRecognitionMock.class.getSimpleName(),
+                dataRepository, additionalConfigs);
         this.goldStandardProject = goldStandardProject;
     }
 

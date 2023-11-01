@@ -4,7 +4,6 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.SortedMap;
 
 import org.eclipse.collections.api.list.ImmutableList;
@@ -19,6 +18,7 @@ import org.junit.jupiter.params.provider.EnumSource;
 import edu.kit.kastel.mcse.ardoco.core.api.Disambiguation;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.PhraseAbbreviation;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.WordAbbreviation;
+import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
@@ -149,7 +149,7 @@ public class TextExtractionTest extends StageTest<TextExtraction, TextExtraction
         }
 
         @Override
-        public Set<String> getResourceNames() {
+        public UnmodifiableLinkedHashSet<String> getResourceNames() {
             return project.getResourceNames();
         }
     }

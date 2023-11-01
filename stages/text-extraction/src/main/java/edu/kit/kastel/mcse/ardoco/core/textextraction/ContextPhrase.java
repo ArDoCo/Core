@@ -18,10 +18,19 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.PhraseType;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 
+/**
+ * Phrase implementation for a phrase that is derived from context rather than text processing.
+ */
 public class ContextPhrase implements Phrase {
     private final MutableList<Word> words;
     private final Sentence sentence;
 
+    /**
+     * Creates a new phrase consisting of the provided words in the provided sentence.
+     *
+     * @param words    the words
+     * @param sentence the sentence
+     */
     public ContextPhrase(ImmutableList<Word> words, Sentence sentence) {
         this.words = Lists.mutable.ofAll(words);
         this.sentence = sentence;
@@ -70,8 +79,7 @@ public class ContextPhrase implements Phrase {
     public ImmutableSortedMap<Word, Integer> getPhraseVector() {
         MutableSortedMap<Word, Integer> phraseVector = SortedMaps.mutable.empty();
 
-        var grouped = getContainedWords().groupBy(Word::getText).toMap();
-        grouped.forEach((key, value) -> phraseVector.put(value.getAny(), value.size()));
+        getContainedWords().groupBy(Word::getText).forEachKeyImmutableList((text, words) -> phraseVector.put(words.getAny(), words.size()));
 
         return phraseVector.toImmutable();
     }

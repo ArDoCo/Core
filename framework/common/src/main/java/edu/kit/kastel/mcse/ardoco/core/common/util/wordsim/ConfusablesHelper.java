@@ -7,14 +7,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.MissingResourceException;
 import java.util.stream.Stream;
 
 import org.eclipse.collections.api.list.MutableList;
-import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.impl.factory.Lists;
-import org.eclipse.collections.impl.factory.Maps;
 import org.eclipse.collections.impl.list.mutable.FastList;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,7 +27,7 @@ public class ConfusablesHelper {
         throw new IllegalStateException("Cannot be instantiated");
     }
 
-    private static final MutableMap<UnicodeCharacter, FastList<UnicodeCharacter>> homoglyphs = Maps.mutable.empty();
+    private static final LinkedHashMap<UnicodeCharacter, FastList<UnicodeCharacter>> homoglyphs = new LinkedHashMap<>();
 
     private static final String confusablesSummary = "/wordsim/confusablesSummary.txt";
 

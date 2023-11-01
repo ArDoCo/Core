@@ -174,7 +174,7 @@ public class DiagramGS implements Diagram, Comparable<DiagramGS> {
         var traceLinks = Lists.mutable.<DiaGSTraceLink>empty();
         for (Box box : properBoxes) {
             if (box instanceof BoxGS boxGS) {
-                var boxTLs = boxGS.getTraceLinks(sentences).toList();
+                var boxTLs = boxGS.getTraceLinks(sentences).stream().toList();
                 traceLinks.addAll(boxTLs);
             }
         }

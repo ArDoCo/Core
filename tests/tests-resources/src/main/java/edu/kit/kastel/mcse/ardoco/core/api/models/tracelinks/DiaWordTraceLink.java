@@ -3,10 +3,8 @@ package edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Objects;
-import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
@@ -27,8 +25,8 @@ public class DiaWordTraceLink extends DiaTexTraceLink {
     private final double confidence;
     private final Object origin;
 
-    private final Set<DiaWordTraceLink> relatedWordLinks = new TreeSet<>();
-    private final Set<DiaGSTraceLink> relatedGSLinks = new TreeSet<>();
+    private final TreeSet<DiaWordTraceLink> relatedWordLinks = new TreeSet<>();
+    private final TreeSet<DiaGSTraceLink> relatedGSLinks = new TreeSet<>();
 
     /**
      * Creates a tracelink between a diagram element and a sentence number of a word
@@ -102,12 +100,12 @@ public class DiaWordTraceLink extends DiaTexTraceLink {
         }
     }
 
-    public Set<DiaGSTraceLink> getRelatedGSLinks() {
-        return Collections.unmodifiableSet(relatedGSLinks);
+    public TreeSet<DiaGSTraceLink> getRelatedGSLinks() {
+        return relatedGSLinks;
     }
 
-    public Set<DiaWordTraceLink> getRelatedWordLinks() {
-        return Collections.unmodifiableSet(relatedWordLinks);
+    public TreeSet<DiaWordTraceLink> getRelatedWordLinks() {
+        return relatedWordLinks;
     }
 
     @Override

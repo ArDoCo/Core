@@ -1,15 +1,14 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.LinkedHashMap;
 
 import org.jetbrains.annotations.NotNull;
 
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.strategy.SimilarityStrategy;
 
@@ -27,11 +26,11 @@ public class DiagramUtil {
      * @param box                 the box the target words are extracted from
      * @param recommendedInstance the recommended instance the words are extracted from
      * @return the map
-     * @see #calculateSimilarityMap(Set, Set)
+     * @see #calculateSimilarityMap(UnmodifiableLinkedHashSet, UnmodifiableLinkedHashSet)
      */
-    public static @NotNull Map<Word, Double> calculateSimilarityMap(@NotNull Box box, @NotNull RecommendedInstance recommendedInstance) {
+    public static @NotNull LinkedHashMap<Word, Double> calculateSimilarityMap(@NotNull Box box, @NotNull RecommendedInstance recommendedInstance) {
         var deNames = box.getReferences();
-        var words = recommendedInstance.getNameMappings().stream().flatMap(nm -> nm.getWords().stream()).collect(Collectors.toSet());
+        var words = UnmodifiableLinkedHashSet.of(recommendedInstance.getNameMappings().stream().flatMap(nm -> nm.getWords().stream()).toList());
         return calculateSimilarityMap(words, deNames);
     }
 
@@ -41,8 +40,12 @@ public class DiagramUtil {
      * @param words   the words
      * @param targets the target words
      */
-    private static @NotNull Map<Word, Double> calculateSimilarityMap(@NotNull Set<Word> words, @NotNull Set<String> targets) {
-        return words.stream().collect(Collectors.toMap(w -> w, w -> calculateHighestSimilarity(w, targets)));
+    private static @NotNull LinkedHashMap<Word, Double> calculateSimilarityMap(@NotNull UnmodifiableLinkedHashSet<Word> words,
+            @NotNull UnmodifiableLinkedHashSet<String> targets) {
+        var map = new LinkedHashMap<Word, Double>();
+        words.forEach(w -> map.put(w, calculateHighestSimilarity(w, targets)));
+
+        return new LinkedHashMap<>(map);
     }
 
     /**
@@ -51,7 +54,7 @@ public class DiagramUtil {
      * @param word    the word
      * @param targets the target words
      */
-    private static double calculateHighestSimilarity(@NotNull Word word, @NotNull Set<String> targets) {
+    private static double calculateHighestSimilarity(@NotNull Word word, @NotNull UnmodifiableLinkedHashSet<String> targets) {
         return targets.stream()
                 .map(name -> WordSimUtils.getSimilarity(word.getText(), name, SimilarityStrategy.MAXIMUM, true))
                 .max(Double::compareTo)

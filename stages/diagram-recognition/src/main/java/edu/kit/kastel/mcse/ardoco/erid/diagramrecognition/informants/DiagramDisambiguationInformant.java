@@ -1,10 +1,6 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.informants;
 
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.eclipse.collections.impl.factory.Lists;
 
 import edu.kit.kastel.mcse.ardoco.core.api.Disambiguation;
@@ -46,9 +42,10 @@ public class DiagramDisambiguationInformant extends Informant {
             for (var textBox : texts) {
                 var text = textBox.getText();
                 var abbreviations = AbbreviationDisambiguationHelper.getAbbreviationCandidates(text);
-                var meaningsMap = abbreviations.stream().collect(Collectors.toMap(a -> a, AbbreviationDisambiguationHelper::disambiguate));
-                for (Map.Entry<String, Set<String>> e : meaningsMap.entrySet()) {
-                    diagramRecognitionState.addDisambiguation(new Disambiguation(e.getKey(), e.getValue().toArray(new String[0])));
+                for (var abbreviation : abbreviations) {
+                    var disambiguation = AbbreviationDisambiguationHelper.disambiguate(abbreviation);
+                    //TODO Add to transient abbreviation cache? Currently not sure about performance impact
+                    diagramRecognitionState.addDisambiguation(new Disambiguation(abbreviation, disambiguation.toArray(new String[0])));
                 }
             }
         }

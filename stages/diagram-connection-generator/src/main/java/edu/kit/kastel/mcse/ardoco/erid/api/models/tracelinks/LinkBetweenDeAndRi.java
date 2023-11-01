@@ -2,7 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.erid.api.models.tracelinks;
 
 import java.util.HashSet;
-import java.util.Map;
+import java.util.LinkedHashMap;
 import java.util.Objects;
 
 import org.eclipse.collections.api.factory.Sets;
@@ -15,6 +15,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.EndpointTuple;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions;
+import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashMap;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 /**
@@ -25,7 +26,7 @@ public class LinkBetweenDeAndRi extends EndpointTuple implements Claimant, Compa
     private final DiagramElement diagramElement;
     private final String projectName;
     private final Claimant claimant;
-    private final Map<Word, Double> confidenceMap;
+    private final LinkedHashMap<Word, Double> confidenceMap;
 
     /**
      * Creates a new trace link for the given project with the confidence map provided by the claimant.
@@ -37,7 +38,7 @@ public class LinkBetweenDeAndRi extends EndpointTuple implements Claimant, Compa
      * @param confidenceMap       the confidence
      */
     public LinkBetweenDeAndRi(@NotNull RecommendedInstance recommendedInstance, @NotNull DiagramElement diagramElement, @NotNull String projectName,
-            @NotNull Claimant claimant, @NotNull Map<Word, Double> confidenceMap) {
+            @NotNull Claimant claimant, @NotNull LinkedHashMap<Word, Double> confidenceMap) {
         super(recommendedInstance, diagramElement);
 
         //Assert that confidenceMap is complete
@@ -77,12 +78,12 @@ public class LinkBetweenDeAndRi extends EndpointTuple implements Claimant, Compa
     /**
      * {@return a map of confidences for each word that is part of the recommended instance}
      */
-    public Map<Word, Double> getConfidenceMap() {
-        return Map.copyOf(confidenceMap);
+    public UnmodifiableLinkedHashMap<Word, Double> getConfidenceMap() {
+        return UnmodifiableLinkedHashMap.of(confidenceMap);
     }
 
     /**
-     * {@return sets the confidence for a specific word} Does not check whether the word is contained by the recommended instance.
+     * Sets the confidence for a specific word. Does not check whether the word is contained by the recommended instance.
      */
     public void setConfidence(Word word, double confidence) {
         confidenceMap.put(word, confidence);

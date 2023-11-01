@@ -1,7 +1,9 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
-import org.eclipse.collections.api.factory.Sets;
+import java.util.LinkedHashSet;
+import java.util.List;
+
 import org.eclipse.collections.api.factory.SortedMaps;
 import org.eclipse.collections.api.factory.SortedSets;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -126,7 +128,7 @@ public abstract class DefaultTextStateStrategy implements TextStateStrategy {
         if (wordAbbreviation.isPresent()) {
             return extendWordAbbreviation(wordAbbreviation.orElseThrow(), word);
         } else {
-            var newWordAbbreviation = new WordAbbreviation(abbreviation, Sets.mutable.of(word));
+            var newWordAbbreviation = new WordAbbreviation(abbreviation, new LinkedHashSet<>(List.of(word)));
             getTextState().wordAbbreviations.add(newWordAbbreviation);
             return newWordAbbreviation;
         }
@@ -143,7 +145,7 @@ public abstract class DefaultTextStateStrategy implements TextStateStrategy {
         if (phraseAbbreviation.isPresent()) {
             return extendPhraseAbbreviation(phraseAbbreviation.orElseThrow(), phrase);
         } else {
-            var newPhraseAbbreviation = new PhraseAbbreviation(abbreviation, Sets.mutable.of(phrase));
+            var newPhraseAbbreviation = new PhraseAbbreviation(abbreviation, new LinkedHashSet<>(List.of(phrase)));
             getTextState().phraseAbbreviations.add(newPhraseAbbreviation);
             return newPhraseAbbreviation;
         }

@@ -36,15 +36,9 @@
     </dependency>
     <dependency>
       <groupId>io.github.ardoco.core</groupId>
-      <artifactId>tests</artifactId>
-      <version>${revision}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.github.ardoco.core</groupId>
       <artifactId>tests-base</artifactId>
       <version>${revision}</version>
-      <scope>test</scope>
+      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>io.github.ardoco.core</groupId>
