@@ -8,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
-import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashMap;
 import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.strategy.SimilarityStrategy;

@@ -13,7 +13,7 @@
     <dependency>
       <groupId>io.github.ardoco.core</groupId>
       <artifactId>common</artifactId>
-      <version>${project.parent.version}</version>
+      <version>${revision}</version>
       <scope>compile</scope>
     </dependency>
     <dependency>

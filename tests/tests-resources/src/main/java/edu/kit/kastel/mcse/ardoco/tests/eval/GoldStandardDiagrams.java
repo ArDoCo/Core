@@ -1,13 +1,11 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.tests.eval;
 
-import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
-
 import java.io.File;
 import java.util.List;
-import java.util.Set;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramGS;
+import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
 

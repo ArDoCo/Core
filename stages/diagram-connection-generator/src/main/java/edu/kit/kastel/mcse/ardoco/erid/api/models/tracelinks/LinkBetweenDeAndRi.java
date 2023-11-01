@@ -83,7 +83,7 @@ public class LinkBetweenDeAndRi extends EndpointTuple implements Claimant, Compa
     }
 
     /**
-     * {@return sets the confidence for a specific word} Does not check whether the word is contained by the recommended instance.
+     * Sets the confidence for a specific word. Does not check whether the word is contained by the recommended instance.
      */
     public void setConfidence(Word word, double confidence) {
         confidenceMap.put(word, confidence);
@@ -138,7 +138,8 @@ public class LinkBetweenDeAndRi extends EndpointTuple implements Claimant, Compa
      * @return immutable set of diagram text tracelinks
      */
     public @NotNull ImmutableSet<DiaWordTraceLink> toTraceLinks() {
-        return Sets.immutable.fromStream(
-                getConfidenceMap().entrySet().stream().map(e -> new DiaWordTraceLink(getDiagramElement(), e.getKey(), projectName, e.getValue(), this)));
+        return Sets.immutable.fromStream(getConfidenceMap().entrySet()
+                .stream()
+                .map(e -> new DiaWordTraceLink(getDiagramElement(), e.getKey(), projectName, e.getValue(), this)));
     }
 }

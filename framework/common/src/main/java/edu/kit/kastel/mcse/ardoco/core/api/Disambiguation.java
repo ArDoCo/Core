@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.jetbrains.annotations.NotNull;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -133,8 +134,7 @@ public class Disambiguation implements Comparable<Disambiguation>, Serializable 
      * @param disambiguations a list of disambiguations, may be empty
      * @return an immutable map
      */
-    public @NotNull
-    static UnmodifiableLinkedHashMap<String, Disambiguation> toMap(@NotNull List<Disambiguation> disambiguations) {
+    public @NotNull static UnmodifiableLinkedHashMap<String, Disambiguation> toMap(@NotNull List<Disambiguation> disambiguations) {
         var map = new LinkedHashMap<String, Disambiguation>();
         for (var disambiguation : disambiguations) {
             map.merge(disambiguation.getAbbreviation(), disambiguation, Disambiguation::addMeanings);

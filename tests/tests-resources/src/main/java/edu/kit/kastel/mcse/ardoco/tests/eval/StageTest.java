@@ -218,8 +218,8 @@ public abstract class StageTest<T extends AbstractExecutionStage, U extends Gold
             return this.setup(project);
         }
 
-        try (TestDataRepositoryCache<U> drCache = dataRepositoryCaches.computeIfAbsent(project,
-                dp -> new TestDataRepositoryCache<>(stage.getClass(), project))) {
+        try (TestDataRepositoryCache<U> drCache = dataRepositoryCaches.computeIfAbsent(project, dp -> new TestDataRepositoryCache<>(stage.getClass(),
+                project))) {
             return drCache.get(this::setup);
         }
     }

@@ -33,8 +33,8 @@ public record BoundingBox(int minX, int minY, int maxX, int maxY) implements Sim
     public @NotNull Optional<BoundingBox> intersect(@NotNull BoundingBox other) {
         if (minX() > other.maxX() || maxX() < other.minX() || minY() > other.maxY() || maxY() < other.minY())
             return Optional.empty();
-        return Optional.of(new BoundingBox(Math.max(minX(), other.minX()), Math.max(minY(), other.minY()), Math.min(maxX(), other.maxX()),
-                Math.min(maxY(), other.maxY())));
+        return Optional.of(new BoundingBox(Math.max(minX(), other.minX()), Math.max(minY(), other.minY()), Math.min(maxX(), other.maxX()), Math.min(maxY(),
+                other.maxY())));
     }
 
     /**

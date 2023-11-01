@@ -133,8 +133,8 @@ public enum Project implements GoldStandardProject {
         this.goldStandardMissingTextForModelElement = goldStandardMissingTextForModelElement;
         this.expectedTraceLinkResults = expectedTraceLinkResults;
         this.expectedInconsistencyResults = expectedInconsistencyResults;
-        resourceNames = new UnmodifiableLinkedHashSet<>(
-                List.of(model, textFile, goldStandardTraceabilityLinkRecovery, configurationsFile, goldStandardMissingTextForModelElement));
+        resourceNames = new UnmodifiableLinkedHashSet<>(List.of(model, textFile, goldStandardTraceabilityLinkRecovery, configurationsFile,
+                goldStandardMissingTextForModelElement));
     }
 
     @Override
@@ -155,16 +155,16 @@ public enum Project implements GoldStandardProject {
     @Override
     public File getModelFile(ArchitectureModelType modelType) {
         return switch (modelType) {
-            case PCM -> getModelFile();
-            case UML -> ProjectHelper.loadFileFromResources(model.replace("/pcm/", "/uml/").replace(".repository", ".uml"));
+        case PCM -> getModelFile();
+        case UML -> ProjectHelper.loadFileFromResources(model.replace("/pcm/", "/uml/").replace(".repository", ".uml"));
         };
     }
 
     @Override
     public String getModelResourceName(ArchitectureModelType modelType) {
         return switch (modelType) {
-            case PCM -> model;
-            case UML -> model.replace("/pcm/", "/uml/").replace(".repository", ".uml");
+        case PCM -> model;
+        case UML -> model.replace("/pcm/", "/uml/").replace(".repository", ".uml");
         };
     }
 

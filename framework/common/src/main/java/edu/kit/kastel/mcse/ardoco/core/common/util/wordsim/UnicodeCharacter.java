@@ -23,8 +23,8 @@ public final class UnicodeCharacter implements Serializable {
     private static final LinkedHashMap<Integer, UnicodeCharacter> integerToUnicode = new LinkedHashMap<>();
 
     public static final BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> EQUAL = (BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> & Serializable) UnicodeCharacter::equals;
-    public static final BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> EQUAL_OR_HOMOGLYPH = (BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> & Serializable) (a, b) -> a.equals(
-            b) || ConfusablesHelper.areHomoglyphs(a, b);
+    public static final BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> EQUAL_OR_HOMOGLYPH = (BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> & Serializable) (
+            a, b) -> a.equals(b) || ConfusablesHelper.areHomoglyphs(a, b);
 
     private final int codePoint;
 

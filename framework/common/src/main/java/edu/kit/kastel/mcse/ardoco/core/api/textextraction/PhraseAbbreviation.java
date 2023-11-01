@@ -1,18 +1,15 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.textextraction;
 
-import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
-
 import java.util.LinkedHashSet;
 import java.util.stream.Collectors;
 
-import org.eclipse.collections.api.set.ImmutableSet;
-import org.eclipse.collections.api.set.MutableSet;
 import org.jetbrains.annotations.NotNull;
 
 import edu.kit.kastel.mcse.ardoco.core.api.Disambiguation;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
+import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
 
 /**
  * An abbreviation with meanings that are phrases. For example, "ArDoCo" is an abbreviation of the phrase "Architecture Documentation Consistency".

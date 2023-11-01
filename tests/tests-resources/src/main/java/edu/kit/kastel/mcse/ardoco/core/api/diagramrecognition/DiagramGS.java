@@ -11,6 +11,7 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.eclipse.collections.api.factory.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -60,9 +61,8 @@ public class DiagramGS implements Diagram, Comparable<DiagramGS> {
                     .stream()
                     .max(Comparator.comparingDouble(a -> WordSimUtils.getSimilarity(a, resourceName)))
                     .orElse("NONE");
-            throw new IllegalArgumentException(
-                    String.format("The resource name \"%s\" doesn't match any known resource of \"%s\". Did you mean \"%s\"?", resourceName,
-                            project.getProjectName(), closest));
+            throw new IllegalArgumentException(String.format("The resource name \"%s\" doesn't match any known resource of \"%s\". Did you mean \"%s\"?",
+                    resourceName, project.getProjectName(), closest));
         }
 
         this.resourceName = resourceName;

@@ -73,8 +73,8 @@ public class ConfusablesHelper {
                     var extracted = extractHomoglyphsFromLine(line);
                     if (!extracted.isEmpty()) {
                         for (var unicodeCharacter : extracted) {
-                            homoglyphs.merge(unicodeCharacter, extracted,
-                                    (oldL, newL) -> FastList.newList(Stream.concat(oldL.stream(), newL.stream()).toList()));
+                            homoglyphs.merge(unicodeCharacter, extracted, (oldL, newL) -> FastList.newList(Stream.concat(oldL.stream(), newL.stream())
+                                    .toList()));
                         }
                     }
                 }

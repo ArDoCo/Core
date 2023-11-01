@@ -2,10 +2,8 @@
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
 import java.util.LinkedHashSet;
-
 import java.util.List;
 
-import org.eclipse.collections.api.factory.Sets;
 import org.eclipse.collections.api.factory.SortedMaps;
 import org.eclipse.collections.api.factory.SortedSets;
 import org.eclipse.collections.api.list.ImmutableList;
