@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Objects;
 
 import org.jetbrains.annotations.NotNull;
-
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -45,12 +44,6 @@ public class Box extends DiagramElement implements Serializable {
      */
     public static @NotNull String getBoundingBoxConcat(@NotNull int[] coordinates) {
         return Arrays.stream(coordinates).mapToObj((Integer::toString)).reduce((l, r) -> l + "-" + r).orElseThrow();
-    }
-
-    // Jackson JSON
-    //FIXME I think this may be removed, not sure if it is really no longer in use though. There is a dedicated JSONCreator constructor, so it should be fine. Empty super constructor may also be removed if that is the case.
-    private Box() {
-        super();
     }
 
     /**

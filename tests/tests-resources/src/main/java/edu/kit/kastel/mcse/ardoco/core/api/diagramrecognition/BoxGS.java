@@ -7,12 +7,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.jetbrains.annotations.NotNull;
-
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaGSTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiagramGoldStandardTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
 
@@ -21,10 +20,8 @@ import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashS
  */
 public class BoxGS extends Box implements Serializable {
     private final DiagramGS diagramGS;
-    private BoundingBox boundingBox;
-    private TextBox[] textBoxes;
-    private BoxGS[] subBoxes;
-    private TraceLinkGS[] tracelinks;
+    private final BoxGS[] subBoxes;
+    private final TraceLinkGS[] tracelinks;
 
     /**
      * Create a new box from the goldstandard.
@@ -40,8 +37,6 @@ public class BoxGS extends Box implements Serializable {
             @JsonProperty("subBoxes") BoxGS[] subBoxes, @JsonProperty("tracelinks") TraceLinkGS[] tracelinks) {
         super(diagram, boundingBox.toCoordinates(), 1, Classification.UNKNOWN.getClassificationString(), Arrays.asList(textBoxes), Color.BLACK);
         this.diagramGS = diagram;
-        this.boundingBox = boundingBox;
-        this.textBoxes = textBoxes;
         this.subBoxes = subBoxes;
         this.tracelinks = tracelinks;
     }
@@ -52,7 +47,7 @@ public class BoxGS extends Box implements Serializable {
      *
      * @param sentences the sentences from the text
      */
-    public UnmodifiableLinkedHashSet<DiaGSTraceLink> getTraceLinks(List<Sentence> sentences) {
+    public UnmodifiableLinkedHashSet<DiagramGoldStandardTraceLink> getTraceLinks(List<Sentence> sentences) {
         var list = Arrays.stream(tracelinks)
                 .filter(t -> getDiagram().getDiagramProject().getTextResourceName().contains(t.name()))
                 .flatMap(t -> t.toTraceLinks(this, sentences).stream())

@@ -8,7 +8,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.TextBox
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.boundingBox
-import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.createObjectMapper
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.executeRequest
 import org.apache.hc.client5.http.classic.methods.HttpPost
 import org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder
@@ -34,7 +33,7 @@ class OcrInformant(
         const val ID = "OCRInformant"
         const val DOCKER_OCR = "ghcr.io/lissa-approach/diagram-ocr:latest"
         const val DEFAULT_PORT = 5005
-        const val DOCKER_OCR_VIA_DOCKER = false
+        const val DOCKER_OCR_VIA_DOCKER = true
 
         const val MINIMUM_AREA_IN_PXPX = 20
         const val EXPANSION_IN_PX = 5
@@ -102,7 +101,7 @@ class OcrInformant(
                 detectedBoxesOfObjectDetection.filter { it.classification == Classification.LABEL }
             )
         logger.debug("Processed OCRService Request")
-        return createObjectMapper().readValue(textRecognition)
+        return oom.readValue(textRecognition)
     }
 
     private fun sendOCRRequest(

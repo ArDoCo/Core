@@ -11,7 +11,6 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.eclipse.collections.api.factory.Lists;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -21,7 +20,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaGSTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiagramGoldStandardTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
@@ -30,7 +29,7 @@ import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
  * Implementation of the {@link Diagram} interface used for JSON deserialization. Instances are created from a
  * {@link edu.kit.kastel.mcse.ardoco.tests.eval.GoldStandardDiagrams GoldStandardDiagrams}.
  */
-public class DiagramGS implements Diagram, Comparable<DiagramGS> {
+public class DiagramGS implements Diagram {
     private String resourceName;
     private List<Box> properBoxes = new ArrayList<>();
     private List<TextBox> properTextBoxes = new ArrayList<>();
@@ -102,13 +101,6 @@ public class DiagramGS implements Diagram, Comparable<DiagramGS> {
         return Objects.hashCode(resourceName);
     }
 
-    @Override
-    public int compareTo(@NotNull DiagramGS o) {
-        if (equals(o))
-            return 0;
-        return resourceName.compareTo(o.resourceName);
-    }
-
     private String getShortPath() {
         var split = getResourceName().split("/|\\\\");
         return split[split.length - 1];
@@ -170,8 +162,8 @@ public class DiagramGS implements Diagram, Comparable<DiagramGS> {
      *
      * @param sentences the sentences from the text
      */
-    public List<DiaGSTraceLink> getTraceLinks(List<Sentence> sentences) {
-        var traceLinks = Lists.mutable.<DiaGSTraceLink>empty();
+    public List<DiagramGoldStandardTraceLink> getTraceLinks(List<Sentence> sentences) {
+        var traceLinks = Lists.mutable.<DiagramGoldStandardTraceLink>empty();
         for (Box box : properBoxes) {
             if (box instanceof BoxGS boxGS) {
                 var boxTLs = boxGS.getTraceLinks(sentences).stream().toList();
@@ -188,7 +180,7 @@ public class DiagramGS implements Diagram, Comparable<DiagramGS> {
      * @param textGoldstandard Partial path to the goldstandard text file
      * @return List of tracelinks
      */
-    public @NotNull List<DiaGSTraceLink> getTraceLinks(List<Sentence> sentences, @Nullable String textGoldstandard) {
+    public @NotNull List<DiagramGoldStandardTraceLink> getTraceLinks(List<Sentence> sentences, @Nullable String textGoldstandard) {
         if (textGoldstandard == null)
             return getTraceLinks(sentences);
         return getTraceLinks(sentences).stream().filter(t -> textGoldstandard.contains(t.getGoldStandard())).distinct().toList();

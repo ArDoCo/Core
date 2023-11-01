@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -52,6 +53,12 @@ public class UnmodifiableLinkedHashSet<E> implements Set<E>, Serializable {
     public static <E> UnmodifiableLinkedHashSet<E> of(E... items) {
         //List.of performs safety checks for the varargs, so we can just ignore the parameterized varargs
         return new UnmodifiableLinkedHashSet<>(List.of(items));
+    }
+
+    public static <E> UnmodifiableLinkedHashSet<E> of(Stream<E> stream) {
+        var set = new LinkedHashSet<E>();
+        stream.forEachOrdered(set::add);
+        return new UnmodifiableLinkedHashSet<>(set);
     }
 
     @Override

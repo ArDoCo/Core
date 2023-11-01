@@ -10,8 +10,8 @@ import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
  * represents a composite pattern.
  */
 public abstract class AbstractPipelineStep extends AbstractConfigurable {
-    protected String id;
-    protected DataRepository dataRepository;
+    protected final String id;
+    protected final DataRepository dataRepository;
 
     /**
      * Constructor for a pipeline step

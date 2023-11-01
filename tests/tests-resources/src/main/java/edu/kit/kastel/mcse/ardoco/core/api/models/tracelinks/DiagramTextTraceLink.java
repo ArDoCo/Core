@@ -11,7 +11,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityComparable;
 
-public class DiaTexTraceLink implements SimilarityComparable<DiaTexTraceLink>, Comparable<DiaTexTraceLink>, Serializable {
+public class DiagramTextTraceLink implements SimilarityComparable<DiagramTextTraceLink>, Comparable<DiagramTextTraceLink>, Serializable {
     protected final DiagramElement diagramElement;
     protected final Sentence sentence;
     protected final String projectName;
@@ -23,7 +23,7 @@ public class DiaTexTraceLink implements SimilarityComparable<DiaTexTraceLink>, C
      * @param sentence       sentence
      * @param projectName    project name
      */
-    public DiaTexTraceLink(@NotNull DiagramElement diagramElement, @NotNull Sentence sentence, @NotNull String projectName) {
+    public DiagramTextTraceLink(@NotNull DiagramElement diagramElement, @NotNull Sentence sentence, @NotNull String projectName) {
         this.diagramElement = diagramElement;
         this.sentence = sentence;
         this.projectName = projectName;
@@ -62,7 +62,7 @@ public class DiaTexTraceLink implements SimilarityComparable<DiaTexTraceLink>, C
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        else if (obj instanceof DiaTexTraceLink other) {
+        else if (obj instanceof DiagramTextTraceLink other) {
             return Objects.equals(getSentenceNo(), other.getSentenceNo()) && Objects.equals(getDiagramElement(), other.getDiagramElement());
         }
         return false;
@@ -74,7 +74,7 @@ public class DiaTexTraceLink implements SimilarityComparable<DiaTexTraceLink>, C
     }
 
     @Override
-    public int compareTo(@NotNull DiaTexTraceLink o) {
+    public int compareTo(@NotNull DiagramTextTraceLink o) {
         if (equals(o))
             return 0;
         var comp = getDiagramElement().compareTo(o.getDiagramElement());
@@ -84,7 +84,7 @@ public class DiaTexTraceLink implements SimilarityComparable<DiaTexTraceLink>, C
     }
 
     @Override
-    public boolean similar(DiaTexTraceLink obj) {
+    public boolean similar(DiagramTextTraceLink obj) {
         if (equals(obj))
             return true;
         return getDiagramElement().getBoundingBox().similar(obj.getDiagramElement().getBoundingBox()) && Objects.equals(getSentenceNo(), obj.getSentenceNo());

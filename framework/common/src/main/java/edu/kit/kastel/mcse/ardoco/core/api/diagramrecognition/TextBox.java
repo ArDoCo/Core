@@ -1,7 +1,7 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
-import java.awt.Color;
+import java.awt.*;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -106,12 +106,10 @@ public class TextBox implements SimilarityComparable<TextBox>, Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (super.equals(obj))
-            return true;
         if (obj instanceof TextBox other) {
             return boundingBox.equals(other.boundingBox) && text.equals(other.text);
         }
-        return false;
+        return super.equals(obj);
     }
 
     @Override

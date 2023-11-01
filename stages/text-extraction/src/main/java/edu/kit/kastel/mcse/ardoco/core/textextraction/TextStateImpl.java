@@ -3,6 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
 import java.util.Comparator;
 import java.util.SortedMap;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.eclipse.collections.api.block.predicate.Predicate;
@@ -27,6 +28,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.core.common.util.Comparators;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.data.AbstractState;
+import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 /**
@@ -74,9 +76,12 @@ public class TextStateImpl extends AbstractState implements TextState {
         strategy = constructor.apply(this);
     }
 
-    @Override
-    public void setTextStateStrategy(TextStateStrategy textStateStrategy) {
-        this.strategy = textStateStrategy;
+    public TextStateImpl(BiFunction<TextStateImpl, DataRepository, TextStateStrategy> constructor, DataRepository dataRepository) {
+        nounMappings = Lists.mutable.empty();
+        phraseMappings = Lists.mutable.empty();
+        wordAbbreviations = SortedSets.mutable.empty();
+        phraseAbbreviations = SortedSets.mutable.empty();
+        strategy = constructor.apply(this, dataRepository);
     }
 
     @Override

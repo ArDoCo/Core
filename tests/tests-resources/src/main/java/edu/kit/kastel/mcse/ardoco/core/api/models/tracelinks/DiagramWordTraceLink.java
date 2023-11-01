@@ -18,15 +18,15 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 /**
  * Represents a tracelink between a {@link DiagramElement} and a {@link Word}.
  */
-public class DiaWordTraceLink extends DiaTexTraceLink {
-    public final static Comparator<DiaWordTraceLink> CONFIDENCE_COMPARATOR = Comparator.comparingDouble(DiaWordTraceLink::getConfidence);
+public class DiagramWordTraceLink extends DiagramTextTraceLink {
+    public final static Comparator<DiagramWordTraceLink> CONFIDENCE_COMPARATOR = Comparator.comparingDouble(DiagramWordTraceLink::getConfidence);
 
     private final Word word;
     private final double confidence;
     private final Object origin;
 
-    private final TreeSet<DiaWordTraceLink> relatedWordLinks = new TreeSet<>();
-    private final TreeSet<DiaGSTraceLink> relatedGSLinks = new TreeSet<>();
+    private final TreeSet<DiagramWordTraceLink> relatedWordLinks = new TreeSet<>();
+    private final TreeSet<DiagramGoldStandardTraceLink> relatedGSLinks = new TreeSet<>();
 
     /**
      * Creates a tracelink between a diagram element and a sentence number of a word
@@ -37,7 +37,7 @@ public class DiaWordTraceLink extends DiaTexTraceLink {
      * @param confidence     confidence
      * @param origin         claimant this link was derived from
      */
-    public DiaWordTraceLink(@NotNull DiagramElement diagramElement, @NotNull Word word, @NotNull String projectName, double confidence,
+    public DiagramWordTraceLink(@NotNull DiagramElement diagramElement, @NotNull Word word, @NotNull String projectName, double confidence,
             @Nullable Claimant origin) {
         super(diagramElement, word.getSentence(), projectName);
 
@@ -58,7 +58,7 @@ public class DiaWordTraceLink extends DiaTexTraceLink {
     public boolean equals(@NotNull Object obj) {
         if (this == obj)
             return true;
-        else if (obj instanceof DiaWordTraceLink other) {
+        else if (obj instanceof DiagramWordTraceLink other) {
             return Objects.equals(getDiagramElement(), other.getDiagramElement()) && getWord().getPosition() == other.getWord().getPosition() && Objects.equals(
                     getConfidence(), other.getConfidence());
         }
@@ -71,11 +71,11 @@ public class DiaWordTraceLink extends DiaTexTraceLink {
     }
 
     @Override
-    public int compareTo(@NotNull DiaTexTraceLink o) {
+    public int compareTo(@NotNull DiagramTextTraceLink o) {
         if (equals(o))
             return 0;
         var supComp = super.compareTo(o);
-        if (o instanceof DiaWordTraceLink other) {
+        if (o instanceof DiagramWordTraceLink other) {
             if (supComp == 0) {
                 var comp = Integer.compare(getWord().getPosition(), other.getWord().getPosition());
                 if (comp == 0) {
@@ -87,24 +87,24 @@ public class DiaWordTraceLink extends DiaTexTraceLink {
         return supComp;
     }
 
-    public void addRelated(Collection<? extends DiaTexTraceLink> related) {
+    public void addRelated(Collection<? extends DiagramTextTraceLink> related) {
         var list = new ArrayList<>(related);
         for (var link : list) {
             if (link == this)
                 continue;
-            if (link instanceof DiaWordTraceLink wLink) {
+            if (link instanceof DiagramWordTraceLink wLink) {
                 relatedWordLinks.add(wLink);
-            } else if (link instanceof DiaGSTraceLink gsLink) {
+            } else if (link instanceof DiagramGoldStandardTraceLink gsLink) {
                 relatedGSLinks.add(gsLink);
             }
         }
     }
 
-    public TreeSet<DiaGSTraceLink> getRelatedGSLinks() {
+    public TreeSet<DiagramGoldStandardTraceLink> getRelatedGSLinks() {
         return relatedGSLinks;
     }
 
-    public TreeSet<DiaWordTraceLink> getRelatedWordLinks() {
+    public TreeSet<DiagramWordTraceLink> getRelatedWordLinks() {
         return relatedWordLinks;
     }
 

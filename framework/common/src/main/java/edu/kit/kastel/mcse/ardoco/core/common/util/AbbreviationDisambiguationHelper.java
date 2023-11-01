@@ -13,7 +13,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.kit.kastel.mcse.ardoco.core.api.Disambiguation;
@@ -44,7 +43,7 @@ public final class AbbreviationDisambiguationHelper extends FileBasedCache<Linke
     public static final double SIMILARITY_THRESHOLD = 0.9;
     private static final Logger logger = LoggerFactory.getLogger(AbbreviationDisambiguationHelper.class);
     private static final String abbreviationsCom = "https://www.abbreviations.com/";
-    private static final String acronymFinderCom = "https://www.acronymfinder" + ".com/Information-Technology/";
+    private static final String acronymFinderCom = "https://www.acronymfinder.com/Information-Technology/";
     private static AbbreviationDisambiguationHelper instance;
     private static LinkedHashMap<String, String> ambiguated = new LinkedHashMap<>();
     private static final LinkedHashMap<String, Disambiguation> local = new LinkedHashMap<>();

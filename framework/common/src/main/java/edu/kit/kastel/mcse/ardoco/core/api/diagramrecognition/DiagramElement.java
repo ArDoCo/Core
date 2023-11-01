@@ -4,7 +4,6 @@ package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 
 import org.apache.commons.lang3.concurrent.ConcurrentException;
 import org.apache.commons.lang3.concurrent.LazyInitializer;
@@ -22,7 +21,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityComparable;
  * the diagram it belongs to.
  */
 public abstract class DiagramElement extends Entity implements SimilarityComparable<DiagramElement> {
-    private Diagram diagram;
+    private final Diagram diagram;
 
     private final transient LazyInitializer<DiagramElement> parent = new LazyInitializer<>() {
         @Override
@@ -58,13 +57,6 @@ public abstract class DiagramElement extends Entity implements SimilarityCompara
     }
 
     /**
-     * Empty constructor for JSON deserialization
-     */
-    protected DiagramElement() {
-        super(UUID.randomUUID().toString());
-    }
-
-    /**
      * Returns a {@link BoundingBox}, which encases the element.
      *
      * @return the {@link BoundingBox}
@@ -90,7 +82,7 @@ public abstract class DiagramElement extends Entity implements SimilarityCompara
         try {
             return children.get().toImmutable();
         } catch (ConcurrentException e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 
@@ -104,7 +96,7 @@ public abstract class DiagramElement extends Entity implements SimilarityCompara
         try {
             return Optional.ofNullable(parent.get());
         } catch (ConcurrentException e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 
@@ -126,7 +118,7 @@ public abstract class DiagramElement extends Entity implements SimilarityCompara
         if (equals(o))
             return 0;
         if (o instanceof DiagramElement other) {
-            return hashCode() - other.hashCode();
+            return Comparator.comparing(DiagramElement::getDiagram).thenComparing(DiagramElement::getBoundingBox).compare(this, other);
         }
         return super.compareTo(o);
     }

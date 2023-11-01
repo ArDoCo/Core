@@ -10,22 +10,22 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaGSTraceLink;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaTexTraceLink;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaWordTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiagramGoldStandardTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiagramTextTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiagramWordTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 
-public record Results(DiagramProject project, SortedSet<DiaWordTraceLink> truePositives, SortedSet<DiaWordTraceLink> falsePositives,
-                      SortedSet<DiaGSTraceLink> falseNegatives, long TN, ExpectedResults expectedResults, SortedSet<DiaWordTraceLink> all) implements
+public record Results(DiagramProject project, SortedSet<DiagramWordTraceLink> truePositives, SortedSet<DiagramWordTraceLink> falsePositives,
+                      SortedSet<DiagramGoldStandardTraceLink> falseNegatives, long TN, ExpectedResults expectedResults, SortedSet<DiagramWordTraceLink> all) implements
         Serializable {
 
     private final static Logger logger = LoggerFactory.getLogger(Results.class);
 
-    public static Results create(DiagramProject project, Text text, Set<DiaWordTraceLink> wordTraceLinks, ExpectedResults expected) {
+    public static Results create(DiagramProject project, Text text, Set<DiagramWordTraceLink> wordTraceLinks, ExpectedResults expected) {
         var allGoldStandardTraceLinks = project.getDiagramTraceLinksAsMap(text.getSentences().toList());
-        TreeSet<DiaGSTraceLink> goldStandard = new TreeSet<>(allGoldStandardTraceLinks.entrySet()
+        TreeSet<DiagramGoldStandardTraceLink> goldStandard = new TreeSet<>(allGoldStandardTraceLinks.entrySet()
                 .stream()
                 .filter(e -> e.getKey().isActualPositive())
                 .flatMap(e -> e.getValue().stream())
@@ -53,11 +53,11 @@ public record Results(DiagramProject project, SortedSet<DiaWordTraceLink> truePo
         return BigDecimal.valueOf(a).setScale(2, RoundingMode.HALF_UP);
     }
 
-    public static <T extends DiaTexTraceLink> TreeSet<T> intersection(Set<T> a, Set<? extends DiaTexTraceLink> b) {
+    public static <T extends DiagramTextTraceLink> TreeSet<T> intersection(Set<T> a, Set<? extends DiagramTextTraceLink> b) {
         return a.stream().filter(fromA -> b.stream().anyMatch(fromB -> fromB.similar(fromA))).collect(Collectors.toCollection(TreeSet::new));
     }
 
-    public static <T extends DiaTexTraceLink> TreeSet<T> difference(Set<T> a, Set<? extends DiaTexTraceLink> b) {
+    public static <T extends DiagramTextTraceLink> TreeSet<T> difference(Set<T> a, Set<? extends DiagramTextTraceLink> b) {
         return a.stream().filter(fromA -> b.stream().noneMatch(fromB -> fromB.similar(fromA))).collect(Collectors.toCollection(TreeSet::new));
     }
 

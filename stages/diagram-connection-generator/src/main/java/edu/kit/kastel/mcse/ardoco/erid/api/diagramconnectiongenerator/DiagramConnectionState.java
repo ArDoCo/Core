@@ -2,33 +2,29 @@
 package edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator;
 
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.eclipse.collections.api.factory.Sets;
-import org.eclipse.collections.api.set.ImmutableSet;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaWordTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiagramWordTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
+import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
-import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.configuration.IConfigurable;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 import edu.kit.kastel.mcse.ardoco.erid.api.models.tracelinks.LinkBetweenDeAndRi;
 
 /**
- * This state holds the {@link LinkBetweenDeAndRi} trace links. It also provides functions to convert them to {@link DiaWordTraceLink DiaWordTraceLinks}.
+ * This state holds the {@link LinkBetweenDeAndRi} trace links. It also provides functions to convert them to {@link DiagramWordTraceLink DiaWordTraceLinks}.
  */
 public interface DiagramConnectionState extends IConfigurable {
     Logger logger = LoggerFactory.getLogger(DiagramConnectionState.class);
-
-    @Configurable
-    double confidenceThreshold = 0.4;
 
     /**
      * Returns all diagram links.
@@ -36,7 +32,7 @@ public interface DiagramConnectionState extends IConfigurable {
      * @return immutable set of diagram links
      */
     @NotNull
-    ImmutableSet<LinkBetweenDeAndRi> getLinksBetweenDeAndRi();
+    UnmodifiableLinkedHashSet<LinkBetweenDeAndRi> getLinksBetweenDeAndRi();
 
     /**
      * Returns all diagram links to a specific diagram element.
@@ -44,8 +40,8 @@ public interface DiagramConnectionState extends IConfigurable {
      * @param diagramElement the element
      * @return a potentially empty set of trace links
      */
-    default @NotNull ImmutableSet<LinkBetweenDeAndRi> getLinksBetweenDeAndRi(@NotNull DiagramElement diagramElement) {
-        return Sets.immutable.fromStream(getLinksBetweenDeAndRi().stream().filter(d -> d.getDiagramElement().equals(diagramElement)));
+    default @NotNull UnmodifiableLinkedHashSet<LinkBetweenDeAndRi> getLinksBetweenDeAndRi(@NotNull DiagramElement diagramElement) {
+        return UnmodifiableLinkedHashSet.of(getLinksBetweenDeAndRi().stream().filter(d -> d.getDiagramElement().equals(diagramElement)));
     }
 
     /**
@@ -54,8 +50,8 @@ public interface DiagramConnectionState extends IConfigurable {
      * @param recommendedInstance the element
      * @return a potentially empty set of trace links
      */
-    default @NotNull ImmutableSet<LinkBetweenDeAndRi> getLinksBetweenDeAndRi(@NotNull RecommendedInstance recommendedInstance) {
-        return Sets.immutable.fromStream(getLinksBetweenDeAndRi().stream().filter(d -> d.getRecommendedInstance().equals(recommendedInstance)));
+    default @NotNull UnmodifiableLinkedHashSet<LinkBetweenDeAndRi> getLinksBetweenDeAndRi(@NotNull RecommendedInstance recommendedInstance) {
+        return UnmodifiableLinkedHashSet.of(getLinksBetweenDeAndRi().stream().filter(d -> d.getRecommendedInstance().equals(recommendedInstance)));
     }
 
     /**
@@ -88,24 +84,29 @@ public interface DiagramConnectionState extends IConfigurable {
     boolean removeFromLinksBetweenDeAndRi(@NotNull LinkBetweenDeAndRi linkBetweenDeAndRi);
 
     /**
-     * {@return a set of diagram-to-word trace links} A {@link DiaWordTraceLink} is created for every word covered by a {@link LinkBetweenDeAndRi}. Low
+     * {@return the confidence threshold for filtering out diagram-to-word trace links}
+     */
+    double getConfidenceThreshold();
+
+    /**
+     * {@return a set of diagram-to-word trace links} A {@link DiagramWordTraceLink} is created for every word covered by a {@link LinkBetweenDeAndRi}. Low
      * confidence links are filtered out.
      */
-    default @NotNull ImmutableSet<DiaWordTraceLink> getWordTraceLinks() {
-        var traceLinks = Sets.mutable.<DiaWordTraceLink>empty();
+    default @NotNull UnmodifiableLinkedHashSet<DiagramWordTraceLink> getWordTraceLinks() {
+        var traceLinks = new LinkedHashSet<DiagramWordTraceLink>();
         for (var linkBetweenDeAndRi : getLinksBetweenDeAndRi()) {
-            traceLinks.addAll(linkBetweenDeAndRi.toTraceLinks().toList());
+            traceLinks.addAll(linkBetweenDeAndRi.toTraceLinks());
         }
-        var aboveThreshold = traceLinks.stream().filter(diaWordTraceLink -> diaWordTraceLink.getConfidence() >= confidenceThreshold).toList();
+        var aboveThreshold = traceLinks.stream().filter(diaWordTraceLink -> diaWordTraceLink.getConfidence() >= getConfidenceThreshold()).toList();
         logger.debug("Removed {} Word Trace Links due to low confidence", traceLinks.size() - aboveThreshold.size());
-        return Sets.immutable.ofAll(aboveThreshold);
+        return UnmodifiableLinkedHashSet.of(aboveThreshold);
     }
 
     /**
      * {@return a set of diagram-to-sentence trace links} If the sentence is covered by multiple diagram-to-word trace links of the same diagram element, the
      * diagram-to-word trace links are grouped into diagram-to-sentence trace links.
      */
-    default @NotNull ImmutableSet<DiaWordTraceLink> getTraceLinks() {
+    default @NotNull UnmodifiableLinkedHashSet<DiagramWordTraceLink> getTraceLinks() {
         return getByEqualDEAndSentence(getWordTraceLinks());
     }
 
@@ -113,12 +114,12 @@ public interface DiagramConnectionState extends IConfigurable {
      * {@return a set of diagram-to-word trace links} If multiple trace links point to the same word, the diagram-to-word trace link with the highest confidence
      * is chosen.
      */
-    default @NotNull ImmutableSet<DiaWordTraceLink> getMostSpecificWordTraceLinks() {
-        var allLinks = Sets.mutable.<DiaWordTraceLink>empty();
+    default @NotNull UnmodifiableLinkedHashSet<DiagramWordTraceLink> getMostSpecificWordTraceLinks() {
+        var allLinks = new LinkedHashSet<DiagramWordTraceLink>();
         var sameWord = getWordTraceLinks().stream().collect(Collectors.groupingBy(tl -> tl.getWord().getPosition()));
         sameWord.remove(-1);
         allLinks.addAll(sameWord.values().stream().flatMap(tls -> getHighestConfidenceTraceLinks(tls).stream()).toList());
-        return Sets.immutable.ofAll(allLinks);
+        return UnmodifiableLinkedHashSet.of(allLinks);
     }
 
     /**
@@ -126,7 +127,7 @@ public interface DiagramConnectionState extends IConfigurable {
      * confidence is chosen. If the sentence is covered by multiple diagram-to-word trace links of the same diagram element, the diagram-to-word trace links are
      * grouped into diagram-to-sentence trace links.
      */
-    default @NotNull ImmutableSet<DiaWordTraceLink> getMostSpecificTraceLinks() {
+    default @NotNull UnmodifiableLinkedHashSet<DiagramWordTraceLink> getMostSpecificTraceLinks() {
         return getByEqualDEAndSentence(getMostSpecificWordTraceLinks());
     }
 
@@ -135,8 +136,8 @@ public interface DiagramConnectionState extends IConfigurable {
      *
      * @param traceLinks the diagram-to-word trace links
      */
-    private List<DiaWordTraceLink> getHighestConfidenceTraceLinks(@NotNull List<DiaWordTraceLink> traceLinks) {
-        var max = traceLinks.stream().max(DiaWordTraceLink.CONFIDENCE_COMPARATOR).map(DiaWordTraceLink::getConfidence).orElse(Double.MAX_VALUE);
+    private List<DiagramWordTraceLink> getHighestConfidenceTraceLinks(@NotNull List<DiagramWordTraceLink> traceLinks) {
+        var max = traceLinks.stream().max(DiagramWordTraceLink.CONFIDENCE_COMPARATOR).map(DiagramWordTraceLink::getConfidence).orElse(Double.MAX_VALUE);
         var allMaxima = traceLinks.stream().filter(tl -> Double.compare(tl.getConfidence(), max) >= 0).toList();
         allMaxima.forEach(m -> m.addRelated(allMaxima));
         return allMaxima;
@@ -148,8 +149,8 @@ public interface DiagramConnectionState extends IConfigurable {
      *
      * @param traceLinks the diagram-to-word trace links
      */
-    private ImmutableSet<DiaWordTraceLink> getByEqualDEAndSentence(ImmutableSet<DiaWordTraceLink> traceLinks) {
-        var sameDEAndSentence = traceLinks.groupBy(l -> new Pair<>(l.getDiagramElement(), l.getSentenceNo())).toMap();
-        return Sets.immutable.fromStream(sameDEAndSentence.values().stream().map(l -> l.max(DiaWordTraceLink.CONFIDENCE_COMPARATOR)));
+    private UnmodifiableLinkedHashSet<DiagramWordTraceLink> getByEqualDEAndSentence(UnmodifiableLinkedHashSet<DiagramWordTraceLink> traceLinks) {
+        var sameDEAndSentence = traceLinks.stream().collect(Collectors.groupingBy(l -> new Pair<>(l.getDiagramElement(), l.getSentenceNo()), LinkedHashMap::new, Collectors.toList()));
+        return UnmodifiableLinkedHashSet.of(sameDEAndSentence.values().stream().map(l -> l.stream().max(DiagramWordTraceLink.CONFIDENCE_COMPARATOR).orElseThrow()));
     }
 }

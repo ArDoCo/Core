@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
 import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -22,7 +21,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramGS;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramsGS;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaGSTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiagramGoldStandardTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TraceType;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
@@ -279,17 +278,17 @@ public enum DiagramProject implements GoldStandardDiagramsWithTLR {
     }
 
     @Override
-    public Set<DiaGSTraceLink> getDiagramTraceLinks(@NotNull List<Sentence> sentences) {
+    public Set<DiagramGoldStandardTraceLink> getDiagramTraceLinks(@NotNull List<Sentence> sentences) {
         return getDiagramTraceLinks(sentences, baseProject.getTextResourceName());
     }
 
     @Override
-    public Map<TraceType, List<DiaGSTraceLink>> getDiagramTraceLinksAsMap(@NotNull List<Sentence> sentences) {
+    public Map<TraceType, List<DiagramGoldStandardTraceLink>> getDiagramTraceLinksAsMap(@NotNull List<Sentence> sentences) {
         var traceLinks = getDiagramTraceLinks(sentences);
-        return traceLinks.stream().collect(Collectors.groupingBy(DiaGSTraceLink::getTraceType));
+        return traceLinks.stream().collect(Collectors.groupingBy(DiagramGoldStandardTraceLink::getTraceType));
     }
 
-    private Set<DiaGSTraceLink> getDiagramTraceLinks(@NotNull List<Sentence> sentences, @Nullable String textGoldstandard) {
+    private Set<DiagramGoldStandardTraceLink> getDiagramTraceLinks(@NotNull List<Sentence> sentences, @Nullable String textGoldstandard) {
         return getDiagramsGoldStandard().stream().flatMap(d -> d.getTraceLinks(sentences, textGoldstandard).stream()).collect(Collectors.toSet());
     }
 
