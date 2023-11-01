@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,6 +29,12 @@ public class UnmodifiableLinkedHashMap<K, V> implements Map<K, V>, Serializable 
     }
 
     public static <K, V> UnmodifiableLinkedHashMap<K, V> of(LinkedHashMap<K, V> map) {
+        return new UnmodifiableLinkedHashMap<>(map);
+    }
+
+    public static <K, V> UnmodifiableLinkedHashMap<K, V> of(Stream<Entry<K, V>> entryStream) {
+        var map = new LinkedHashMap<K, V>();
+        entryStream.forEachOrdered(e -> map.put(e.getKey(), e.getValue()));
         return new UnmodifiableLinkedHashMap<>(map);
     }
 

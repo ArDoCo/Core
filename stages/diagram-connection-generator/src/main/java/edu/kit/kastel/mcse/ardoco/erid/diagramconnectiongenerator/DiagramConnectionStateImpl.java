@@ -1,17 +1,16 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator;
 
-import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.Set;
+import java.util.LinkedHashSet;
 
-import org.eclipse.collections.api.factory.Sets;
-import org.eclipse.collections.api.set.ImmutableSet;
 import org.jetbrains.annotations.NotNull;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
+import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
+import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.AbstractState;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 import edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator.DiagramConnectionState;
@@ -21,12 +20,15 @@ import edu.kit.kastel.mcse.ardoco.erid.api.models.tracelinks.LinkBetweenDeAndRi;
  * @see DiagramConnectionState
  */
 public class DiagramConnectionStateImpl extends AbstractState implements DiagramConnectionState {
-    private final Set<LinkBetweenDeAndRi> linksBetweenDeAndRi = new HashSet<>();
+    @Configurable
+    private double confidenceThreshold = 0.4;
+
+    private final LinkedHashSet<LinkBetweenDeAndRi> linksBetweenDeAndRi = new LinkedHashSet<>();
 
     @NotNull
     @Override
-    public ImmutableSet<LinkBetweenDeAndRi> getLinksBetweenDeAndRi() {
-        return Sets.immutable.ofAll(linksBetweenDeAndRi);
+    public UnmodifiableLinkedHashSet<LinkBetweenDeAndRi> getLinksBetweenDeAndRi() {
+        return UnmodifiableLinkedHashSet.of(linksBetweenDeAndRi);
     }
 
     @Override
@@ -34,7 +36,6 @@ public class DiagramConnectionStateImpl extends AbstractState implements Diagram
             @NotNull String textIdentifier, @NotNull Claimant claimant, @NotNull LinkedHashMap<Word, Double> confidenceMap) {
         var newDL = new LinkBetweenDeAndRi(recommendedInstance, diagramElement, textIdentifier, claimant, confidenceMap);
         var added = linksBetweenDeAndRi.add(newDL);
-
         if (added)
             return true;
 
@@ -64,5 +65,10 @@ public class DiagramConnectionStateImpl extends AbstractState implements Diagram
     @Override
     public boolean removeFromLinksBetweenDeAndRi(@NotNull LinkBetweenDeAndRi linkBetweenDeAndRi) {
         return linksBetweenDeAndRi.remove(linkBetweenDeAndRi);
+    }
+
+    @Override
+    public double getConfidenceThreshold() {
+        return confidenceThreshold;
     }
 }

@@ -243,10 +243,10 @@ public class AbbreviationInformant extends Informant {
         }
     }
 
-    List<Triple<Double, List<Word>, String>> getScores(Word abbreviationCandidate, List<Word> meaningList, boolean caseSensitive) {
-        List<Triple<Double, List<Word>, String>> meaningScores = new ArrayList<>();
+    List<Triple<Double, ArrayList<Word>, String>> getScores(Word abbreviationCandidate, List<Word> meaningList, boolean caseSensitive) {
+        List<Triple<Double, ArrayList<Word>, String>> meaningScores = new ArrayList<>();
         for (int i = 1; i <= meaningList.size(); i++) {
-            var subList = new ArrayList<>(meaningList).subList(0, i);
+            var subList = new ArrayList<>(new ArrayList<>(meaningList).subList(0, i));
             var lMeaning = subList.stream().map(Word::getText).collect(Collectors.joining(" "));
             var lAbbreviation = abbreviationCandidate.getText();
             if (!caseSensitive) {

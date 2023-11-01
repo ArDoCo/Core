@@ -1,21 +1,20 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.erid.api.models.tracelinks;
 
-import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 
-import org.eclipse.collections.api.factory.Sets;
-import org.eclipse.collections.api.set.ImmutableSet;
 import org.jetbrains.annotations.NotNull;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiaWordTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiagramWordTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.EndpointTuple;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions;
 import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashMap;
+import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 /**
@@ -43,7 +42,7 @@ public class LinkBetweenDeAndRi extends EndpointTuple implements Claimant, Compa
 
         //Assert that confidenceMap is complete
         assert confidenceMap.keySet().containsAll(recommendedInstance.getNameMappings().stream().flatMap(n -> n.getWords().stream()).toList());
-        assert new HashSet<>(recommendedInstance.getNameMappings().stream().flatMap(n -> n.getWords().stream()).toList()).size() == confidenceMap.size();
+        assert new LinkedHashSet<>(recommendedInstance.getNameMappings().stream().flatMap(n -> n.getWords().stream()).toList()).size() == confidenceMap.size();
 
         this.recommendedInstance = recommendedInstance;
         this.diagramElement = diagramElement;
@@ -137,9 +136,9 @@ public class LinkBetweenDeAndRi extends EndpointTuple implements Claimant, Compa
      *
      * @return immutable set of diagram text tracelinks
      */
-    public @NotNull ImmutableSet<DiaWordTraceLink> toTraceLinks() {
-        return Sets.immutable.fromStream(getConfidenceMap().entrySet()
+    public @NotNull UnmodifiableLinkedHashSet<DiagramWordTraceLink> toTraceLinks() {
+        return UnmodifiableLinkedHashSet.of(getConfidenceMap().entrySet()
                 .stream()
-                .map(e -> new DiaWordTraceLink(getDiagramElement(), e.getKey(), projectName, e.getValue(), this)));
+                .map(e -> new DiagramWordTraceLink(getDiagramElement(), e.getKey(), projectName, e.getValue(), this)));
     }
 }

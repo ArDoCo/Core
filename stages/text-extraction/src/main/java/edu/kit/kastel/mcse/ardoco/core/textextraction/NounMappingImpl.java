@@ -3,7 +3,6 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
 import static edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions.AVERAGE;
 
-import java.util.*;
 import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashSet;
@@ -182,7 +181,7 @@ public class NounMappingImpl implements NounMapping {
         try {
             return phrases.get();
         } catch (ConcurrentException e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 

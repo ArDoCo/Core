@@ -1,6 +1,7 @@
 /* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -348,7 +349,7 @@ public final class SimilarityUtils {
         return mostSimilarPhraseMapping;
     }
 
-    public static <A, B> ImmutableList<Pair<A, B>> uniqueDot(ImmutableList<A> first, ImmutableList<B> second) {
+    public static <A extends Serializable, B extends Serializable> ImmutableList<Pair<A, B>> uniqueDot(ImmutableList<A> first, ImmutableList<B> second) {
         List<Pair<A, B>> result = new ArrayList<>();
         for (A a : first)
             for (B b : second)

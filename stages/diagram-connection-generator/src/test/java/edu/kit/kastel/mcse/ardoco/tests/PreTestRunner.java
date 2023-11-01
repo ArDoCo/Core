@@ -54,9 +54,7 @@ public class PreTestRunner extends ParameterizedRunner<PreTestRunner.Parameters>
             pipelineSteps.add(DiagramRecognition.get(p.diagramProject.getAdditionalConfigurations(), dataRepository));
         }
 
-        var textState = new TextStateImpl();
-        var textStrategy = new DiagramBackedTextStateStrategy(textState, dataRepository);
-        textState.setTextStateStrategy(textStrategy);
+        var textState = new TextStateImpl(DiagramBackedTextStateStrategy::new, dataRepository);
         dataRepository.addData(TextState.ID, textState);
         pipelineSteps.add(TextExtraction.get(p.diagramProject.getAdditionalConfigurations(), dataRepository));
 

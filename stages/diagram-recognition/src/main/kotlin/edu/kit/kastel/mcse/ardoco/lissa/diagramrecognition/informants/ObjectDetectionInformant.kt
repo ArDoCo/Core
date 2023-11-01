@@ -1,11 +1,9 @@
 package edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.informants
 
-import com.fasterxml.jackson.databind.InjectableValues
 import com.fasterxml.jackson.module.kotlin.readValue
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
-import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.createObjectMapper
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.executeRequest
 import org.apache.hc.client5.http.classic.methods.HttpPost
 import org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder
@@ -28,7 +26,7 @@ class ObjectDetectionInformant(
     companion object {
         const val DOCKER_SKETCH_RECOGNITION = "ghcr.io/lissa-approach/detectron2-sr:latest"
         const val DEFAULT_PORT = 5005
-        const val DOCKER_SKETCH_RECOGNITION_VIA_DOCKER = false
+        const val DOCKER_SKETCH_RECOGNITION_VIA_DOCKER = true
 
         const val ID = "ObjectDetectionInformant"
     }
@@ -51,13 +49,6 @@ class ObjectDetectionInformant(
     ): List<Box> {
         val sketchRecognition = sendSketchRecognitionRequest(image)
         logger.debug("Processed DiagramRecognition request")
-        val oom = createObjectMapper()
-        oom.setInjectableValues(
-            InjectableValues.Std().addValue(
-                Diagram::class.java,
-                diagram
-            )
-        )
         return oom.readValue(sketchRecognition)
     }
 

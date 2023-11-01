@@ -2,6 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.Optional;
 
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +17,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityComparable;
  * @param maxX x coordinate of the right bounding box edge
  * @param maxY y coordinate of the bottom bounding box edge
  */
-public record BoundingBox(int minX, int minY, int maxX, int maxY) implements SimilarityComparable<BoundingBox>, Serializable {
+public record BoundingBox(int minX, int minY, int maxX, int maxY) implements Comparable<BoundingBox>, SimilarityComparable<BoundingBox>, Serializable {
 
     /**
      * Threshold used by the IoU to determine whether bounding boxes are similar using {@link #similar(BoundingBox)}.
@@ -137,5 +138,16 @@ public record BoundingBox(int minX, int minY, int maxX, int maxY) implements Sim
         if (equals(obj))
             return true;
         return intersectionOverUnion(obj) > SIMILARITY_THRESHOLD;
+    }
+
+    @Override
+    public int compareTo(@NotNull BoundingBox o) {
+        if (equals(o))
+            return 0;
+        return Comparator.comparing(BoundingBox::minX)
+                .thenComparing(BoundingBox::minY)
+                .thenComparing(BoundingBox::maxX)
+                .thenComparing(BoundingBox::maxY)
+                .compare(this, o);
     }
 }

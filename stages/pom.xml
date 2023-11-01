@@ -9,10 +9,6 @@
 
   <artifactId>stages</artifactId>
   <packaging>pom</packaging>
-  <modules>
-    <module>diagram-connection-generator</module>
-    <module>diagram-inconsistency-checker</module>
-  </modules>
 
   <profiles>
     <profile>
@@ -23,6 +19,8 @@
       <modules>
         <module>code-traceability</module>
         <module>connection-generator</module>
+        <module>diagram-connection-generator</module>
+        <module>diagram-inconsistency-checker</module>
         <module>diagram-recognition</module>
         <module>inconsistency-detection</module>
         <module>model-provider</module>

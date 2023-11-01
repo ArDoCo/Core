@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 
-public class DiaGSTraceLink extends DiaTexTraceLink {
+public class DiagramGoldStandardTraceLink extends DiagramTextTraceLink {
     private final String goldStandard;
     private final TraceType traceType;
 
@@ -20,7 +20,8 @@ public class DiaGSTraceLink extends DiaTexTraceLink {
      * @param projectName    project name
      * @param goldStandard   path to the textual gold standard file
      */
-    public DiaGSTraceLink(@NotNull DiagramElement diagramElement, @NotNull Sentence sentence, @NotNull String projectName, @NotNull String goldStandard) {
+    public DiagramGoldStandardTraceLink(@NotNull DiagramElement diagramElement, @NotNull Sentence sentence, @NotNull String projectName,
+            @NotNull String goldStandard) {
         this(diagramElement, sentence, projectName, goldStandard, TraceType.ENTITY);
     }
 
@@ -33,8 +34,8 @@ public class DiaGSTraceLink extends DiaTexTraceLink {
      * @param goldStandard   path to the textual gold standard file
      * @param traceType      type of the trace
      */
-    public DiaGSTraceLink(@NotNull DiagramElement diagramElement, @NotNull Sentence sentence, @NotNull String projectName, @NotNull String goldStandard,
-            @NotNull TraceType traceType) {
+    public DiagramGoldStandardTraceLink(@NotNull DiagramElement diagramElement, @NotNull Sentence sentence, @NotNull String projectName,
+            @NotNull String goldStandard, @NotNull TraceType traceType) {
         super(diagramElement, sentence, projectName);
         this.goldStandard = goldStandard;
         this.traceType = traceType;
@@ -58,7 +59,7 @@ public class DiaGSTraceLink extends DiaTexTraceLink {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj instanceof DiaGSTraceLink other) {
+        if (obj instanceof DiagramGoldStandardTraceLink other) {
             return Objects.equals(getGoldStandard(), other.getGoldStandard()) && Objects.equals(getDiagramElement(), other.getDiagramElement()) && Objects
                     .equals(getSentenceNo(), other.getSentenceNo()) && Objects.equals(getTraceType(), other.getTraceType());
         }
@@ -71,12 +72,12 @@ public class DiaGSTraceLink extends DiaTexTraceLink {
     }
 
     @Override
-    public int compareTo(@NotNull DiaTexTraceLink o) {
+    public int compareTo(@NotNull DiagramTextTraceLink o) {
         if (equals(o))
             return 0;
-        if (o instanceof DiaWordTraceLink)
+        if (o instanceof DiagramWordTraceLink)
             return -1;
-        if (o instanceof DiaGSTraceLink other) {
+        if (o instanceof DiagramGoldStandardTraceLink other) {
             var gs = 0;
             if (goldStandard == null && other.goldStandard != null)
                 gs = 1;

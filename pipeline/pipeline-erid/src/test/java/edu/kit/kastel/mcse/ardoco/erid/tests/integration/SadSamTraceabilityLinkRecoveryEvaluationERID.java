@@ -82,9 +82,7 @@ public class SadSamTraceabilityLinkRecoveryEvaluationERID extends SadSamTraceabi
                     pipelineSteps.add(DiagramRecognition.get(project.getAdditionalConfigurations(), dataRepository));
                 }
 
-                var textState = new TextStateImpl();
-                var textStrategy = new DiagramBackedTextStateStrategy(textState, dataRepository);
-                textState.setTextStateStrategy(textStrategy);
+                var textState = new TextStateImpl(DiagramBackedTextStateStrategy::new, dataRepository);
                 dataRepository.addData(TextState.ID, textState);
                 pipelineSteps.add(TextExtraction.get(additionalConfigs, dataRepository));
 

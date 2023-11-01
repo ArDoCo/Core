@@ -30,13 +30,6 @@ public interface TextState extends IConfigurable, PipelineStepData {
     String ID = "TextState";
 
     /**
-     * Sets the {@link TextStateStrategy} used by the text state.
-     *
-     * @param textStateStrategy the text strategy
-     */
-    void setTextStateStrategy(TextStateStrategy textStateStrategy);
-
-    /**
      * {@return the text state strategy of the text state}
      */
     TextStateStrategy getTextStateStrategy();

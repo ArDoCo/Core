@@ -18,6 +18,9 @@ abstract class DockerInformant : Informant {
         // E.g., 2375
         private val REMOTE_DOCKER_PORT: Int? = System.getenv("REMOTE_DOCKER_PORT")?.toIntOrNull()
 
+        /**
+         * URI of a docker host, which hosts the endpoints used by this informant. E.g., https://some-domain.com
+         */
         private val REMOTE_DOCKER_URI: String? = System.getenv("REMOTE_DOCKER_URI")
 
         private val REMOTE = REMOTE_DOCKER_IP != null && REMOTE_DOCKER_PORT != null
@@ -44,12 +47,9 @@ abstract class DockerInformant : Informant {
         }
     }
 
-    /**
-     * A configured object mapper for serialization / deserialization of objects.
-     */
     private val image: String
     private val defaultPort: Int
-    private val useDocker: Boolean
+    private var useDocker: Boolean
     private val endpoint: String
 
     private var dockerManager: DockerManager? = null
@@ -93,6 +93,8 @@ abstract class DockerInformant : Informant {
      * Start the container.
      */
     protected fun start() {
+        useDocker = useDocker && REMOTE_DOCKER_URI == null
+
         if (useDocker) {
             this.container = docker().createContainerByImage(image, true, false)
         } else {
@@ -109,6 +111,9 @@ abstract class DockerInformant : Informant {
         }
     }
 
+    /**
+     * @return the URI to the docker service. [REMOTE_DOCKER_URI] takes precedence over [REMOTE_DOCKER_IP] if set.
+     */
     protected fun getUri(): String {
         if (REMOTE_DOCKER_URI != null) return "$REMOTE_DOCKER_URI/$endpoint/"
         return "http://${hostIP()}:${container.apiPort}/$endpoint/"

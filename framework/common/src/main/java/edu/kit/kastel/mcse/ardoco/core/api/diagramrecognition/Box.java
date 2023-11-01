@@ -47,12 +47,6 @@ public class Box extends DiagramElement implements Serializable {
         return Arrays.stream(coordinates).mapToObj((Integer::toString)).reduce((l, r) -> l + "-" + r).orElseThrow();
     }
 
-    // Jackson JSON
-    //FIXME I think this may be removed, not sure if it is really no longer in use though. There is a dedicated JSONCreator constructor, so it should be fine. Empty super constructor may also be removed if that is the case.
-    private Box() {
-        super();
-    }
-
     /**
      * Create a new box that is detected on the image.
      *

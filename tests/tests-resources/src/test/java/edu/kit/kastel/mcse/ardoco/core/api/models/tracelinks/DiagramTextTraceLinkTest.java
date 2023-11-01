@@ -24,7 +24,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 
-class DiaTexTraceLinkTest {
+class DiagramTextTraceLinkTest {
     public static final Word mockWord = Mockito.mock(Word.class, Mockito.withSettings().serializable());
     public static final Sentence mockSentence = Mockito.mock(Sentence.class, Mockito.withSettings().serializable());
     public static final Phrase mockPhrase = Mockito.mock(Phrase.class, Mockito.withSettings().serializable());
@@ -41,24 +41,25 @@ class DiaTexTraceLinkTest {
         Mockito.doReturn(1).when(mockSentence).getSentenceNumberForOutput();
     }
 
-    public static final DiaTexTraceLink dummyDiaTexTraceLinkSentence = new DiaGSTraceLink(BoxGSTest.DUMMY_BOX_GS, mockSentence, "SomeIdentifier",
-            "SomeStandard.json");
-    public static final DiaTexTraceLink dummyDiaTexTraceLinkWord = new DiaWordTraceLink(BoxGSTest.DUMMY_BOX_GS, mockWord, "SomeIdentifier", 0.5, null);
+    public static final DiagramTextTraceLink DUMMY_DIAGRAM_TEXT_TRACE_LINK_SENTENCE = new DiagramGoldStandardTraceLink(BoxGSTest.DUMMY_BOX_GS, mockSentence,
+            "SomeIdentifier", "SomeStandard.json");
+    public static final DiagramTextTraceLink DUMMY_DIAGRAM_TEXT_TRACE_LINK_WORD = new DiagramWordTraceLink(BoxGSTest.DUMMY_BOX_GS, mockWord, "SomeIdentifier",
+            0.5, null);
 
-    public static List<DiaTexTraceLink> getDummyDiaTexTraceLinks() {
-        return List.of(dummyDiaTexTraceLinkSentence, dummyDiaTexTraceLinkWord);
+    public static List<DiagramTextTraceLink> getDummyDiaTexTraceLinks() {
+        return List.of(DUMMY_DIAGRAM_TEXT_TRACE_LINK_SENTENCE, DUMMY_DIAGRAM_TEXT_TRACE_LINK_WORD);
     }
 
     @DisplayName("Evaluate Serialize DiaTextTraceLinks")
     @ParameterizedTest(name = "{0}")
     @MethodSource("getDummyDiaTexTraceLinks")
-    void serialize(DiaTexTraceLink diaTexTraceLink) throws IOException, ClassNotFoundException {
+    void serialize(DiagramTextTraceLink diagramTextTraceLink) throws IOException, ClassNotFoundException {
         var byteArrayOutputStream = new ByteArrayOutputStream();
-        new ObjectOutputStream(byteArrayOutputStream).writeObject(diaTexTraceLink);
+        new ObjectOutputStream(byteArrayOutputStream).writeObject(diagramTextTraceLink);
         var byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
-        var deserialized = (DiaTexTraceLink) new ObjectInputStream(byteArrayInputStream).readObject();
+        var deserialized = (DiagramTextTraceLink) new ObjectInputStream(byteArrayInputStream).readObject();
 
-        assertEquals(diaTexTraceLink, deserialized);
+        assertEquals(diagramTextTraceLink, deserialized);
     }
 
     @DisplayName("Evaluate Serialize DiaTextTraceLinks")
@@ -67,7 +68,7 @@ class DiaTexTraceLinkTest {
         var byteArrayOutputStream = new ByteArrayOutputStream();
         new ObjectOutputStream(byteArrayOutputStream).writeObject(Sets.immutable.fromStream(getDummyDiaTexTraceLinks().stream()));
         var byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
-        var deserialized = (ImmutableSet<DiaTexTraceLink>) new ObjectInputStream(byteArrayInputStream).readObject();
+        var deserialized = (ImmutableSet<DiagramTextTraceLink>) new ObjectInputStream(byteArrayInputStream).readObject();
 
         assertTrue(getDummyDiaTexTraceLinks().containsAll(deserialized.toList()));
         assertTrue(deserialized.containsAll(getDummyDiaTexTraceLinks()));

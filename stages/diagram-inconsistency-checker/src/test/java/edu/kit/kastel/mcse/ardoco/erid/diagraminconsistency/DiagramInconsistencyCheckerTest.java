@@ -54,7 +54,6 @@ public class DiagramInconsistencyCheckerTest extends StageTest<DiagramInconsiste
     protected Results runComparable(DiagramProject project, SortedMap<String, String> additionalConfigurations, boolean cachePreRun) {
         var dataRepository = run(project, additionalConfigurations, cachePreRun);
         var diagramInconsistencyStates = dataRepository.getData(DiagramInconsistencyStates.ID, DiagramInconsistencyStates.class).orElseThrow();
-        //TODO Get Metamodel properly
         var diagramInconsistencyState = diagramInconsistencyStates.getDiagramInconsistencyState(project.getMetamodel());
 
         var mdeInconsistencies = new TreeSet<>(diagramInconsistencyState.getInconsistencies(MDEInconsistency.class));
