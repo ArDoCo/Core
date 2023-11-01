@@ -150,7 +150,10 @@ public interface DiagramConnectionState extends IConfigurable {
      * @param traceLinks the diagram-to-word trace links
      */
     private UnmodifiableLinkedHashSet<DiagramWordTraceLink> getByEqualDEAndSentence(UnmodifiableLinkedHashSet<DiagramWordTraceLink> traceLinks) {
-        var sameDEAndSentence = traceLinks.stream().collect(Collectors.groupingBy(l -> new Pair<>(l.getDiagramElement(), l.getSentenceNo()), LinkedHashMap::new, Collectors.toList()));
-        return UnmodifiableLinkedHashSet.of(sameDEAndSentence.values().stream().map(l -> l.stream().max(DiagramWordTraceLink.CONFIDENCE_COMPARATOR).orElseThrow()));
+        var sameDEAndSentence = traceLinks.stream()
+                .collect(Collectors.groupingBy(l -> new Pair<>(l.getDiagramElement(), l.getSentenceNo()), LinkedHashMap::new, Collectors.toList()));
+        return UnmodifiableLinkedHashSet.of(sameDEAndSentence.values()
+                .stream()
+                .map(l -> l.stream().max(DiagramWordTraceLink.CONFIDENCE_COMPARATOR).orElseThrow()));
     }
 }

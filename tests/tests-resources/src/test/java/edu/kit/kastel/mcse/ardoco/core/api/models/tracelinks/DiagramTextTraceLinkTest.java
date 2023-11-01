@@ -41,9 +41,10 @@ class DiagramTextTraceLinkTest {
         Mockito.doReturn(1).when(mockSentence).getSentenceNumberForOutput();
     }
 
-    public static final DiagramTextTraceLink DUMMY_DIAGRAM_TEXT_TRACE_LINK_SENTENCE = new DiagramGoldStandardTraceLink(BoxGSTest.DUMMY_BOX_GS, mockSentence, "SomeIdentifier",
-            "SomeStandard.json");
-    public static final DiagramTextTraceLink DUMMY_DIAGRAM_TEXT_TRACE_LINK_WORD = new DiagramWordTraceLink(BoxGSTest.DUMMY_BOX_GS, mockWord, "SomeIdentifier", 0.5, null);
+    public static final DiagramTextTraceLink DUMMY_DIAGRAM_TEXT_TRACE_LINK_SENTENCE = new DiagramGoldStandardTraceLink(BoxGSTest.DUMMY_BOX_GS, mockSentence,
+            "SomeIdentifier", "SomeStandard.json");
+    public static final DiagramTextTraceLink DUMMY_DIAGRAM_TEXT_TRACE_LINK_WORD = new DiagramWordTraceLink(BoxGSTest.DUMMY_BOX_GS, mockWord, "SomeIdentifier",
+            0.5, null);
 
     public static List<DiagramTextTraceLink> getDummyDiaTexTraceLinks() {
         return List.of(DUMMY_DIAGRAM_TEXT_TRACE_LINK_SENTENCE, DUMMY_DIAGRAM_TEXT_TRACE_LINK_WORD);

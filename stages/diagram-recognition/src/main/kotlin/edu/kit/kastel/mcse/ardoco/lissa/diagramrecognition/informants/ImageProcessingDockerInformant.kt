@@ -22,7 +22,6 @@ abstract class ImageProcessingDockerInformant(
         dataRepository,
         endpoint
     ) {
-
     /**
      * A configured object mapper for serialization / deserialization of objects.
      */
@@ -43,7 +42,7 @@ abstract class ImageProcessingDockerInformant(
     private fun processImages() {
         val diagramRecognitionState = DataRepositoryHelper.getDiagramRecognitionState(dataRepository)
         for (diagram in diagramRecognitionState.getUnprocessedDiagrams()) {
-            //Inject diagram into mapper
+            // Inject diagram into mapper
             oom.setInjectableValues(
                 InjectableValues.Std().addValue(
                     Diagram::class.java,

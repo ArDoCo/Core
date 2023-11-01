@@ -20,7 +20,8 @@ public class DiagramGoldStandardTraceLink extends DiagramTextTraceLink {
      * @param projectName    project name
      * @param goldStandard   path to the textual gold standard file
      */
-    public DiagramGoldStandardTraceLink(@NotNull DiagramElement diagramElement, @NotNull Sentence sentence, @NotNull String projectName, @NotNull String goldStandard) {
+    public DiagramGoldStandardTraceLink(@NotNull DiagramElement diagramElement, @NotNull Sentence sentence, @NotNull String projectName,
+            @NotNull String goldStandard) {
         this(diagramElement, sentence, projectName, goldStandard, TraceType.ENTITY);
     }
 
@@ -33,8 +34,8 @@ public class DiagramGoldStandardTraceLink extends DiagramTextTraceLink {
      * @param goldStandard   path to the textual gold standard file
      * @param traceType      type of the trace
      */
-    public DiagramGoldStandardTraceLink(@NotNull DiagramElement diagramElement, @NotNull Sentence sentence, @NotNull String projectName, @NotNull String goldStandard,
-            @NotNull TraceType traceType) {
+    public DiagramGoldStandardTraceLink(@NotNull DiagramElement diagramElement, @NotNull Sentence sentence, @NotNull String projectName,
+            @NotNull String goldStandard, @NotNull TraceType traceType) {
         super(diagramElement, sentence, projectName);
         this.goldStandard = goldStandard;
         this.traceType = traceType;

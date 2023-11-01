@@ -142,7 +142,12 @@ public record BoundingBox(int minX, int minY, int maxX, int maxY) implements Com
 
     @Override
     public int compareTo(@NotNull BoundingBox o) {
-        if (equals(o)) return 0;
-        return Comparator.comparing(BoundingBox::minX).thenComparing(BoundingBox::minY).thenComparing(BoundingBox::maxX).thenComparing(BoundingBox::maxY).compare(this, o);
+        if (equals(o))
+            return 0;
+        return Comparator.comparing(BoundingBox::minX)
+                .thenComparing(BoundingBox::minY)
+                .thenComparing(BoundingBox::maxX)
+                .thenComparing(BoundingBox::maxY)
+                .compare(this, o);
     }
 }

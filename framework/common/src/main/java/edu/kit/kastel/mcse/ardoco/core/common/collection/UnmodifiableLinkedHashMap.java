@@ -32,7 +32,7 @@ public class UnmodifiableLinkedHashMap<K, V> implements Map<K, V>, Serializable 
         return new UnmodifiableLinkedHashMap<>(map);
     }
 
-    public static <K, V> UnmodifiableLinkedHashMap<K, V> of(Stream<Entry<K,V>> entryStream) {
+    public static <K, V> UnmodifiableLinkedHashMap<K, V> of(Stream<Entry<K, V>> entryStream) {
         var map = new LinkedHashMap<K, V>();
         entryStream.forEachOrdered(e -> map.put(e.getKey(), e.getValue()));
         return new UnmodifiableLinkedHashMap<>(map);

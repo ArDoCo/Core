@@ -18,8 +18,8 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 
 public record Results(DiagramProject project, SortedSet<DiagramWordTraceLink> truePositives, SortedSet<DiagramWordTraceLink> falsePositives,
-                      SortedSet<DiagramGoldStandardTraceLink> falseNegatives, long TN, ExpectedResults expectedResults, SortedSet<DiagramWordTraceLink> all) implements
-        Serializable {
+                      SortedSet<DiagramGoldStandardTraceLink> falseNegatives, long TN, ExpectedResults expectedResults, SortedSet<DiagramWordTraceLink> all)
+        implements Serializable {
 
     private final static Logger logger = LoggerFactory.getLogger(Results.class);
 
