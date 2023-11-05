@@ -102,11 +102,6 @@ public class DiagramGS implements Diagram {
         return Objects.hashCode(resourceName);
     }
 
-    private String getShortPath() {
-        var split = getResourceName().split("/|\\\\");
-        return split[split.length - 1];
-    }
-
     @Override
     public File getLocation() {
         return project.getDiagramsGoldStandardFile();
@@ -193,6 +188,6 @@ public class DiagramGS implements Diagram {
 
     @Override
     public String toString() {
-        return getShortPath();
+        return getShortResourceName();
     }
 }

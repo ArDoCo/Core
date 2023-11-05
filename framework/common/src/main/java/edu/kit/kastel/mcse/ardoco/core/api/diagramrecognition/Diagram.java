@@ -15,9 +15,17 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityComparable;
  */
 public interface Diagram extends Comparable<Diagram>, SimilarityComparable<Diagram>, Serializable {
     /**
-     * {@return the (resource) name of the diagram, e.g. "some-diagram.jpg"}
+     * {@return the full (resource) name of the diagram, e.g. "some/path/to/some-diagram.jpg"}
      */
     String getResourceName();
+
+    /**
+     * {@return the short (resource) name of the diagram, e.g. "some-diagram.jpg"}
+     */
+    default String getShortResourceName() {
+        var split = getResourceName().split("/|\\\\");
+        return split[split.length - 1];
+    }
 
     File getLocation();
 
