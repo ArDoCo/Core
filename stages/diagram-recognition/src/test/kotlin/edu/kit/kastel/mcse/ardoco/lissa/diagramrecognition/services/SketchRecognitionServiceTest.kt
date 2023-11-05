@@ -6,13 +6,18 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognition
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
 import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognition
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.visualize
+import edu.kit.kastel.mcse.ardoco.tests.eval.GoldStandardDiagrams
 import org.eclipse.collections.api.factory.SortedMaps
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assumptions
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.MethodSource
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.awt.Color
@@ -116,5 +121,36 @@ class SketchRecognitionServiceTest {
             FileOutputStream(destination)
         )
         if (Desktop.isDesktopSupported()) Desktop.getDesktop().open(destination)
+    }
+
+    /**
+     * Use to visualize diagram recognition for all diagram project diagrams
+     */
+    @EnabledIfEnvironmentVariable(named = "testVisualizeAll", matches = ".*")
+    @DisplayName("Visualize Diagram Project Sketch Recognition")
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject#values")
+    fun visualizeAll(diagramProject: GoldStandardDiagrams) {
+        val diagramData = diagramProject.diagramData
+        val dataRepository = DataRepository()
+        dataRepository.addData(InputDiagramData.ID, InputDiagramData(diagramData))
+        val stage = DiagramRecognition.get(SortedMaps.mutable.empty(), dataRepository)
+        stage.run()
+        val state =
+            dataRepository.getData(DiagramRecognitionState.ID, DiagramRecognitionState::class.java)
+                .orElse(null)
+        assertNotNull(state)
+        File("target/testout").mkdirs()
+
+        for (inputDiagram in diagramData) {
+            val diagram = state.diagrams.find { it.resourceName.equals(inputDiagram.first) }!!
+            val destination = File("target/testout/result_" + diagramProject.projectName + "_" + diagram.shortResourceName)
+            visualize(
+                FileInputStream(inputDiagram.second),
+                diagram,
+                FileOutputStream(destination)
+            )
+            if (Desktop.isDesktopSupported()) Desktop.getDesktop().open(destination)
+        }
     }
 }
