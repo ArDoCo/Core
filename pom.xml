@@ -71,7 +71,7 @@
   </distributionManagement>
 
   <properties>
-    <revision>0.29.0-SNAPSHOT</revision>
+    <revision>0.30.0-SNAPSHOT</revision>
     <ardoco.version>${revision}</ardoco.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -89,10 +89,10 @@
     <!-- Plugin Versions -->
     <slf4j.version>2.0.9</slf4j.version>
     <spotless.version>2.40.0</spotless.version>
-    <junit.version>5.10.0</junit.version>
+    <junit.version>5.10.1</junit.version>
     <eclipse-collections.version>12.0.0.M3</eclipse-collections.version>
     <jackson.version>2.16.0-rc1</jackson.version>
-    <javaparser.version>3.25.5</javaparser.version>
+    <javaparser.version>3.25.6</javaparser.version>
     <error-prone.version>2.23.0</error-prone.version>
     <mockito.version>5.2.0</mockito.version>
     <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
@@ -337,7 +337,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
-          <version>3.2.1</version>
+          <version>3.2.2</version>
           <executions>
             <execution>
               <goals>
@@ -484,7 +484,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.6.0</version>
+        <version>3.6.2</version>
         <configuration>
           <!-- Neither of these locale options works for me, but a solution should be figured out, because locale is important for javadoc generation -->
           <locale>en_US</locale>
