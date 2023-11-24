@@ -10,7 +10,7 @@ import java.util.SortedSet;
  * interfaces. Provided interfaces are implemented by the component. Required
  * interfaces specify some functionality that is needed by the component.
  */
-public class ArchitectureComponent extends ArchitectureItem {
+public final class ArchitectureComponent extends ArchitectureItem {
 
     private final SortedSet<ArchitectureComponent> subcomponents;
     private final SortedSet<ArchitectureInterface> providedInterfaces;

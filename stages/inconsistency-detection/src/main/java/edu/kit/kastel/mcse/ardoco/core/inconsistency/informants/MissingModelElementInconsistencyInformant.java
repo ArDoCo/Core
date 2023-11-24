@@ -10,8 +10,8 @@ import org.eclipse.collections.api.list.MutableList;
 import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionStates;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistencyStates;
+import edu.kit.kastel.mcse.ardoco.core.api.models.LegacyModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.InstanceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
@@ -40,14 +40,14 @@ public class MissingModelElementInconsistencyInformant extends Informant {
         var connectionStates = DataRepositoryHelper.getConnectionStates(dataRepository);
         var inconsistencyStates = DataRepositoryHelper.getInconsistencyStates(dataRepository);
 
-        for (var model : modelStates.extractionModelIds()) {
+        for (var model : modelStates.modelIds()) {
             var modelState = modelStates.getModelExtractionState(model);
             findMissingModelElementInconsistencies(connectionStates, inconsistencyStates, modelState);
         }
     }
 
     private void findMissingModelElementInconsistencies(ConnectionStates connectionStates, InconsistencyStates inconsistencyStates,
-            ModelExtractionState modelState) {
+            LegacyModelExtractionState modelState) {
         Metamodel metamodel = modelState.getMetamodel();
         var inconsistencyState = inconsistencyStates.getInconsistencyState(metamodel);
         var connectionState = connectionStates.getConnectionState(metamodel);

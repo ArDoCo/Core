@@ -8,7 +8,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
  * architecture endpoint of a trace link that connects corresponding elements of
  * an architecture model and a code model.
  */
-public abstract class ArchitectureItem extends Entity {
+public abstract sealed class ArchitectureItem extends Entity permits ArchitectureComponent, ArchitectureInterface, ArchitectureMethod {
 
     /**
      * Creates a new architecture item with the specified name.

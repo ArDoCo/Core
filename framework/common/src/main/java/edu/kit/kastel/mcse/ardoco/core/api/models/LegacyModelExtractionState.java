@@ -9,7 +9,8 @@ import edu.kit.kastel.mcse.ardoco.core.configuration.IConfigurable;
 /**
  * The Interface IModelState defines the information directly extracted from the models.
  */
-public interface ModelExtractionState extends IConfigurable {
+@Deprecated
+public interface LegacyModelExtractionState extends IConfigurable {
     /**
      * Returns the unique id of the model
      *
@@ -52,7 +53,5 @@ public interface ModelExtractionState extends IConfigurable {
      * @return all instances of this state
      */
     ImmutableList<ModelInstance> getInstances();
-
-    void addAllOf(ModelExtractionState other);
 
 }
