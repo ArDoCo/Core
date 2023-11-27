@@ -91,7 +91,8 @@ public record ArDoCoResult(DataRepository dataRepository) {
         MutableSet<SadSamTraceLink> traceLinks = Sets.mutable.empty();
 
         for (var modelId : getModelIds()) {
-            traceLinks.addAll(getTraceLinksForModel(modelId).castToCollection());
+            if (getModelState(modelId).getMetamodel() == Metamodel.ARCHITECTURE)
+                traceLinks.addAll(getTraceLinksForModel(modelId).castToCollection());
         }
         return traceLinks.toImmutableList();
     }

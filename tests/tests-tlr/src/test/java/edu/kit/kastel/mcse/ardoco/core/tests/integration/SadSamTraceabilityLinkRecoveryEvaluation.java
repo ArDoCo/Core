@@ -222,7 +222,7 @@ class SadSamTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryE
         var sentences = data.getData(PreprocessingData.ID, PreprocessingData.class).orElseThrow().getText().getSentences();
         var modelStates = data.getData(ModelStates.ID, ModelStates.class).orElseThrow();
 
-        for (String modelId : modelStates.extractionModelIds()) {
+        for (String modelId : modelStates.modelIds()) {
             var instances = modelStates.getModelExtractionState(modelId).getInstances();
 
             var falseNegativeOutput = createOutputStrings(falseNegatives, sentences, instances);

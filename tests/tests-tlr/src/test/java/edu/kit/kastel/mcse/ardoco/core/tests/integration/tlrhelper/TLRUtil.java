@@ -33,7 +33,7 @@ public final class TLRUtil {
         var connectionStates = data.getData(ConnectionStates.ID, ConnectionStates.class).orElseThrow();
         var modelStates = data.getData(ModelStates.ID, ModelStates.class).orElseThrow();
 
-        List<ConnectionState> connectionStatesList = modelStates.extractionModelIds()
+        List<ConnectionState> connectionStatesList = modelStates.modelIds()
                 .stream()
                 .map(modelStates::getModelExtractionState)
                 .map(LegacyModelExtractionState::getMetamodel)
