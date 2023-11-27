@@ -59,10 +59,7 @@ public class LegacyModelExtractionStateByArCoTL implements LegacyModelExtraction
         MutableList<ModelInstance> instances = Lists.mutable.empty();
         for (ArchitectureItem architectureItem : architectureModel.getEndpoints()) {
             switch (architectureItem) {
-            // TODO Use MetaModel
-            case ArchitectureComponent component -> instances.add(new ModelInstanceImpl(component.getName(), component.getSubcomponents().isEmpty() ?
-                    "Component" :
-                    "CompositeComponent", component.getId()));
+            case ArchitectureComponent component -> instances.add(new ModelInstanceImpl(component.getName(), component.getType(), component.getId()));
             case ArchitectureInterface ignored -> logger.debug("Skipping .. ArchitectureInterface not supported yet");
             case ArchitectureMethod ignored -> logger.debug("Skipping .. ArchitectureMethod not supported yet");
             }

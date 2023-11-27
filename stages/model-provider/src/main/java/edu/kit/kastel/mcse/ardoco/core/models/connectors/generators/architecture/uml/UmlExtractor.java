@@ -81,7 +81,7 @@ public final class UmlExtractor extends ArchitectureExtractor {
                 requiredInterfaces.add(modelInterface);
             }
             ArchitectureComponent modelComponent = new ArchitectureComponent(originalComponent.getName(), originalComponent.getId(), subcomponents,
-                    providedInterfaces, requiredInterfaces);
+                    providedInterfaces, requiredInterfaces, originalComponent.getType());
             components.add(modelComponent);
         }
         return components;

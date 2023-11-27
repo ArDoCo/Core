@@ -16,13 +16,15 @@ public final class ArchitectureComponent extends ArchitectureItem {
     private final SortedSet<ArchitectureInterface> providedInterfaces;
 
     private final SortedSet<ArchitectureInterface> requiredInterfaces;
+    private final String type;
 
     public ArchitectureComponent(String name, String id, SortedSet<ArchitectureComponent> subcomponents, SortedSet<ArchitectureInterface> providedInterfaces,
-            SortedSet<ArchitectureInterface> requiredInterfaces) {
+            SortedSet<ArchitectureInterface> requiredInterfaces, String type) {
         super(name, id);
         this.subcomponents = subcomponents;
         this.providedInterfaces = providedInterfaces;
         this.requiredInterfaces = requiredInterfaces;
+        this.type = type;
     }
 
     /**
@@ -52,6 +54,15 @@ public final class ArchitectureComponent extends ArchitectureItem {
      */
     public SortedSet<ArchitectureInterface> getRequiredInterfaces() {
         return requiredInterfaces;
+    }
+
+    /**
+     * Returns the type of this component as specified in the meta model.
+     *
+     * @return the type of this component
+     */
+    public String getType() {
+        return type;
     }
 
     @Override

@@ -83,7 +83,7 @@ public final class PcmExtractor extends ArchitectureExtractor {
                 requiredInterfaces.add(modelInterface);
             }
             ArchitectureComponent modelComponent = new ArchitectureComponent(originalComponent.getEntityName(), originalComponent.getId(), subcomponents,
-                    providedInterfaces, requiredInterfaces);
+                    providedInterfaces, requiredInterfaces, originalComponent.getType());
             components.add(modelComponent);
         }
         return components;
