@@ -21,7 +21,6 @@ public class ArDoCoForSadCodeTraceabilityLinkRecovery extends ArDoCoRunner {
     }
 
     public void setUp(File inputText, File inputCode, SortedMap<String, String> additionalConfigs, File outputDir) {
-
         definePipeline(inputText, inputCode, additionalConfigs);
         setOutputDirectory(outputDir);
         isSetUp = true;

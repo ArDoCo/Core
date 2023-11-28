@@ -2,7 +2,6 @@
 package edu.kit.kastel.mcse.ardoco.core.execution.runner;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.SortedMap;
 
 import org.slf4j.Logger;
@@ -28,13 +27,7 @@ public class ArDoCoForInconsistencyDetection extends ArDoCoRunner {
 
     public void setUp(File inputText, File inputModelArchitecture, ArchitectureModelType inputArchitectureModelType,
             SortedMap<String, String> additionalConfigs, File outputDir) {
-        try {
-            definePipeline(inputText, inputModelArchitecture, inputArchitectureModelType, additionalConfigs);
-        } catch (IOException e) {
-            logger.error("Problem in initialising pipeline when loading data (IOException)", e.getCause());
-            isSetUp = false;
-            return;
-        }
+        definePipeline(inputText, inputModelArchitecture, inputArchitectureModelType, additionalConfigs);
         setOutputDirectory(outputDir);
         isSetUp = true;
     }
@@ -51,10 +44,9 @@ public class ArDoCoForInconsistencyDetection extends ArDoCoRunner {
      * @param inputArchitectureModel the input architecture file
      * @param architectureModelType  the type of the architecture (e.g., PCM, UML)
      * @param additionalConfigs      the additional configs
-     * @throws IOException When one of the input files cannot be accessed/loaded
      */
     private void definePipeline(File inputText, File inputArchitectureModel, ArchitectureModelType architectureModelType,
-            SortedMap<String, String> additionalConfigs) throws IOException {
+            SortedMap<String, String> additionalConfigs) {
         ArDoCo arDoCo = getArDoCo();
         var dataRepository = arDoCo.getDataRepository();
         var text = CommonUtilities.readInputText(inputText);
