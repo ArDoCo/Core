@@ -41,7 +41,7 @@ class ConfigurationTest extends ConfigurationTestBase {
     }
 
     @Test
-    public void testValidityOfConfigurableFields() throws Exception {
+    public void testValidityOfConfigurableFields() {
         super.testValidityOfConfigurableFields();
     }
 
