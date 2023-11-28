@@ -2,7 +2,6 @@
 package edu.kit.kastel.mcse.ardoco.core.execution;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.SortedMap;
 
 import org.slf4j.Logger;
@@ -29,20 +28,13 @@ public class ArDoCoForSadSamCodeTraceabilityLinkRecovery extends ArDoCoRunner {
 
     public void setUp(File inputText, File inputArchitectureModel, ArchitectureModelType architectureModelType, File inputCode,
             SortedMap<String, String> additionalConfigs, File outputDir) {
-        try {
-            definePipeline(inputText, inputArchitectureModel, architectureModelType, inputCode, additionalConfigs);
-        } catch (IOException e) {
-            logger.error("Problem in initialising pipeline when loading data (IOException)", e.getCause());
-            isSetUp = false;
-            return;
-        }
-
+        definePipeline(inputText, inputArchitectureModel, architectureModelType, inputCode, additionalConfigs);
         setOutputDirectory(outputDir);
         isSetUp = true;
     }
 
     private void definePipeline(File inputText, File inputArchitectureModel, ArchitectureModelType architectureModelType, File inputCode,
-            SortedMap<String, String> additionalConfigs) throws IOException {
+            SortedMap<String, String> additionalConfigs) {
         ArDoCo arDoCo = this.getArDoCo();
         var dataRepository = arDoCo.getDataRepository();
 

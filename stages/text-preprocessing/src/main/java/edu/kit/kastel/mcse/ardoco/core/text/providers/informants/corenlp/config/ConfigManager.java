@@ -11,9 +11,9 @@ import org.slf4j.LoggerFactory;
 /**
  * This Singleton manages access to the config file.
  */
-public enum ConfigManager {
+public final class ConfigManager {
 
-    INSTANCE;
+    public static ConfigManager INSTANCE = new ConfigManager();
 
     private final Logger logger = LoggerFactory.getLogger(ConfigManager.class);
 

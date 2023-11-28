@@ -21,8 +21,6 @@ import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.pcm.parser.PcmModel;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.pcm.parser.PcmSignature;
 
-// TODO we currently more or less have two connectors/extractors: this one and the PcmXmlModelConnector
-
 /**
  * An extractor for PCM. Extracts an AMTL instance.
  */

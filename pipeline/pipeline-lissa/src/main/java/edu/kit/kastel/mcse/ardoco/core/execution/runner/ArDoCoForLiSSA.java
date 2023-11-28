@@ -4,9 +4,6 @@ package edu.kit.kastel.mcse.ardoco.core.execution.runner;
 import java.io.File;
 import java.util.SortedMap;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
@@ -23,7 +20,6 @@ import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognition;
  * The Runner for the Linking Sketches and Software Architecture Approach (LiSSA)
  */
 public class ArDoCoForLiSSA extends ArDoCoRunner {
-    private static final Logger logger = LoggerFactory.getLogger(ArDoCoForLiSSA.class);
 
     public ArDoCoForLiSSA(String projectName) {
         super(projectName);
