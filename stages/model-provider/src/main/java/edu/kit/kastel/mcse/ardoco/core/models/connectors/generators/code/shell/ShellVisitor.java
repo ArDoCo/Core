@@ -15,6 +15,7 @@ import java.util.TreeSet;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,6 +72,13 @@ public class ShellVisitor implements FileVisitor<Path> {
 
         String extension = FilenameUtils.getExtension(fileName);
         String fileNameWithoutExtension = FilenameUtils.removeExtension(fileName);
+        CodeCompilationUnit sourceFile = extractShellFile(path, fileNameWithoutExtension, extension);
+        codeEndpoints.add(sourceFile);
+        return FileVisitResult.CONTINUE;
+    }
+
+    @NotNull
+    private CodeCompilationUnit extractShellFile(Path path, String fileNameWithoutExtension, String extension) {
         List<String> pathElements = new ArrayList<>();
 
         // relativize path
@@ -81,10 +89,7 @@ public class ShellVisitor implements FileVisitor<Path> {
         for (int i = 0; i < relativePath.getNameCount() - 1; i++) {
             pathElements.add(relativePath.getName(i).toString());
         }
-        CodeCompilationUnit sourceFile = new CodeCompilationUnit(codeItemRepository, fileNameWithoutExtension, new TreeSet<>(), pathElements, extension,
-                ProgrammingLanguage.SHELL);
-        codeEndpoints.add(sourceFile);
-        return FileVisitResult.CONTINUE;
+        return new CodeCompilationUnit(codeItemRepository, fileNameWithoutExtension, new TreeSet<>(), pathElements, extension, ProgrammingLanguage.SHELL);
     }
 
     private static boolean isShellFile(String fileName, String code) {

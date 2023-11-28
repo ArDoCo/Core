@@ -32,7 +32,7 @@ public abstract class CodeExtractor extends Extractor {
     public abstract CodeModel extractModel();
 
     @Override
-    public ModelType getModelType() {
+    public final ModelType getModelType() {
         return CodeModelType.CODE_MODEL;
     }
 

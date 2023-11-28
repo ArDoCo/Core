@@ -27,7 +27,7 @@ public abstract class DefaultTextStateStrategy implements TextStateStrategy {
 
                 final NounMapping finalNounMappingToMerge = nounMappingToMerge;
                 var fittingNounMappings = textState.getNounMappings().select(nm -> nm.getWords().containsAllIterable(finalNounMappingToMerge.getWords()));
-                if (fittingNounMappings.size() == 0) {
+                if (fittingNounMappings.isEmpty()) {
                     continue;
                 } else if (fittingNounMappings.size() == 1) {
                     nounMappingToMerge = fittingNounMappings.get(0);

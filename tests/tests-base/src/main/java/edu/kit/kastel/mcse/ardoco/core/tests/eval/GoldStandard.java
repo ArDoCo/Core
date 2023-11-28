@@ -2,7 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.tests.eval;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
@@ -30,7 +30,7 @@ public class GoldStandard {
     }
 
     private void load() {
-        try (Scanner scan = new Scanner(goldStandard, StandardCharsets.UTF_8.name())) {
+        try (Scanner scan = new Scanner(goldStandard, StandardCharsets.UTF_8)) {
             while (scan.hasNextLine()) {
                 String line = scan.nextLine();
                 if (line == null || line.isBlank() || line.startsWith("modelElement") || line.contains("modelElementID")) {
@@ -50,7 +50,7 @@ public class GoldStandard {
                 }
                 sentence2instance.get(sentence).add(instance);
             }
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             logger.warn(e.getMessage(), e.getCause());
         }
     }

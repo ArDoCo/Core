@@ -26,7 +26,7 @@ public final class ConfigManager {
 
     private ConfigManager() {
         properties = new Properties();
-        try (InputStream fileInputStream = ConfigManager.class.getClassLoader().getResourceAsStream(FILE_PATH);) {
+        try (InputStream fileInputStream = ConfigManager.class.getClassLoader().getResourceAsStream(FILE_PATH)) {
             properties.load(fileInputStream);
         } catch (IOException e) {
             logger.warn("Could not load config file. ", e);
