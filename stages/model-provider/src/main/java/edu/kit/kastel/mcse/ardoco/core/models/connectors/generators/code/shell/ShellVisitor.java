@@ -15,7 +15,6 @@ import java.util.TreeSet;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,7 +76,6 @@ public class ShellVisitor implements FileVisitor<Path> {
         return FileVisitResult.CONTINUE;
     }
 
-    @NotNull
     private CodeCompilationUnit extractShellFile(Path path, String fileNameWithoutExtension, String extension) {
         List<String> pathElements = new ArrayList<>();
 
