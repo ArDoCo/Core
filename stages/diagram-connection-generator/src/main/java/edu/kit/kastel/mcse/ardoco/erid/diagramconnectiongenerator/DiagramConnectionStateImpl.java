@@ -12,6 +12,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.AbstractState;
+import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 import edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator.DiagramConnectionState;
 import edu.kit.kastel.mcse.ardoco.erid.api.models.tracelinks.LinkBetweenDeAndRi;
@@ -24,6 +25,10 @@ public class DiagramConnectionStateImpl extends AbstractState implements Diagram
     private double confidenceThreshold = 0.4;
 
     private final LinkedHashSet<LinkBetweenDeAndRi> linksBetweenDeAndRi = new LinkedHashSet<>();
+
+    public DiagramConnectionStateImpl(DataRepository dataRepository) {
+        super(dataRepository);
+    }
 
     @NotNull
     @Override

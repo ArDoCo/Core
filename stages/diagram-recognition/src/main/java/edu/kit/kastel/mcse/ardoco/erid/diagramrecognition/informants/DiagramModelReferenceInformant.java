@@ -2,6 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.informants;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.list.ImmutableList;
@@ -18,7 +19,6 @@ import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Triple;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DbPediaHelper;
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
@@ -124,11 +124,12 @@ public class DiagramModelReferenceInformant extends Informant {
     private Optional<Pair<Double, ModelInstance>> getMostSimilarModelInstance(ImmutableList<ModelInstance> modelInstances, TextBox textBox,
             Set<String> references) {
         var max = Double.MIN_VALUE;
+        var wordSimUtils = getMetaData().getWordSimUtils();
         ModelInstance mostSimilarModelInstance = null;
         for (var instance : modelInstances) {
-            if (WordSimUtils.areWordsSimilar(textBox.getText(), instance.getFullName()) || references.stream()
-                    .anyMatch(ref -> WordSimUtils.areWordsSimilar(ref.toLowerCase(Locale.ENGLISH), instance.getFullName().toLowerCase(Locale.ENGLISH)))) {
-                var similarity = WordSimUtils.getSimilarity(textBox.getText().toLowerCase(Locale.ENGLISH), instance.getFullName().toLowerCase(Locale.ENGLISH));
+            if (wordSimUtils.areWordsSimilar(textBox.getText(), instance.getFullName()) || references.stream()
+                    .anyMatch(ref -> wordSimUtils.areWordsSimilar(ref.toLowerCase(Locale.ENGLISH), instance.getFullName().toLowerCase(Locale.ENGLISH)))) {
+                var similarity = wordSimUtils.getSimilarity(textBox.getText().toLowerCase(Locale.ENGLISH), instance.getFullName().toLowerCase(Locale.ENGLISH));
                 if (similarity > textBoxSimilarityThreshold && similarity > max) {
                     max = similarity;
                     mostSimilarModelInstance = instance;
@@ -175,13 +176,11 @@ public class DiagramModelReferenceInformant extends Informant {
         var names = new LinkedHashSet<String>();
 
         var text = textBox.getText();
-        var splitAndDecameled = processText(text).stream()
-                .filter(s -> !DbPediaHelper.isWordMarkupLanguage(s))
-                .filter(s -> !DbPediaHelper.isWordProgrammingLanguage(s))
-                .filter(s -> !DbPediaHelper.isWordSoftware(s))
-                .toList();
+        if (!FILTER.test(text)) return names;
 
-        var noBlank = splitAndDecameled.stream().map(s -> s.replaceAll("\\s+", "")).toList();
+        var splitAndDecameled = processText(text).stream().filter(FILTER).toList();
+
+        var noBlank = splitAndDecameled.stream().map(s -> s.replaceAll("\\s+", "")).filter(FILTER).toList();
         names.addAll(splitAndDecameled);
         names.addAll(noBlank);
 
@@ -192,6 +191,8 @@ public class DiagramModelReferenceInformant extends Informant {
 
         return names;
     }
+
+    private static final Predicate<String> FILTER = s -> !DbPediaHelper.isWordMarkupLanguage(s) && !DbPediaHelper.isWordProgrammingLanguage(s) && !DbPediaHelper.isWordSoftware(s);
 
     /**
      * {@return a set of alternative texts extracted from the input text}. The text is processed with {@link #splitBracketsAndEnumerations(String)} and

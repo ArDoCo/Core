@@ -17,7 +17,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
-import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
@@ -114,11 +113,11 @@ public class CompoundRecommendationInformant extends Informant {
         var typeIdentifiers = CommonUtilities.getTypeIdentifiers(modelState);
         for (var typeMapping : typeMappings) {
             var currSimilarTypes = Lists.immutable.fromStream(typeIdentifiers.stream()
-                    .filter(typeId -> SimilarityUtils.areWordsSimilar(typeId, typeMapping.getReference())));
+                    .filter(typeId -> getMetaData().getSimilarityUtils().areWordsSimilar(typeId, typeMapping.getReference())));
             similarModelTypes.addAll(currSimilarTypes.toList());
             for (var word : typeMapping.getWords()) {
                 currSimilarTypes = Lists.immutable.fromStream(typeIdentifiers.stream()
-                        .filter(typeId -> SimilarityUtils.areWordsSimilar(typeId, word.getLemma())));
+                        .filter(typeId -> getMetaData().getSimilarityUtils().areWordsSimilar(typeId, word.getLemma())));
                 similarModelTypes.addAll(currSimilarTypes.toList());
             }
         }

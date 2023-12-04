@@ -1,21 +1,6 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.SortedMap;
-import java.util.SortedSet;
-import java.util.TreeMap;
-import java.util.TreeSet;
-
-import org.eclipse.collections.impl.factory.SortedMaps;
-import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import edu.kit.kastel.mcse.ardoco.core.api.InputDiagramData;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
@@ -34,6 +19,14 @@ import edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.DiagramRecognitionMock
 import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognition;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 import edu.kit.kastel.mcse.ardoco.tests.eval.StageTest;
+import java.io.IOException;
+import java.util.*;
+import org.eclipse.collections.impl.factory.SortedMaps;
+import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DiagramInconsistencyCheckerTest extends StageTest<DiagramInconsistencyChecker, DiagramProject, DiagramInconsistencyCheckerTest.Results> {
     private static final Logger logger = LoggerFactory.getLogger(DiagramInconsistencyCheckerTest.class);
@@ -47,7 +40,7 @@ public class DiagramInconsistencyCheckerTest extends StageTest<DiagramInconsiste
     }
 
     public DiagramInconsistencyCheckerTest() {
-        super(new DiagramInconsistencyChecker(SortedMaps.mutable.empty(), null), DiagramProject.values());
+        super(new DiagramInconsistencyChecker(SortedMaps.mutable.empty(), new DataRepository()), DiagramProject.values());
     }
 
     @Override
@@ -72,6 +65,7 @@ public class DiagramInconsistencyCheckerTest extends StageTest<DiagramInconsiste
         return new AnonymousRunner(project.name()) {
             @Override
             public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) throws IOException {
+                DataRepositoryHelper.getMetaData(dataRepository).getWordSimUtils().setConsiderAbbreviations(true);
                 var pipelineSteps = new ArrayList<AbstractPipelineStep>();
 
                 var text = CommonUtilities.readInputText(project.getTextFile());
@@ -108,6 +102,7 @@ public class DiagramInconsistencyCheckerTest extends StageTest<DiagramInconsiste
         return new AnonymousRunner(project.name(), preRunDataRepository) {
             @Override
             public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) {
+                DataRepositoryHelper.getMetaData(dataRepository).getWordSimUtils().setConsiderAbbreviations(true);
                 var pipelineSteps = new ArrayList<AbstractPipelineStep>();
                 pipelineSteps.add(new DiagramInconsistencyChecker(combinedConfigs, dataRepository));
                 return pipelineSteps;

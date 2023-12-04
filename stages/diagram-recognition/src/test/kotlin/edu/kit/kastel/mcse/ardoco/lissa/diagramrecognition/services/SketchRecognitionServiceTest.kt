@@ -148,7 +148,8 @@ class SketchRecognitionServiceTest {
             visualize(
                 FileInputStream(inputDiagram.second),
                 diagram,
-                FileOutputStream(destination)
+                FileOutputStream(destination),
+                2f
             )
             if (Desktop.isDesktopSupported()) Desktop.getDesktop().open(destination)
         }

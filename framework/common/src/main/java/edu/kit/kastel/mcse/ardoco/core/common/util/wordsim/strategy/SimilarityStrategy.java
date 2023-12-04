@@ -1,12 +1,13 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.strategy;
 
+import java.io.Serializable;
 import java.util.List;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonContext;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
 
-public interface SimilarityStrategy {
+public interface SimilarityStrategy extends Serializable {
 
     SimilarityStrategy MEDIAN = new MedianStrategy();
 

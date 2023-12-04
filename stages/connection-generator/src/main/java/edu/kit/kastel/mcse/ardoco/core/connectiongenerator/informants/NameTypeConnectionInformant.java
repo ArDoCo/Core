@@ -18,7 +18,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
-import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
@@ -70,7 +69,7 @@ public class NameTypeConnectionInformant extends Informant {
 
         var preWord = word.getPreWord();
 
-        var similarTypes = CommonUtilities.getSimilarTypes(word, modelState);
+        var similarTypes = CommonUtilities.getSimilarTypes(getMetaData().getSimilarityUtils(), word, modelState);
 
         if (!similarTypes.isEmpty()) {
             textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
@@ -99,7 +98,7 @@ public class NameTypeConnectionInformant extends Informant {
 
         var after = word.getNextWord();
 
-        var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
+        var sameLemmaTypes = CommonUtilities.getSimilarTypes(getMetaData().getSimilarityUtils(), word, modelState);
         if (!sameLemmaTypes.isEmpty()) {
             textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
 
@@ -122,7 +121,7 @@ public class NameTypeConnectionInformant extends Informant {
 
         var preWord = word.getPreWord();
 
-        var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
+        var sameLemmaTypes = CommonUtilities.getSimilarTypes(getMetaData().getSimilarityUtils(), word, modelState);
 
         if (!sameLemmaTypes.isEmpty()) {
             textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
@@ -146,7 +145,7 @@ public class NameTypeConnectionInformant extends Informant {
 
         var after = word.getNextWord();
 
-        var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
+        var sameLemmaTypes = CommonUtilities.getSimilarTypes(getMetaData().getSimilarityUtils(), word, modelState);
         if (!sameLemmaTypes.isEmpty()) {
             textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
 
@@ -201,7 +200,7 @@ public class NameTypeConnectionInformant extends Informant {
         }
 
         var text = word.getText();
-        matchingInstances = matchingInstances.select(i -> SimilarityUtils.areWordsOfListsSimilar(i.getNameParts(), Lists.immutable.with(text)));
+        matchingInstances = matchingInstances.select(i -> getMetaData().getSimilarityUtils().areWordsOfListsSimilar(i.getNameParts(), Lists.immutable.with(text)));
 
         if (!matchingInstances.isEmpty()) {
             return matchingInstances.get(0);

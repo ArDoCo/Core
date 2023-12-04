@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityComparable;
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
+import edu.kit.kastel.mcse.ardoco.core.data.MetaData;
 
 /**
  * A text
@@ -98,10 +98,10 @@ public class TextBox implements SimilarityComparable<TextBox>, Serializable {
     }
 
     @Override
-    public boolean similar(TextBox obj) {
+    public boolean similar(MetaData metaData, TextBox obj) {
         if (equals(obj))
             return true;
-        return WordSimUtils.getSimilarity(text, obj.text) > SIMILARITY_THRESHOLD && boundingBox.similar(obj.boundingBox);
+        return metaData.getWordSimUtils().getSimilarity(text, obj.text) > SIMILARITY_THRESHOLD && boundingBox.similar(metaData, obj.boundingBox);
     }
 
     @Override

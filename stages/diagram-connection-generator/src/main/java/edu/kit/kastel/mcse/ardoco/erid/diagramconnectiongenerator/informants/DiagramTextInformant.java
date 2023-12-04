@@ -76,7 +76,7 @@ public class DiagramTextInformant extends Informant {
                     for (var recommendedInstance : ris) {
                         if (AbbreviationDisambiguationHelper.isInitialismOf(recommendedInstance.getName().toLowerCase(Locale.ENGLISH), tBox.getText()
                                 .toLowerCase(Locale.ENGLISH), initialismThreshold)) {
-                            diagramConnectionState.addToLinksBetweenDeAndRi(recommendedInstance, box, projectName, this, DiagramUtil.calculateSimilarityMap(box,
+                            diagramConnectionState.addToLinksBetweenDeAndRi(recommendedInstance, box, projectName, this, DiagramUtil.calculateSimilarityMap(getMetaData().getWordSimUtils(), box,
                                     recommendedInstance));
                         }
                     }

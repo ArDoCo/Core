@@ -13,7 +13,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.kit.kastel.mcse.ardoco.core.api.Disambiguation;
@@ -179,13 +178,14 @@ public final class AbbreviationDisambiguationHelper extends FileBasedCache<Linke
         return new UnmodifiableLinkedHashMap<>(Disambiguation.merge(new UnmodifiableLinkedHashMap<>(local), new UnmodifiableLinkedHashMap<>(getPersistent())));
     }
 
+    //TODO remove
     private static List<List<Pair<String, String>>> similarAbbreviations(@NotNull String meaning) {
         var disambiguations = getAll().values();
         var allAbbrevs = new ArrayList<List<Pair<String, String>>>();
         for (var disambiguation : disambiguations) {
             var listOfPairs = disambiguation.getMeanings()
                     .stream()
-                    .map(m -> new Pair<>(WordSimUtils.getSimilarity(m, meaning), m))
+                    .map(m -> new Pair<>(new WordSimUtils().getSimilarity(m, meaning), m))
                     .filter(p -> p.first() >= SIMILARITY_THRESHOLD)
                     .map(p -> new Pair<>(disambiguation.getAbbreviation(), p.second()))
                     .toList();

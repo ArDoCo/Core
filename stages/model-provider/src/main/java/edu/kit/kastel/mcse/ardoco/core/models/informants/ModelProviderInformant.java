@@ -45,7 +45,7 @@ public final class ModelProviderInformant extends Informant {
             return;
         }
         ImmutableList<ModelInstance> instances = modelConnector.getInstances();
-        modelState = new ModelExtractionStateImpl(modelConnector.getModelId(), modelConnector.getMetamodel(), instances);
+        modelState = new ModelExtractionStateImpl(dataRepository, modelConnector.getModelId(), modelConnector.getMetamodel(), instances);
 
         addModelStateToDataRepository();
     }

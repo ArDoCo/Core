@@ -1,8 +1,6 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.jarowinkler;
 
-import org.apache.commons.text.similarity.JaroWinklerSimilarity;
-
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonContext;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
@@ -11,8 +9,6 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
  * This word similarity measure uses the jaro winkler algorithm to calculate similarity.
  */
 public class JaroWinklerMeasure implements WordSimMeasure {
-
-    private final JaroWinklerSimilarity jaroWinklerSimilarity = new JaroWinklerSimilarity();
 
     private final double similarityThreshold;
 

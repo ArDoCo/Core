@@ -71,7 +71,7 @@ public class NameTypeInformant extends Informant {
             return;
         }
 
-        var similarTypes = CommonUtilities.getSimilarTypes(word, modelState);
+        var similarTypes = CommonUtilities.getSimilarTypes(getMetaData().getSimilarityUtils(), word, modelState);
 
         if (!similarTypes.isEmpty()) {
             textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
@@ -96,7 +96,7 @@ public class NameTypeInformant extends Informant {
             return;
         }
 
-        var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
+        var sameLemmaTypes = CommonUtilities.getSimilarTypes(getMetaData().getSimilarityUtils(), word, modelState);
         if (!sameLemmaTypes.isEmpty()) {
             textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
 
@@ -120,7 +120,7 @@ public class NameTypeInformant extends Informant {
             return;
         }
 
-        var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
+        var sameLemmaTypes = CommonUtilities.getSimilarTypes(getMetaData().getSimilarityUtils(), word, modelState);
 
         if (!sameLemmaTypes.isEmpty()) {
             textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
@@ -145,7 +145,7 @@ public class NameTypeInformant extends Informant {
             return;
         }
 
-        var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
+        var sameLemmaTypes = CommonUtilities.getSimilarTypes(getMetaData().getSimilarityUtils(), word, modelState);
         if (!sameLemmaTypes.isEmpty()) {
             textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
 

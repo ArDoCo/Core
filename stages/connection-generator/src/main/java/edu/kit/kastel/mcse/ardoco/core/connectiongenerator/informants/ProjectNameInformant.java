@@ -15,7 +15,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedIn
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
-import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
@@ -74,7 +73,7 @@ public class ProjectNameInformant extends Informant {
             if (projectName.contains(wordText)) {
                 var words = expandWordForName(projectName, word);
                 var expandedWord = concatenateWords(words);
-                if (SimilarityUtils.areWordsSimilar(projectName, expandedWord)) {
+                if (getMetaData().getSimilarityUtils().areWordsSimilar(projectName, expandedWord)) {
                     recommendedInstance.addProbability(this, penalty);
                 }
             }

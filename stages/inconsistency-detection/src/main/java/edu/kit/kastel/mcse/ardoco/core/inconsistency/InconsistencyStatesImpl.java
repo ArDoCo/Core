@@ -6,6 +6,7 @@ import java.util.EnumMap;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistencyStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
+import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 
 public class InconsistencyStatesImpl implements InconsistencyStates {
     private EnumMap<Metamodel, InconsistencyStateImpl> inconsistencyStates;
@@ -14,10 +15,10 @@ public class InconsistencyStatesImpl implements InconsistencyStates {
         inconsistencyStates = new EnumMap<>(Metamodel.class);
     }
 
-    public static InconsistencyStatesImpl build() {
+    public static InconsistencyStatesImpl build(DataRepository dataRepository) {
         var recStates = new InconsistencyStatesImpl();
         for (Metamodel mm : Metamodel.values()) {
-            recStates.inconsistencyStates.put(mm, new InconsistencyStateImpl());
+            recStates.inconsistencyStates.put(mm, new InconsistencyStateImpl(dataRepository));
         }
         return recStates;
     }

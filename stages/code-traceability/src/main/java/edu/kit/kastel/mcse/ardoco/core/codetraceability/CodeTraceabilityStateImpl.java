@@ -14,12 +14,17 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadCodeTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SamCodeTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.data.AbstractState;
+import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 
 @Deterministic
 public class CodeTraceabilityStateImpl extends AbstractState implements CodeTraceabilityState {
 
     private transient MutableList<SamCodeTraceLink> samCodeTraceLinks = Lists.mutable.empty();
     private transient MutableList<SadCodeTraceLink> transitiveTraceLinks = Lists.mutable.empty();
+
+    public CodeTraceabilityStateImpl(DataRepository dataRepository) {
+        super(dataRepository);
+    }
 
     @Override
     public boolean addSamCodeTraceLink(SamCodeTraceLink traceLink) {

@@ -31,7 +31,7 @@ import kotlin.math.min
 
 private var upscaleFactor = 1.0
 private val maxSize = 4096
-private val colors = listOf(Color.RED, Color.GREEN, Color.YELLOW, Color.BLUE, Color.BLACK, Color.ORANGE)
+private val colors = listOf(Color.RED, Color.GREEN, Color(5, 93, 209), Color.YELLOW, Color.BLACK, Color.ORANGE)
 private val logger: Logger = LoggerFactory.getLogger("${DiagramRecognition::class.java.packageName}.Helpers")
 
 fun executeRequest(
@@ -58,20 +58,21 @@ fun executeRequest(
 fun visualize(
     imageStream: InputStream,
     diagram: Diagram,
-    destination: OutputStream
+    destination: OutputStream,
+    overlayScale: Float = 1F
 ) {
     val imageUnscaled = ImageIO.read(imageStream)
     upscaleFactor = determineUpscaleFactor(imageUnscaled)
 
     var image = BufferedImage((imageUnscaled.width * upscaleFactor).toInt(), (imageUnscaled.height * upscaleFactor).toInt(), BufferedImage.TYPE_INT_ARGB)
     val at = AffineTransform()
-    at.scale(upscaleFactor.toDouble(), upscaleFactor.toDouble())
+    at.scale(upscaleFactor, upscaleFactor)
     val scaleOp = AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR)
     image = scaleOp.filter(imageUnscaled, image)
 
     val g2d: Graphics2D = image.createGraphics()
-    g2d.stroke = BasicStroke((3F).toFloat())
-    g2d.font = g2d.font.deriveFont((g2d.font.size * 4).toFloat())
+    g2d.stroke = BasicStroke((3F * overlayScale))
+    g2d.font = g2d.font.deriveFont((g2d.font.size * 4 * overlayScale))
 
     val colorMap = mutableMapOf<Classification, Color>()
     var currentColor = 0

@@ -3,7 +3,6 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
 import java.util.Comparator;
 import java.util.SortedMap;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.eclipse.collections.api.block.predicate.Predicate;
@@ -26,7 +25,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextStateStrategy;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.WordAbbreviation;
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.core.common.util.Comparators;
-import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.data.AbstractState;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
@@ -64,24 +62,17 @@ public class TextStateImpl extends AbstractState implements TextState {
     /**
      * Creates a new name type relation state
      */
-    public TextStateImpl() {
-        this(OriginalTextStateStrategy::new);
+    public TextStateImpl(DataRepository dataRepository) {
+        this(dataRepository, OriginalTextStateStrategy::new);
     }
 
-    public TextStateImpl(Function<TextStateImpl, TextStateStrategy> constructor) {
+    public TextStateImpl(DataRepository dataRepository, Function<TextStateImpl, TextStateStrategy> constructor) {
+        super(dataRepository);
         nounMappings = Lists.mutable.empty();
         phraseMappings = Lists.mutable.empty();
         wordAbbreviations = SortedSets.mutable.empty();
         phraseAbbreviations = SortedSets.mutable.empty();
         strategy = constructor.apply(this);
-    }
-
-    public TextStateImpl(BiFunction<TextStateImpl, DataRepository, TextStateStrategy> constructor, DataRepository dataRepository) {
-        nounMappings = Lists.mutable.empty();
-        phraseMappings = Lists.mutable.empty();
-        wordAbbreviations = SortedSets.mutable.empty();
-        phraseAbbreviations = SortedSets.mutable.empty();
-        strategy = constructor.apply(this, dataRepository);
     }
 
     @Override
@@ -205,7 +196,7 @@ public class TextStateImpl extends AbstractState implements TextState {
 
     @Override
     public ImmutableList<NounMapping> getNounMappingsWithSimilarReference(String reference) {
-        return getNounMappings().select(nm -> SimilarityUtils.areWordsSimilar(reference, nm.getReference())).toImmutable();
+        return getNounMappings().select(nm -> getMetaData().getSimilarityUtils().areWordsSimilar(reference, nm.getReference())).toImmutable();
     }
 
     @Override

@@ -42,7 +42,7 @@ public class RecommendationGenerator extends AbstractExecutionStage {
 
     @Override
     protected void initializeState() {
-        var recommendationStates = RecommendationStatesImpl.build();
+        var recommendationStates = RecommendationStatesImpl.build(dataRepository);
         getDataRepository().addData(RecommendationStates.ID, recommendationStates);
     }
 }

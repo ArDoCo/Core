@@ -1,12 +1,13 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector;
 
+import java.io.Serializable;
 import java.util.Optional;
 
 /**
  * A data source that provides vector representations for words.
  */
-public interface WordVectorDataSource {
+public interface WordVectorDataSource extends Serializable {
 
     /**
      * Attempts to retrieve the vector representation for the given word.

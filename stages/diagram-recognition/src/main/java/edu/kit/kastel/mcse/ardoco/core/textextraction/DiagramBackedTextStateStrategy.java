@@ -23,7 +23,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
-import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 /**
@@ -35,8 +35,8 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
  */
 public class DiagramBackedTextStateStrategy extends OriginalTextStateStrategy {
     private static final Logger logger = LoggerFactory.getLogger(DiagramBackedTextStateStrategy.class);
-
-    private final DataRepository dataRepository;
+    private final WordSimUtils wordSimUtils;
+    private final SimilarityUtils similarityUtils;
     private DiagramRecognitionState diagramRecognitionState;
     private List<Box> boxes;
 
@@ -44,11 +44,12 @@ public class DiagramBackedTextStateStrategy extends OriginalTextStateStrategy {
      * Sole constructor.
      *
      * @param textState      the text state this strategy works on
-     * @param dataRepository the data repository this strategy works with
      */
-    public DiagramBackedTextStateStrategy(TextStateImpl textState, DataRepository dataRepository) {
+    public DiagramBackedTextStateStrategy(TextStateImpl textState) {
         super(textState);
-        this.dataRepository = dataRepository;
+        var pipelineMetaData = textState.getMetaData();
+        this.wordSimUtils = pipelineMetaData.getWordSimUtils();
+        this.similarityUtils = pipelineMetaData.getSimilarityUtils();
     }
 
     /**
@@ -60,7 +61,7 @@ public class DiagramBackedTextStateStrategy extends OriginalTextStateStrategy {
     @Override
     public NounMapping addOrExtendNounMapping(Word word, MappingKind kind, Claimant claimant, double probability, ImmutableList<String> surfaceForms) {
         if (diagramRecognitionState == null) {
-            diagramRecognitionState = DataRepositoryHelper.getDiagramRecognitionState(dataRepository);
+            diagramRecognitionState = DataRepositoryHelper.getDiagramRecognitionState(textState.getDataRepository());
             logger.debug("Loaded DiagramRecognitionState");
         }
         if (boxes == null) {
@@ -73,7 +74,7 @@ public class DiagramBackedTextStateStrategy extends OriginalTextStateStrategy {
 
         var relatedToWordUnboxed = getMostSimilar(boxes, word).orElse(null);
         for (var existingNounMapping : getTextState().getNounMappings()) {
-            if (SimilarityUtils.areNounMappingsSimilar(disposableNounMapping, existingNounMapping) && isDiagramElementMostSimilar(boxes, relatedToWordUnboxed,
+            if (similarityUtils.areNounMappingsSimilar(disposableNounMapping, existingNounMapping) && isDiagramElementMostSimilar(boxes, relatedToWordUnboxed,
                     existingNounMapping)) {
 
                 var mergedNounMapping = new DiagramBackedNounMappingImpl(mergeNounMappingsStateless(existingNounMapping, disposableNounMapping,
@@ -121,7 +122,7 @@ public class DiagramBackedTextStateStrategy extends OriginalTextStateStrategy {
      */
     protected Optional<Box> getMostSimilar(List<Box> diagramElements, NounMapping nounMapping) {
         var nounMapPairs = diagramElements.stream()
-                .map(box -> new Pair<>(DiagramUtil.calculateHighestSimilarity(nounMapping, box), box))
+                .map(box -> new Pair<>(DiagramUtil.calculateHighestSimilarity(wordSimUtils, nounMapping, box), box))
                 .filter(p -> p.first() >= CommonTextToolsConfig.DE_NM_SIMILARITY_THRESHOLD)
                 .toList();
         return nounMapPairs.stream().max(diagramElementSimilarity).map(Pair::second);
@@ -135,7 +136,7 @@ public class DiagramBackedTextStateStrategy extends OriginalTextStateStrategy {
      */
     protected Optional<Box> getMostSimilar(List<Box> diagramElements, Word word) {
         var wordPairs = diagramElements.stream()
-                .map(box -> new Pair<>(DiagramUtil.calculateHighestSimilarity(word, box), box))
+                .map(box -> new Pair<>(DiagramUtil.calculateHighestSimilarity(wordSimUtils, word, box), box))
                 .filter(p -> p.first() >= CommonTextToolsConfig.DE_Word_SIMILARITY_THRESHOLD)
                 .toList();
         return wordPairs.stream().max(diagramElementSimilarity).map(Pair::second);

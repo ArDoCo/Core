@@ -52,6 +52,7 @@ public class ConfusablesHelper {
         MutableList<String> confusables = Lists.mutable.of(line.split(separator + "|\\R|\\s"));
         confusables.remove(0); //Remove leading # symbol
 
+        //FIXME skip confusables that consist of multiple unicode characters
         //Filter because only homoglyphs are interesting
         return FastList.newList(confusables.stream()
                 .filter(c -> c.codePointCount(0, c.length()) == 1)

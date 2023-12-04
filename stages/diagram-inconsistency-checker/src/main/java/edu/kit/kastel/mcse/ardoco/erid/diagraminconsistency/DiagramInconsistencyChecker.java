@@ -17,6 +17,8 @@ import edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.agents.RecommendedIn
  * This stage is responsible for creating the inconsistencies and uses them to adjust the confidence of recommended instances.
  */
 public class DiagramInconsistencyChecker extends ExecutionStage {
+    private final WordSimUtils wordSimUtils;
+
     /**
      * Sole constructor of the stage.
      *
@@ -26,6 +28,7 @@ public class DiagramInconsistencyChecker extends ExecutionStage {
     public DiagramInconsistencyChecker(SortedMap<String, String> additionalConfigs, DataRepository dataRepository) {
         super(List.of(new DiagramInconsistencyAgent(dataRepository), new RecommendedInstancesConfidenceAgent(dataRepository)), DiagramInconsistencyChecker.class
                 .getSimpleName(), dataRepository, additionalConfigs);
+        this.wordSimUtils = getMetaData().getWordSimUtils();
     }
 
     @Override
@@ -43,8 +46,8 @@ public class DiagramInconsistencyChecker extends ExecutionStage {
     @Override
     protected void before() {
         super.before();
-        previousCharacterMatchFunction = WordSimUtils.getCharacterMatchFunction();
-        WordSimUtils.setCharacterMatchFunction(UnicodeCharacter.EQUAL_OR_HOMOGLYPH);
+        previousCharacterMatchFunction = wordSimUtils.getCharacterMatchFunction();
+        wordSimUtils.setCharacterMatchFunction(UnicodeCharacter.EQUAL_OR_HOMOGLYPH);
     }
 
     /**
@@ -52,7 +55,7 @@ public class DiagramInconsistencyChecker extends ExecutionStage {
      */
     @Override
     protected void after() {
-        WordSimUtils.setCharacterMatchFunction(previousCharacterMatchFunction);
+        wordSimUtils.setCharacterMatchFunction(previousCharacterMatchFunction);
         super.after();
     }
 }

@@ -6,7 +6,6 @@ import java.util.SortedMap;
 import java.util.function.BiFunction;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.UnicodeCharacter;
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.ExecutionStage;
 import edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator.DiagramConnectionStates;
@@ -30,7 +29,7 @@ public class DiagramConnectionGenerator extends ExecutionStage {
     @Override
     protected void initializeState() {
         logger.info("Creating DiagramConnectionGenerator States");
-        var diagramConnectionStates = new DiagramConnectionStatesImpl();
+        var diagramConnectionStates = new DiagramConnectionStatesImpl(dataRepository);
         getDataRepository().addData(DiagramConnectionStates.ID, diagramConnectionStates);
     }
 
@@ -42,8 +41,8 @@ public class DiagramConnectionGenerator extends ExecutionStage {
     @Override
     protected void before() {
         super.before();
-        previousCharacterMatchFunction = WordSimUtils.getCharacterMatchFunction();
-        WordSimUtils.setCharacterMatchFunction(UnicodeCharacter.EQUAL_OR_HOMOGLYPH);
+        previousCharacterMatchFunction = getMetaData().getWordSimUtils().getCharacterMatchFunction();
+        getMetaData().getWordSimUtils().setCharacterMatchFunction(UnicodeCharacter.EQUAL_OR_HOMOGLYPH);
     }
 
     /**
@@ -51,7 +50,7 @@ public class DiagramConnectionGenerator extends ExecutionStage {
      */
     @Override
     protected void after() {
-        WordSimUtils.setCharacterMatchFunction(previousCharacterMatchFunction);
+        getMetaData().getWordSimUtils().setCharacterMatchFunction(previousCharacterMatchFunction);
         super.after();
     }
 }

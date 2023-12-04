@@ -1,6 +1,7 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.jarowinkler;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.function.BiFunction;
 
@@ -28,7 +29,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.UnicodeCharacterSeque
  * character match.
  * </p>
  */
-public final class UnicodeJaroWinklerSimilarity {
+public final class UnicodeJaroWinklerSimilarity implements Serializable {
     /**
      * This method returns the Jaro-Winkler string matches, half transpositions, prefix array.
      *

@@ -91,7 +91,7 @@ public class Confidence implements Comparable<Confidence> {
         if (this == obj) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass()) {
+        if (!(obj instanceof Confidence)) {
             return false;
         }
         Confidence other = (Confidence) obj;

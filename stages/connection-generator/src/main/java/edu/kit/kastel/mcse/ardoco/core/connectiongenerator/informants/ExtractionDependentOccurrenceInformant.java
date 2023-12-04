@@ -9,7 +9,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
-import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
@@ -55,7 +54,7 @@ public class ExtractionDependentOccurrenceInformant extends Informant {
         if (posTagIsUndesired(word) && !wordStartsWithCapitalLetter(word)) {
             return;
         }
-        var instanceNameIsSimilar = modelState.getInstances().anySatisfy(i -> SimilarityUtils.isWordSimilarToModelInstance(word, i));
+        var instanceNameIsSimilar = modelState.getInstances().anySatisfy(i -> getMetaData().getSimilarityUtils().isWordSimilarToModelInstance(word, i));
         if (instanceNameIsSimilar) {
             textState.addNounMapping(word, MappingKind.NAME, this, probability);
         }
@@ -75,7 +74,7 @@ public class ExtractionDependentOccurrenceInformant extends Informant {
      * value is taken as reference.
      */
     private void searchForType(ModelExtractionState modelState, TextState textState, Word word) {
-        var instanceTypeIsSimilar = modelState.getInstances().anySatisfy(i -> SimilarityUtils.isWordSimilarToModelInstanceType(word, i));
+        var instanceTypeIsSimilar = modelState.getInstances().anySatisfy(i -> getMetaData().getSimilarityUtils().isWordSimilarToModelInstanceType(word, i));
         if (instanceTypeIsSimilar) {
             textState.addNounMapping(word, MappingKind.TYPE, this, probability);
         }

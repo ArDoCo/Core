@@ -24,11 +24,10 @@ import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 public abstract class DefaultTextStateStrategy implements TextStateStrategy {
+    protected final TextStateImpl textState;
 
-    private TextStateImpl textState;
-
-    public void setTextState(TextStateImpl textExtractionState) {
-        textState = textExtractionState;
+    protected DefaultTextStateStrategy(TextStateImpl textStateImpl) {
+        this.textState = textStateImpl;
     }
 
     public TextStateImpl getTextState() {

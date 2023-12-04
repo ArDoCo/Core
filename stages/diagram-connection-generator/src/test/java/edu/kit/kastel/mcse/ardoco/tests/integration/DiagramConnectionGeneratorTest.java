@@ -1,34 +1,9 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.tests.integration;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
-
-import org.eclipse.collections.impl.factory.SortedMaps;
-import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import edu.kit.kastel.mcse.ardoco.core.api.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TraceType;
+import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.AnonymousRunner;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
@@ -39,6 +14,18 @@ import edu.kit.kastel.mcse.ardoco.tests.PreTestRunner;
 import edu.kit.kastel.mcse.ardoco.tests.Results;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 import edu.kit.kastel.mcse.ardoco.tests.eval.StageTest;
+import java.io.File;
+import java.util.*;
+import java.util.stream.Collectors;
+import org.eclipse.collections.impl.factory.SortedMaps;
+import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * This class is used for evaluating ERID's diagram-to-sentences TLR capabilities using the manually extracted diagrams
@@ -51,7 +38,7 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
     private static final String OUTPUT_DIR = "src/test/resources/testout";
 
     public DiagramConnectionGeneratorTest() {
-        super(new DiagramConnectionGenerator(SortedMaps.mutable.empty(), null), DiagramProject.values());
+        super(new DiagramConnectionGenerator(SortedMaps.mutable.empty(), new DataRepository()), DiagramProject.values());
     }
 
     protected ExpectedResults getExpectedResults(DiagramProject project) {
@@ -67,7 +54,8 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
         var linksBetweenDeAndRi = diagramConnectionState.getLinksBetweenDeAndRi().stream().sorted().collect(Collectors.toCollection(TreeSet::new));
         var traceLinks = diagramConnectionState.getTraceLinks().stream().collect(Collectors.toCollection(TreeSet::new));
         var mostSpecificTraceLinks = diagramConnectionState.getMostSpecificTraceLinks().stream().collect(Collectors.toCollection(TreeSet::new));
-        var altResult = Results.create(project, text, mostSpecificTraceLinks, getExpectedResults(project));
+        var pipelineMetaData = DataRepositoryHelper.getMetaData(dataRepository);
+        var altResult = Results.create(pipelineMetaData, project, text, mostSpecificTraceLinks, getExpectedResults(project));
 
         var commonNoun = altResult.falsePositives().stream().filter(w -> {
             var related = w.getRelatedGSLinks();
@@ -92,11 +80,11 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
         var prevResults = getCached(cacheID, Results.class);
 
         if (prevResults != null) {
-            var dAll = Results.difference(altResult.all(), prevResults.all());
-            var dTP = Results.difference(altResult.truePositives(), prevResults.truePositives());
-            var dFP = Results.difference(altResult.falsePositives(), prevResults.falsePositives());
-            var dFN = Results.difference(altResult.falseNegatives(), prevResults.falseNegatives());
-            var dTN = Results.difference(prevResults.falsePositives(), altResult.falsePositives());
+            var dAll = Results.difference(pipelineMetaData, altResult.all(), prevResults.all());
+            var dTP = Results.difference(pipelineMetaData, altResult.truePositives(), prevResults.truePositives());
+            var dFP = Results.difference(pipelineMetaData, altResult.falsePositives(), prevResults.falsePositives());
+            var dFN = Results.difference(pipelineMetaData, altResult.falseNegatives(), prevResults.falseNegatives());
+            var dTN = Results.difference(pipelineMetaData, prevResults.falsePositives(), altResult.falsePositives());
         }
 
         if (!altResult.equalsByConfusionMatrix(prevResults))
@@ -122,6 +110,7 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
         return new AnonymousRunner(project.name(), preRunDataRepository) {
             @Override
             public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) {
+                DataRepositoryHelper.getMetaData(dataRepository).getWordSimUtils().setConsiderAbbreviations(true);
                 var pipelineSteps = new ArrayList<AbstractPipelineStep>();
                 pipelineSteps.add(new DiagramConnectionGenerator(combinedConfigs, dataRepository));
                 return pipelineSteps;
