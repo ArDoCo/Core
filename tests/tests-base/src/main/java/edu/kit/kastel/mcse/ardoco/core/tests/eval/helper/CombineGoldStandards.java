@@ -63,6 +63,8 @@ public class CombineGoldStandards {
     }
 
     private static List<String> read(File file) throws FileNotFoundException {
-        return Arrays.stream(new Scanner(file).useDelimiter("\\A").next().strip().split("\\n")).map(String::strip).toList();
+        try (var scan = new Scanner(file).useDelimiter("\\A")) {
+            return Arrays.stream(scan.next().strip().split("\\n")).map(String::strip).toList();
+        }
     }
 }

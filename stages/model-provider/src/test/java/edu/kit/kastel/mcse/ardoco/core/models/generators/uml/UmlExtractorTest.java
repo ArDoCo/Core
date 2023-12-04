@@ -3,7 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.models.generators.uml;
 
 import org.junit.jupiter.api.Test;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureModel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.ArchitectureModel;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.uml.UmlExtractor;
 import edu.kit.kastel.mcse.ardoco.core.models.generators.ArchitectureExtractorTest;
 

@@ -26,7 +26,7 @@ public abstract class Filter extends Informant {
         var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
         var inconsistencyStates = DataRepositoryHelper.getInconsistencyStates(dataRepository);
 
-        for (var model : modelStates.extractionModelIds()) {
+        for (var model : modelStates.modelIds()) {
             var modelState = modelStates.getModelExtractionState(model);
             var inconsistencyState = inconsistencyStates.getInconsistencyState(modelState.getMetamodel());
             filterRecommendedInstances(inconsistencyState);

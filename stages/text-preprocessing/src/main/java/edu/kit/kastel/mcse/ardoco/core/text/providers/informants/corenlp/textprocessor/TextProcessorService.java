@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
-import org.jetbrains.annotations.NotNull;
-
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.config.ConfigManager;
 import edu.kit.kastel.mcse.ardoco.core.textproviderjson.converter.DtoToObjectConverter;
@@ -50,7 +48,6 @@ public class TextProcessorService {
         return httpCommunicator.sendAuthenticatedPostRequest(requestUrl, body);
     }
 
-    @NotNull
     private static String getRequestBodyString(String encodedText) {
         return "{\"text\": \"" + encodedText + "\"}";
     }

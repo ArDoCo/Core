@@ -32,11 +32,11 @@ public class CodeItemRepository {
         return repository.get(id);
     }
 
-    List<CodeItem> getCodeItemsFromIds(List<String> codeItemIds) {
+    public List<CodeItem> getCodeItemsFromIds(List<String> codeItemIds) {
         return codeItemIds.stream().map(this::getCodeItem).filter(Objects::nonNull).toList();
     }
 
-    void init() {
+    public void init() {
         this.repository.values().forEach(it -> it.registerCurrentCodeItemRepository(this));
     }
 }

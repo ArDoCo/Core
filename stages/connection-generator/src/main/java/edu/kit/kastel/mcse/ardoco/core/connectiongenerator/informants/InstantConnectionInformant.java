@@ -4,8 +4,8 @@ package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.informants;
 import java.util.SortedMap;
 
 import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionState;
+import edu.kit.kastel.mcse.ardoco.core.api.models.LegacyModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
@@ -30,7 +30,7 @@ public class InstantConnectionInformant extends Informant {
         var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
         var recommendationStates = DataRepositoryHelper.getRecommendationStates(dataRepository);
         var connectionStates = DataRepositoryHelper.getConnectionStates(dataRepository);
-        for (var model : modelStates.extractionModelIds()) {
+        for (var model : modelStates.modelIds()) {
             var modelState = modelStates.getModelExtractionState(model);
             Metamodel metamodel = modelState.getMetamodel();
             var recommendationState = recommendationStates.getRecommendationState(metamodel);
@@ -45,7 +45,7 @@ public class InstantConnectionInformant extends Informant {
      * Searches in the recommended instances of the recommendation state for similar names to extracted instances. If
      * some are found the instance link is added to the connection state.
      */
-    private void findNamesOfModelInstancesInSupposedMappings(ModelExtractionState modelState, RecommendationState recommendationState,
+    private void findNamesOfModelInstancesInSupposedMappings(LegacyModelExtractionState modelState, RecommendationState recommendationState,
             ConnectionState connectionState) {
         var recommendedInstances = recommendationState.getRecommendedInstances();
         for (ModelInstance instance : modelState.getInstances()) {
@@ -58,7 +58,7 @@ public class InstantConnectionInformant extends Informant {
         }
     }
 
-    private void createLinksForEqualOrSimilarRecommendedInstances(ModelExtractionState modelState, RecommendationState recommendationState,
+    private void createLinksForEqualOrSimilarRecommendedInstances(LegacyModelExtractionState modelState, RecommendationState recommendationState,
             ConnectionState connectionState) {
         for (var recommendedInstance : recommendationState.getRecommendedInstances()) {
             var sameInstances = modelState.getInstances()

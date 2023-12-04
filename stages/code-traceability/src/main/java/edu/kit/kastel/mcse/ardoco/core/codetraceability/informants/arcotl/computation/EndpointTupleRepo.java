@@ -4,8 +4,8 @@ package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.compu
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureModel;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.ArchitectureModel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.CodeModel;
 
 /**
  * A repository of endpoint tuples. An endpoint tuple consists of an

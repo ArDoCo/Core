@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCoForSadCodeTraceabilityLinkRecovery;
 import edu.kit.kastel.mcse.ardoco.core.execution.CodeRunnerBaseTest;
 import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
@@ -19,8 +18,7 @@ class ArDoCoForSadCodeTraceabilityLinkRecoveryTest extends CodeRunnerBaseTest {
     void testSadCodeTlr() {
         var runner = new ArDoCoForSadCodeTraceabilityLinkRecovery(PROJECT_NAME);
         var additionalConfigsMap = ConfigurationHelper.loadAdditionalConfigs(new File(ADDITIONAL_CONFIGS));
-        runner.setUp(new File(INPUT_TEXT), new File(INPUT_MODEL_ARCHITECTURE), ArchitectureModelType.PCM, new File(CodeRunnerBaseTest.inputCode),
-                additionalConfigsMap, new File(OUTPUT_DIR));
+        runner.setUp(new File(INPUT_TEXT), new File(CodeRunnerBaseTest.inputCode), additionalConfigsMap, new File(OUTPUT_DIR));
 
         testRunnerAssertions(runner);
         Assertions.assertNotNull(runner.run());

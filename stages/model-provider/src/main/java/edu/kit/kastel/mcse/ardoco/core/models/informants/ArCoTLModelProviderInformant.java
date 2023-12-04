@@ -4,17 +4,16 @@ package edu.kit.kastel.mcse.ardoco.core.models.informants;
 import java.util.Optional;
 import java.util.SortedMap;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelConnector;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.Extractor;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.CodeExtractor;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 
 /**
- * The model extractor extracts the instances and relations via an connector. The extracted items are stored in a model
+ * The model extractor extracts the instances and relations via a connector. The extracted items are stored in a model
  * extraction state.
  */
 public final class ArCoTLModelProviderInformant extends Informant {
@@ -29,7 +28,7 @@ public final class ArCoTLModelProviderInformant extends Informant {
     }
 
     /**
-     * Instantiates a new model provider that uses the provided {@link ModelConnector} to extract information into the {@link DataRepository}.
+     * Instantiates a new model provider to extract information into the {@link DataRepository}.
      *
      * @param dataRepository the data repository
      * @param extractor      the model connector

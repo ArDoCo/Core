@@ -10,7 +10,6 @@ import java.util.TreeMap;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.CodeModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
@@ -39,13 +38,12 @@ class SadCodeTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecovery
         String name = codeProject.name().toLowerCase();
         Project textProject = codeProject.getProject();
         File textInput = textProject.getTextFile();
-        File inputArchitectureModel = codeProject.getProject().getModelFile();
         File inputCode = getInputCode(codeProject);
         SortedMap<String, String> additionalConfigsMap = new TreeMap<>();
         File outputDir = new File(OUTPUT);
 
         var runner = new ArDoCoForSadCodeTraceabilityLinkRecovery(name);
-        runner.setUp(textInput, inputArchitectureModel, ArchitectureModelType.PCM, inputCode, additionalConfigsMap, outputDir);
+        runner.setUp(textInput, inputCode, additionalConfigsMap, outputDir);
         return runner;
     }
 
