@@ -19,14 +19,13 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextStateStrategy;
-import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 public class OriginalTextStateStrategy extends DefaultTextStateStrategy implements Serializable {
 
     OriginalTextStateStrategy(TextStateImpl textState) {
-        super.setTextState(textState);
+        super(textState);
     }
 
     @NotNull
@@ -37,7 +36,7 @@ public class OriginalTextStateStrategy extends DefaultTextStateStrategy implemen
                 surfaceForms);
 
         for (var existingNounMapping : super.getTextState().getNounMappings()) {
-            if (SimilarityUtils.areNounMappingsSimilar(disposableNounMapping, existingNounMapping)) {
+            if (textState.getMetaData().getSimilarityUtils().areNounMappingsSimilar(disposableNounMapping, existingNounMapping)) {
 
                 return mergeNounMappings(existingNounMapping, disposableNounMapping, disposableNounMapping.getReferenceWords(), disposableNounMapping
                         .getReference(), disposableNounMapping.getKind(), claimant, disposableNounMapping.getProbability());

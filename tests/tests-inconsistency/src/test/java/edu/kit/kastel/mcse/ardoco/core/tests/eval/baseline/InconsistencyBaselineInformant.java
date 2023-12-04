@@ -27,7 +27,7 @@ public class InconsistencyBaselineInformant extends Informant {
 
     @Override
     public void process() {
-        var inconsistencyStates = InconsistencyStatesImpl.build();
+        var inconsistencyStates = InconsistencyStatesImpl.build(dataRepository);
         DataRepository dataRepository = getDataRepository();
         dataRepository.addData(InconsistencyStates.ID, inconsistencyStates);
 

@@ -14,6 +14,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiagramGoldStandard
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiagramTextTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiagramWordTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
+import edu.kit.kastel.mcse.ardoco.core.data.MetaData;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 
@@ -23,7 +24,7 @@ public record Results(DiagramProject project, SortedSet<DiagramWordTraceLink> tr
 
     private final static Logger logger = LoggerFactory.getLogger(Results.class);
 
-    public static Results create(DiagramProject project, Text text, Set<DiagramWordTraceLink> wordTraceLinks, ExpectedResults expected) {
+    public static Results create(MetaData metaData, DiagramProject project, Text text, Set<DiagramWordTraceLink> wordTraceLinks, ExpectedResults expected) {
         var allGoldStandardTraceLinks = project.getDiagramTraceLinksAsMap(text.getSentences().toList());
         TreeSet<DiagramGoldStandardTraceLink> goldStandard = new TreeSet<>(allGoldStandardTraceLinks.entrySet()
                 .stream()
@@ -35,10 +36,14 @@ public record Results(DiagramProject project, SortedSet<DiagramWordTraceLink> tr
         var totalDiagramElements = project.getDiagramsGoldStandard().stream().flatMap(d -> d.getBoxes().stream()).toList().size();
         var total = totalSentences * totalDiagramElements;
         var traceLinks = new TreeSet<>(wordTraceLinks);
-        var tpLinks = intersection(traceLinks, goldStandard);
-        var fpLinks = difference(traceLinks, goldStandard);
-        fpLinks.forEach(fp -> fp.addRelated(allGoldStandardTraceLinks.values().stream().flatMap(Collection::stream).filter(fp::similar).toList()));
-        var fnLinks = difference(goldStandard, traceLinks);
+        var tpLinks = intersection(metaData, traceLinks, goldStandard);
+        var fpLinks = difference(metaData, traceLinks, goldStandard);
+        fpLinks.forEach(fp -> fp.addRelated(allGoldStandardTraceLinks.values()
+                .stream()
+                .flatMap(Collection::stream)
+                .filter(oth -> fp.similar(metaData, oth))
+                .toList()));
+        var fnLinks = difference(metaData, goldStandard, traceLinks);
         var TP = tpLinks.size();
         var FP = fpLinks.size();
         var FN = fnLinks.size();
@@ -53,12 +58,12 @@ public record Results(DiagramProject project, SortedSet<DiagramWordTraceLink> tr
         return BigDecimal.valueOf(a).setScale(2, RoundingMode.HALF_UP);
     }
 
-    public static <T extends DiagramTextTraceLink> TreeSet<T> intersection(Set<T> a, Set<? extends DiagramTextTraceLink> b) {
-        return a.stream().filter(fromA -> b.stream().anyMatch(fromB -> fromB.similar(fromA))).collect(Collectors.toCollection(TreeSet::new));
+    public static <T extends DiagramTextTraceLink> TreeSet<T> intersection(MetaData metaData, Set<T> a, Set<? extends DiagramTextTraceLink> b) {
+        return a.stream().filter(fromA -> b.stream().anyMatch(fromB -> fromB.similar(metaData, fromA))).collect(Collectors.toCollection(TreeSet::new));
     }
 
-    public static <T extends DiagramTextTraceLink> TreeSet<T> difference(Set<T> a, Set<? extends DiagramTextTraceLink> b) {
-        return a.stream().filter(fromA -> b.stream().noneMatch(fromB -> fromB.similar(fromA))).collect(Collectors.toCollection(TreeSet::new));
+    public static <T extends DiagramTextTraceLink> TreeSet<T> difference(MetaData metaData, Set<T> a, Set<? extends DiagramTextTraceLink> b) {
+        return a.stream().filter(fromA -> b.stream().noneMatch(fromB -> fromB.similar(metaData, fromA))).collect(Collectors.toCollection(TreeSet::new));
     }
 
     public double precision() {

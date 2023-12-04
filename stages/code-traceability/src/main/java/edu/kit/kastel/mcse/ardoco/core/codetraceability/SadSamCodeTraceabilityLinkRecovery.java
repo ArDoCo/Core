@@ -27,7 +27,7 @@ public class SadSamCodeTraceabilityLinkRecovery extends AbstractExecutionStage {
     protected void initializeState() {
         DataRepository dataRepository = getDataRepository();
         if (!DataRepositoryHelper.hasCodeTraceabilityState(dataRepository)) {
-            var codeTraceabilityState = new CodeTraceabilityStateImpl();
+            var codeTraceabilityState = new CodeTraceabilityStateImpl(dataRepository);
             dataRepository.addData(CodeTraceabilityState.ID, codeTraceabilityState);
         }
     }

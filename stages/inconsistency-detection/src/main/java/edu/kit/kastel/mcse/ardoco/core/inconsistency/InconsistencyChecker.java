@@ -33,7 +33,7 @@ public class InconsistencyChecker extends AbstractExecutionStage {
 
     @Override
     protected void initializeState() {
-        var inconsistencyStates = InconsistencyStatesImpl.build();
+        var inconsistencyStates = InconsistencyStatesImpl.build(dataRepository);
         getDataRepository().addData(InconsistencyStates.ID, inconsistencyStates);
     }
 

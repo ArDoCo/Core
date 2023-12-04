@@ -13,7 +13,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
-import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.data.ProjectPipelineData;
@@ -66,10 +65,10 @@ public class DiagramAsModelInformant extends Informant {
         for (Diagram diagram : diagrams) {
             var diagramModelInstances = diagramToModelInstances(diagram);
             for (Pair<Box, ModelInstance> pair : diagramModelInstances) {
-                var mostLikelyRi = SimilarityUtils.getMostRecommendedInstancesToInstanceByReferences(pair.second(), recommendedInstances);
+                var mostLikelyRi = getMetaData().getSimilarityUtils().getMostRecommendedInstancesToInstanceByReferences(pair.second(), recommendedInstances);
                 for (var recommendedInstance : mostLikelyRi) {
                     basedOnIncreasingMinimalProportionalThreshold.add(new LinkBetweenDeAndRi(recommendedInstance, pair.first(), projectName, this, DiagramUtil
-                            .calculateSimilarityMap(pair.first(), recommendedInstance)));
+                            .calculateSimilarityMap(getMetaData().getWordSimUtils(), pair.first(), recommendedInstance)));
                 }
             }
         }
@@ -88,15 +87,15 @@ public class DiagramAsModelInformant extends Informant {
             for (var recommendedInstance : ris) {
                 for (Pair<Box, ModelInstance> pair : diagramModelInstances) {
                     //Add based on overall similarity
-                    if (SimilarityUtils.isRecommendedInstanceSimilarToModelInstance(recommendedInstance, pair.second())) {
+                    if (getMetaData().getSimilarityUtils().isRecommendedInstanceSimilarToModelInstance(recommendedInstance, pair.second())) {
                         basedOnOverallSimilarity.add(new LinkBetweenDeAndRi(recommendedInstance, pair.first(), projectName, this, DiagramUtil
-                                .calculateSimilarityMap(pair.first(), recommendedInstance)));
+                                .calculateSimilarityMap(getMetaData().getWordSimUtils(), pair.first(), recommendedInstance)));
                     }
                     //Add based on surface words
-                    var similarSurfaceWords = SimilarityUtils.getSimilarSurfaceWords(recommendedInstance, pair.second());
+                    var similarSurfaceWords = getMetaData().getSimilarityUtils().getSimilarSurfaceWords(recommendedInstance, pair.second());
                     if (similarSurfaceWords.size() >= minSimilarSurfaceWords) {
                         basedOnSurfaceWords.add(new LinkBetweenDeAndRi(recommendedInstance, pair.first(), projectName, this, DiagramUtil.calculateSimilarityMap(
-                                pair.first(), recommendedInstance)));
+                                getMetaData().getWordSimUtils(), pair.first(), recommendedInstance)));
                     }
                 }
             }

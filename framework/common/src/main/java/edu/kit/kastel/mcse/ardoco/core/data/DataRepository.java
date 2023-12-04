@@ -22,6 +22,7 @@ public class DataRepository implements Serializable {
 
     public DataRepository() {
         this.data = new TreeMap<>();
+        addData(MetaData.ID, new MetaData());
     }
 
     /**

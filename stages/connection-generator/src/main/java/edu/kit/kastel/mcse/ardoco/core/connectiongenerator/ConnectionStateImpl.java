@@ -10,6 +10,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.InstanceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.data.AbstractState;
+import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 /**
@@ -22,8 +23,11 @@ public class ConnectionStateImpl extends AbstractState implements ConnectionStat
 
     /**
      * Creates a new connection state.
+     * 
+     * @param dataRepository the {@link DataRepository} this state is associated with
      */
-    public ConnectionStateImpl() {
+    public ConnectionStateImpl(DataRepository dataRepository) {
+        super(dataRepository);
         instanceLinks = Lists.mutable.empty();
     }
 

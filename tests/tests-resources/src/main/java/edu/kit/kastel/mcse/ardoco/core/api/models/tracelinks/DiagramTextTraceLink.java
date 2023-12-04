@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityComparable;
+import edu.kit.kastel.mcse.ardoco.core.data.MetaData;
 
 public class DiagramTextTraceLink implements SimilarityComparable<DiagramTextTraceLink>, Comparable<DiagramTextTraceLink>, Serializable {
     protected final DiagramElement diagramElement;
@@ -84,9 +85,10 @@ public class DiagramTextTraceLink implements SimilarityComparable<DiagramTextTra
     }
 
     @Override
-    public boolean similar(DiagramTextTraceLink obj) {
+    public boolean similar(MetaData metaData, DiagramTextTraceLink obj) {
         if (equals(obj))
             return true;
-        return getDiagramElement().getBoundingBox().similar(obj.getDiagramElement().getBoundingBox()) && Objects.equals(getSentenceNo(), obj.getSentenceNo());
+        return getDiagramElement().getBoundingBox().similar(metaData, obj.getDiagramElement().getBoundingBox()) && Objects.equals(getSentenceNo(), obj
+                .getSentenceNo());
     }
 }

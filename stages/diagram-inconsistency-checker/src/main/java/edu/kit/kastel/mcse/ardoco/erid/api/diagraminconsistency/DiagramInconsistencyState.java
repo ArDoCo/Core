@@ -15,7 +15,9 @@ public interface DiagramInconsistencyState extends PipelineStepData {
     String ID = "DiagramInconsistencyState";
 
     /**
-     * @param type inconsistency type {@return the set of inconsistencies discovered by this stage of the given type}
+     * {@return the inconsistencies of the given type}
+     *
+     * @param type inconsistency type
      */
     <T extends Inconsistency> Set<T> getInconsistencies(Class<T> type);
 

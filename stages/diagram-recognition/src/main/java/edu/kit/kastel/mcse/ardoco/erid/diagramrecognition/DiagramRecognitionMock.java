@@ -20,12 +20,14 @@ import edu.kit.kastel.mcse.ardoco.tests.eval.GoldStandardDiagrams;
  * using the {@link GoldStandardDiagrams} gold standard.
  */
 public class DiagramRecognitionMock extends ExecutionStage {
+    private final WordSimUtils wordSimUtils;
     private final GoldStandardDiagrams goldStandardProject;
 
     public DiagramRecognitionMock(GoldStandardDiagrams goldStandardProject, SortedMap<String, String> additionalConfigs, DataRepository dataRepository) {
         super(List.of(new DiagramDisambiguationAgent(dataRepository), new DiagramReferenceAgent(dataRepository)), DiagramRecognitionMock.class.getSimpleName(),
                 dataRepository, additionalConfigs);
         this.goldStandardProject = goldStandardProject;
+        this.wordSimUtils = getMetaData().getWordSimUtils();
     }
 
     @Override
@@ -45,13 +47,13 @@ public class DiagramRecognitionMock extends ExecutionStage {
     @Override
     protected void before() {
         super.before();
-        previousCharacterMatchFunction = WordSimUtils.getCharacterMatchFunction();
-        WordSimUtils.setCharacterMatchFunction(UnicodeCharacter.EQUAL_OR_HOMOGLYPH);
+        previousCharacterMatchFunction = wordSimUtils.getCharacterMatchFunction();
+        wordSimUtils.setCharacterMatchFunction(UnicodeCharacter.EQUAL_OR_HOMOGLYPH);
     }
 
     @Override
     protected void after() {
-        WordSimUtils.setCharacterMatchFunction(previousCharacterMatchFunction);
+        wordSimUtils.setCharacterMatchFunction(previousCharacterMatchFunction);
         super.after();
     }
 }

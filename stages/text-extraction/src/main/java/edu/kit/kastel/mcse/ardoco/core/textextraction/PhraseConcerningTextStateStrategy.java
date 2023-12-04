@@ -25,7 +25,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy {
 
     public PhraseConcerningTextStateStrategy(TextStateImpl textState) {
-        super.setTextState(textState);
+        super(textState);
     }
 
     @NotNull

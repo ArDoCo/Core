@@ -1,6 +1,7 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
@@ -15,6 +16,7 @@ import org.sqlite.SQLiteOpenMode;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.common.util.AbbreviationDisambiguationHelper;
+import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.equality.EqualityMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.strategy.ComparisonStrategy;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.strategy.SimilarityStrategy;
@@ -26,14 +28,15 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.strategy.SimilaritySt
  * Any calls that do not provide their own measures or strategies will utilize them. As of right now, no protections against simultaneous write access from
  * multiple threads exist. Therefore, this class is not threadsafe.
  */
-public class WordSimUtils {
+public class WordSimUtils implements Serializable {
 
-    private static MutableList<WordSimMeasure> measures = Lists.mutable.withAll(WordSimLoader.loadUsingProperties());
-    private static ComparisonStrategy strategy = ComparisonStrategy.AT_LEAST_ONE;
-    private static SimilarityStrategy similarityStrategy = SimilarityStrategy.AVERAGE;
-    private static BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> characterMatch = UnicodeCharacter.EQUAL;
+    private MutableList<WordSimMeasure> measures = Lists.mutable.withAll(WordSimLoader.loadUsingProperties());
+    private ComparisonStrategy strategy = ComparisonStrategy.AT_LEAST_ONE;
+    private SimilarityStrategy similarityStrategy = SimilarityStrategy.AVERAGE;
+    private BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> characterMatch = UnicodeCharacter.EQUAL;
+    private boolean considerAbbreviations = CommonTextToolsConfig.CONSIDER_ABBREVIATIONS;
 
-    private WordSimUtils() {
+    public WordSimUtils() {
     }
 
     /**
@@ -41,8 +44,8 @@ public class WordSimUtils {
      *
      * @param measures the measures to use
      */
-    public static void setMeasures(Collection<WordSimMeasure> measures) {
-        WordSimUtils.measures = Lists.mutable.withAll(measures);
+    public void setMeasures(Collection<WordSimMeasure> measures) {
+        this.measures = Lists.mutable.withAll(measures);
     }
 
     /**
@@ -51,8 +54,8 @@ public class WordSimUtils {
      * @param measure the measure to add
      * @return Whether the measure was added successfully
      */
-    public static boolean addMeasure(WordSimMeasure measure) {
-        return WordSimUtils.measures.add(measure);
+    public boolean addMeasure(WordSimMeasure measure) {
+        return this.measures.add(measure);
     }
 
     /**
@@ -60,8 +63,8 @@ public class WordSimUtils {
      *
      * @param strategy the new default strategy
      */
-    public static void setStrategy(ComparisonStrategy strategy) {
-        WordSimUtils.strategy = strategy;
+    public void setStrategy(ComparisonStrategy strategy) {
+        this.strategy = strategy;
     }
 
     /**
@@ -69,16 +72,24 @@ public class WordSimUtils {
      *
      * @param strategy the new default strategy
      */
-    public static void setStrategy(SimilarityStrategy strategy) {
-        WordSimUtils.similarityStrategy = strategy;
+    public void setStrategy(SimilarityStrategy strategy) {
+        this.similarityStrategy = strategy;
     }
 
-    public static void setCharacterMatchFunction(@NotNull BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> characterMatch) {
-        WordSimUtils.characterMatch = characterMatch;
+    public void setCharacterMatchFunction(@NotNull BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> characterMatch) {
+        this.characterMatch = characterMatch;
     }
 
-    public static @NotNull BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> getCharacterMatchFunction() {
-        return WordSimUtils.characterMatch;
+    public @NotNull BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> getCharacterMatchFunction() {
+        return this.characterMatch;
+    }
+
+    public void setConsiderAbbreviations(boolean considerAbbreviations) {
+        this.considerAbbreviations = considerAbbreviations;
+    }
+
+    public boolean getConsiderAbbreviations() {
+        return this.considerAbbreviations;
     }
 
     /**
@@ -88,18 +99,21 @@ public class WordSimUtils {
      * @param strategy the strategy
      * @return Returns {@code true} if the given strategy considers the words similar enough.
      */
-    public static boolean areWordsSimilar(ComparisonContext ctx, ComparisonStrategy strategy) {
+    public boolean areWordsSimilar(ComparisonContext ctx, ComparisonStrategy strategy) {
         Objects.requireNonNull(ctx);
         Objects.requireNonNull(strategy);
 
         var firstTerm = ctx.firstTerm();
         var secondTerm = ctx.secondTerm();
-        var ambiguatedFirstTerm = AbbreviationDisambiguationHelper.ambiguateAll(firstTerm, true);
-        var ambiguatedSecondTerm = AbbreviationDisambiguationHelper.ambiguateAll(secondTerm, true);
 
-        if (!ambiguatedFirstTerm.equals(firstTerm) || !ambiguatedSecondTerm.equals(secondTerm)) {
-            if (areWordsSimilar(new ComparisonContext(ambiguatedFirstTerm, ambiguatedSecondTerm, null, null, false, ctx.characterMatch()))) {
-                return true;
+        if (getConsiderAbbreviations()) {
+            var ambiguatedFirstTerm = AbbreviationDisambiguationHelper.ambiguateAll(firstTerm, true);
+            var ambiguatedSecondTerm = AbbreviationDisambiguationHelper.ambiguateAll(secondTerm, true);
+
+            if (!ambiguatedFirstTerm.equals(firstTerm) || !ambiguatedSecondTerm.equals(secondTerm)) {
+                if (areWordsSimilar(new ComparisonContext(ambiguatedFirstTerm, ambiguatedSecondTerm, null, null, false, ctx.characterMatch()))) {
+                    return true;
+                }
             }
         }
 
@@ -111,7 +125,7 @@ public class WordSimUtils {
         return strategy.areWordsSimilar(ctx, measures.toList());
     }
 
-    private static boolean splitLengthTest(ComparisonContext ctx) {
+    private boolean splitLengthTest(ComparisonContext ctx) {
         var first = ctx.firstTerm().toLowerCase();
         var second = ctx.secondTerm().toLowerCase();
         return (first.split(" ").length == second.split(" ").length);
@@ -124,7 +138,7 @@ public class WordSimUtils {
      * @param ctx the context
      * @return Returns {@code true} if the default strategy considers the words similar enough.
      */
-    public static boolean areWordsSimilar(ComparisonContext ctx) {
+    public boolean areWordsSimilar(ComparisonContext ctx) {
         Objects.requireNonNull(ctx);
         return areWordsSimilar(ctx, strategy);
     }
@@ -137,7 +151,7 @@ public class WordSimUtils {
      * @param secondWord the second word
      * @return Returns {@code true} if the default strategy considers the words similar enough.
      */
-    public static boolean areWordsSimilar(String firstWord, String secondWord) {
+    public boolean areWordsSimilar(String firstWord, String secondWord) {
         return areWordsSimilar(new ComparisonContext(firstWord, secondWord, false), strategy);
     }
 
@@ -149,7 +163,7 @@ public class WordSimUtils {
      * @param strategy   the strategy to use
      * @return Returns {@code true} if the given strategy considers the words similar enough.
      */
-    public static boolean areWordsSimilar(String firstWord, String secondWord, ComparisonStrategy strategy) {
+    public boolean areWordsSimilar(String firstWord, String secondWord, ComparisonStrategy strategy) {
         return areWordsSimilar(new ComparisonContext(firstWord, secondWord, false), strategy);
     }
 
@@ -161,7 +175,7 @@ public class WordSimUtils {
      * @param secondWord the second word
      * @return Returns {@code true} if the default strategy considers the words similar enough.
      */
-    public static boolean areWordsSimilar(Word firstWord, Word secondWord) {
+    public boolean areWordsSimilar(Word firstWord, Word secondWord) {
         return areWordsSimilar(new ComparisonContext(firstWord, secondWord, false), strategy);
     }
 
@@ -173,7 +187,7 @@ public class WordSimUtils {
      * @param strategy   the strategy to use
      * @return Returns {@code true} if the given strategy considers the words similar enough.
      */
-    public static boolean areWordsSimilar(Word firstWord, Word secondWord, ComparisonStrategy strategy) {
+    public boolean areWordsSimilar(Word firstWord, Word secondWord, ComparisonStrategy strategy) {
         return areWordsSimilar(new ComparisonContext(firstWord, secondWord, false), strategy);
     }
 
@@ -185,7 +199,7 @@ public class WordSimUtils {
      * @param secondWord the second word
      * @return Returns {@code true} if the default strategy considers the words similar enough.
      */
-    public static boolean areWordsSimilar(String firstWord, Word secondWord) {
+    public boolean areWordsSimilar(String firstWord, Word secondWord) {
         return areWordsSimilar(new ComparisonContext(firstWord, secondWord.getText(), null, secondWord, false, characterMatch), strategy);
     }
 
@@ -197,7 +211,7 @@ public class WordSimUtils {
      * @param strategy   the strategy to use
      * @return Returns {@code true} if the given strategy considers the words similar enough.
      */
-    public static boolean areWordsSimilar(String firstWord, Word secondWord, ComparisonStrategy strategy) {
+    public boolean areWordsSimilar(String firstWord, Word secondWord, ComparisonStrategy strategy) {
         return areWordsSimilar(new ComparisonContext(firstWord, secondWord.getText(), null, secondWord, false, characterMatch), strategy);
     }
 
@@ -210,8 +224,8 @@ public class WordSimUtils {
      * @param ignoreCase whether to ignore the case during comparison
      * @return Returns similarity in range [0,1]
      */
-    public static double getSimilarity(String firstWord, String secondWord, SimilarityStrategy strategy, boolean ignoreCase) {
-        var measures = WordSimUtils.measures.stream().filter(m -> !(m instanceof EqualityMeasure)).collect(Collectors.toCollection(ArrayList::new));
+    public double getSimilarity(String firstWord, String secondWord, SimilarityStrategy strategy, boolean ignoreCase) {
+        var measures = this.measures.stream().filter(m -> !(m instanceof EqualityMeasure)).collect(Collectors.toCollection(ArrayList::new));
         if (measures.isEmpty())
             measures.add(new EqualityMeasure());
 
@@ -227,7 +241,7 @@ public class WordSimUtils {
      * @param secondWord the second word
      * @return Returns similarity in range [0,1]
      */
-    public static double getSimilarity(String firstWord, String secondWord) {
+    public double getSimilarity(String firstWord, String secondWord) {
         return getSimilarity(firstWord, secondWord, false);
     }
 
@@ -239,7 +253,7 @@ public class WordSimUtils {
      * @param ignoreCase whether to ignore the case during comparison
      * @return Returns similarity in range [0,1]
      */
-    public static double getSimilarity(String firstWord, String secondWord, boolean ignoreCase) {
+    public double getSimilarity(String firstWord, String secondWord, boolean ignoreCase) {
         return getSimilarity(firstWord, secondWord, similarityStrategy, ignoreCase);
     }
 

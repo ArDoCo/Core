@@ -471,7 +471,7 @@
               <editorConfigPath>.editorconfig</editorConfigPath>
             </ktlint>
           </kotlin>
-          <ratchetFrom>origin/main</ratchetFrom>
+          <ratchetFrom>github/main</ratchetFrom>
         </configuration>
       </plugin>
       <plugin>

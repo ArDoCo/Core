@@ -59,7 +59,7 @@ public class DiagramGS implements Diagram {
         if (!project.getDiagramResourceNames().contains(resourceName)) {
             var closest = project.getDiagramResourceNames()
                     .stream()
-                    .max(Comparator.comparingDouble(a -> WordSimUtils.getSimilarity(a, resourceName)))
+                    .max(Comparator.comparingDouble(a -> new WordSimUtils().getSimilarity(a, resourceName)))
                     .orElse("NONE");
             throw new IllegalArgumentException(String.format("The resource name \"%s\" doesn't match any known resource of \"%s\". Did you mean \"%s\"?",
                     resourceName, project.getProjectName(), closest));

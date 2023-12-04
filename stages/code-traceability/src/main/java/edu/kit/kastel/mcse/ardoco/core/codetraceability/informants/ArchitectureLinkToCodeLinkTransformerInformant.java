@@ -49,7 +49,7 @@ public class ArchitectureLinkToCodeLinkTransformerInformant extends Informant {
             }
         }
 
-        CodeTraceabilityState codeTraceabilityState = new CodeTraceabilityStateImpl();
+        CodeTraceabilityState codeTraceabilityState = new CodeTraceabilityStateImpl(dataRepository);
         getDataRepository().addData(CodeTraceabilityState.ID, codeTraceabilityState);
         codeTraceabilityState.addSadCodeTraceLinks(sadCodeTracelinks);
     }

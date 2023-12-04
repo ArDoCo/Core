@@ -2,12 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.SortedMap;
-import java.util.SortedSet;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.*;
 
 import org.eclipse.collections.impl.factory.SortedMaps;
 import org.jetbrains.annotations.NotNull;
@@ -47,7 +42,7 @@ public class DiagramInconsistencyCheckerTest extends StageTest<DiagramInconsiste
     }
 
     public DiagramInconsistencyCheckerTest() {
-        super(new DiagramInconsistencyChecker(SortedMaps.mutable.empty(), null), DiagramProject.values());
+        super(new DiagramInconsistencyChecker(SortedMaps.mutable.empty(), new DataRepository()), DiagramProject.values());
     }
 
     @Override
@@ -72,6 +67,7 @@ public class DiagramInconsistencyCheckerTest extends StageTest<DiagramInconsiste
         return new AnonymousRunner(project.name()) {
             @Override
             public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) throws IOException {
+                DataRepositoryHelper.getMetaData(dataRepository).getWordSimUtils().setConsiderAbbreviations(true);
                 var pipelineSteps = new ArrayList<AbstractPipelineStep>();
 
                 var text = CommonUtilities.readInputText(project.getTextFile());
@@ -108,6 +104,7 @@ public class DiagramInconsistencyCheckerTest extends StageTest<DiagramInconsiste
         return new AnonymousRunner(project.name(), preRunDataRepository) {
             @Override
             public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) {
+                DataRepositoryHelper.getMetaData(dataRepository).getWordSimUtils().setConsiderAbbreviations(true);
                 var pipelineSteps = new ArrayList<AbstractPipelineStep>();
                 pipelineSteps.add(new DiagramInconsistencyChecker(combinedConfigs, dataRepository));
                 return pipelineSteps;

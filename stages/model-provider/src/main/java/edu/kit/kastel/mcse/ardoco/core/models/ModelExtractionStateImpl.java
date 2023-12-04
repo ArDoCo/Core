@@ -13,6 +13,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.data.AbstractState;
+import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 
 /**
  * This state contains all from the model extracted information. This are the extracted instances and relations. For easier handling, the occurring types and
@@ -27,7 +28,8 @@ public class ModelExtractionStateImpl extends AbstractState implements ModelExtr
     private ImmutableList<ModelInstance> instances;
 
     // For generation of configuration
-    private ModelExtractionStateImpl() {
+    private ModelExtractionStateImpl(DataRepository dataRepository) {
+        super(dataRepository);
         this.modelId = null;
         this.metamodelType = null;
         this.instanceTypes = null;
@@ -37,11 +39,13 @@ public class ModelExtractionStateImpl extends AbstractState implements ModelExtr
     /**
      * Creates a new model extraction state.
      *
-     * @param modelId       the model id
-     * @param metamodelType the metamodel type
-     * @param instances     instances of this model extraction state
+     * @param dataRepository the {@link DataRepository} this state is associated with
+     * @param modelId        the model id
+     * @param metamodelType  the metamodel type
+     * @param instances      instances of this model extraction state
      */
-    public ModelExtractionStateImpl(String modelId, Metamodel metamodelType, ImmutableList<ModelInstance> instances) {
+    public ModelExtractionStateImpl(DataRepository dataRepository, String modelId, Metamodel metamodelType, ImmutableList<ModelInstance> instances) {
+        super(dataRepository);
         this.modelId = Objects.requireNonNull(modelId);
         this.metamodelType = metamodelType;
         this.instances = instances;

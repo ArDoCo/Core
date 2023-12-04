@@ -10,8 +10,8 @@ import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
-import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.data.AbstractState;
+import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 /**
@@ -24,7 +24,8 @@ public class RecommendationStateImpl extends AbstractState implements Recommenda
     /**
      * Creates a new recommendation state.
      */
-    public RecommendationStateImpl() {
+    public RecommendationStateImpl(DataRepository dataRepository) {
+        super(dataRepository);
         recommendedInstances = SortedSets.mutable.empty();
     }
 
@@ -95,7 +96,7 @@ public class RecommendationStateImpl extends AbstractState implements Recommenda
             var added = false;
 
             for (RecommendedInstance riWithExactName : risWithExactName) {
-                var areWordsSimilar = SimilarityUtils.areWordsSimilar(riWithExactName.getType(), ri.getType());
+                var areWordsSimilar = getMetaData().getSimilarityUtils().areWordsSimilar(riWithExactName.getType(), ri.getType());
                 if (areWordsSimilar || recommendedInstancesHasEmptyType(ri, riWithExactName)) {
                     riWithExactName.addMappings(ri.getNameMappings(), ri.getTypeMappings());
                     added = true;
@@ -158,7 +159,7 @@ public class RecommendationStateImpl extends AbstractState implements Recommenda
     public ImmutableList<RecommendedInstance> getRecommendedInstancesBySimilarName(String name) {
         MutableList<RecommendedInstance> ris = Lists.mutable.empty();
         for (RecommendedInstance ri : recommendedInstances) {
-            if (SimilarityUtils.areWordsSimilar(ri.getName(), name)) {
+            if (getMetaData().getSimilarityUtils().areWordsSimilar(ri.getName(), name)) {
                 ris.add(ri);
             }
         }
@@ -185,6 +186,6 @@ public class RecommendationStateImpl extends AbstractState implements Recommenda
      */
     @Override
     public ImmutableList<RecommendedInstance> getRecommendedInstancesBySimilarType(String type) {
-        return recommendedInstances.select(ri -> SimilarityUtils.areWordsSimilar(ri.getType(), type)).toImmutableList();
+        return recommendedInstances.select(ri -> getMetaData().getSimilarityUtils().areWordsSimilar(ri.getType(), type)).toImmutableList();
     }
 }

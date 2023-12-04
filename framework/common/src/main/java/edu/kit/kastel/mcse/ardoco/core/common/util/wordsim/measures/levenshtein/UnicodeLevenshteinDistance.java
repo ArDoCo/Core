@@ -1,6 +1,7 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.levenshtein;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.function.BiFunction;
 
@@ -26,7 +27,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.UnicodeCharacterSeque
  *
  * @since 1.0
  */
-public class UnicodeLevenshteinDistance {
+public class UnicodeLevenshteinDistance implements Serializable {
 
     /**
      * Default instance.

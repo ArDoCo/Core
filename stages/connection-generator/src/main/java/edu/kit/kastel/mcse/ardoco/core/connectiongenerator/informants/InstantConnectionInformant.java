@@ -9,7 +9,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.ModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
-import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
@@ -49,7 +48,7 @@ public class InstantConnectionInformant extends Informant {
             ConnectionState connectionState) {
         var recommendedInstances = recommendationState.getRecommendedInstances();
         for (ModelInstance instance : modelState.getInstances()) {
-            var mostLikelyRi = SimilarityUtils.getMostRecommendedInstancesToInstanceByReferences(instance, recommendedInstances);
+            var mostLikelyRi = getMetaData().getSimilarityUtils().getMostRecommendedInstancesToInstanceByReferences(instance, recommendedInstances);
 
             for (var recommendedInstance : mostLikelyRi) {
                 var riProbability = recommendedInstance.getTypeMappings().isEmpty() ? probabilityWithoutType : probability;
@@ -62,7 +61,7 @@ public class InstantConnectionInformant extends Informant {
             ConnectionState connectionState) {
         for (var recommendedInstance : recommendationState.getRecommendedInstances()) {
             var sameInstances = modelState.getInstances()
-                    .select(instance -> SimilarityUtils.isRecommendedInstanceSimilarToModelInstance(recommendedInstance, instance));
+                    .select(instance -> getMetaData().getSimilarityUtils().isRecommendedInstanceSimilarToModelInstance(recommendedInstance, instance));
             sameInstances.forEach(instance -> connectionState.addToLinks(recommendedInstance, instance, this, probability));
         }
     }

@@ -9,7 +9,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.ModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.AbbreviationDisambiguationHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 
@@ -57,7 +56,8 @@ public class AmbiguationConnectionInformant extends Informant {
                 continue;
 
             var sameInstances = modelState.getInstances()
-                    .select(instance -> set.stream().anyMatch(ambiguatedName -> WordSimUtils.areWordsSimilar(ambiguatedName, instance.getFullName())));
+                    .select(instance -> set.stream()
+                            .anyMatch(ambiguatedName -> getMetaData().getWordSimUtils().areWordsSimilar(ambiguatedName, instance.getFullName())));
             sameInstances.forEach(instance -> connectionState.addToLinks(recommendedInstance, instance, this, recommendedInstance.getProbability()));
         }
     }
@@ -77,7 +77,7 @@ public class AmbiguationConnectionInformant extends Informant {
                 continue;
 
             var sameInstances = recommendationState.getRecommendedInstances()
-                    .select(ri -> set.stream().anyMatch(ambiguatedName -> WordSimUtils.areWordsSimilar(ambiguatedName, ri.getName())));
+                    .select(ri -> set.stream().anyMatch(ambiguatedName -> getMetaData().getWordSimUtils().areWordsSimilar(ambiguatedName, ri.getName())));
             sameInstances.forEach(recommendedInstance -> connectionState.addToLinks(recommendedInstance, instance, this, recommendedInstance.getProbability()));
         }
     }

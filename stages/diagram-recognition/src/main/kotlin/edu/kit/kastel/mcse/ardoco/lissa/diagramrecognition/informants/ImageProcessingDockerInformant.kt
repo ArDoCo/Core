@@ -25,7 +25,8 @@ abstract class ImageProcessingDockerInformant(
     /**
      * A configured object mapper for serialization / deserialization of objects.
      */
-    protected val oom: ObjectMapper = createObjectMapper()
+    @Transient
+    protected var oom: ObjectMapper = createObjectMapper()
 
     final override fun process() {
         try {

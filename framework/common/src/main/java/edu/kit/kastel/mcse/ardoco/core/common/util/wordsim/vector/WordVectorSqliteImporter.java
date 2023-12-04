@@ -4,6 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -34,7 +35,7 @@ import org.sqlite.SQLiteOpenMode;
  * {@link #filterWord(String)} methods. Both methods are called for each word and allow filtering/modifying words before
  * they are inserted into the databse.
  */
-public class WordVectorSqliteImporter {
+public class WordVectorSqliteImporter implements Serializable {
 
     private static final int DEFAULT_MAX_WORD_LENGTH = 300;
     private static final Logger LOGGER = LoggerFactory.getLogger(WordVectorSqliteImporter.class);

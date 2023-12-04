@@ -46,17 +46,23 @@ public final class ConfigurationInstantiatorUtils {
             return result;
 
         result = findAndCreate(constructors, c -> c.getParameterCount() == 2 && c.getParameterTypes()[0] == String.class && c
-                .getParameterTypes()[1] == DataRepository.class, new Object[] { null, null });
+                .getParameterTypes()[1] == DataRepository.class, new Object[] { null, new DataRepository() });
         if (result != null)
             return result;
 
         result = findAndCreate(constructors, c -> c.getParameterCount() == 2 && c.getParameterTypes()[0] == DataRepository.class && c
-                .getParameterTypes()[1] == List.class, new Object[] { null, List.of() });
+                .getParameterTypes()[1] == List.class, new Object[] { new DataRepository(), List.of() });
         if (result != null)
             return result;
 
         var c = constructors.stream().findFirst().orElseThrow(() -> new IllegalStateException("Not reachable code reached for class " + clazz.getName()));
-        return (AbstractConfigurable) c.newInstance(new Object[c.getParameterCount()]);
+
+        var arguments = new Object[c.getParameterCount()];
+        for (int i = 0; i < c.getParameterTypes().length; i++) {
+            var type = c.getParameterTypes()[i];
+            arguments[i] = type.isAssignableFrom(DataRepository.class) ? new DataRepository() : null;
+        }
+        return (AbstractConfigurable) c.newInstance(arguments);
     }
 
     @SuppressWarnings("java:S3011")

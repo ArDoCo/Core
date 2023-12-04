@@ -8,7 +8,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.execution.PipelineMetaData;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
 
 /**
@@ -37,7 +36,6 @@ public abstract class ParameterizedRunner<T extends Record> extends ArDoCoRunner
             var arDoCo = getArDoCo();
             var pipelineSteps = initializePipelineSteps(p);
             pipelineSteps.forEach(arDoCo::addPipelineStep);
-            arDoCo.getDataRepository().addData(PipelineMetaData.ID, new PipelineMetaData(this));
             isSetUp = true;
             return pipelineSteps;
         } catch (IOException e) {

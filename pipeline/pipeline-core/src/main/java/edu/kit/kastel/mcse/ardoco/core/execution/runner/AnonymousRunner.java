@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
-import edu.kit.kastel.mcse.ardoco.core.execution.PipelineMetaData;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
 
 /**
@@ -50,7 +49,6 @@ public abstract class AnonymousRunner extends ArDoCoRunner {
 
             var pipelineSteps = initializePipelineSteps(dataRepository);
             pipelineSteps.forEach(arDoCo::addPipelineStep);
-            dataRepository.addData(PipelineMetaData.ID, new PipelineMetaData(this));
             isSetUp = true;
             return pipelineSteps;
         } catch (IOException e) {

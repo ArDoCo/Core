@@ -77,7 +77,8 @@ public class RecommendedInstanceProbabilityFilter extends Filter {
         }
 
         if (logger.isDebugEnabled()) {
-            for (var prob : probabilities.toMapOfItemToCount().keyValuesView()) {
+            var view = probabilities.toMapOfItemToCount().keyValuesView();
+            for (var prob : view) {
                 logger.debug("{}: {}", prob.getOne(), prob.getOne());
             }
             logger.debug("Highest probability: {}", highestProbability);
