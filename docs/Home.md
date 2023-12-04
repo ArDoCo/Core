@@ -14,7 +14,7 @@ JavaDocs can be found [here](https://ardoco.github.io/Core-Docs/).
 The `complete` profile includes all the requirements that the special profiles also need. This profile is activated by
 default.
 
-All profiles require JDK 17.
+All profiles require JDK 21.
 
 The dependencies of the other profiles at a glance:
 

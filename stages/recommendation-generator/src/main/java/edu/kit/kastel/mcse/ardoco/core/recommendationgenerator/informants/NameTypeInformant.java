@@ -3,7 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.informants;
 
 import java.util.SortedMap;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelExtractionState;
+import edu.kit.kastel.mcse.ardoco.core.api.models.LegacyModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationStates;
@@ -47,7 +47,7 @@ public class NameTypeInformant extends Informant {
     }
 
     private void exec(TextState textState, ModelStates modelStates, RecommendationStates recommendationStates, Word word) {
-        for (var model : modelStates.extractionModelIds()) {
+        for (var model : modelStates.modelIds()) {
             var modelState = modelStates.getModelExtractionState(model);
             var recommendationState = recommendationStates.getRecommendationState(modelState.getMetamodel());
 
@@ -65,7 +65,7 @@ public class NameTypeInformant extends Informant {
      * @param textExtractionState text extraction state
      * @param word                the current word
      */
-    private void addRecommendedInstanceIfNameBeforeType(TextState textExtractionState, Word word, ModelExtractionState modelState,
+    private void addRecommendedInstanceIfNameBeforeType(TextState textExtractionState, Word word, LegacyModelExtractionState modelState,
             RecommendationState recommendationState) {
         if (textExtractionState == null || word == null) {
             return;
@@ -90,7 +90,7 @@ public class NameTypeInformant extends Informant {
      * @param textExtractionState text extraction state
      * @param word                the current word
      */
-    private void addRecommendedInstanceIfNameAfterType(TextState textExtractionState, Word word, ModelExtractionState modelState,
+    private void addRecommendedInstanceIfNameAfterType(TextState textExtractionState, Word word, LegacyModelExtractionState modelState,
             RecommendationState recommendationState) {
         if (textExtractionState == null || word == null) {
             return;
@@ -114,7 +114,7 @@ public class NameTypeInformant extends Informant {
      * @param textExtractionState text extraction state
      * @param word                the current word
      */
-    private void addRecommendedInstanceIfNameOrTypeBeforeType(TextState textExtractionState, Word word, ModelExtractionState modelState,
+    private void addRecommendedInstanceIfNameOrTypeBeforeType(TextState textExtractionState, Word word, LegacyModelExtractionState modelState,
             RecommendationState recommendationState) {
         if (textExtractionState == null || word == null) {
             return;
@@ -139,7 +139,7 @@ public class NameTypeInformant extends Informant {
      * @param textExtractionState text extraction state
      * @param word                the current word
      */
-    private void addRecommendedInstanceIfNameOrTypeAfterType(TextState textExtractionState, Word word, ModelExtractionState modelState,
+    private void addRecommendedInstanceIfNameOrTypeAfterType(TextState textExtractionState, Word word, LegacyModelExtractionState modelState,
             RecommendationState recommendationState) {
         if (textExtractionState == null || word == null) {
             return;

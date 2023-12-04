@@ -20,7 +20,7 @@
   <licenses>
     <license>
       <name>MIT License</name>
-      <url>http://www.opensource.org/licenses/mit-license.php</url>
+      <url>https://www.opensource.org/licenses/mit-license.php</url>
     </license>
   </licenses>
   <developers>
@@ -75,7 +75,7 @@
     <ardoco.version>${revision}</ardoco.version>
 
     <project.source.encoding>UTF-8</project.source.encoding>
-    <java.version>17</java.version>
+    <java.version>21</java.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
     <maven.compiler.release>${java.version}</maven.compiler.release>
@@ -83,11 +83,11 @@
     <!-- Kotlin -->
     <kotlin.code.style>official</kotlin.code.style>
     <kotlin.compiler.jvmTarget>${java.version}</kotlin.compiler.jvmTarget>
-    <kotlin.version>1.9.20</kotlin.version>
+    <kotlin.version>1.9.21</kotlin.version>
 
     <!-- Plugin Versions -->
     <slf4j.version>2.0.9</slf4j.version>
-    <spotless.version>2.40.0</spotless.version>
+    <spotless.version>2.41.0</spotless.version>
     <junit.version>5.10.1</junit.version>
     <eclipse-collections.version>12.0.0.M3</eclipse-collections.version>
     <jackson.version>2.16.0</jackson.version>

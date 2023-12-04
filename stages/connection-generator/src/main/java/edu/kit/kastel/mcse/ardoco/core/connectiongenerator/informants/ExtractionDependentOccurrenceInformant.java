@@ -3,7 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.informants;
 
 import java.util.SortedMap;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelExtractionState;
+import edu.kit.kastel.mcse.ardoco.core.api.models.LegacyModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
@@ -39,7 +39,7 @@ public class ExtractionDependentOccurrenceInformant extends Informant {
     }
 
     private void exec(TextState textState, ModelStates modelStates, Word word) {
-        for (var model : modelStates.extractionModelIds()) {
+        for (var model : modelStates.modelIds()) {
             var modelState = modelStates.getModelExtractionState(model);
 
             searchForName(modelState, textState, word);
@@ -51,7 +51,7 @@ public class ExtractionDependentOccurrenceInformant extends Informant {
      * This method checks whether a given node is a name of an instance given in the model extraction state. If it
      * appears to be a name this is stored in the text extraction state.
      */
-    private void searchForName(ModelExtractionState modelState, TextState textState, Word word) {
+    private void searchForName(LegacyModelExtractionState modelState, TextState textState, Word word) {
         if (posTagIsUndesired(word) && !wordStartsWithCapitalLetter(word)) {
             return;
         }
@@ -74,7 +74,7 @@ public class ExtractionDependentOccurrenceInformant extends Informant {
      * appears to be a type this is stored in the text extraction state. If multiple options are available the node
      * value is taken as reference.
      */
-    private void searchForType(ModelExtractionState modelState, TextState textState, Word word) {
+    private void searchForType(LegacyModelExtractionState modelState, TextState textState, Word word) {
         var instanceTypeIsSimilar = modelState.getInstances().anySatisfy(i -> SimilarityUtils.isWordSimilarToModelInstanceType(word, i));
         if (instanceTypeIsSimilar) {
             textState.addNounMapping(word, MappingKind.TYPE, this, probability);

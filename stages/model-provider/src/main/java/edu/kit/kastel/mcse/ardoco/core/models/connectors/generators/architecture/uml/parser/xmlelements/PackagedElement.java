@@ -56,4 +56,8 @@ public final class PackagedElement {
     public List<Reference> getUsages() {
         return usages;
     }
+
+    public String getType() {
+        return type;
+    }
 }

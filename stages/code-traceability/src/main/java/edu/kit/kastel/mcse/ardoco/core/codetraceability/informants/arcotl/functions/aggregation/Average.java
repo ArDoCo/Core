@@ -100,7 +100,7 @@ public class Average extends ConfidenceAggregator {
     public String toString() {
         String weightsString = "";
         if (weights.isPresent()) {
-            weightsString = "-" + weights.toString();
+            weightsString = "-" + weights;
         }
         return "Average" + weightsString;
     }

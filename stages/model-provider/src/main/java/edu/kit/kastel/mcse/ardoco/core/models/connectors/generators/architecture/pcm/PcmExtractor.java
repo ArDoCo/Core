@@ -9,19 +9,17 @@ import java.util.TreeSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelType;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.ArchitectureModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureComponent;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureInterface;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureMethod;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureModel;
 import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.ArchitectureExtractor;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.pcm.parser.PcmComponent;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.pcm.parser.PcmInterface;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.pcm.parser.PcmModel;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.pcm.parser.PcmSignature;
-
-// TODO we currently more or less have two connectors/extractors: this one and the PcmXmlModelConnector
 
 /**
  * An extractor for PCM. Extracts an AMTL instance.
@@ -83,7 +81,7 @@ public final class PcmExtractor extends ArchitectureExtractor {
                 requiredInterfaces.add(modelInterface);
             }
             ArchitectureComponent modelComponent = new ArchitectureComponent(originalComponent.getEntityName(), originalComponent.getId(), subcomponents,
-                    providedInterfaces, requiredInterfaces);
+                    providedInterfaces, requiredInterfaces, originalComponent.getType());
             components.add(modelComponent);
         }
         return components;

@@ -27,7 +27,7 @@ public abstract class DefaultTextStateStrategy implements TextStateStrategy {
 
                 final NounMapping finalNounMappingToMerge = nounMappingToMerge;
                 var fittingNounMappings = textState.getNounMappings().select(nm -> nm.getWords().containsAllIterable(finalNounMappingToMerge.getWords()));
-                if (fittingNounMappings.size() == 0) {
+                if (fittingNounMappings.isEmpty()) {
                     continue;
                 } else if (fittingNounMappings.size() == 1) {
                     nounMappingToMerge = fittingNounMappings.get(0);
@@ -46,7 +46,7 @@ public abstract class DefaultTextStateStrategy implements TextStateStrategy {
             mergedWords.addAllIterable(nounMapping.getWords());
             mergedWords.addAllIterable(nounMappingToMerge.getWords());
 
-            var mergedNounMapping = textState.getNounMappings().select(nm -> nm.getWords().toSet().equals(mergedWords));
+            var mergedNounMapping = textState.getNounMappings().select(nm -> nm.getWords().toSortedSet().equals(mergedWords));
 
             assert (mergedNounMapping.size() == 1);
 

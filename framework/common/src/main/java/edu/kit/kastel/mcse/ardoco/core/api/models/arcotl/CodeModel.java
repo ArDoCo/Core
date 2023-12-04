@@ -1,5 +1,5 @@
 /* Licensed under MIT 2023. */
-package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code;
+package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -12,12 +12,15 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItem;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItemRepository;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodePackage;
 
 /**
  * A code model that is a CMTL instance.
  */
-public class CodeModel extends Model {
+public final class CodeModel extends Model {
 
     @JsonProperty
     private CodeItemRepository codeItemRepository;

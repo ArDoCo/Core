@@ -8,8 +8,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstanceImpl;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.informants.UndocumentedModelElementInconsistencyInformant;
-import edu.kit.kastel.mcse.ardoco.core.models.ModelInstanceImpl;
 
 /**
  * Tests for the {@link UndocumentedModelElementInconsistencyInformant}.

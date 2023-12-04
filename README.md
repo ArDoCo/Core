@@ -30,7 +30,6 @@ Future user interfaces like an enhanced GUI or a web interface are planned.
 
 For more information about the setup or the architecture have a look on the [Wiki](https://github.com/ArDoCo/Core/wiki).
 The docs are at some points deprecated, the general overview and setup should still hold.
-You can find the generated JavaDocs at [ArDoCo.github.io/Core-Docs](https://ArDoCo.github.io/Core-Docs/).
 
 ## Case Studies / Benchmarks
 
