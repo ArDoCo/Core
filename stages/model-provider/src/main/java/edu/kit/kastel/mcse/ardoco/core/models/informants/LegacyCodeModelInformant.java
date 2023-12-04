@@ -43,7 +43,8 @@ public class LegacyCodeModelInformant extends Informant {
         List<ModelInstance> instances = new ArrayList<>();
         fillPackages(codeModel.getAllPackages(), instances);
         fillCompilationUnits(codeModel.getEndpoints(), instances);
-        models.addModelExtractionState(codeModel.getId(), new ModelExtractionStateImpl(dataRepository, codeModel.getId(), Metamodel.CODE, Lists.immutable.withAll(instances)));
+        models.addModelExtractionState(codeModel.getId(), new ModelExtractionStateImpl(dataRepository, codeModel.getId(), Metamodel.CODE, Lists.immutable
+                .withAll(instances)));
     }
 
     private void fillPackages(Collection<? extends CodePackage> packages, List<ModelInstance> instances) {

@@ -176,7 +176,8 @@ public class DiagramModelReferenceInformant extends Informant {
         var names = new LinkedHashSet<String>();
 
         var text = textBox.getText();
-        if (!FILTER.test(text)) return names;
+        if (!FILTER.test(text))
+            return names;
 
         var splitAndDecameled = processText(text).stream().filter(FILTER).toList();
 
@@ -192,7 +193,8 @@ public class DiagramModelReferenceInformant extends Informant {
         return names;
     }
 
-    private static final Predicate<String> FILTER = s -> !DbPediaHelper.isWordMarkupLanguage(s) && !DbPediaHelper.isWordProgrammingLanguage(s) && !DbPediaHelper.isWordSoftware(s);
+    private static final Predicate<String> FILTER = s -> !DbPediaHelper.isWordMarkupLanguage(s) && !DbPediaHelper.isWordProgrammingLanguage(s) && !DbPediaHelper
+            .isWordSoftware(s);
 
     /**
      * {@return a set of alternative texts extracted from the input text}. The text is processed with {@link #splitBracketsAndEnumerations(String)} and

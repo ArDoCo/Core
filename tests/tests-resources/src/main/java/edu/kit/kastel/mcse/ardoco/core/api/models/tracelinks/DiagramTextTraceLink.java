@@ -88,6 +88,7 @@ public class DiagramTextTraceLink implements SimilarityComparable<DiagramTextTra
     public boolean similar(MetaData metaData, DiagramTextTraceLink obj) {
         if (equals(obj))
             return true;
-        return getDiagramElement().getBoundingBox().similar(metaData, obj.getDiagramElement().getBoundingBox()) && Objects.equals(getSentenceNo(), obj.getSentenceNo());
+        return getDiagramElement().getBoundingBox().similar(metaData, obj.getDiagramElement().getBoundingBox()) && Objects.equals(getSentenceNo(), obj
+                .getSentenceNo());
     }
 }

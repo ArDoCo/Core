@@ -1,6 +1,19 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.tests.integration;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.SortedMap;
+
+import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import edu.kit.kastel.mcse.ardoco.core.api.InputDiagramData;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramGS;
@@ -16,17 +29,6 @@ import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognition;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 import edu.kit.kastel.mcse.ardoco.tests.eval.GoldStandardDiagrams;
 import edu.kit.kastel.mcse.ardoco.tests.eval.StageTest;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.SortedMap;
-import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DiagramRecognitionTest extends StageTest<DiagramRecognition, GoldStandardDiagrams, DiagramRecognitionTest.DiagramRecognitionResult> {
 
@@ -40,8 +42,10 @@ public class DiagramRecognitionTest extends StageTest<DiagramRecognition, GoldSt
     @Order(1)
     void evaluateNonHistoricalDiagramRecognition(DiagramProject project) {
         var result = runComparable(project);
-        assertTrue(Comparators.collectionsEqualsAnyOrder(result.diagrams.stream().map(Diagram::getShortResourceName).toList(),
-                project.getDiagramsGoldStandard().stream().map(DiagramGS::getShortResourceName).toList()));
+        assertTrue(Comparators.collectionsEqualsAnyOrder(result.diagrams.stream().map(Diagram::getShortResourceName).toList(), project.getDiagramsGoldStandard()
+                .stream()
+                .map(DiagramGS::getShortResourceName)
+                .toList()));
     }
 
     @DisplayName("Evaluate Diagram Recognition (Historical)")
@@ -50,8 +54,10 @@ public class DiagramRecognitionTest extends StageTest<DiagramRecognition, GoldSt
     @Order(2)
     void evaluateHistoricalDiagramRecognition(DiagramProject project) {
         var result = runComparable(project);
-        assertTrue(Comparators.collectionsEqualsAnyOrder(result.diagrams.stream().map(Diagram::getShortResourceName).toList(),
-                project.getDiagramsGoldStandard().stream().map(DiagramGS::getShortResourceName).toList()));
+        assertTrue(Comparators.collectionsEqualsAnyOrder(result.diagrams.stream().map(Diagram::getShortResourceName).toList(), project.getDiagramsGoldStandard()
+                .stream()
+                .map(DiagramGS::getShortResourceName)
+                .toList()));
     }
 
     @Override

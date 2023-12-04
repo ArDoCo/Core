@@ -1,6 +1,20 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.tests.integration;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.File;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import org.eclipse.collections.impl.factory.SortedMaps;
+import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.kit.kastel.mcse.ardoco.core.api.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TraceType;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
@@ -14,18 +28,6 @@ import edu.kit.kastel.mcse.ardoco.tests.PreTestRunner;
 import edu.kit.kastel.mcse.ardoco.tests.Results;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 import edu.kit.kastel.mcse.ardoco.tests.eval.StageTest;
-import java.io.File;
-import java.util.*;
-import java.util.stream.Collectors;
-import org.eclipse.collections.impl.factory.SortedMaps;
-import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * This class is used for evaluating ERID's diagram-to-sentences TLR capabilities using the manually extracted diagrams

@@ -22,7 +22,6 @@ abstract class ImageProcessingDockerInformant(
         dataRepository,
         endpoint
     ) {
-
     /**
      * A configured object mapper for serialization / deserialization of objects.
      */

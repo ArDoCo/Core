@@ -203,7 +203,9 @@ class MappingCombinerTest implements Claimant {
         preTextState.addNounMapping(dog3, MappingKind.NAME, this, 0.5);
 
         Assertions.assertTrue(phraseMappingsAreSimilar(preTextState, dog1, dog3));
-        Assertions.assertTrue(preTextState.getMetaData().getSimilarityUtils().areNounMappingsSimilar(preTextState.getNounMappingByWord(dog1), preTextState.getNounMappingByWord(dog3)));
+        Assertions.assertTrue(preTextState.getMetaData()
+                .getSimilarityUtils()
+                .areNounMappingsSimilar(preTextState.getNounMappingByWord(dog1), preTextState.getNounMappingByWord(dog3)));
 
         Assertions.assertEquals(2, preTextState.getNounMappings().size());
         Assertions.assertEquals(2, preTextState.getPhraseMappings().size());
@@ -394,8 +396,9 @@ class MappingCombinerTest implements Claimant {
         var pm0 = textState.getPhraseMappingByNounMapping(nm0);
         var pm1 = textState.getPhraseMappingByNounMapping(nm1);
 
-        return textState.getMetaData().getSimilarityUtils().getPhraseMappingSimilarity(textState, pm0, pm1,
-                PhraseMappingAggregatorStrategy.MAX_SIMILARITY) > MappingCombinerTest.MIN_COSINE_SIMILARITY;
+        return textState.getMetaData()
+                .getSimilarityUtils()
+                .getPhraseMappingSimilarity(textState, pm0, pm1, PhraseMappingAggregatorStrategy.MAX_SIMILARITY) > MappingCombinerTest.MIN_COSINE_SIMILARITY;
     }
 
     private boolean nounMappingsWereMerged(TextStateImpl preTextState, Word word1, Word word2, TextStateImpl afterTextState) {

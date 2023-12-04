@@ -38,7 +38,11 @@ public record Results(DiagramProject project, SortedSet<DiagramWordTraceLink> tr
         var traceLinks = new TreeSet<>(wordTraceLinks);
         var tpLinks = intersection(metaData, traceLinks, goldStandard);
         var fpLinks = difference(metaData, traceLinks, goldStandard);
-        fpLinks.forEach(fp -> fp.addRelated(allGoldStandardTraceLinks.values().stream().flatMap(Collection::stream).filter(oth -> fp.similar(metaData, oth)).toList()));
+        fpLinks.forEach(fp -> fp.addRelated(allGoldStandardTraceLinks.values()
+                .stream()
+                .flatMap(Collection::stream)
+                .filter(oth -> fp.similar(metaData, oth))
+                .toList()));
         var fnLinks = difference(metaData, goldStandard, traceLinks);
         var TP = tpLinks.size();
         var FP = fpLinks.size();

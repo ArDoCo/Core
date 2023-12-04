@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.data;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
@@ -16,8 +17,9 @@ public class MetaData implements PipelineStepData {
     /**
      * Constructs a new PipelineMetaData with the given meta data
      *
-     * @param pipeline the runner which produced the {@link edu.kit.kastel.mcse.ardoco.core.data.DataRepository DataRepository} this data is associated with
-     * @param wordSimUtils the configured word similarity utility instance that should be used
+     * @param pipeline        the runner which produced the {@link edu.kit.kastel.mcse.ardoco.core.data.DataRepository DataRepository} this data is associated
+     *                        with
+     * @param wordSimUtils    the configured word similarity utility instance that should be used
      * @param similarityUtils the configured similarity util instance that should be used
      */
     public MetaData(Pipeline pipeline, WordSimUtils wordSimUtils, SimilarityUtils similarityUtils) {
@@ -53,7 +55,6 @@ public class MetaData implements PipelineStepData {
         this.pipeline = pipeline;
     }
 
-
     /**
      * {@return the configured word similarity utility instance}
      */
@@ -68,4 +69,3 @@ public class MetaData implements PipelineStepData {
         return this.similarityUtils;
     }
 }
-

@@ -40,9 +40,9 @@ public class ModelExtractionStateImpl extends AbstractState implements ModelExtr
      * Creates a new model extraction state.
      *
      * @param dataRepository the {@link DataRepository} this state is associated with
-     * @param modelId       the model id
-     * @param metamodelType the metamodel type
-     * @param instances     instances of this model extraction state
+     * @param modelId        the model id
+     * @param metamodelType  the metamodel type
+     * @param instances      instances of this model extraction state
      */
     public ModelExtractionStateImpl(DataRepository dataRepository, String modelId, Metamodel metamodelType, ImmutableList<ModelInstance> instances) {
         super(dataRepository);

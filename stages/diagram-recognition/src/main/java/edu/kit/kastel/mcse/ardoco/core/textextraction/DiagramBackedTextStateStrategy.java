@@ -43,7 +43,7 @@ public class DiagramBackedTextStateStrategy extends OriginalTextStateStrategy {
     /**
      * Sole constructor.
      *
-     * @param textState      the text state this strategy works on
+     * @param textState the text state this strategy works on
      */
     public DiagramBackedTextStateStrategy(TextStateImpl textState) {
         super(textState);

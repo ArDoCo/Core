@@ -17,7 +17,7 @@ public interface SimilarityComparable<T> {
      * should be symmetric, but does not have to be transitive.
      *
      * @param metaData the pipeline meta data containing the similarity configuration
-     * @param obj some object
+     * @param obj      some object
      */
     boolean similar(MetaData metaData, T obj);
 
@@ -26,8 +26,8 @@ public interface SimilarityComparable<T> {
      * returns true for equal lists if {@link #similar(MetaData, Object)} was implemented correctly.
      *
      * @param metaData the pipeline meta data containing the similarity configuration
-     * @param a some collection
-     * @param b some other collection
+     * @param a        some collection
+     * @param b        some other collection
      */
     static <T extends SimilarityComparable<T>> boolean similar(MetaData metaData, Collection<? extends T> a, Collection<? extends T> b) {
         if (a.equals(b))

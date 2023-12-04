@@ -200,7 +200,8 @@ public class NameTypeConnectionInformant extends Informant {
         }
 
         var text = word.getText();
-        matchingInstances = matchingInstances.select(i -> getMetaData().getSimilarityUtils().areWordsOfListsSimilar(i.getNameParts(), Lists.immutable.with(text)));
+        matchingInstances = matchingInstances.select(i -> getMetaData().getSimilarityUtils()
+                .areWordsOfListsSimilar(i.getNameParts(), Lists.immutable.with(text)));
 
         if (!matchingInstances.isEmpty()) {
             return matchingInstances.get(0);

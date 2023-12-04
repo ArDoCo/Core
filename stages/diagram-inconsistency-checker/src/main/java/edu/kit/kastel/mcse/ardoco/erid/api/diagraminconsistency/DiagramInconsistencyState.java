@@ -1,9 +1,10 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.erid.api.diagraminconsistency;
 
+import java.util.Set;
+
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.Inconsistency;
 import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
-import java.util.Set;
 
 /**
  * This state holds the diagram element {@link Inconsistency Inconsistencies}

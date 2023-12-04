@@ -23,6 +23,7 @@ public class ConnectionStateImpl extends AbstractState implements ConnectionStat
 
     /**
      * Creates a new connection state.
+     * 
      * @param dataRepository the {@link DataRepository} this state is associated with
      */
     public ConnectionStateImpl(DataRepository dataRepository) {

@@ -61,7 +61,9 @@ public abstract class AbstractPipelineStep extends AbstractConfigurable {
     /**
      * {@return the {@link MetaData } of the pipeline}
      */
-    protected MetaData getMetaData() { return DataRepositoryHelper.getMetaData(dataRepository); }
+    protected MetaData getMetaData() {
+        return DataRepositoryHelper.getMetaData(dataRepository);
+    }
 
     /**
      * Returns the id

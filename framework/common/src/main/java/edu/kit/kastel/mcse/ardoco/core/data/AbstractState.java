@@ -31,7 +31,9 @@ public abstract class AbstractState extends AbstractConfigurable implements Pipe
     /**
      * {@return the {@link MetaData } of the pipeline}
      */
-    public MetaData getMetaData() { return DataRepositoryHelper.getMetaData(dataRepository); }
+    public MetaData getMetaData() {
+        return DataRepositoryHelper.getMetaData(dataRepository);
+    }
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> map) {

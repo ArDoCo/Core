@@ -1,6 +1,20 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.tests.integration;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.SortedMap;
+
+import org.eclipse.collections.impl.factory.SortedMaps;
+import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
@@ -13,18 +27,6 @@ import edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.DiagramRecognitionMock
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 import edu.kit.kastel.mcse.ardoco.tests.eval.GoldStandardDiagrams;
 import edu.kit.kastel.mcse.ardoco.tests.eval.StageTest;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.SortedMap;
-import org.eclipse.collections.impl.factory.SortedMaps;
-import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class DiagramRecognitionMockTest extends StageTest<DiagramRecognitionMock, GoldStandardDiagrams, DiagramRecognitionMockTest.DiagramRecognitionResult> {

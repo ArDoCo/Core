@@ -56,7 +56,8 @@ public class AmbiguationConnectionInformant extends Informant {
                 continue;
 
             var sameInstances = modelState.getInstances()
-                    .select(instance -> set.stream().anyMatch(ambiguatedName -> getMetaData().getWordSimUtils().areWordsSimilar(ambiguatedName, instance.getFullName())));
+                    .select(instance -> set.stream()
+                            .anyMatch(ambiguatedName -> getMetaData().getWordSimUtils().areWordsSimilar(ambiguatedName, instance.getFullName())));
             sameInstances.forEach(instance -> connectionState.addToLinks(recommendedInstance, instance, this, recommendedInstance.getProbability()));
         }
     }

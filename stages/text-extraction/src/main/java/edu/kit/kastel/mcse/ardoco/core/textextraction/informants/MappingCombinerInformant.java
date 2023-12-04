@@ -39,8 +39,8 @@ public class MappingCombinerInformant extends Informant {
         ImmutableList<PhraseMapping> phraseMappings = textState.getPhraseMappings();
 
         for (PhraseMapping phraseMapping : phraseMappings) {
-            ImmutableList<PhraseMapping> similarPhraseMappings = phraseMappings.select(p -> getMetaData().getSimilarityUtils().getPhraseMappingSimilarity(textState, phraseMapping,
-                    p, PhraseMappingAggregatorStrategy.MAX_SIMILARITY) > minCosineSimilarity);
+            ImmutableList<PhraseMapping> similarPhraseMappings = phraseMappings.select(p -> getMetaData().getSimilarityUtils()
+                    .getPhraseMappingSimilarity(textState, phraseMapping, p, PhraseMappingAggregatorStrategy.MAX_SIMILARITY) > minCosineSimilarity);
 
             // Remove the phrase mapping from the list of similar phrase mappings
             // Comment: This would break the logic but seems to be logical ..
