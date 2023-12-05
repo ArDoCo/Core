@@ -71,7 +71,7 @@ public class DiagramModelReferenceInformant extends Informant {
      * @param modelStates the model states
      */
     private void setReferences(Box box, ModelStates modelStates) {
-        var modelIds = modelStates.extractionModelIds();
+        var modelIds = modelStates.modelIds();
 
         for (var model : modelIds) {
             var modelState = modelStates.getModelExtractionState(model);

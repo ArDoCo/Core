@@ -7,12 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.kit.kastel.mcse.ardoco.core.api.InputDiagramData;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.ParameterizedRunner;
-import edu.kit.kastel.mcse.ardoco.core.models.agents.ModelProviderAgent;
+import edu.kit.kastel.mcse.ardoco.core.models.agents.ArCoTLModelProviderAgent;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.TextPreprocessingAgent;
@@ -46,7 +47,9 @@ public class PreTestRunner extends ParameterizedRunner<PreTestRunner.Parameters>
         DataRepositoryHelper.putInputText(dataRepository, text);
         pipelineSteps.add(TextPreprocessingAgent.get(p.diagramProject.getAdditionalConfigurations(), dataRepository));
 
-        pipelineSteps.add(ModelProviderAgent.get(p.diagramProject.getModelFile(), p.diagramProject.getArchitectureModelType(), dataRepository));
+        ArCoTLModelProviderAgent arCoTLModelProviderAgent = ArCoTLModelProviderAgent.get(p.diagramProject.getModelFile(), ArchitectureModelType.PCM, null,
+                p.diagramProject.getAdditionalConfigurations(), dataRepository);
+        pipelineSteps.add(arCoTLModelProviderAgent);
 
         if (p.useMockDiagrams) {
             pipelineSteps.add(new DiagramRecognitionMock(p.diagramProject, p.diagramProject.getAdditionalConfigurations(), dataRepository));

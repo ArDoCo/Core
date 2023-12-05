@@ -129,7 +129,7 @@ public record EvaluationResults<T>(double precision, double recall, double f1, I
             phiOverPhiMax = EvaluationMetrics.calculatePhiOverPhiMax(nrTruePos, nrFalsePos, nrFalseNeg, nrTrueNeg);
         }
 
-        return new EvaluationResults<T>(precision, recall, f1, matrix.truePositives(), matrix.trueNegatives(), matrix.falseNegatives(), matrix.falsePositives(),
+        return new EvaluationResults<>(precision, recall, f1, matrix.truePositives(), matrix.trueNegatives(), matrix.falseNegatives(), matrix.falsePositives(),
                 accuracy, phiCoefficient, specificity, phiCoefficientMax, phiOverPhiMax);
     }
 

@@ -34,7 +34,7 @@ public class MTDEInconsistencyInformant extends Informant {
         var diagramRecognitionState = dataRepository.getData(DiagramRecognitionState.ID, DiagramRecognitionState.class).orElseThrow();
         var diagramConnectionStates = dataRepository.getData(DiagramConnectionStates.ID, DiagramConnectionStates.class).orElseThrow();
         var diagramInconsistencyStates = dataRepository.getData(DiagramInconsistencyStates.ID, DiagramInconsistencyStates.class).orElseThrow();
-        var modelIds = modelStates.extractionModelIds();
+        var modelIds = modelStates.modelIds();
         for (var model : modelIds) {
             var modelState = modelStates.getModelExtractionState(model);
             Metamodel mm = modelState.getMetamodel();

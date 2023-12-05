@@ -1,6 +1,8 @@
 /* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.models;
 
+import java.io.Serializable;
+
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 
@@ -8,8 +10,11 @@ import edu.kit.kastel.mcse.ardoco.core.configuration.IConfigurable;
 
 /**
  * The Interface IModelState defines the information directly extracted from the models.
+ * 
+ * @deprecated use {@link ModelStates#getModel(String)}
  */
-public interface ModelExtractionState extends IConfigurable {
+@Deprecated(since = "0.32.0")
+public interface LegacyModelExtractionState extends IConfigurable, Serializable {
     /**
      * Returns the unique id of the model
      *
@@ -52,7 +57,5 @@ public interface ModelExtractionState extends IConfigurable {
      * @return all instances of this state
      */
     ImmutableList<ModelInstance> getInstances();
-
-    void addAllOf(ModelExtractionState other);
 
 }

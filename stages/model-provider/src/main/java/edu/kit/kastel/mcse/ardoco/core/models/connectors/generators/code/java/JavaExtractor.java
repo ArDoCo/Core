@@ -19,10 +19,8 @@ import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.FileASTRequestor;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.CodeModelType;
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelType;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItemRepository;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.CodeExtractor;
 
@@ -52,11 +50,6 @@ public final class JavaExtractor extends CodeExtractor {
             this.extractedModel = javaModel.getCodeModel();
         }
         return this.extractedModel;
-    }
-
-    @Override
-    public ModelType getModelType() {
-        return CodeModelType.CODE_MODEL;
     }
 
     private static SortedMap<String, CompilationUnit> parseDirectory(Path dir) {
@@ -93,7 +86,7 @@ public final class JavaExtractor extends CodeExtractor {
                     .map(Path::toAbsolutePath)
                     .map(Path::normalize)
                     .map(Path::toString)
-                    .toArray(i -> new String[i]);
+                    .toArray(String[]::new);
         } catch (IOException e) {
             throw new IllegalArgumentException(e.getMessage(), e);
         }

@@ -19,7 +19,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
  */
 public class ConnectionStateImpl extends AbstractState implements ConnectionState {
 
-    private transient MutableList<InstanceLink> instanceLinks;
+    private MutableList<InstanceLink> instanceLinks;
 
     /**
      * Creates a new connection state.

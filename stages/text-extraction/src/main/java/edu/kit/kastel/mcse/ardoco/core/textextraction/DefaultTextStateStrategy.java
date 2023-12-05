@@ -104,7 +104,7 @@ public abstract class DefaultTextStateStrategy implements TextStateStrategy {
             mergedWords.addAllIterable(nounMapping.getWords());
             mergedWords.addAllIterable(nounMappingToMerge.getWords());
 
-            var mergedNounMapping = textState.getNounMappings().select(nm -> nm.getWords().toSet().equals(mergedWords));
+            var mergedNounMapping = textState.getNounMappings().select(nm -> nm.getWords().toSortedSet().equals(mergedWords));
 
             assert (mergedNounMapping.size() == 1);
 

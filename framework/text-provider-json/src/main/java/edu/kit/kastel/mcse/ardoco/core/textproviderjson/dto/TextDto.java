@@ -29,9 +29,8 @@ public class TextDto {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof TextDto))
+        if (!(o instanceof TextDto textDTO))
             return false;
-        TextDto textDTO = (TextDto) o;
         return Objects.equals(sentences, textDTO.sentences);
     }
 

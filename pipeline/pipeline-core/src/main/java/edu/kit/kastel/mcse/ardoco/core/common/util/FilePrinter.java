@@ -36,8 +36,8 @@ import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.Inconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistentSentence;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.ModelInconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.models.LegacyModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.InstanceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadSamTraceLink;
@@ -89,7 +89,7 @@ public final class FilePrinter {
             inconsistencyState = inconsistencyStates.getInconsistencyState(Metamodel.ARCHITECTURE);
         }
 
-        for (var model : getModelStatesData(data).extractionModelIds()) {
+        for (var model : getModelStatesData(data).modelIds()) {
             var modelState = getModelStatesData(data).getModelExtractionState(model);
             var metaModel = modelState.getMetamodel();
             var recommendationState = getRecommendationStates(data).getRecommendationState(metaModel);
@@ -157,7 +157,7 @@ public final class FilePrinter {
         return true;
     }
 
-    private static void writeStates(Writer myWriter, ModelExtractionState extractionState, TextState ntrState, //
+    private static void writeStates(Writer myWriter, LegacyModelExtractionState extractionState, TextState ntrState, //
             RecommendationState recommendationState, ConnectionState connectionState) throws IOException {
         myWriter.write("Results of ModelConnector: ");
         myWriter.append(LINE_SEPARATOR);
@@ -234,7 +234,7 @@ public final class FilePrinter {
      * @param recommendationState the supposing state, containing the supposing mappings for instances, as well as relations
      * @param connectionState     containing all instances and relations, matched by supposed mappings
      */
-    public static void writeStatesToFile(File resultFile, ModelExtractionState extractionState, TextState ntrState, //
+    public static void writeStatesToFile(File resultFile, LegacyModelExtractionState extractionState, TextState ntrState, //
             RecommendationState recommendationState, ConnectionState connectionState) {
         var fileCreated = createFileIfNonExistent(resultFile);
         if (!fileCreated) {
@@ -258,12 +258,12 @@ public final class FilePrinter {
      * @param modelState  the model state
      * @param name        the name
      */
-    private static void writeModelInstancesInCsvFile(File destination, ModelExtractionState modelState, String name) {
+    private static void writeModelInstancesInCsvFile(File destination, LegacyModelExtractionState modelState, String name) {
         var dataLines = getInstancesFromModelState(modelState, name);
         writeDataLinesInFile(destination, dataLines);
     }
 
-    private static ImmutableList<String[]> getInstancesFromModelState(ModelExtractionState modelState, String name) {
+    private static ImmutableList<String[]> getInstancesFromModelState(LegacyModelExtractionState modelState, String name) {
         MutableList<String[]> dataLines = Lists.mutable.empty();
 
         dataLines.add(new String[] { "Found Model Elements in " + name + ":", "", "" });

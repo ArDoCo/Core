@@ -7,7 +7,7 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelExtractionState;
+import edu.kit.kastel.mcse.ardoco.core.api.models.LegacyModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
@@ -48,7 +48,7 @@ public class NameTypeConnectionInformant extends Informant {
     }
 
     private void exec(TextState textState, ModelStates modelStates, RecommendationStates recommendationStates, Word word) {
-        for (var model : modelStates.extractionModelIds()) {
+        for (var model : modelStates.modelIds()) {
             var modelState = modelStates.getModelExtractionState(model);
             var recommendationState = recommendationStates.getRecommendationState(modelState.getMetamodel());
             checkForNameAfterType(textState, word, modelState, recommendationState);
@@ -62,7 +62,8 @@ public class NameTypeConnectionInformant extends Informant {
      * Checks if the current node is a type in the text extraction state. If the names of the text extraction state
      * contain the previous node. If that's the case a recommendation for the combination of both is created.
      */
-    private void checkForNameBeforeType(TextState textExtractionState, Word word, ModelExtractionState modelState, RecommendationState recommendationState) {
+    private void checkForNameBeforeType(TextState textExtractionState, Word word, LegacyModelExtractionState modelState,
+            RecommendationState recommendationState) {
         if (textExtractionState == null || word == null) {
             return;
         }
@@ -91,7 +92,8 @@ public class NameTypeConnectionInformant extends Informant {
      * @param modelState          the current model state
      * @param recommendationState the current recommendation state
      */
-    private void checkForNameAfterType(TextState textExtractionState, Word word, ModelExtractionState modelState, RecommendationState recommendationState) {
+    private void checkForNameAfterType(TextState textExtractionState, Word word, LegacyModelExtractionState modelState,
+            RecommendationState recommendationState) {
         if (textExtractionState == null || word == null) {
             return;
         }
@@ -114,7 +116,8 @@ public class NameTypeConnectionInformant extends Informant {
      * Checks if the current node is a type in the text extraction state. If the name_or_types of the text extraction
      * state contain the previous node. If that's the case a recommendation for the combination of both is created.
      */
-    private void checkForNortBeforeType(TextState textExtractionState, Word word, ModelExtractionState modelState, RecommendationState recommendationState) {
+    private void checkForNortBeforeType(TextState textExtractionState, Word word, LegacyModelExtractionState modelState,
+            RecommendationState recommendationState) {
         if (textExtractionState == null || word == null) {
             return;
         }
@@ -138,7 +141,8 @@ public class NameTypeConnectionInformant extends Informant {
      * Checks if the current node is a type in the text extraction state. If the name_or_types of the text extraction
      * state contain the afterwards node. If that's the case a recommendation for the combination of both is created.
      */
-    private void checkForNortAfterType(TextState textExtractionState, Word word, ModelExtractionState modelState, RecommendationState recommendationState) {
+    private void checkForNortAfterType(TextState textExtractionState, Word word, LegacyModelExtractionState modelState,
+            RecommendationState recommendationState) {
         if (textExtractionState == null || word == null) {
             return;
         }
@@ -189,7 +193,7 @@ public class NameTypeConnectionInformant extends Informant {
      * @param word                the node for name identification
      * @return the unique matching instance
      */
-    private ModelInstance tryToIdentify(TextState textExtractionState, ImmutableList<String> similarTypes, Word word, ModelExtractionState modelState) {
+    private ModelInstance tryToIdentify(TextState textExtractionState, ImmutableList<String> similarTypes, Word word, LegacyModelExtractionState modelState) {
         if (textExtractionState == null || similarTypes == null || word == null) {
             return null;
         }

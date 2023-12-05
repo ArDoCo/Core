@@ -25,6 +25,8 @@ import edu.kit.kastel.mcse.ardoco.core.configuration.ConfigurationInstantiatorUt
 @SuppressWarnings({ "java:S106", "java:S3011" })
 public abstract class ConfigurationTestBase {
 
+    private static final String ARDOCO = "edu.kit.kastel.mcse.ardoco";
+
     protected abstract void assertFalse(boolean result, String message);
 
     protected abstract void fail(String message);
@@ -37,10 +39,10 @@ public abstract class ConfigurationTestBase {
      */
     protected void showCurrentConfiguration() throws Exception {
         Map<String, String> configs = new TreeMap<>();
-        var reflectAccess = new Reflections("edu.kit.kastel.mcse.ardoco");
+        var reflectAccess = new Reflections(ARDOCO);
         var classesThatMayBeConfigured = reflectAccess.getSubTypesOf(AbstractConfigurable.class)
                 .stream()
-                .filter(c -> c.getPackageName().startsWith("edu.kit.kastel.mcse.ardoco"))
+                .filter(c -> c.getPackageName().startsWith(ARDOCO))
                 .filter(c -> !Modifier.isAbstract(c.getModifiers()))
                 .filter(c -> !c.getPackageName().contains("tests"))
                 .toList();
@@ -58,11 +60,11 @@ public abstract class ConfigurationTestBase {
         System.out.println("-".repeat(50));
     }
 
-    protected void testValidityOfConfigurableFields() throws Exception {
-        var reflectAccess = new Reflections("edu.kit.kastel.mcse.ardoco");
+    protected void testValidityOfConfigurableFields() {
+        var reflectAccess = new Reflections(ARDOCO);
         var classesThatMayBeConfigured = reflectAccess.getSubTypesOf(AbstractConfigurable.class)
                 .stream()
-                .filter(c -> c.getPackageName().startsWith("edu.kit.kastel.mcse.ardoco"))
+                .filter(c -> c.getPackageName().startsWith(ARDOCO))
                 .filter(c -> !Modifier.isAbstract(c.getModifiers()))
                 .filter(c -> !c.getPackageName().contains("tests"))
                 .toList();

@@ -9,7 +9,7 @@ import java.util.UUID;
 public final class Connector implements Serializable {
     private String uuid = UUID.randomUUID().toString();
     private List<String> connectedBoxes;
-    private transient List<TextBox> texts = new ArrayList<>();
+    private List<TextBox> texts = new ArrayList<>();
 
     private Connector() {
         // Jackson JSON

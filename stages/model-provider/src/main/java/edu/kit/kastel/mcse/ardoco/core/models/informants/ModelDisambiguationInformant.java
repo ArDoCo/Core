@@ -15,7 +15,7 @@ public class ModelDisambiguationInformant extends Informant {
     @Override
     public void process() {
         var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
-        for (var modelId : modelStates.extractionModelIds()) {
+        for (var modelId : modelStates.modelIds()) {
             var modelExtractionState = modelStates.getModelExtractionState(modelId);
             var instances = modelExtractionState.getInstances();
             for (var instance : instances) {

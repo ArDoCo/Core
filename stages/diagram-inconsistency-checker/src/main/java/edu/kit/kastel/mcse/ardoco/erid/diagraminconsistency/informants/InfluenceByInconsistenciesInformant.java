@@ -45,7 +45,7 @@ public class InfluenceByInconsistenciesInformant extends Informant {
         var diagramConnectionStates = dataRepository.getData(DiagramConnectionStates.ID, DiagramConnectionStates.class).orElseThrow();
         var diagramInconsistencyStates = dataRepository.getData(DiagramInconsistencyStates.ID, DiagramInconsistencyStates.class).orElseThrow();
         var recommendationStates = DataRepositoryHelper.getRecommendationStates(dataRepository);
-        var metamodels = modelStates.extractionModelIds().stream().map(m -> modelStates.getModelExtractionState(m).getMetamodel()).distinct().toList();
+        var metamodels = modelStates.modelIds().stream().map(m -> modelStates.getModelExtractionState(m).getMetamodel()).distinct().toList();
         for (var mm : metamodels) {
             var diagramInconsistencyState = diagramInconsistencyStates.getDiagramInconsistencyState(mm);
             var diagramConnectionState = diagramConnectionStates.getDiagramConnectionState(mm);

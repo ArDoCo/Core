@@ -2,7 +2,12 @@
 package edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.eclipse.collections.impl.factory.SortedMaps;
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +21,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.AnonymousRunner;
-import edu.kit.kastel.mcse.ardoco.core.models.agents.ModelProviderAgent;
+import edu.kit.kastel.mcse.ardoco.core.models.agents.ArCoTLModelProviderAgent;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.TextPreprocessingAgent;
@@ -77,7 +82,9 @@ public class DiagramInconsistencyCheckerTest extends StageTest<DiagramInconsiste
                 DataRepositoryHelper.putInputText(dataRepository, text);
                 pipelineSteps.add(TextPreprocessingAgent.get(project.getAdditionalConfigurations(), dataRepository));
 
-                pipelineSteps.add(ModelProviderAgent.get(project.getModelFile(), project.getArchitectureModelType(), dataRepository));
+                ArCoTLModelProviderAgent arCoTLModelProviderAgent = ArCoTLModelProviderAgent.get(project.getModelFile(), project.getArchitectureModelType(),
+                        null, project.getAdditionalConfigurations(), dataRepository);
+                pipelineSteps.add(arCoTLModelProviderAgent);
 
                 if (useMockDiagrams) {
                     pipelineSteps.add(new DiagramRecognitionMock(project, project.getAdditionalConfigurations(), dataRepository));

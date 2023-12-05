@@ -17,7 +17,7 @@ import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.AnonymousRunner;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.ArDoCoRunner;
-import edu.kit.kastel.mcse.ardoco.core.models.agents.ModelProviderAgent;
+import edu.kit.kastel.mcse.ardoco.core.models.agents.ArCoTLModelProviderAgent;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
@@ -56,7 +56,7 @@ public class SadSamTraceabilityLinkRecoveryEvaluationERID extends SadSamTraceabi
     protected ArDoCoRunner getAndSetupRunner(GoldStandardDiagramsWithTLR project) {
         var additionalConfigs = ConfigurationHelper.loadAdditionalConfigs(project.getAdditionalConfigurationsFile());
 
-        String name = project.getProjectName().toLowerCase();
+        String name = project.getProjectName();
         File inputModelArchitecture = project.getModelFile();
         File inputText = project.getTextFile();
         File outputDir = new File(TraceLinkEvaluationERID.OUTPUT);
@@ -74,7 +74,9 @@ public class SadSamTraceabilityLinkRecoveryEvaluationERID extends SadSamTraceabi
                 DataRepositoryHelper.putInputText(dataRepository, text);
                 pipelineSteps.add(TextPreprocessingAgent.get(additionalConfigs, dataRepository));
 
-                pipelineSteps.add(ModelProviderAgent.get(inputModelArchitecture, ArchitectureModelType.PCM, dataRepository));
+                ArCoTLModelProviderAgent arCoTLModelProviderAgent = ArCoTLModelProviderAgent.get(inputModelArchitecture, ArchitectureModelType.PCM, null,
+                        additionalConfigs, dataRepository);
+                pipelineSteps.add(arCoTLModelProviderAgent);
 
                 if (useDiagramRecognitionMock) {
                     pipelineSteps.add(new DiagramRecognitionMock(project, additionalConfigs, dataRepository));

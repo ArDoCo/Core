@@ -16,7 +16,7 @@ import org.eclipse.collections.api.list.MutableList;
 import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.ArchitectureModel;
 import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 
@@ -181,11 +181,11 @@ public interface GoldStandardProject extends Serializable {
     /**
      * Returns the {@link GoldStandard} for this project for the given model connector.
      *
-     * @param pcmModel the model connector (pcm)
+     * @param architectureModel the model
      * @return the {@link GoldStandard} for this project
      */
-    default GoldStandard getTlrGoldStandard(ModelConnector pcmModel) {
-        return getProjectOrThrow().getTlrGoldStandard(pcmModel);
+    default GoldStandard getTlrGoldStandard(ArchitectureModel architectureModel) {
+        return getProjectOrThrow().getTlrGoldStandard(architectureModel);
     }
 
     default MutableList<String> getMissingTextForModelElementGoldStandard() {

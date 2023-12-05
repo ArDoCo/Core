@@ -1,19 +1,18 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.apache.commons.lang3.concurrent.ConcurrentException;
-import org.apache.commons.lang3.concurrent.LazyInitializer;
 import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
-import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 import org.eclipse.collections.impl.factory.SortedSets;
 import org.jetbrains.annotations.NotNull;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelElement;
+import edu.kit.kastel.mcse.ardoco.core.common.util.NullObject;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityComparable;
 import edu.kit.kastel.mcse.ardoco.core.data.MetaData;
 
@@ -23,28 +22,8 @@ import edu.kit.kastel.mcse.ardoco.core.data.MetaData;
  */
 public abstract class DiagramElement extends Entity implements SimilarityComparable<DiagramElement> {
     private final Diagram diagram;
-
-    private final transient LazyInitializer<DiagramElement> parent = new LazyInitializer<>() {
-        @Override
-        protected DiagramElement initialize() {
-            var all = getDiagram().getBoxes();
-            return all.stream()
-                    .filter(de -> !de.equals(DiagramElement.this) && de.getBoundingBox().containsEntirely(getBoundingBox())) //Find boxes containing this element
-                    .min(Comparator.comparingDouble(de -> de.getBoundingBox().area()))
-                    .orElse(null);
-        }
-    };
-
-    private final transient LazyInitializer<MutableSortedSet<DiagramElement>> children = new LazyInitializer<>() {
-        @Override
-        protected MutableSortedSet<DiagramElement> initialize() {
-            var all = getDiagram().getBoxes();
-            return SortedSets.mutable.withAll(all.stream()
-                    .filter(de -> !de.equals(DiagramElement.this) && de.getParent().map(p -> p == DiagramElement.this).orElse(false))
-                    .map(b -> (DiagramElement) b)
-                    .toList());
-        }
-    };
+    private NullObject<DiagramElement> parent;
+    private NullObject<ArrayList<DiagramElement>> children;
 
     /**
      * Creates a new diagram element that is associated with the given diagram and unique identifier.
@@ -80,11 +59,15 @@ public abstract class DiagramElement extends Entity implements SimilarityCompara
      * @see #getParent()
      */
     public @NotNull ImmutableSortedSet<DiagramElement> getChildren() {
-        try {
-            return children.get().toImmutable();
-        } catch (ConcurrentException e) {
-            throw new IllegalStateException(e);
+        if (children == null) {
+            var all = getDiagram().getBoxes();
+            var alist = new ArrayList<>(all.stream()
+                    .filter(de -> !de.equals(DiagramElement.this) && de.getParent().map(p -> p == DiagramElement.this).orElse(false))
+                    .map(b -> (DiagramElement) b)
+                    .toList());
+            children = new NullObject<>(alist);
         }
+        return SortedSets.immutable.withAll(children.value);
     }
 
     /**
@@ -94,11 +77,14 @@ public abstract class DiagramElement extends Entity implements SimilarityCompara
      * @see BoundingBox#containsEntirely(BoundingBox)
      */
     public Optional<DiagramElement> getParent() {
-        try {
-            return Optional.ofNullable(parent.get());
-        } catch (ConcurrentException e) {
-            throw new IllegalStateException(e);
+        if (parent == null) {
+            var all = getDiagram().getBoxes();
+            parent = new NullObject<>(all.stream()
+                    .filter(de -> !de.equals(DiagramElement.this) && de.getBoundingBox().containsEntirely(getBoundingBox())) //Find boxes containing this element
+                    .min(Comparator.comparingDouble(de -> de.getBoundingBox().area()))
+                    .orElse(null));
         }
+        return Optional.ofNullable(parent.value);
     }
 
     @Override

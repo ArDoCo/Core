@@ -129,7 +129,8 @@ public class TestUtil {
      * @param results the results
      */
     public static void logResults(Logger logger, String name, EvaluationResults<?> results) {
-        logger.info(createResultLogString(name, results));
+        if (logger.isInfoEnabled())
+            logger.info(createResultLogString(name, results));
     }
 
     /**
@@ -141,10 +142,7 @@ public class TestUtil {
      * @return a String containing the name and the results (precision, recall, F1) line by line
      */
     public static String createResultLogString(String name, EvaluationResults<?> results) {
-        return String.format(Locale.ENGLISH, """
-
-                %s:
-                %s""", name, results);
+        return String.format(Locale.ENGLISH, "%n%s:%n%s", name, results);
     }
 
     public static void logExtendedResultsAsRow(Logger logger, String headerVal, String headerKey, EvaluationResults<?> results) {
@@ -159,11 +157,13 @@ public class TestUtil {
      * @param results the results
      */
     public static void logExplicitResults(Logger logger, String name, EvaluationResults<?> results) {
-        var logString = String.format(Locale.ENGLISH, """
-
-                %s:
-                %s
-                %s""", name, results, results.getExplicitResultString());
+        var tp = results.truePositives().size();
+        var fp = results.falsePositives().size();
+        var fn = results.falseNegatives().size();
+        var precisionDenominator = tp + fp;
+        var recallDenominator = tp + fn;
+        var logString = String.format(Locale.ENGLISH, "%n%s:%n\tPrecision:%7d/%d = %.3f%n\tRecall:%10d/%d = %.3f", name, tp, precisionDenominator, results
+                .precision(), tp, recallDenominator, results.recall());
         logger.info(logString);
     }
 
@@ -176,18 +176,7 @@ public class TestUtil {
      * @param expectedResults the expected results
      */
     public static void logResultsWithExpected(Logger logger, String name, EvaluationResults<?> results, ExpectedResults expectedResults) {
-        var infoString = String.format(Locale.ENGLISH, """
-
-                %s:
-                %s""", name, results.getResultStringWithExpected(expectedResults));
-        logger.info(infoString);
-    }
-
-    public static void logExtendedResultsWithExpected(Logger logger, String name, EvaluationResults<?> results, ExpectedResults expectedResults) {
-        var infoString = String.format(Locale.ENGLISH, """
-
-                %s:
-                %s""", name, results.getExtendedResultStringWithExpected(expectedResults));
+        var infoString = String.format(Locale.ENGLISH, "%n%s:%n%s", name, results.getResultStringWithExpected(expectedResults));
         logger.info(infoString);
     }
 

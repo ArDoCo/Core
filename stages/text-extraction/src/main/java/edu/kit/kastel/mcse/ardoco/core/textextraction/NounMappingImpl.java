@@ -10,8 +10,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.apache.commons.lang3.concurrent.ConcurrentException;
-import org.apache.commons.lang3.concurrent.LazyInitializer;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.SortedMaps;
 import org.eclipse.collections.api.factory.SortedSets;
@@ -44,18 +42,7 @@ public class NounMappingImpl implements NounMapping {
     private static final AggregationFunctions DEFAULT_AGGREGATOR = AVERAGE;
     private final Long earliestCreationTime;
     private final ImmutableSortedSet<Word> words;
-    private transient final LazyInitializer<ImmutableSortedSet<Phrase>> phrases = new LazyInitializer<>() {
-        @Override
-        protected ImmutableSortedSet<Phrase> initialize() {
-            MutableSortedSet<Phrase> phrases = SortedSets.mutable.empty();
-            for (Word word : NounMappingImpl.this.words) {
-                if (phrases.contains(word.getPhrase()))
-                    continue;
-                phrases.add(word.getPhrase());
-            }
-            return phrases.toImmutable();
-        }
-    };
+    private transient ImmutableSortedSet<Phrase> phrases;
     private final MutableSortedMap<MappingKind, Confidence> distribution;
     private final ImmutableList<Word> referenceWords;
     private final ImmutableList<String> surfaceForms;
@@ -178,11 +165,16 @@ public class NounMappingImpl implements NounMapping {
 
     @Override
     public ImmutableSortedSet<Phrase> getPhrases() {
-        try {
-            return phrases.get();
-        } catch (ConcurrentException e) {
-            throw new IllegalStateException(e);
+        if (phrases == null) {
+            MutableSortedSet<Phrase> phrases = SortedSets.mutable.empty();
+            for (Word word : words) {
+                if (phrases.contains(word.getPhrase()))
+                    continue;
+                phrases.add(word.getPhrase());
+            }
+            this.phrases = phrases.toImmutable();
         }
+        return this.phrases;
     }
 
     @Override

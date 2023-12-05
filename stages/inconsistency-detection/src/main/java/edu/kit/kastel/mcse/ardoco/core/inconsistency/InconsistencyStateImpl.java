@@ -15,8 +15,8 @@ import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 
 public class InconsistencyStateImpl extends AbstractState implements InconsistencyState {
 
-    private transient MutableList<RecommendedInstance> recommendedInstances;
-    private transient MutableList<Inconsistency> inconsistencies;
+    private MutableList<RecommendedInstance> recommendedInstances;
+    private MutableList<Inconsistency> inconsistencies;
 
     public InconsistencyStateImpl(DataRepository dataRepository) {
         super(dataRepository);

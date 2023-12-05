@@ -18,6 +18,7 @@ import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
  */
 public class Pipeline extends AbstractPipelineStep {
     private final List<AbstractPipelineStep> pipelineSteps;
+    private boolean executed = false;
 
     /**
      * Constructs a Pipeline with the given id and {@link DataRepository}.
@@ -62,6 +63,13 @@ public class Pipeline extends AbstractPipelineStep {
         return this.pipelineSteps.add(pipelineStep);
     }
 
+    /**
+     * {@return whether the pipeline has finished execution}
+     */
+    public boolean wasExecuted() {
+        return this.executed;
+    }
+
     @Override
     public void process() {
         preparePipelineSteps();
@@ -96,7 +104,7 @@ public class Pipeline extends AbstractPipelineStep {
 
     @Override
     protected void after() {
-        //Nothing by default
+        executed = true;
     }
 
     /**

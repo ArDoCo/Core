@@ -11,9 +11,9 @@ import org.slf4j.LoggerFactory;
 /**
  * This Singleton manages access to the config file.
  */
-public enum ConfigManager {
+public final class ConfigManager {
 
-    INSTANCE;
+    public static ConfigManager INSTANCE = new ConfigManager();
 
     private final Logger logger = LoggerFactory.getLogger(ConfigManager.class);
 
@@ -26,7 +26,7 @@ public enum ConfigManager {
 
     private ConfigManager() {
         properties = new Properties();
-        try (InputStream fileInputStream = ConfigManager.class.getClassLoader().getResourceAsStream(FILE_PATH);) {
+        try (InputStream fileInputStream = ConfigManager.class.getClassLoader().getResourceAsStream(FILE_PATH)) {
             properties.load(fileInputStream);
         } catch (IOException e) {
             logger.warn("Could not load config file. ", e);

@@ -2,7 +2,6 @@
 package edu.kit.kastel.mcse.ardoco.core.execution;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
@@ -14,7 +13,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.ParameterizedRunner;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
-import edu.kit.kastel.mcse.ardoco.core.models.agents.ModelProviderAgent;
+import edu.kit.kastel.mcse.ardoco.core.models.agents.ArCoTLModelProviderAgent;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.TextPreprocessingAgent;
@@ -33,7 +32,7 @@ public class ArDoCoForERID extends ParameterizedRunner<ArDoCoForERID.Parameters>
     }
 
     @Override
-    public List<AbstractPipelineStep> initializePipelineSteps(Parameters p) throws IOException {
+    public List<AbstractPipelineStep> initializePipelineSteps(Parameters p) {
         var pipelineSteps = new ArrayList<AbstractPipelineStep>();
 
         ArDoCo arDoCo = getArDoCo();
@@ -47,7 +46,9 @@ public class ArDoCoForERID extends ParameterizedRunner<ArDoCoForERID.Parameters>
         DataRepositoryHelper.putInputText(dataRepository, text);
         pipelineSteps.add(TextPreprocessingAgent.get(p.additionalConfigs, dataRepository));
 
-        pipelineSteps.add(ModelProviderAgent.get(p.inputModelArchitecture, p.inputArchitectureModelType, dataRepository));
+        ArCoTLModelProviderAgent arCoTLModelProviderAgent = ArCoTLModelProviderAgent.get(p.inputModelArchitecture, p.inputArchitectureModelType, null,
+                p.additionalConfigs, dataRepository);
+        pipelineSteps.add(arCoTLModelProviderAgent);
         dataRepository.addData(InputDiagramData.ID, new InputDiagramData(p.diagramProject.getDiagramData()));
         pipelineSteps.add(DiagramRecognition.get(p.additionalConfigs, dataRepository));
         pipelineSteps.add(RecommendationGenerator.get(p.additionalConfigs, dataRepository));

@@ -4,8 +4,8 @@ package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.informants;
 import java.util.Locale;
 
 import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionState;
+import edu.kit.kastel.mcse.ardoco.core.api.models.LegacyModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.AbbreviationDisambiguationHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
@@ -28,7 +28,7 @@ public class AmbiguationConnectionInformant extends Informant {
         var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
         var recommendationStates = DataRepositoryHelper.getRecommendationStates(dataRepository);
         var connectionStates = DataRepositoryHelper.getConnectionStates(dataRepository);
-        for (var model : modelStates.extractionModelIds()) {
+        for (var model : modelStates.modelIds()) {
             var modelState = modelStates.getModelExtractionState(model);
             Metamodel metamodel = modelState.getMetamodel();
             var recommendationState = recommendationStates.getRecommendationState(metamodel);
@@ -48,7 +48,8 @@ public class AmbiguationConnectionInformant extends Informant {
      * @param recommendationState the recommendation state
      * @param connectionState     the connection state
      */
-    private void ambiguateRecommendedInstances(ModelExtractionState modelState, RecommendationState recommendationState, ConnectionState connectionState) {
+    private void ambiguateRecommendedInstances(LegacyModelExtractionState modelState, RecommendationState recommendationState,
+            ConnectionState connectionState) {
         for (var recommendedInstance : recommendationState.getRecommendedInstances()) {
             var riName = recommendedInstance.getName().toLowerCase(Locale.ENGLISH);
             var set = AbbreviationDisambiguationHelper.ambiguate(riName);
@@ -68,9 +69,9 @@ public class AmbiguationConnectionInformant extends Informant {
      * @param modelState          the model state
      * @param recommendationState the recommendation state
      * @param connectionState     the connection state
-     * @see #ambiguateRecommendedInstances(ModelExtractionState, RecommendationState, ConnectionState)
+     * @see #ambiguateRecommendedInstances(LegacyModelExtractionState, RecommendationState, ConnectionState)
      */
-    private void ambiguateModelInstances(ModelExtractionState modelState, RecommendationState recommendationState, ConnectionState connectionState) {
+    private void ambiguateModelInstances(LegacyModelExtractionState modelState, RecommendationState recommendationState, ConnectionState connectionState) {
         for (var instance : modelState.getInstances()) {
             var set = AbbreviationDisambiguationHelper.ambiguate(instance.getFullName().toLowerCase(Locale.ENGLISH));
             if (set.isEmpty())

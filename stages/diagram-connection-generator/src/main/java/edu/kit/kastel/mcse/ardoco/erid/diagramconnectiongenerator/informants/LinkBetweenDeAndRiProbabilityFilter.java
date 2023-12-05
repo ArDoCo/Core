@@ -31,7 +31,7 @@ public class LinkBetweenDeAndRiProbabilityFilter extends Informant {
         var dataRepository = getDataRepository();
         var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
         var diagramConnectionStates = dataRepository.getData(DiagramConnectionStates.ID, DiagramConnectionStates.class).orElseThrow();
-        var modelIds = modelStates.extractionModelIds();
+        var modelIds = modelStates.modelIds();
         for (var model : modelIds) {
             var modelState = modelStates.getModelExtractionState(model);
             Metamodel mm = modelState.getMetamodel();

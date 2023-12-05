@@ -24,8 +24,8 @@ import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistentSentence;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.ModelInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.TextInconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.models.LegacyModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadCodeTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadSamTraceLink;
@@ -91,7 +91,8 @@ public record ArDoCoResult(DataRepository dataRepository) {
         MutableSet<SadSamTraceLink> traceLinks = Sets.mutable.empty();
 
         for (var modelId : getModelIds()) {
-            traceLinks.addAll(getTraceLinksForModel(modelId).castToCollection());
+            if (getModelState(modelId).getMetamodel() == Metamodel.ARCHITECTURE)
+                traceLinks.addAll(getTraceLinksForModel(modelId).castToCollection());
         }
         return traceLinks.toImmutableList();
     }
@@ -297,16 +298,16 @@ public record ArDoCoResult(DataRepository dataRepository) {
      */
     public List<String> getModelIds() {
         ModelStates modelStates = getModelStates();
-        return Lists.mutable.ofAll(modelStates.extractionModelIds());
+        return Lists.mutable.ofAll(modelStates.modelIds());
     }
 
     /**
-     * Returns the internal {@link ModelExtractionState} for the modelId with the given ID.
+     * Returns the internal {@link LegacyModelExtractionState} for the modelId with the given ID.
      *
      * @param modelId the ID of the model
-     * @return the ModelExtractionState
+     * @return the LegacyModelExtractionState
      */
-    public ModelExtractionState getModelState(String modelId) {
+    public LegacyModelExtractionState getModelState(String modelId) {
         ModelStates modelStates = getModelStates();
         return modelStates.getModelExtractionState(modelId);
     }

@@ -1,7 +1,6 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.tests.integration;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
@@ -21,7 +20,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.AnonymousRunner;
-import edu.kit.kastel.mcse.ardoco.core.models.agents.ModelProviderAgent;
+import edu.kit.kastel.mcse.ardoco.core.models.agents.ArCoTLModelProviderAgent;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
 import edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.DiagramRecognitionMock;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
@@ -62,10 +61,12 @@ public class DiagramRecognitionMockTest extends StageTest<DiagramRecognitionMock
     protected DataRepository runPreTestRunner(@NotNull GoldStandardDiagrams project) {
         return new AnonymousRunner(project.getProjectName()) {
             @Override
-            public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) throws IOException {
+            public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) {
                 DataRepositoryHelper.getMetaData(dataRepository).getWordSimUtils().setConsiderAbbreviations(true);
                 var pipelineSteps = new ArrayList<AbstractPipelineStep>();
-                pipelineSteps.add(ModelProviderAgent.get(project.getModelFile(), ArchitectureModelType.PCM, dataRepository));
+                ArCoTLModelProviderAgent arCoTLModelProviderAgent = ArCoTLModelProviderAgent.get(project.getModelFile(), ArchitectureModelType.PCM, null,
+                        project.getAdditionalConfigurations(), dataRepository);
+                pipelineSteps.add(arCoTLModelProviderAgent);
                 return pipelineSteps;
             }
         }.runWithoutSaving();

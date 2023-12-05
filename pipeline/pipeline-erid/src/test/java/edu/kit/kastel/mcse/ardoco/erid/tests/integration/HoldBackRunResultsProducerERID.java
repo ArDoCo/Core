@@ -10,13 +10,12 @@ import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.AnonymousRunner;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
-import edu.kit.kastel.mcse.ardoco.core.models.informants.ModelProviderInformant;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.baseline.InconsistencyBaseline;
+import edu.kit.kastel.mcse.ardoco.core.tests.integration.inconsistencyhelper.HoldBackArCoTLModelProvider;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.inconsistencyhelper.HoldBackRunResultsProducer;
-import edu.kit.kastel.mcse.ardoco.core.tests.integration.inconsistencyhelper.HoldElementsBackModelConnector;
 import edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator.DiagramConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.DiagramInconsistencyChecker;
 import edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.DiagramRecognitionMock;
@@ -40,7 +39,7 @@ public class HoldBackRunResultsProducerERID extends HoldBackRunResultsProducer {
     }
 
     @Override
-    protected DataRepository runUnshared(GoldStandardProject goldStandardProject, HoldElementsBackModelConnector holdElementsBackModelConnector,
+    protected DataRepository runUnshared(GoldStandardProject goldStandardProject, HoldBackArCoTLModelProvider holdElementsBackModelConnector,
             DataRepository preRunDataRepository, boolean useInconsistencyBaseline) {
         var diagramProject = DiagramProject.getFromName(goldStandardProject.getProjectName()).orElseThrow();
         return new AnonymousRunner(goldStandardProject.getProjectName(), preRunDataRepository) {
@@ -49,7 +48,7 @@ public class HoldBackRunResultsProducerERID extends HoldBackRunResultsProducer {
                 DataRepositoryHelper.getMetaData(dataRepository).getWordSimUtils().setConsiderAbbreviations(true);
                 var pipelineSteps = new ArrayList<AbstractPipelineStep>();
 
-                pipelineSteps.add(new ModelProviderInformant(dataRepository, holdElementsBackModelConnector));
+                pipelineSteps.add(holdElementsBackModelConnector.get(additionalConfigs, dataRepository));
                 if (useDiagramRecognitionMock) {
                     pipelineSteps.add(new DiagramRecognitionMock(diagramProject, additionalConfigs, dataRepository));
                 } else {

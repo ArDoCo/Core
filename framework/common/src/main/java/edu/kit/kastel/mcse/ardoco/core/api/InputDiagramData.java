@@ -17,7 +17,7 @@ public class InputDiagramData implements PipelineStepData {
     public static final String ID = "InputDiagramData";
     private static final List<String> ALLOWED_FILE_TYPES = List.of("jpg", "png", "jpeg");
 
-    private transient String pathToDiagrams;
+    private String pathToDiagrams;
 
     private List<Pair<String, File>> diagramFiles;
 

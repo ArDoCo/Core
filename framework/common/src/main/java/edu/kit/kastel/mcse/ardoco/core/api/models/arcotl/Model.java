@@ -6,7 +6,7 @@ import java.util.List;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelElement;
 
-public abstract class Model extends ModelElement {
+public abstract sealed class Model extends ModelElement permits ArchitectureModel, CodeModel {
 
     /**
      * Returns the content of this model.

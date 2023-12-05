@@ -2,15 +2,14 @@
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.inconsistencyhelper;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelElement;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
@@ -19,8 +18,6 @@ import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.data.DeepCopy;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.AnonymousRunner;
 import edu.kit.kastel.mcse.ardoco.core.inconsistency.InconsistencyChecker;
-import edu.kit.kastel.mcse.ardoco.core.models.connectors.PcmXmlModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.models.informants.ModelProviderInformant;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
@@ -36,7 +33,6 @@ public class HoldBackRunResultsProducer implements Serializable {
     protected File inputText;
     protected File inputModel;
     protected SortedMap<String, String> additionalConfigs;
-    protected PcmXmlModelConnector pcmModel;
 
     public HoldBackRunResultsProducer() {
         super();
@@ -51,38 +47,28 @@ public class HoldBackRunResultsProducer implements Serializable {
      * @return a map containing the mapping from ModelElement that was held back to the DataStructure that was produced when running ArDoCo without the
      *         ModelElement
      */
-    public Map<ModelInstance, ArDoCoResult> produceHoldBackRunResults(GoldStandardProject goldStandardProject, boolean useBaselineApproach) {
-        Map<ModelInstance, ArDoCoResult> runs = new HashMap<>();
+    public Map<ModelElement, ArDoCoResult> produceHoldBackRunResults(GoldStandardProject goldStandardProject, boolean useBaselineApproach) {
+        Map<ModelElement, ArDoCoResult> runs = new LinkedHashMap<>();
         inputModel = goldStandardProject.getModelFile();
         inputText = goldStandardProject.getTextFile();
         additionalConfigs = goldStandardProject.getAdditionalConfigurations();
 
-        var holdElementsBackModelConnector = constructHoldElementsBackModelConnector();
+        HoldBackArCoTLModelProvider holdBackArCoTLModelProvider = new HoldBackArCoTLModelProvider(inputModel);
 
         var preRunDataRepository = runShared(goldStandardProject);
 
-        var baseRunData = new ArDoCoResult(runUnshared(goldStandardProject, holdElementsBackModelConnector, preRunDataRepository.deepCopy(),
-                useBaselineApproach));
+        var baseRunData = new ArDoCoResult(runUnshared(goldStandardProject, holdBackArCoTLModelProvider, preRunDataRepository.deepCopy(), useBaselineApproach));
         runs.put(null, baseRunData);
 
-        for (int i = 0; i < holdElementsBackModelConnector.numberOfActualInstances(); i++) {
-            holdElementsBackModelConnector.setCurrentHoldBackIndex(i);
-            var currentHoldBack = holdElementsBackModelConnector.getCurrentHoldBack();
-            var currentRunData = runUnshared(goldStandardProject, holdElementsBackModelConnector, preRunDataRepository.deepCopy(), useBaselineApproach);
+        for (int i = 0; i < holdBackArCoTLModelProvider.numberOfActualInstances(); i++) {
+            holdBackArCoTLModelProvider.setCurrentHoldBackIndex(i);
+            var currentHoldBack = holdBackArCoTLModelProvider.getCurrentHoldBack();
+            var currentRunData = runUnshared(goldStandardProject, holdBackArCoTLModelProvider, preRunDataRepository.deepCopy(), useBaselineApproach);
             var result = new ArDoCoResult(currentRunData);
             runs.put(currentHoldBack, result);
         }
 
         return runs;
-    }
-
-    private HoldElementsBackModelConnector constructHoldElementsBackModelConnector() {
-        try {
-            pcmModel = new PcmXmlModelConnector(inputModel);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return new HoldElementsBackModelConnector(pcmModel);
     }
 
     /**
@@ -119,14 +105,14 @@ public class HoldBackRunResultsProducer implements Serializable {
      * @param useInconsistencyBaseline       whether the inconsistency baseline is used or ArDoCo's inconsistency checker
      * @return the data repository that is produced
      */
-    protected DataRepository runUnshared(GoldStandardProject goldStandardProject, HoldElementsBackModelConnector holdElementsBackModelConnector,
+    protected DataRepository runUnshared(GoldStandardProject goldStandardProject, HoldBackArCoTLModelProvider holdElementsBackModelConnector,
             @DeepCopy DataRepository preRunDataRepository, boolean useInconsistencyBaseline) {
         return new AnonymousRunner(goldStandardProject.getProjectName(), preRunDataRepository) {
             @Override
             public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) {
                 var pipelineSteps = new ArrayList<AbstractPipelineStep>();
 
-                pipelineSteps.add(new ModelProviderInformant(dataRepository, holdElementsBackModelConnector));
+                pipelineSteps.add(holdElementsBackModelConnector.get(additionalConfigs, dataRepository));
                 pipelineSteps.add(RecommendationGenerator.get(additionalConfigs, dataRepository));
                 pipelineSteps.add(ConnectionGenerator.get(additionalConfigs, dataRepository));
 

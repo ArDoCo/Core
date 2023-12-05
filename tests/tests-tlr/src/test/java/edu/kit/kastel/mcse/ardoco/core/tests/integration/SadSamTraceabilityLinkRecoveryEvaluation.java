@@ -1,10 +1,7 @@
 /* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
-import static edu.kit.kastel.mcse.ardoco.core.tests.integration.TraceLinkEvaluationIT.DATA_MAP;
-import static edu.kit.kastel.mcse.ardoco.core.tests.integration.TraceLinkEvaluationIT.OUTPUT;
-import static edu.kit.kastel.mcse.ardoco.core.tests.integration.TraceLinkEvaluationIT.PROJECT_RESULTS;
-import static edu.kit.kastel.mcse.ardoco.core.tests.integration.TraceLinkEvaluationIT.RESULTS;
+import static edu.kit.kastel.mcse.ardoco.core.tests.integration.TraceLinkEvaluationIT.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -62,7 +59,7 @@ public class SadSamTraceabilityLinkRecoveryEvaluation<T extends GoldStandardProj
     protected ArDoCoRunner getAndSetupRunner(T project) {
         var additionalConfigsMap = ConfigurationHelper.loadAdditionalConfigs(project.getAdditionalConfigurationsFile());
 
-        String name = project.getProjectName().toLowerCase();
+        String name = project.getProjectName();
         File inputModel = project.getModelFile();
         File inputText = project.getTextFile();
         File outputDir = new File(OUTPUT);
@@ -112,7 +109,7 @@ public class SadSamTraceabilityLinkRecoveryEvaluation<T extends GoldStandardProj
     }
 
     public ArDoCoResult getArDoCoResult(T project) {
-        String name = project.getProjectName().toLowerCase();
+        String name = project.getProjectName();
         var inputModel = project.getModelFile();
         var inputText = project.getTextFile();
 
@@ -160,8 +157,8 @@ public class SadSamTraceabilityLinkRecoveryEvaluation<T extends GoldStandardProj
     private static void logAndSaveProjectResult(GoldStandardProject project, ArDoCoResult arDoCoResult, EvaluationResults<String> results,
             ExpectedResults expectedResults) {
         if (logger.isInfoEnabled()) {
-            String projectName = project.getProjectName().toLowerCase();
-            TestUtil.logExtendedResultsWithExpected(logger, projectName, results, expectedResults);
+            String projectName = project.getProjectName();
+            TestUtil.logExtendedResultsWithExpected(logger, SadSamTraceabilityLinkRecoveryEvaluation.class, projectName, results, expectedResults);
 
             var data = arDoCoResult.dataRepository();
             printDetailedDebug(results, data);
@@ -193,7 +190,7 @@ public class SadSamTraceabilityLinkRecoveryEvaluation<T extends GoldStandardProj
     }
 
     public static void writeDetailedOutput(GoldStandardProject project, ArDoCoResult arDoCoResult) {
-        String name = project.getProjectName().toLowerCase();
+        String name = project.getProjectName();
         var path = Path.of(OUTPUT).resolve(name);
         try {
             Files.createDirectories(path);
@@ -217,7 +214,7 @@ public class SadSamTraceabilityLinkRecoveryEvaluation<T extends GoldStandardProj
         var sentences = data.getData(PreprocessingData.ID, PreprocessingData.class).orElseThrow().getText().getSentences();
         var modelStates = data.getData(ModelStates.ID, ModelStates.class).orElseThrow();
 
-        for (String modelId : modelStates.extractionModelIds()) {
+        for (String modelId : modelStates.modelIds()) {
             var instances = modelStates.getModelExtractionState(modelId).getInstances();
 
             var falseNegativeOutput = createOutputStrings(falseNegatives, sentences, instances);

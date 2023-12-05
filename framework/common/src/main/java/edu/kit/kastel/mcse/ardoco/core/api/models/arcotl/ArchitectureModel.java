@@ -1,14 +1,14 @@
 /* Licensed under MIT 2023. */
-package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture;
+package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl;
 
 import java.util.List;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
 
 /**
  * An architecture model that is an AMTL instance.
  */
-public class ArchitectureModel extends Model {
+public final class ArchitectureModel extends Model {
 
     private final List<ArchitectureItem> content;
 

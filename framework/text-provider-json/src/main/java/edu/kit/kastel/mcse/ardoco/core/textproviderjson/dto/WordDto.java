@@ -113,9 +113,8 @@ public class WordDto {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (!(o instanceof WordDto))
+        if (!(o instanceof WordDto word))
             return false;
-        WordDto word = (WordDto) o;
         return id == word.id && sentenceNo == word.sentenceNo && Objects.equals(incomingDependencies, word.incomingDependencies) && Objects.equals(lemma,
                 word.lemma) && Objects.equals(outgoingDependencies, word.outgoingDependencies) && posTag == word.posTag && Objects.equals(text, word.text);
     }

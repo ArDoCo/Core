@@ -2,7 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.tests.eval;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Scanner;
 
@@ -12,25 +12,25 @@ import org.eclipse.collections.api.list.MutableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelConnector;
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelElement;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.ArchitectureModel;
 
 public class GoldStandard {
     private Logger logger = LoggerFactory.getLogger(GoldStandard.class);
 
     private File goldStandard;
-    private ModelConnector model;
+    private ArchitectureModel model;
 
-    private MutableList<MutableList<ModelInstance>> sentence2instance = Lists.mutable.empty();
+    private MutableList<MutableList<ModelElement>> sentence2instance = Lists.mutable.empty();
 
-    public GoldStandard(File goldStandard, ModelConnector model) {
+    public GoldStandard(File goldStandard, ArchitectureModel model) {
         this.goldStandard = goldStandard;
         this.model = model;
         load();
     }
 
     private void load() {
-        try (Scanner scan = new Scanner(goldStandard, StandardCharsets.UTF_8.name())) {
+        try (Scanner scan = new Scanner(goldStandard, StandardCharsets.UTF_8)) {
             while (scan.hasNextLine()) {
                 String line = scan.nextLine();
                 if (line == null || line.isBlank() || line.startsWith("modelElement") || line.contains("modelElementID")) {
@@ -39,7 +39,7 @@ public class GoldStandard {
                 }
 
                 String[] idXline = line.strip().split(",", -1);
-                ModelInstance instance = model.getInstances().select(i -> i.getUid().equals(idXline[0])).getFirst();
+                ModelElement instance = Lists.immutable.withAll(model.getContent()).select(i -> i.getId().equals(idXline[0])).getFirst();
                 if (instance == null) {
                     System.err.println("No instance found for id \"" + idXline[0] + "\"");
                     continue;
@@ -50,21 +50,21 @@ public class GoldStandard {
                 }
                 sentence2instance.get(sentence).add(instance);
             }
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             logger.warn(e.getMessage(), e.getCause());
         }
     }
 
-    public ImmutableList<ModelInstance> getModelInstances(int sentenceNo) {
+    public ImmutableList<ModelElement> getModelInstances(int sentenceNo) {
         // Index starts at 1
         return sentence2instance.get(sentenceNo).toImmutable();
     }
 
-    public ImmutableList<Integer> getSentencesWithElement(ModelInstance elem) {
+    public ImmutableList<Integer> getSentencesWithElement(ModelElement elem) {
         MutableList<Integer> sentences = Lists.mutable.empty();
         for (int i = 0; i < sentence2instance.size(); i++) {
             var instances = sentence2instance.get(i);
-            if (instances.anySatisfy(e -> e.getUid().equals(elem.getUid()))) {
+            if (instances.anySatisfy(e -> e.getId().equals(elem.getId()))) {
                 sentences.add(i);
             }
         }

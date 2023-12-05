@@ -2,6 +2,9 @@
 package edu.kit.kastel.mcse.ardoco.core.execution.runner;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serial;
 import java.io.Serializable;
 
 import org.slf4j.Logger;
@@ -56,5 +59,12 @@ public abstract class ArDoCoRunner implements Serializable {
 
     protected void setOutputDirectory(File outputDirectory) {
         this.outputDirectory = outputDirectory;
+    }
+
+    @Serial
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        if (!getArDoCo().wasExecuted())
+            runWithoutSaving();
+        out.defaultWriteObject();
     }
 }
