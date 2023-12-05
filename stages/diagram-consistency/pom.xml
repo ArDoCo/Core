@@ -48,7 +48,7 @@
         <dependency>
             <groupId>io.github.ardoco.core</groupId>
             <artifactId>common</artifactId>
-            <version>0.26.0.local-SNAPSHOT</version>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
