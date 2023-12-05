@@ -2,6 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.models;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
 
@@ -40,13 +41,28 @@ public class ArCoTLModelProviderAgent extends PipelineAgent {
 
     public static ArCoTLModelProviderAgent get(File inputArchitectureModel, ArchitectureModelType architectureModelType, File inputCode,
             SortedMap<String, String> additionalConfigs, DataRepository dataRepository) {
-        ArchitectureExtractor architectureExtractor = switch (architectureModelType) {
-        case PCM -> new PcmExtractor(inputArchitectureModel.getAbsolutePath());
-        case UML -> new UmlExtractor(inputArchitectureModel.getAbsolutePath());
-        };
-        CodeItemRepository codeItemRepository = new CodeItemRepository();
-        CodeExtractor codeExtractor = new AllLanguagesExtractor(codeItemRepository, inputCode.getAbsolutePath());
-        ArCoTLModelProviderAgent agent = new ArCoTLModelProviderAgent(dataRepository, List.of(architectureExtractor, codeExtractor));
+
+        List<Extractor> extractors = new ArrayList<>();
+
+        if (inputArchitectureModel != null && architectureModelType != null) {
+            ArchitectureExtractor architectureExtractor = switch (architectureModelType) {
+            case PCM -> new PcmExtractor(inputArchitectureModel.getAbsolutePath());
+            case UML -> new UmlExtractor(inputArchitectureModel.getAbsolutePath());
+            };
+            extractors.add(architectureExtractor);
+        }
+
+        if (inputCode != null) {
+            CodeItemRepository codeItemRepository = new CodeItemRepository();
+            CodeExtractor codeExtractor = new AllLanguagesExtractor(codeItemRepository, inputCode.getAbsolutePath());
+            extractors.add(codeExtractor);
+        }
+
+        if (extractors.isEmpty()) {
+            throw new IllegalArgumentException("No model extractor was provided.");
+        }
+
+        ArCoTLModelProviderAgent agent = new ArCoTLModelProviderAgent(dataRepository, extractors);
         agent.applyConfiguration(additionalConfigs);
         return agent;
     }

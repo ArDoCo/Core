@@ -96,12 +96,12 @@ class SketchRecognitionServiceTest {
 
     @Test
     fun simpleRecognition() {
-        val file = File(PATH)
+        val file = File(PATH_TO_HL_ARCHITECTURE)
         val diagram = getState().diagrams.find { it.location == file }!!
 
         val destination = File("target/testout/result_testSimpleRecognition.png")
         visualize(
-            FileInputStream(File(PATH)),
+            FileInputStream(file),
             diagram,
             FileOutputStream(destination)
         )

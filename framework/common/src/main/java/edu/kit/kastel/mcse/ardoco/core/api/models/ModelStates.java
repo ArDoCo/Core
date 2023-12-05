@@ -6,49 +6,47 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.ArchitectureModel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
 import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
 
 public class ModelStates implements PipelineStepData {
     public static final String ID = "ModelStatesData";
 
-    private transient SortedMap<String, ModelExtractionState> modelExtractionStates = new TreeMap<>();
     private transient SortedMap<String, Model> models = new TreeMap<>();
+    private transient SortedMap<String, LegacyModelExtractionState> legacyModels = new TreeMap<>();
 
     /**
-     * Constructor to create a {@link ModelStates} object that holds all {@link ModelExtractionState}s
+     * Constructor to create a {@link ModelStates} object that holds all {@link LegacyModelExtractionState}s
      */
     public ModelStates() {
         super();
     }
 
     /**
-     * Returns the {@link ModelExtractionState} with the given id
+     * Returns the {@link LegacyModelExtractionState} with the given id
      *
      * @param id the id
-     * @return the corresponding {@link ModelExtractionState}
+     * @return the corresponding {@link LegacyModelExtractionState}
+     * @deprecated use {@link #getModel(String)} instead
      */
-    public ModelExtractionState getModelExtractionState(String id) {
-        return modelExtractionStates.get(id);
-    }
+    @Deprecated
+    public LegacyModelExtractionState getModelExtractionState(String id) {
+        if (legacyModels.containsKey(id))
+            return legacyModels.get(id);
 
-    /**
-     * Adds a {@link ModelExtractionState} with the given id to the set of {@link ModelExtractionState}s
-     *
-     * @param id         the id
-     * @param modelState the {@link ModelExtractionState}
-     */
-    public void addModelExtractionState(String id, ModelExtractionState modelState) {
-        modelExtractionStates.put(id, modelState);
-    }
+        var model = models.get(id);
+        if (model == null)
+            return null;
 
-    /**
-     * Return the set of IDs of all {@link ModelExtractionState ModelExtractionStates} that are contained within this object.
-     *
-     * @return the IDs of all contained {@link ModelExtractionState ModelExtractionStates}
-     */
-    public SortedSet<String> extractionModelIds() {
-        return new TreeSet<>(modelExtractionStates.keySet());
+        var legacyModel = switch (model) {
+        case ArchitectureModel am -> new LegacyModelExtractionStateByArCoTL(am);
+        case CodeModel cm -> new LegacyModelExtractionStateByArCoTL(cm);
+        };
+
+        legacyModels.put(id, legacyModel);
+        return legacyModel;
     }
 
     /**

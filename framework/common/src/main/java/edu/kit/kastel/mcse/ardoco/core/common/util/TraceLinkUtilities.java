@@ -68,10 +68,9 @@ public class TraceLinkUtilities {
     private static ImmutableList<String> getDirectSadCodeTraceLinksAsStringList(ImmutableList<SadCodeTraceLink> sadCodeTraceLinks) {
         MutableList<String> result = Lists.mutable.empty();
         for (var traceLink : sadCodeTraceLinks) {
-            if (!(traceLink.getEndpointTuple().firstEndpoint() instanceof RecommendedInstance))
+            if (!(traceLink.getEndpointTuple().firstEndpoint() instanceof RecommendedInstance recommendedInstance))
                 return result.toImmutable();
 
-            RecommendedInstance recommendedInstance = (RecommendedInstance) traceLink.getEndpointTuple().firstEndpoint();
             var codeElement = (CodeCompilationUnit) traceLink.getEndpointTuple().secondEndpoint();
             ImmutableSortedSet<Integer> sentenceNumbers = recommendedInstance.getSentenceNumbers();
             for (var sentence : sentenceNumbers) {

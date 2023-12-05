@@ -9,11 +9,13 @@ abstract class UmlElement {
 
     protected final String id;
     protected final String name;
+    private final String type;
 
     UmlElement(PackagedElement element) {
         this.element = element;
         this.id = element.getId();
         this.name = element.getName();
+        this.type = element.getType();
     }
 
     public final String getId() {
@@ -22,5 +24,9 @@ abstract class UmlElement {
 
     public final String getName() {
         return name;
+    }
+
+    public final String getType() {
+        return type;
     }
 }

@@ -9,7 +9,7 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelExtractionState;
+import edu.kit.kastel.mcse.ardoco.core.api.models.LegacyModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
@@ -38,7 +38,7 @@ public class CompoundRecommendationInformant extends Informant {
         var textState = DataRepositoryHelper.getTextState(dataRepository);
         var recommendationStates = DataRepositoryHelper.getRecommendationStates(dataRepository);
 
-        for (var model : modelStatesData.extractionModelIds()) {
+        for (var model : modelStatesData.modelIds()) {
             var modelState = modelStatesData.getModelExtractionState(model);
             var recommendationState = recommendationStates.getRecommendationState(modelState.getMetamodel());
 
@@ -53,7 +53,7 @@ public class CompoundRecommendationInformant extends Informant {
      * text-extraction)
      */
     private void createRecommendationInstancesFromCompoundNounMappings(TextState textState, RecommendationState recommendationState,
-            ModelExtractionState modelState) {
+            LegacyModelExtractionState modelState) {
         for (var nounMapping : textState.getNounMappings()) {
             if (nounMapping.isCompound()) {
                 var typeMappings = getRelatedTypeMappings(nounMapping, textState);
@@ -66,7 +66,8 @@ public class CompoundRecommendationInformant extends Informant {
      * Find additional compounds and create RecommendedInstances for them. Additional compounds are when a word in a
      * NounMapping has another word in front or afterwards and that compounds is a TypeMapping
      */
-    private void findMoreCompoundsForRecommendationInstances(TextState textState, RecommendationState recommendationState, ModelExtractionState modelState) {
+    private void findMoreCompoundsForRecommendationInstances(TextState textState, RecommendationState recommendationState,
+            LegacyModelExtractionState modelState) {
         for (var nounMapping : textState.getNounMappings()) {
             for (var word : nounMapping.getWords()) {
                 var prevWord = word.getPreWord();
@@ -98,7 +99,7 @@ public class CompoundRecommendationInformant extends Informant {
     }
 
     private void addRecommendedInstance(NounMapping nounMapping, ImmutableList<NounMapping> typeMappings, RecommendationState recommendationState,
-            ModelExtractionState modelState) {
+            LegacyModelExtractionState modelState) {
         var nounMappings = Lists.immutable.of(nounMapping);
         var types = getSimilarModelTypes(typeMappings, modelState);
         if (types.isEmpty()) {
@@ -110,7 +111,7 @@ public class CompoundRecommendationInformant extends Informant {
         }
     }
 
-    private ImmutableList<String> getSimilarModelTypes(ImmutableList<NounMapping> typeMappings, ModelExtractionState modelState) {
+    private ImmutableList<String> getSimilarModelTypes(ImmutableList<NounMapping> typeMappings, LegacyModelExtractionState modelState) {
         MutableSortedSet<String> similarModelTypes = SortedSets.mutable.empty();
         var typeIdentifiers = CommonUtilities.getTypeIdentifiers(modelState);
         for (var typeMapping : typeMappings) {
@@ -137,7 +138,7 @@ public class CompoundRecommendationInformant extends Informant {
     }
 
     private void addRecommendedInstanceIfCompoundWithOtherWord(NounMapping nounMapping, Word word, TextState textState, RecommendationState recommendationState,
-            ModelExtractionState modelState) {
+            LegacyModelExtractionState modelState) {
         if (word == null) {
             return;
         }

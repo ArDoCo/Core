@@ -13,8 +13,8 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.CodeModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelType;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItemRepository;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.Extractor;
 
 public abstract class CodeExtractor extends Extractor {
@@ -32,7 +32,7 @@ public abstract class CodeExtractor extends Extractor {
     public abstract CodeModel extractModel();
 
     @Override
-    public ModelType getModelType() {
+    public final ModelType getModelType() {
         return CodeModelType.CODE_MODEL;
     }
 

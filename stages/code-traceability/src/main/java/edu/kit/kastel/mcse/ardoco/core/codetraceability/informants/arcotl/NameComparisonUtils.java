@@ -188,7 +188,7 @@ public class NameComparisonUtils {
     //
 
     public enum PreprocessingMethod {
-        NONE, STEMMING, LEMMATIZATION;
+        NONE, STEMMING, LEMMATIZATION
     }
 
     private static boolean areEqual(String name1, String name2, PreprocessingMethod methodToUse) {

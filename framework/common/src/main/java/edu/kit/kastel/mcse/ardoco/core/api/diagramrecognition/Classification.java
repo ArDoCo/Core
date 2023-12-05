@@ -12,7 +12,7 @@ public enum Classification {
     LABEL("Label"), CLASS("ClassNode"),
 
     // Artificial Classes
-    TEXT("TEXT"), UNKNOWN(null);
+    TEXT("TEXT"), RAWTEXT("RAWTEXT"), UNKNOWN(null);
 
     private static final Logger logger = LoggerFactory.getLogger(Classification.class);
     private final String classificationString;

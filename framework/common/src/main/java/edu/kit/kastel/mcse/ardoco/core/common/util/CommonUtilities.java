@@ -22,7 +22,7 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelExtractionState;
+import edu.kit.kastel.mcse.ardoco.core.api.models.LegacyModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.text.DependencyTag;
@@ -222,7 +222,7 @@ public final class CommonUtilities {
      * @param modelState the model state containing information about types
      * @return List of type names in the model state that are similar to the given word
      */
-    public static ImmutableList<String> getSimilarTypes(Word word, ModelExtractionState modelState) {
+    public static ImmutableList<String> getSimilarTypes(Word word, LegacyModelExtractionState modelState) {
         var identifiers = getTypeIdentifiers(modelState);
         return Lists.immutable.fromStream(identifiers.stream().filter(typeId -> SimilarityUtils.areWordsSimilar(typeId, word.getText())));
     }
@@ -233,7 +233,7 @@ public final class CommonUtilities {
      * @param modelState the model state
      * @return Set of identifiers for existing types
      */
-    public static SortedSet<String> getTypeIdentifiers(ModelExtractionState modelState) {
+    public static SortedSet<String> getTypeIdentifiers(LegacyModelExtractionState modelState) {
         SortedSet<String> identifiers = modelState.getInstanceTypes()
                 .stream()
                 .map(CommonUtilities::splitSnakeAndKebabCase)

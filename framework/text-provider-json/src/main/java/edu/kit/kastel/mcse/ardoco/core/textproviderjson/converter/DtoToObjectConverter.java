@@ -102,7 +102,7 @@ public class DtoToObjectConverter {
     private List<String> getSubtrees(String treeWithoutType) {
         List<String> subTrees = new ArrayList<>();
         // iterate through tree to find all subtrees
-        while (treeWithoutType.length() > 0) {
+        while (!treeWithoutType.isEmpty()) {
             // find next subtree
             int index = 1;
             while (treeWithoutType.substring(0, index).chars().filter(ch -> ch == CONSTITUENCY_TREE_OPEN_BRACKET).count() != treeWithoutType.substring(0, index)

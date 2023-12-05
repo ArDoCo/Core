@@ -16,7 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelConnector;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.ArchitectureModel;
 import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 
@@ -221,11 +221,11 @@ public enum Project {
     /**
      * Returns the {@link GoldStandard} for this project for the given model connector.
      *
-     * @param pcmModel the model connector (pcm)
+     * @param architectureModel the model
      * @return the {@link GoldStandard} for this project
      */
-    public GoldStandard getTlrGoldStandard(ModelConnector pcmModel) {
-        return new GoldStandard(getTlrGoldStandardFile(), pcmModel);
+    public GoldStandard getTlrGoldStandard(ArchitectureModel architectureModel) {
+        return new GoldStandard(getTlrGoldStandardFile(), architectureModel);
     }
 
     public MutableList<String> getMissingTextForModelElementGoldStandard() {

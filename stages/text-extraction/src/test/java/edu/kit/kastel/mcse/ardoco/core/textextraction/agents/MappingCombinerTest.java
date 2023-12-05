@@ -6,6 +6,7 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -24,6 +25,7 @@ import edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.PhraseI
 import edu.kit.kastel.mcse.ardoco.core.textextraction.PhraseConcerningTextStateStrategy;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextStateImpl;
 
+@Disabled("Java 21 vs. Mockito")
 class MappingCombinerTest implements Claimant {
 
     // Has to be aligned to MappingCombinerInformant

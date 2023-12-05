@@ -11,7 +11,7 @@ import org.apache.hc.core5.http.ContentType
 import org.apache.hc.core5.http.HttpEntity
 import java.io.ByteArrayInputStream
 import java.io.InputStream
-import java.util.*
+import java.util.SortedMap
 
 class ObjectDetectionInformant(dataRepository: DataRepository) : ImageProcessingDockerInformant(
     DOCKER_SKETCH_RECOGNITION,
@@ -33,7 +33,10 @@ class ObjectDetectionInformant(dataRepository: DataRepository) : ImageProcessing
         // Not needed
     }
 
-    override fun processImage(diagram: Diagram, imageData: ByteArray) {
+    override fun processImage(
+        diagram: Diagram,
+        imageData: ByteArray
+    ) {
         val boxes = detectEntities(ByteArrayInputStream(imageData))
         boxes.forEach { diagram.addBox(it) }
     }

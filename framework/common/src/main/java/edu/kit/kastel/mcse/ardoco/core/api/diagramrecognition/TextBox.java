@@ -1,8 +1,6 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
-import static java.lang.Math.abs;
-
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -46,8 +44,7 @@ public final class TextBox implements Serializable {
     }
 
     public int area() {
-        int[] box = absoluteBox();
-        return abs(box[0] - box[2]) * abs(box[1] - box[3]);
+        return width * height;
     }
 
     public int getXCoordinate() {

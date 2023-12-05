@@ -6,8 +6,8 @@ import java.util.SortedMap;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.CodeModelType;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureModel;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.ArchitectureModel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.TraceLinkGenerator;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.computation.computationtree.Node;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
