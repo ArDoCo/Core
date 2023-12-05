@@ -9,41 +9,31 @@
         <version>${revision}</version>
     </parent>
 
-    <groupId>edu.kit.kastel.kit.mcse.ardoco.diagramconsistency</groupId>
     <artifactId>diagram-consistency</artifactId>
-
-    <properties>
-        <maven.compiler.source>20</maven.compiler.source>
-        <maven.compiler.target>20</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.jgrapht</groupId>
             <artifactId>jgrapht-core</artifactId>
-            <version>1.5.2</version>
+            <version>${jgrapht.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jgrapht</groupId>
             <artifactId>jgrapht-ext</artifactId>
-            <version>1.5.2</version>
+            <version>${jgrapht.version}</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>RELEASE</version>
+            <artifactId>junit-jupiter-params</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
-            <version>2.15.2</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-kotlin</artifactId>
-            <version>2.15.2</version>
         </dependency>
         <dependency>
             <groupId>io.github.ardoco.core</groupId>
@@ -54,24 +44,24 @@
         <dependency>
             <groupId>io.github.ardoco.core</groupId>
             <artifactId>pipeline-core</artifactId>
-            <version>0.26.0.local-SNAPSHOT</version>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.github.ardoco.core</groupId>
             <artifactId>model-provider</artifactId>
-            <version>0.26.0.local-SNAPSHOT</version>
+            <version>${revision}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.github.ardoco.core</groupId>
             <artifactId>diagram-recognition</artifactId>
-            <version>0.26.0.local-SNAPSHOT</version>
+            <version>${revision}</version>
         </dependency>
         <dependency>
             <groupId>io.github.ardoco.core</groupId>
             <artifactId>tests-base</artifactId>
-            <version>0.26.0.local-SNAPSHOT</version>
+            <version>${revision}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

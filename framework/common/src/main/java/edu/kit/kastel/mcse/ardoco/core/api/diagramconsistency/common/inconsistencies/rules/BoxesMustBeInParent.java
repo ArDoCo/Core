@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.SortedMap;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.DiagramUtility;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.HierarchyInconsistency;
@@ -29,7 +30,7 @@ import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
         }, (child, parent) -> this.entityToParent.put(child, parent));
 
         this.boxToParent = new LinkedHashMap<>();
-        Map<String, Box> boxes = DiagramUtility.getBoxes(this.getDiagram());
+        SortedMap<String, Box> boxes = DiagramUtility.getBoxes(this.getDiagram());
         for (Box parent : this.getDiagram()
                 .getBoxes()) {
             for (Box child : DiagramUtility.getContainedBoxes(parent, boxes)) {

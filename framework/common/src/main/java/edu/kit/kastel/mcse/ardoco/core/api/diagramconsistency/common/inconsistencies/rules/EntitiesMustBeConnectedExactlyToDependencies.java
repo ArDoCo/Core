@@ -6,6 +6,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.DiagramUtility;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.Inconsistency;
@@ -56,7 +57,7 @@ import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
             }
         }
 
-        Map<String, Box> boxes = DiagramUtility.getBoxes(this.getDiagram());
+        SortedMap<String, Box> boxes = DiagramUtility.getBoxes(this.getDiagram());
         for (Connector connector : DiagramUtility.getOutgoingConnectors(getDiagram(), box)) {
             for (Box target : DiagramUtility.getTargets(connector, boxes)) {
                 Entity targetEntity = this.getLinks()

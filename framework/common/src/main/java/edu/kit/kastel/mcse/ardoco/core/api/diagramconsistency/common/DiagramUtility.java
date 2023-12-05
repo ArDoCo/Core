@@ -4,16 +4,18 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Connector;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.TextBox;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 
 import java.util.List;
-import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
  * This class contains utility methods to use with the diagram interface.
  */
-public class DiagramUtility {
+@Deterministic public class DiagramUtility {
     private DiagramUtility() {
     }
 
@@ -60,8 +62,8 @@ public class DiagramUtility {
      * @param diagram The diagram.
      * @return A map from the UUID of the box to the box.
      */
-    public static Map<String, Box> getBoxes(Diagram diagram) {
-        return diagram.getBoxes().stream().collect(Collectors.toMap(Box::getUUID, box -> box));
+    public static SortedMap<String, Box> getBoxes(Diagram diagram) {
+        return diagram.getBoxes().stream().collect(Collectors.toMap(Box::getUUID, box -> box, (a, b) -> b, TreeMap::new));
     }
 
     /**
@@ -71,7 +73,7 @@ public class DiagramUtility {
      * @param boxes     A UUID-box map.
      * @return The targets of the connector.
      */
-    public static List<Box> getTargets(Connector connector, Map<String, Box> boxes) {
+    public static List<Box> getTargets(Connector connector, SortedMap<String, Box> boxes) {
         return connector.getConnectedBoxes()
                 .stream()
                 .skip(1)
@@ -94,7 +96,7 @@ public class DiagramUtility {
      * @param boxes A UUID-box map.
      * @return The contained boxes of the box.
      */
-    public static List<Box> getContainedBoxes(Box box, Map<String, Box> boxes) {
+    public static List<Box> getContainedBoxes(Box box, SortedMap<String, Box> boxes) {
         return box.getContainedBoxes().stream().map(boxes::get).toList();
     }
 

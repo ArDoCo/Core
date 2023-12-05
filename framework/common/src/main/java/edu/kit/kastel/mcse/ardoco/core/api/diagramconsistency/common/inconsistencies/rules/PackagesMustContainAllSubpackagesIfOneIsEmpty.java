@@ -6,6 +6,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.DiagramUtility;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.Inconsistency;
@@ -22,7 +23,7 @@ import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
  */
 @Deterministic public class PackagesMustContainAllSubpackagesIfOneIsEmpty extends Rule {
     private Map<Entity, Set<Entity>> packageToSubpackages = null;
-    private Map<String, Box> boxes = null;
+    private SortedMap<String, Box> boxes = null;
 
     @Override
     public Runnable setup() {

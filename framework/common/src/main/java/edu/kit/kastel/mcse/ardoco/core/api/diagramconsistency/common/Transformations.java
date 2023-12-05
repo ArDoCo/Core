@@ -8,10 +8,10 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureComponent;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureInterface;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureModel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.ArchitectureModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItem;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodePackage;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.Datatype;
 
@@ -25,6 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.SortedMap;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -54,7 +55,7 @@ import java.util.function.Function;
             boxToVertex.put(box, vertex);
         }
 
-        Map<String, Box> boxes = DiagramUtility.getBoxes(diagram);
+        SortedMap<String, Box> boxes = DiagramUtility.getBoxes(diagram);
         for (Vertex<Box> vertex : graph.vertexSet()) {
             Box represented = Objects.requireNonNull(vertex.getRepresented());
 
@@ -129,7 +130,7 @@ import java.util.function.Function;
 
             for (ArchitectureInterface required : component.getRequiredInterfaces()) {
                 for (ArchitectureComponent provider : providers.getOrDefault(required, List.of())) {
-                    if (component == provider) {
+                    if (component.equals(provider)) {
                         continue;
                     }
 
@@ -252,7 +253,7 @@ import java.util.function.Function;
 
         for (CodePackage codePackage : packages.vertexSet()) {
             for (CodePackage otherPackage : packages.vertexSet()) {
-                if (codePackage == otherPackage) {
+                if (codePackage.equals(otherPackage)) {
                     continue;
                 }
 
