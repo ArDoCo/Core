@@ -3,7 +3,12 @@ package edu.kit.kastel.mcse.ardoco.core.common.util;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Locale;
+import java.util.Objects;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
@@ -19,8 +24,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.kit.kastel.mcse.ardoco.core.api.Disambiguation;
 import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashMap;
 import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
-import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 
 /**
  * Provides functions to identify and disambiguate abbreviations. Caches results divided into a persistent {@link FileBasedCache} and a transient cache that is
@@ -148,28 +151,6 @@ public final class AbbreviationDisambiguationHelper extends FileBasedCache<Linke
         return replaced;
     }
 
-    /**
-     * Partial ambiguations of a text.
-     *
-     * @param text the text
-     * @return a set of partially ambiguated strings
-     */
-    //TODO Check if this can be removed, may no longer be required due to how ambiguations are treated by the similarity metrics
-    public static UnmodifiableLinkedHashSet<String> ambiguate(@NotNull String text) {
-        var set = new LinkedHashSet<String>();
-        var crossProduct = similarAbbreviations(text);
-        if (crossProduct.isEmpty())
-            return UnmodifiableLinkedHashSet.of(set);
-        for (var abbreviationPairs : crossProduct) {
-            var tempText = text;
-            for (var pair : abbreviationPairs) {
-                tempText = tempText.replace(pair.second().toLowerCase(), pair.first().toLowerCase());
-            }
-            set.add(tempText);
-        }
-        return UnmodifiableLinkedHashSet.of(set);
-    }
-
     private static LinkedHashMap<String, Disambiguation> getPersistent() {
         return getInstance().getOrRead();
     }
@@ -179,24 +160,6 @@ public final class AbbreviationDisambiguationHelper extends FileBasedCache<Linke
      */
     public static UnmodifiableLinkedHashMap<String, Disambiguation> getAll() {
         return new UnmodifiableLinkedHashMap<>(Disambiguation.merge(new UnmodifiableLinkedHashMap<>(local), new UnmodifiableLinkedHashMap<>(getPersistent())));
-    }
-
-    //TODO remove
-    private static List<List<Pair<String, String>>> similarAbbreviations(@NotNull String meaning) {
-        var disambiguations = getAll().values();
-        var allAbbrevs = new ArrayList<List<Pair<String, String>>>();
-        for (var disambiguation : disambiguations) {
-            var listOfPairs = disambiguation.getMeanings()
-                    .stream()
-                    .map(m -> new Pair<>(new WordSimUtils().getSimilarity(m, meaning), m))
-                    .filter(p -> p.first() >= SIMILARITY_THRESHOLD)
-                    .map(p -> new Pair<>(disambiguation.getAbbreviation(), p.second()))
-                    .toList();
-            if (listOfPairs.isEmpty())
-                continue;
-            allAbbrevs.add(listOfPairs);
-        }
-        return com.google.common.collect.Lists.cartesianProduct(allAbbrevs).stream().filter(l -> !l.isEmpty()).toList();
     }
 
     /**
