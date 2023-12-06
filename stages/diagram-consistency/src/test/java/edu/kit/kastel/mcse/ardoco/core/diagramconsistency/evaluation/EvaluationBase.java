@@ -10,9 +10,12 @@ import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.annotation.Nullable;
+
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
 
 import org.eclipse.collections.api.bimap.MutableBiMap;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
@@ -99,10 +102,16 @@ public class EvaluationBase {
     }
 
     protected static CodeModel getCodeModel(DiagramProject project) {
-        File model = new File(project.getSourceProject().getCodeModelDirectory());
+        File model = new File(Objects.requireNonNull(project.getSourceProject().getCodeModelDirectory())).getAbsoluteFile();
         CodeExtractor extractor = new AllLanguagesExtractor(new CodeItemRepository(), model.getAbsolutePath());
 
         CodeModel codeModel = extractor.readInCodeModel();
+
+        if (codeModel == null) {
+            codeModel = extractor.extractModel();
+            extractor.writeOutCodeModel(codeModel);
+        }
+
         assertNotNull(codeModel);
         return codeModel;
     }
