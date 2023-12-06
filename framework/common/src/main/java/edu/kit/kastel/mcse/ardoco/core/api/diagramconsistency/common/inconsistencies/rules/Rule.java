@@ -1,13 +1,13 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.rules;
 
 import java.util.List;
 
-import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram;
-
 import org.eclipse.collections.api.bimap.MutableBiMap;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.Inconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
 
@@ -25,11 +25,11 @@ public abstract class Rule {
      * Sets the rule up for a given diagram and model and the links between them.
      *
      * @param diagram
-     *         The diagram.
+     *                The diagram.
      * @param model
-     *         The model.
+     *                The model.
      * @param links
-     *         All found trace links between boxes and entities.
+     *                All found trace links between boxes and entities.
      */
     public final void setup(Diagram diagram, Model model, MutableBiMap<Box, Entity> links) {
         this.diagram = diagram;
@@ -53,9 +53,9 @@ public abstract class Rule {
      * the rule. For boxes and entities that are not part of a link, the other parameter should be null.
      *
      * @param box
-     *         The box to check, or null if just the entity should be checked.
+     *               The box to check, or null if just the entity should be checked.
      * @param entity
-     *         The entity to check, or null if just the box should be checked.
+     *               The entity to check, or null if just the box should be checked.
      * @return A list of inconsistencies, or an empty list if there are no inconsistencies.
      */
     public abstract List<Inconsistency<Box, Entity>> check(Box box, Entity entity);

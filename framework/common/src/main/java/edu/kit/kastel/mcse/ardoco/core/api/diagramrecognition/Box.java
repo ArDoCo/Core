@@ -126,7 +126,7 @@ public final class Box implements Serializable {
     public List<String> getContainedBoxes() {
         return new ArrayList<>(containedBoxes);
     }
-      
+
     /**
      * Remove a text box that is associated with the box.
      * 

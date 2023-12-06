@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies;
 
 import java.util.Objects;
@@ -8,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Indicates that a box has an unexpected line.
+ * 
  * @param <B> The type of the box.
  * @param <E> The type of the entity.
  */
@@ -18,9 +20,9 @@ public class UnexpectedLineInconsistency<B, E> extends Inconsistency<B, E> {
      * Creates a new UnexpectedLineInconsistency.
      *
      * @param box
-     *         The box that is the source of the unexpected line.
+     *                             The box that is the source of the unexpected line.
      * @param unexpectedLineTarget
-     *         The box that is the target of the unexpected line.
+     *                             The box that is the target of the unexpected line.
      */
     public UnexpectedLineInconsistency(B box, B unexpectedLineTarget) {
         super(box, null);
@@ -29,8 +31,7 @@ public class UnexpectedLineInconsistency<B, E> extends Inconsistency<B, E> {
 
     @Override
     public <R, M> Inconsistency<R, M> map(Function<B, R> boxMapper, Function<E, M> entityMapper) {
-        return new UnexpectedLineInconsistency<>(boxMapper.apply(this.getBox()),
-                boxMapper.apply(this.getUnexpectedLineTarget()));
+        return new UnexpectedLineInconsistency<>(boxMapper.apply(this.getBox()), boxMapper.apply(this.getUnexpectedLineTarget()));
     }
 
     /**
@@ -72,7 +73,6 @@ public class UnexpectedLineInconsistency<B, E> extends Inconsistency<B, E> {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this).append("unexpectedLineTarget", this.unexpectedLineTarget)
-                .toString();
+        return new ToStringBuilder(this).append("unexpectedLineTarget", this.unexpectedLineTarget).toString();
     }
 }

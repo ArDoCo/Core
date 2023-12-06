@@ -1,6 +1,8 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactoring;
 
 import java.util.List;
+
 import javax.annotation.Nullable;
 
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.AnnotatedGraph;
@@ -9,23 +11,23 @@ import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.Annota
  * This refactoring applies the standard refactorings until a total count relative to the model size is reached.
  *
  * @param <R>
- *         The type of the representatives that represent the model elements, e.g. boxes in a diagram.
+ *            The type of the representatives that represent the model elements, e.g. boxes in a diagram.
  * @param <M>
- *         The type of the model elements.
+ *            The type of the model elements.
  */
 public class Mixed<R, M> extends Refactoring<R, M> {
     private final double ratio;
     private final @Nullable Refactoring<R, M> preRefactoring;
-    private final List<Refactoring<R, M>> refactorings = List.of(new Connect<>(), new Create<>(), new Delete<>(),
-            new Disconnect<>(), new Move<>(), new Rename<>());
+    private final List<Refactoring<R, M>> refactorings = List.of(new Connect<>(), new Create<>(), new Delete<>(), new Disconnect<>(), new Move<>(),
+            new Rename<>());
 
     /**
      * Creates a new mixed refactoring.
      *
      * @param ratio
-     *         The ratio of the refactoring count to the model size.
+     *                       The ratio of the refactoring count to the model size.
      * @param preRefactoring
-     *         The refactoring that is applied before the standard refactorings, optional.
+     *                       The refactoring that is applied before the standard refactorings, optional.
      */
     public Mixed(double ratio, @Nullable Refactoring<R, M> preRefactoring) {
         this.ratio = ratio;
@@ -41,9 +43,7 @@ public class Mixed<R, M> extends Refactoring<R, M> {
             }
         }
 
-        int refactoringCount = (int) (graph.graph()
-                .vertexSet()
-                .size() * this.ratio);
+        int refactoringCount = (int) (graph.graph().vertexSet().size() * this.ratio);
         for (int i = 0; i < refactoringCount; i++) {
             Refactoring<R, M> refactoring = this.selectEntry(this.refactorings);
             if (refactoring == null) {

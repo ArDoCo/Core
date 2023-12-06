@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.informants;
 
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.DiagramMatchingMod
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.DiagramModelInconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.DiagramState;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.DiagramUtility;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Extractions;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.Inconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.refinement.Casing;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.refinement.LineInversion;
@@ -26,7 +28,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.DiagramMatchingModelSelectionStateImpl;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.DiagramStateImpl;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Extractions;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 
 /**
@@ -38,7 +39,7 @@ public class InconsistencyRefinementInformant extends Informant {
      * Creates a new InconsistencyRefinementInformant.
      *
      * @param data
-     *         The DataRepository.
+     *             The DataRepository.
      */
     public InconsistencyRefinementInformant(DataRepository data) {
         super(InconsistencyRefinementInformant.class.getSimpleName(), data);
@@ -46,9 +47,7 @@ public class InconsistencyRefinementInformant extends Informant {
 
     private static Map<String, String> getBoxNames(DiagramState diagramState) {
         Diagram diagram = diagramState.getDiagram();
-        return diagram.getBoxes()
-                .stream()
-                .collect(Collectors.toMap(Box::getUUID, DiagramUtility::getBoxText));
+        return diagram.getBoxes().stream().collect(Collectors.toMap(Box::getUUID, DiagramUtility::getBoxText));
     }
 
     private static Map<String, String> getEntityNames(ModelStates models, ModelType selectedModelType) {
@@ -57,8 +56,7 @@ public class InconsistencyRefinementInformant extends Informant {
 
         Map<String, String> entityIdToName = new LinkedHashMap<>();
         for (var entity : entities.entrySet()) {
-            entityIdToName.put(entity.getKey(), entity.getValue()
-                    .getName());
+            entityIdToName.put(entity.getKey(), entity.getValue().getName());
         }
 
         return entityIdToName;
@@ -68,16 +66,11 @@ public class InconsistencyRefinementInformant extends Informant {
     public void run() {
         DataRepository data = this.getDataRepository();
 
-        ModelStates models = data.getData(ModelStates.ID, ModelStates.class)
+        ModelStates models = data.getData(ModelStates.ID, ModelStates.class).orElse(null);
+        DiagramState diagram = data.getData(DiagramState.ID, DiagramStateImpl.class).orElse(null);
+        DiagramMatchingModelSelectionState selection = data.getData(DiagramMatchingModelSelectionState.ID, DiagramMatchingModelSelectionStateImpl.class)
                 .orElse(null);
-        DiagramState diagram = data.getData(DiagramState.ID, DiagramStateImpl.class)
-                .orElse(null);
-        DiagramMatchingModelSelectionState selection = data.getData(DiagramMatchingModelSelectionState.ID,
-                        DiagramMatchingModelSelectionStateImpl.class)
-                .orElse(null);
-        DiagramModelInconsistencyState inconsistencyState = data.getData(DiagramModelInconsistencyState.ID,
-                        DiagramModelInconsistencyState.class)
-                .orElse(null);
+        DiagramModelInconsistencyState inconsistencyState = data.getData(DiagramModelInconsistencyState.ID, DiagramModelInconsistencyState.class).orElse(null);
 
         if (models == null || diagram == null || selection == null || inconsistencyState == null) {
             this.logger.error("InconsistencyRefinementInformant: Could not find all required data.");
@@ -85,15 +78,13 @@ public class InconsistencyRefinementInformant extends Informant {
         }
 
         for (var selectedModelType : selection.getSelection()) {
-            List<Inconsistency<String, String>> inconsistencies = new ArrayList<>(
-                    inconsistencyState.getInconsistencies(selectedModelType));
+            List<Inconsistency<String, String>> inconsistencies = new ArrayList<>(inconsistencyState.getInconsistencies(selectedModelType));
 
             Map<String, String> boxIdToName = getBoxNames(diagram);
             Map<String, String> entityIdToName = getEntityNames(models, selectedModelType);
 
-            List<UnaryOperator<List<Inconsistency<String, String>>>> rules = List.of(LineInversion::discover,
-                    list -> NameExtension.discover(list, boxIdToName::get, entityIdToName::get), Casing::discover,
-                    Swap::discover);
+            List<UnaryOperator<List<Inconsistency<String, String>>>> rules = List.of(LineInversion::discover, list -> NameExtension.discover(list,
+                    boxIdToName::get, entityIdToName::get), Casing::discover, Swap::discover);
 
             for (var refinementRule : rules) {
                 inconsistencies = refinementRule.apply(inconsistencies);

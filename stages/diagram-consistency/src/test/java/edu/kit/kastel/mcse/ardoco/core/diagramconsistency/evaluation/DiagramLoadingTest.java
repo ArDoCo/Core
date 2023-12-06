@@ -1,16 +1,18 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
-import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.model.DiagramImpl;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Extractions;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.JsonMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureComponent;
@@ -22,13 +24,10 @@ import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.stage1
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.stage1.Occurrence;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.stage2.ElementLinks;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.stage3.DiagramInconsistencies;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Extractions;
-
-import static org.junit.jupiter.api.Assertions.*;
+import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.model.DiagramImpl;
 
 class DiagramLoadingTest extends EvaluationBase {
-    private static <E extends Entity> Set<String> getAllIds(List<E> start, Function<E, List<E>> contentProvider,
-            Function<E, String> idProvider) {
+    private static <E extends Entity> Set<String> getAllIds(List<E> start, Function<E, List<E>> contentProvider, Function<E, String> idProvider) {
         Set<E> visited = new LinkedHashSet<>();
         Queue<E> queue = new java.util.ArrayDeque<>(start);
 
@@ -84,13 +83,9 @@ class DiagramLoadingTest extends EvaluationBase {
             }
             return List.of();
         }, Entity::getId));
-        ids.addAll(getAllIds(getCodeModel(project).getContent()
-                .stream()
-                .map(item -> (CodeItem) item)
-                .toList(), CodeItem::getContent, Extractions::getPath));
+        ids.addAll(getAllIds(getCodeModel(project).getContent().stream().map(item -> (CodeItem) item).toList(), CodeItem::getContent, Extractions::getPath));
 
-        for (Element element : identification.get()
-                .elements()) {
+        for (Element element : identification.get().elements()) {
             for (Occurrence occurrence : element.occurrences()) {
                 assertTrue(ids.contains(occurrence.modelElementId()), occurrence.modelElementId());
             }

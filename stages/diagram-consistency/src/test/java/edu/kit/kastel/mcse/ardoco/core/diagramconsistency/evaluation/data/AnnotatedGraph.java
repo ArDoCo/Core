@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data;
 
 import java.util.LinkedHashMap;
@@ -6,34 +7,33 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
-
 import org.eclipse.collections.api.bimap.MutableBiMap;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 import org.jgrapht.graph.DirectedMultigraph;
 
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.Inconsistency;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.ArchitectureModel;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItem;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Edge;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Transformations;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Vertex;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.Inconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.ArchitectureModel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.CodeModel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItem;
 
 /**
  * A graph with additional information about inconsistencies between the graph and the represented model.
  *
  * @param graph
- *         The graph.
+ *                        The graph.
  * @param links
- *         The links between the graph and the represented model.
+ *                        The links between the graph and the represented model.
  * @param inconsistencies
- *         The inconsistencies between the graph and the represented model.
+ *                        The inconsistencies between the graph and the represented model.
  * @param <R>
- *         The element type in the representation. Could be Box or the same as M.
+ *                        The element type in the representation. Could be Box or the same as M.
  * @param <M>
- *         The element type of the model.
+ *                        The element type of the model.
  */
 public record AnnotatedGraph<R, M>(DirectedMultigraph<Vertex<R>, Edge> graph, MutableBiMap<Vertex<R>, M> links,
                                    Set<Inconsistency<Vertex<R>, M>> inconsistencies) {
@@ -41,7 +41,7 @@ public record AnnotatedGraph<R, M>(DirectedMultigraph<Vertex<R>, Edge> graph, Mu
      * Creates a graph from an architecture model.
      *
      * @param model
-     *         The architecture model.
+     *              The architecture model.
      * @return The graph.
      */
     public static AnnotatedGraph<ArchitectureItem, ArchitectureItem> createFrom(ArchitectureModel model) {
@@ -49,12 +49,12 @@ public record AnnotatedGraph<R, M>(DirectedMultigraph<Vertex<R>, Edge> graph, Mu
         MutableBiMap<ArchitectureItem, Vertex<ArchitectureItem>> links = new HashBiMap<>();
 
         Transformations.transform(model, (item) -> {
-                    Vertex<ArchitectureItem> vertex = new Vertex<>(item, item.getName());
-                    graph.addVertex(vertex);
-                    links.put(item, vertex);
-                    return vertex;
-                }, (source, target) -> graph.addEdge(source, target, new Edge(Edge.Label.DEFAULT)),
-                (child, parent) -> graph.addEdge(child, parent, new Edge(Edge.Label.HIERARCHY)));
+            Vertex<ArchitectureItem> vertex = new Vertex<>(item, item.getName());
+            graph.addVertex(vertex);
+            links.put(item, vertex);
+            return vertex;
+        }, (source, target) -> graph.addEdge(source, target, new Edge(Edge.Label.DEFAULT)), (child, parent) -> graph.addEdge(child, parent, new Edge(
+                Edge.Label.HIERARCHY)));
 
         return new AnnotatedGraph<>(graph, links.inverse(), new LinkedHashSet<>());
     }
@@ -63,7 +63,7 @@ public record AnnotatedGraph<R, M>(DirectedMultigraph<Vertex<R>, Edge> graph, Mu
      * Creates a graph from a code model.
      *
      * @param model
-     *         The code model.
+     *              The code model.
      * @return The graph.
      */
     public static AnnotatedGraph<CodeItem, CodeItem> createFrom(CodeModel model) {
@@ -71,12 +71,12 @@ public record AnnotatedGraph<R, M>(DirectedMultigraph<Vertex<R>, Edge> graph, Mu
         MutableBiMap<CodeItem, Vertex<CodeItem>> links = new HashBiMap<>();
 
         Transformations.transform(model, (item) -> {
-                    Vertex<CodeItem> vertex = new Vertex<>(item, item.getName());
-                    graph.addVertex(vertex);
-                    links.put(item, vertex);
-                    return vertex;
-                }, (source, target) -> graph.addEdge(source, target, new Edge(Edge.Label.DEFAULT)),
-                (child, parent) -> graph.addEdge(child, parent, new Edge(Edge.Label.HIERARCHY)));
+            Vertex<CodeItem> vertex = new Vertex<>(item, item.getName());
+            graph.addVertex(vertex);
+            links.put(item, vertex);
+            return vertex;
+        }, (source, target) -> graph.addEdge(source, target, new Edge(Edge.Label.DEFAULT)), (child, parent) -> graph.addEdge(child, parent, new Edge(
+                Edge.Label.HIERARCHY)));
 
         return new AnnotatedGraph<>(graph, links.inverse(), new LinkedHashSet<>());
     }
@@ -85,9 +85,9 @@ public record AnnotatedGraph<R, M>(DirectedMultigraph<Vertex<R>, Edge> graph, Mu
      * Create an annotated graph from an annotated diagram.
      *
      * @param diagram
-     *         The annotated diagram.
+     *                The annotated diagram.
      * @param <T>
-     *         The element type of the model that is represented by the diagram.
+     *                The element type of the model that is represented by the diagram.
      * @return The annotated graph.
      */
     public static <T> AnnotatedGraph<Box, T> createFrom(AnnotatedDiagram<T> diagram) {
@@ -99,8 +99,7 @@ public record AnnotatedGraph<R, M>(DirectedMultigraph<Vertex<R>, Edge> graph, Mu
         }
 
         MutableBiMap<Vertex<Box>, T> links = new HashBiMap<>();
-        for (Map.Entry<Box, T> entry : diagram.links()
-                .entrySet()) {
+        for (Map.Entry<Box, T> entry : diagram.links().entrySet()) {
             links.put(boxToVertex.get(entry.getKey()), entry.getValue());
         }
 
@@ -116,7 +115,7 @@ public record AnnotatedGraph<R, M>(DirectedMultigraph<Vertex<R>, Edge> graph, Mu
      * Adds a new inconsistency to the graph.
      *
      * @param inconsistency
-     *        The inconsistency.
+     *                      The inconsistency.
      */
     public void addInconsistency(Inconsistency<Vertex<R>, M> inconsistency) {
         this.inconsistencies.add(inconsistency);

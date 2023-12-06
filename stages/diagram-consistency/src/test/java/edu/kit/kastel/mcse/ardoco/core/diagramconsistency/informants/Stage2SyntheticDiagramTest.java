@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.informants;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -17,6 +18,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.DiagramMatchingModelSelectionState;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.DiagramModelLinkState;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Extractions;
 import edu.kit.kastel.mcse.ardoco.core.api.models.CodeModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelType;
@@ -32,7 +34,6 @@ import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactoring
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactoring.Mixed;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactoring.PartialSelection;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactoring.RefactoringBundle;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Extractions;
 
 class Stage2SyntheticDiagramTest extends SyntheticTestBase {
     @DisplayName("Examine stage 2 using synthetic diagrams")
@@ -112,9 +113,7 @@ class Stage2SyntheticDiagramTest extends SyntheticTestBase {
                             .setGeneralModelType(GeneralModelType.CODE)
                             .setRefactoringIndex(refactoringIndex)
                             .setMaxAlgorithmIterations(maxIterations)
-                            .setCodePreRefactoring(usePartial
-                                    ? new PartialSelection<>(PARTIAL_SELECTION_MIN, PARTIAL_SELECTION_MAX)
-                                    : null)
+                            .setCodePreRefactoring(usePartial ? new PartialSelection<>(PARTIAL_SELECTION_MIN, PARTIAL_SELECTION_MAX) : null)
                             .createEvaluationDescription(), iterationsPerCase);
                 }
             }
@@ -177,8 +176,7 @@ class Stage2SyntheticDiagramTest extends SyntheticTestBase {
                         .setGeneralModelType(generalModelType)
                         .setEpsilon(epsilon)
                         .setArchPreRefactoring(new Mixed<>(REFACTORING_RATIO, null))
-                        .setCodePreRefactoring(new Mixed<>(REFACTORING_RATIO,
-                                new PartialSelection<>(PARTIAL_SELECTION_MIN, PARTIAL_SELECTION_MAX)))
+                        .setCodePreRefactoring(new Mixed<>(REFACTORING_RATIO, new PartialSelection<>(PARTIAL_SELECTION_MIN, PARTIAL_SELECTION_MAX)))
                         .createEvaluationDescription(), iterationsPerCase);
             }
         }
@@ -258,9 +256,7 @@ class Stage2SyntheticDiagramTest extends SyntheticTestBase {
                 this.doEvaluationIterations(new ExaminationDescriptionBuilder().setProject(project)
                         .setGeneralModelType(GeneralModelType.CODE)
                         .setRefactoringIndex(refactoringIndex)
-                        .setCodePreRefactoring(usePartial
-                                ? new PartialSelection<>(PARTIAL_SELECTION_MIN, PARTIAL_SELECTION_MAX)
-                                : null)
+                        .setCodePreRefactoring(usePartial ? new PartialSelection<>(PARTIAL_SELECTION_MIN, PARTIAL_SELECTION_MAX) : null)
                         .createEvaluationDescription(), iterationsPerCase);
             }
         }
@@ -301,10 +297,10 @@ class Stage2SyntheticDiagramTest extends SyntheticTestBase {
                 this.doEvaluationIterations(new ExaminationDescriptionBuilder().setProject(project)
                         .setGeneralModelType(GeneralModelType.CODE)
                         .setRefactoringIndex(refactoringIndex)
-                        .setCodePreRefactoring(useSuffixAndPartial
-                                ? new RefactoringBundle<>(Map.of(new AppendSuffix<>("Impl"), 1,
-                                new PartialSelection<>(PARTIAL_SELECTION_MIN, PARTIAL_SELECTION_MAX), 1))
-                                : null)
+                        .setCodePreRefactoring(useSuffixAndPartial ?
+                                new RefactoringBundle<>(Map.of(new AppendSuffix<>("Impl"), 1, new PartialSelection<>(PARTIAL_SELECTION_MIN,
+                                        PARTIAL_SELECTION_MAX), 1)) :
+                                null)
                         .createEvaluationDescription(), iterationsPerCase);
             }
         }
@@ -319,18 +315,16 @@ class Stage2SyntheticDiagramTest extends SyntheticTestBase {
 
     @Override
     protected Metrics getResultsOfExamination(AnnotatedDiagram<?> diagram, ModelType modelType, DataRepository data) {
-        Optional<DiagramModelLinkState> matchingState = data.getData(DiagramModelLinkState.ID,
-                DiagramModelLinkState.class);
+        Optional<DiagramModelLinkState> matchingState = data.getData(DiagramModelLinkState.ID, DiagramModelLinkState.class);
         assertTrue(matchingState.isPresent());
 
         Optional<ModelStates> models = data.getData(ModelStates.ID, ModelStates.class);
         assertTrue(models.isPresent());
 
-        MutableBiMap<String, String> foundLinks = matchingState.get()
-                .getLinks(modelType);
-        MutableBiMap<String, String> expectedLinks = diagram.getIdBasedLinks(modelType == CodeModelType.CODE_MODEL
-                ? element -> Extractions.getPath((CodeItem) element)
-                : element -> ((ArchitectureItem) element).getId());
+        MutableBiMap<String, String> foundLinks = matchingState.get().getLinks(modelType);
+        MutableBiMap<String, String> expectedLinks = diagram.getIdBasedLinks(modelType == CodeModelType.CODE_MODEL ?
+                element -> Extractions.getPath((CodeItem) element) :
+                element -> ((ArchitectureItem) element).getId());
 
         return MapMetrics.from(expectedLinks, foundLinks);
     }

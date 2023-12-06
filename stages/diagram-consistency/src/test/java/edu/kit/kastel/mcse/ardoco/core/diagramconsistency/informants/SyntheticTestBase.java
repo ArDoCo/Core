@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.informants;
 
 import static org.apache.commons.lang3.ClassUtils.getSimpleName;
@@ -11,11 +12,10 @@ import java.util.Optional;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
-
 import org.jetbrains.annotations.Nullable;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.JsonMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.CodeModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelType;
@@ -34,8 +34,7 @@ class SyntheticTestBase extends EvaluationBase {
     protected static final int REFACTORING_TYPE_COUNT = 6;
 
     @Nullable
-    protected AnnotatedDiagram<ArchitectureItem> getAnnotatedAndRefactoredArchitectureDiagram(
-            ExaminationDescription description) {
+    protected AnnotatedDiagram<ArchitectureItem> getAnnotatedAndRefactoredArchitectureDiagram(ExaminationDescription description) {
         AnnotatedDiagram<ArchitectureItem> diagram = getAnnotatedArchitectureDiagram(description.project());
 
         if (description.archPreRefactoring() != null) {
@@ -70,29 +69,26 @@ class SyntheticTestBase extends EvaluationBase {
 
     protected <R, M> Refactoring<R, M> selectRefactoring(int index) {
         return switch (index % REFACTORING_TYPE_COUNT) {
-            case -1 -> null;
-            case +0 -> new Connect<>();
-            case +1 -> new Create<>();
-            case +2 -> new Delete<>();
-            case +3 -> new Disconnect<>();
-            case +4 -> new Move<>();
-            case +5 -> new Rename<>();
-            default -> throw new IllegalArgumentException("Invalid index: " + index);
+        case -1 -> null;
+        case +0 -> new Connect<>();
+        case +1 -> new Create<>();
+        case +2 -> new Delete<>();
+        case +3 -> new Disconnect<>();
+        case +4 -> new Move<>();
+        case +5 -> new Rename<>();
+        default -> throw new IllegalArgumentException("Invalid index: " + index);
         };
     }
 
     protected <M> AnnotatedDiagram<M> applyRefactoring(int index, AnnotatedDiagram<M> diagram) {
-        int size = diagram.diagram()
-                .getBoxes()
-                .size();
+        int size = diagram.diagram().getBoxes().size();
         int count = (int) (REFACTORING_RATIO * size);
 
         Refactoring<Box, M> refactoring = this.selectRefactoring(index);
         return applyRefactoring(diagram, new RefactoringBundle<>(Map.of(refactoring, count)));
     }
 
-    protected void doEvaluationIterations(ExaminationDescription description, int iterationsPerCase)
-            throws IOException {
+    protected void doEvaluationIterations(ExaminationDescription description, int iterationsPerCase) throws IOException {
         MetricsStats stats = new MetricsStats();
 
         int iterations = iterationsPerCase;
@@ -115,18 +111,15 @@ class SyntheticTestBase extends EvaluationBase {
             stats.add(metrics, 1.0);
         }
 
-        Object preProcessing = description.generalModelType() == GeneralModelType.ARCHITECTURE
-                ? description.archPreRefactoring()
-                : description.codePreRefactoring();
+        Object preProcessing = description.generalModelType() == GeneralModelType.ARCHITECTURE ?
+                description.archPreRefactoring() :
+                description.codePreRefactoring();
 
         this.writer.write(String.format(
                 "#### Run on project '%s', refactoring '%s', model type '%s', epsilon '%f', max iterations '%d', levenshtein '%f', pre-process '%s', (%d/%d) runs ####\n",
-                Optional.ofNullable(description.project())
-                        .map(DiagramProject::name)
-                        .orElse("all"), getSimpleName(this.selectRefactoring(description.refactoringIndex())),
-                description.generalModelType()
-                        .name(), description.epsilon(), description.maxAlgorithmIterations(),
-                description.textSimilarityThreshold(), getSimpleName(preProcessing), stats.getCount(), iterations));
+                Optional.ofNullable(description.project()).map(DiagramProject::name).orElse("all"), getSimpleName(this.selectRefactoring(description
+                        .refactoringIndex())), description.generalModelType().name(), description.epsilon(), description.maxAlgorithmIterations(), description
+                                .textSimilarityThreshold(), getSimpleName(preProcessing), stats.getCount(), iterations));
 
         this.writer.write(String.format("Average precision: %.2f\n", stats.getAveragePrecision()));
         this.writer.write(String.format("Average recall: %.2f\n", stats.getAverageRecall()));
@@ -134,13 +127,8 @@ class SyntheticTestBase extends EvaluationBase {
     }
 
     private Metrics examineOnSyntheticDiagram(ExaminationDescription description) throws IOException {
-        String name = description.project()
-                .name()
-                .toLowerCase(Locale.ROOT);
-        File inputArchitectureModel = description.project()
-                .getSourceProject()
-                .getProject()
-                .getModelFile(ArchitectureModelType.UML);
+        String name = description.project().name().toLowerCase(Locale.ROOT);
+        File inputArchitectureModel = description.project().getSourceProject().getProject().getModelFile(ArchitectureModelType.UML);
         File inputCodeModel = new File(Objects.requireNonNull(description.project().getSourceProject().getCodeModelDirectory())).getAbsoluteFile();
         File inputDiagram = File.createTempFile("temp", ".json");
         File outputDir = new File(PIPELINE_OUTPUT);
@@ -177,8 +165,7 @@ class SyntheticTestBase extends EvaluationBase {
         SortedMap<String, String> config = new TreeMap<>();
         config.put("DiagramModelLinkInformant::epsilon", String.valueOf(description.epsilon()));
         config.put("DiagramModelLinkInformant::maxIterations", String.valueOf(description.maxAlgorithmIterations()));
-        config.put("DiagramModelLinkInformant::textSimilarityThreshold",
-                String.valueOf(description.textSimilarityThreshold()));
+        config.put("DiagramModelLinkInformant::textSimilarityThreshold", String.valueOf(description.textSimilarityThreshold()));
         config.put("DiagramModelLinkInformant::similarityThreshold", String.valueOf(0.0));
 
         runner.setUp(inputArchitectureModel, inputCodeModel, inputDiagram, outputDir, config);

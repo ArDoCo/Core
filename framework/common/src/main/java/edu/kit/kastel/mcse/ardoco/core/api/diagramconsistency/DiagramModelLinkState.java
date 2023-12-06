@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency;
 
 import org.eclipse.collections.api.bimap.MutableBiMap;
@@ -18,11 +19,11 @@ public interface DiagramModelLinkState extends PipelineStepData {
      * Adds a link between a diagram element and a model element.
      *
      * @param modelType
-     *         The model type of the model in which the model element is located.
+     *                  The model type of the model in which the model element is located.
      * @param diagramID
-     *         The ID of the diagram element.
+     *                  The ID of the diagram element.
      * @param modelID
-     *         The ID of the model element.
+     *                  The ID of the model element.
      */
     void addLink(ModelType modelType, String diagramID, String modelID);
 
@@ -30,7 +31,7 @@ public interface DiagramModelLinkState extends PipelineStepData {
      * Get all currently stored links between the diagram and a model.
      *
      * @param modelType
-     *         The type of the model.
+     *                  The type of the model.
      * @return The links.
      */
     MutableBiMap<String, String> getLinks(ModelType modelType);

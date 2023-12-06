@@ -1,12 +1,14 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies;
-
-import org.eclipse.jgit.annotations.Nullable;
 
 import java.util.Objects;
 import java.util.function.Function;
 
+import org.eclipse.jgit.annotations.Nullable;
+
 /**
  * Base class for all inconsistencies between the diagram and the given models.
+ * 
  * @param <B> The type of the box.
  * @param <E> The type of the entity.
  */
@@ -23,13 +25,13 @@ public abstract class Inconsistency<B, E> {
      * Map the inconsistency to the same inconsistency type with different box and entity types.
      *
      * @param boxMapper
-     *         The mapper for the box.
+     *                     The mapper for the box.
      * @param entityMapper
-     *         The mapper for the entity.
+     *                     The mapper for the entity.
      * @param <R>
-     *         The type of the box (representation) of the mapped inconsistency.
+     *                     The type of the box (representation) of the mapped inconsistency.
      * @param <M>
-     *         The type of the entity (model) of the mapped inconsistency.
+     *                     The type of the entity (model) of the mapped inconsistency.
      * @return The mapped inconsistency.
      */
     public abstract <R, M> Inconsistency<R, M> map(Function<B, R> boxMapper, Function<E, M> entityMapper);

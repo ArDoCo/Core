@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactoring;
 
 import java.util.Set;
@@ -5,19 +6,19 @@ import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.Nullable;
 
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Edge;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Vertex;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.HierarchyInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.InconsistencyType;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.AnnotatedGraph;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Edge;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Vertex;
 
 /**
  * This refactoring moves an element in the hierarchy.
  *
  * @param <R>
- *         The type of the representatives that represent the model elements, e.g. boxes in a diagram.
+ *            The type of the representatives that represent the model elements, e.g. boxes in a diagram.
  * @param <M>
- *         The type of the model elements.
+ *            The type of the model elements.
  */
 public class Move<R, M> extends Refactoring<R, M> {
 
@@ -32,10 +33,8 @@ public class Move<R, M> extends Refactoring<R, M> {
                 .orElse(null);
     }
 
-    private static <R, M> void attachToParent(AnnotatedGraph<R, M> graph, Vertex<R> vertexToMove,
-            Vertex<R> newParentVertex) {
-        graph.graph()
-                .addEdge(vertexToMove, newParentVertex, new Edge(Edge.Label.HIERARCHY));
+    private static <R, M> void attachToParent(AnnotatedGraph<R, M> graph, Vertex<R> vertexToMove, Vertex<R> newParentVertex) {
+        graph.graph().addEdge(vertexToMove, newParentVertex, new Edge(Edge.Label.HIERARCHY));
     }
 
     private static <R, M> void detachFromParent(AnnotatedGraph<R, M> graph, Vertex<R> vertexToMove) {
@@ -49,8 +48,7 @@ public class Move<R, M> extends Refactoring<R, M> {
 
     @Override
     public boolean applyTo(AnnotatedGraph<R, M> graph) {
-        Vertex<R> vertexToMove = this.selectEntry(graph.graph()
-                .vertexSet(), vertex -> this.isMovingValid(graph, vertex));
+        Vertex<R> vertexToMove = this.selectEntry(graph.graph().vertexSet(), vertex -> this.isMovingValid(graph, vertex));
         if (vertexToMove == null) {
             return false;
         }
@@ -58,8 +56,7 @@ public class Move<R, M> extends Refactoring<R, M> {
         Set<Vertex<R>> invalidTargets = this.getAllChildren(vertexToMove, graph);
         invalidTargets.add(vertexToMove);
 
-        Vertex<R> newParentVertex = this.selectEntry(graph.graph()
-                .vertexSet(), vertex -> !invalidTargets.contains(vertex));
+        Vertex<R> newParentVertex = this.selectEntry(graph.graph().vertexSet(), vertex -> !invalidTargets.contains(vertex));
         if (newParentVertex == null) {
             return false;
         }
@@ -69,8 +66,7 @@ public class Move<R, M> extends Refactoring<R, M> {
         detachFromParent(graph, vertexToMove);
         attachToParent(graph, vertexToMove, newParentVertex);
 
-        graph.addInconsistency(new HierarchyInconsistency<>(vertexToMove, this.findLinkedElement(vertexToMove, graph),
-                oldParentVertex));
+        graph.addInconsistency(new HierarchyInconsistency<>(vertexToMove, this.findLinkedElement(vertexToMove, graph), oldParentVertex));
 
         return true;
     }
@@ -84,8 +80,8 @@ public class Move<R, M> extends Refactoring<R, M> {
         // Moving a vertex that is already moved does not introduce a new inconsistency.
         boolean alreadyMoved = graph.inconsistencies()
                 .stream()
-                .anyMatch(inconsistency -> inconsistency.getBox() != null && inconsistency.getBox()
-                        .equals(vertexToMove) && inconsistency.getType() == InconsistencyType.HIERARCHY_INCONSISTENCY);
+                .anyMatch(inconsistency -> inconsistency.getBox() != null && inconsistency.getBox().equals(vertexToMove) && inconsistency
+                        .getType() == InconsistencyType.HIERARCHY_INCONSISTENCY);
 
         return !alreadyMoved;
     }

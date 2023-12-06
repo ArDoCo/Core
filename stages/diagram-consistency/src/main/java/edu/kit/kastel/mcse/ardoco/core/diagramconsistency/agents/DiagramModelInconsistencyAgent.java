@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.agents;
 
 import java.util.List;
@@ -19,11 +20,10 @@ public class DiagramModelInconsistencyAgent extends PipelineAgent {
      * Creates a new DiagramModelInconsistencyAgent.
      *
      * @param data
-     *         The DataRepository.
+     *             The DataRepository.
      */
     public DiagramModelInconsistencyAgent(DataRepository data) {
-        super(List.of(new DiagramModelInconsistencyInformant(data), new InconsistencyRefinementInformant(data),
-                        new InconsistencyGroupingInformant(data)),
+        super(List.of(new DiagramModelInconsistencyInformant(data), new InconsistencyRefinementInformant(data), new InconsistencyGroupingInformant(data)),
                 DiagramModelInconsistencyAgent.class.getSimpleName(), data);
     }
 
@@ -31,7 +31,7 @@ public class DiagramModelInconsistencyAgent extends PipelineAgent {
      * Creates a new DiagramModelInconsistencyAgent.
      *
      * @param dataRepository
-     *         The DataRepository.
+     *                       The DataRepository.
      * @return The DiagramModelInconsistencyAgent.
      */
     public static DiagramModelInconsistencyAgent get(DataRepository dataRepository) {
@@ -41,10 +41,9 @@ public class DiagramModelInconsistencyAgent extends PipelineAgent {
     @Override
     protected void initializeState() {
         DataRepository data = this.getDataRepository();
-        Optional<DiagramModelInconsistencyState> optionalDiagramModelInconsistencyState = data.getData(
-                DiagramModelInconsistencyState.ID, DiagramModelInconsistencyState.class);
-        DiagramModelInconsistencyState state = optionalDiagramModelInconsistencyState.orElseGet(
-                DiagramInconsistencyStateImpl::new);
+        Optional<DiagramModelInconsistencyState> optionalDiagramModelInconsistencyState = data.getData(DiagramModelInconsistencyState.ID,
+                DiagramModelInconsistencyState.class);
+        DiagramModelInconsistencyState state = optionalDiagramModelInconsistencyState.orElseGet(DiagramInconsistencyStateImpl::new);
         if (optionalDiagramModelInconsistencyState.isEmpty()) {
             data.addData(DiagramModelInconsistencyState.ID, state);
         }

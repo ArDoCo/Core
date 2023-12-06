@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.rules;
 
 import java.util.LinkedHashMap;
@@ -7,11 +8,11 @@ import java.util.Objects;
 import java.util.SortedMap;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.DiagramUtility;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Transformations;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.HierarchyInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.Inconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Transformations;
 import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 
 /**
@@ -19,7 +20,8 @@ import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
  * present in the diagram, this rule does not apply. Additionally, this rule checks that boxes do not have a parent box
  * that is not their parent entity.
  */
-@Deterministic public class BoxesMustBeInParent extends Rule {
+@Deterministic
+public class BoxesMustBeInParent extends Rule {
     private Map<Entity, Entity> entityToParent = null;
     private Map<Box, Box> boxToParent = null;
 
@@ -31,8 +33,7 @@ import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 
         this.boxToParent = new LinkedHashMap<>();
         SortedMap<String, Box> boxes = DiagramUtility.getBoxes(this.getDiagram());
-        for (Box parent : this.getDiagram()
-                .getBoxes()) {
+        for (Box parent : this.getDiagram().getBoxes()) {
             for (Box child : DiagramUtility.getContainedBoxes(parent, boxes)) {
                 this.boxToParent.put(child, parent);
             }
@@ -53,16 +54,13 @@ import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
         Box actualParentBox = this.boxToParent.get(box);
         Entity actualParentEntity = null;
         if (actualParentBox != null) {
-            actualParentEntity = this.getLinks()
-                    .get(actualParentBox);
+            actualParentEntity = this.getLinks().get(actualParentBox);
         }
 
         Entity expectedParentEntity = this.entityToParent.get(entity);
         Box expectedParentBox = null;
         if (expectedParentEntity != null) {
-            expectedParentBox = this.getLinks()
-                    .inverse()
-                    .get(expectedParentEntity);
+            expectedParentBox = this.getLinks().inverse().get(expectedParentEntity);
         }
 
         if (Objects.equals(expectedParentBox, actualParentBox)) {

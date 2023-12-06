@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency;
 
 import java.io.File;
@@ -25,14 +26,13 @@ import edu.kit.kastel.mcse.ardoco.core.models.ArCoTLModelProviderAgent;
  */
 public class DiagramConsistency extends ArDoCoRunner {
     private static final ArchitectureModelType ARCHITECTURE_MODEL_TYPE = ArchitectureModelType.UML;
-    private static final Set<ModelType> AVAILABLE_MODEL_TYPES = new LinkedHashSet<>(
-            List.of(ARCHITECTURE_MODEL_TYPE, CodeModelType.CODE_MODEL));
+    private static final Set<ModelType> AVAILABLE_MODEL_TYPES = new LinkedHashSet<>(List.of(ARCHITECTURE_MODEL_TYPE, CodeModelType.CODE_MODEL));
 
     /**
      * Creates a new runner.
      *
      * @param projectName
-     *         The name of the project that is analysed.
+     *                    The name of the project that is analysed.
      */
     public DiagramConsistency(String projectName) {
         super(projectName);
@@ -44,30 +44,27 @@ public class DiagramConsistency extends ArDoCoRunner {
      * @return The data repository.
      */
     public DataRepository getDataRepository() {
-        return this.getArDoCo()
-                .getDataRepository();
+        return this.getArDoCo().getDataRepository();
     }
 
     /**
      * Sets up the pipeline.
      *
      * @param inputArchitectureModel
-     *         The architecture model file, as defined by ArCoTL.
+     *                               The architecture model file, as defined by ArCoTL.
      * @param inputCodeModel
-     *         The code model file, as defined by ArCoTL.
+     *                               The code model file, as defined by ArCoTL.
      * @param inputDiagram
-     *         The diagram, following the format defined by {@link Diagram}.
+     *                               The diagram, following the format defined by {@link Diagram}.
      * @param outputDirectory
-     *         The output directory.
+     *                               The output directory.
      * @param config
-     *         The configuration.
+     *                               The configuration.
      */
-    public void setUp(File inputArchitectureModel, File inputCodeModel, File inputDiagram, File outputDirectory,
-            SortedMap<String, String> config) {
+    public void setUp(File inputArchitectureModel, File inputCodeModel, File inputDiagram, File outputDirectory, SortedMap<String, String> config) {
         this.definePipeline(inputArchitectureModel, inputCodeModel, inputDiagram);
         this.setOutputDirectory(outputDirectory);
-        this.getArDoCo()
-                .applyConfiguration(config);
+        this.getArDoCo().applyConfiguration(config);
         this.isSetUp = true;
     }
 
@@ -75,9 +72,7 @@ public class DiagramConsistency extends ArDoCoRunner {
         ArDoCo arDoCo = this.getArDoCo();
         DataRepository dataRepository = arDoCo.getDataRepository();
 
-        arDoCo.addPipelineStep(
-                ArCoTLModelProviderAgent.get(inputArchitectureModel, ARCHITECTURE_MODEL_TYPE, inputCodeModel,
-                        new TreeMap<>(), dataRepository));
+        arDoCo.addPipelineStep(ArCoTLModelProviderAgent.get(inputArchitectureModel, ARCHITECTURE_MODEL_TYPE, inputCodeModel, new TreeMap<>(), dataRepository));
 
         arDoCo.addPipelineStep(DiagramProviderAgent.get(inputDiagram, dataRepository));
 

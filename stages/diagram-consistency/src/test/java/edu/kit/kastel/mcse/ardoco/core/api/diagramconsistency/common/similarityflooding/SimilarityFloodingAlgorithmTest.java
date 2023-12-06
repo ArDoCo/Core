@@ -1,7 +1,7 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.similarityflooding;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.eclipse.collections.api.bimap.MutableBiMap;
 import org.jgrapht.alg.util.Pair;
@@ -23,8 +23,8 @@ class SimilarityFloodingAlgorithmTest {
         DirectedMultigraph<GraphA, Edge> a = this.buildGraphA();
         DirectedMultigraph<GraphB, Edge> b = this.buildGraphB();
 
-        SimilarityFloodingAlgorithm<GraphA, GraphB, Label> algorithm = new SimilarityFloodingAlgorithm<>(0.075, 100,
-                PropagationCoefficientFormula.getInverseProductFormula(), FixpointFormula.getBasicFormula());
+        SimilarityFloodingAlgorithm<GraphA, GraphB, Label> algorithm = new SimilarityFloodingAlgorithm<>(0.075, 100, PropagationCoefficientFormula
+                .getInverseProductFormula(), FixpointFormula.getBasicFormula());
         SimilarityMapping<GraphA, GraphB> mapping = algorithm.match(a, b, new SimilarityMapping<>(1.0));
 
         assertEquals(1.00, mapping.getSimilarity(GraphA.A, GraphB.B), DELTA);
@@ -50,8 +50,8 @@ class SimilarityFloodingAlgorithmTest {
         DirectedMultigraph<Integer, Edge> a = this.buildLargeGraph(size);
         DirectedMultigraph<Integer, Edge> b = this.buildLargeGraph(size);
 
-        SimilarityFloodingAlgorithm<Integer, Integer, Label> algorithm = new SimilarityFloodingAlgorithm<>(0.0, size,
-                PropagationCoefficientFormula.getInverseProductFormula(), FixpointFormula.getBasicFormula());
+        SimilarityFloodingAlgorithm<Integer, Integer, Label> algorithm = new SimilarityFloodingAlgorithm<>(0.0, size, PropagationCoefficientFormula
+                .getInverseProductFormula(), FixpointFormula.getBasicFormula());
         SimilarityMapping<Integer, Integer> initialMapping = new SimilarityMapping<>(0.0);
         initialMapping.updateSimilarity(new Pair<>(0, 0), 1.0);
         SimilarityMapping<Integer, Integer> mapping = algorithm.match(a, b, initialMapping);

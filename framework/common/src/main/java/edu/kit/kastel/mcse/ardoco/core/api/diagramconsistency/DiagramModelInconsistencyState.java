@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public interface DiagramModelInconsistencyState extends PipelineStepData {
      *
      * @param modelType     The model type to add the inconsistency for.
      * @param inconsistency
-     *         The inconsistency to add.
+     *                      The inconsistency to add.
      */
     void addInconsistency(ModelType modelType, Inconsistency<String, String> inconsistency);
 
@@ -37,9 +38,9 @@ public interface DiagramModelInconsistencyState extends PipelineStepData {
      * larger selection of more concrete inconsistency types can be used.
      *
      * @param modelType
-     *         The model type to set the inconsistencies for.
+     *                        The model type to set the inconsistencies for.
      * @param inconsistencies
-     *         The inconsistencies to set.
+     *                        The inconsistencies to set.
      */
     void setExtendedInconsistencies(ModelType modelType, List<Inconsistency<String, String>> inconsistencies);
 
@@ -48,7 +49,7 @@ public interface DiagramModelInconsistencyState extends PipelineStepData {
      * returned.
      *
      * @param modelType
-     *         The model type to get the inconsistencies for.
+     *                  The model type to get the inconsistencies for.
      * @return The extended inconsistencies.
      */
     List<Inconsistency<String, String>> getExtendedInconsistencies(ModelType modelType);

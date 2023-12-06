@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram;
@@ -23,7 +24,7 @@ public interface DiagramState extends PipelineStepData {
      * Sets the diagram. Overwrites the old diagram.
      *
      * @param diagram
-     *         The diagram.
+     *                The diagram.
      */
     void setDiagram(Diagram diagram);
 }

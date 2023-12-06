@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common;
 
 import java.util.LinkedHashMap;
@@ -6,19 +7,20 @@ import java.util.Map;
 import java.util.Set;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.ArchitectureModel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureComponent;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureInterface;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.ArchitectureModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.*;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 
 /**
  * Utility to extract elements from models.
  */
-@Deterministic public final class Extractions {
+@Deterministic
+public final class Extractions {
     private Extractions() {
     }
 
@@ -26,7 +28,7 @@ import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
      * Extracts all (relevant) items from a given architecture model.
      *
      * @param model
-     *         The architecture model.
+     *              The architecture model.
      * @return A map, giving all items that fulfill a certain role.
      */
     public static Map<ElementRole, Set<ArchitectureItem>> extractItemsFromModel(ArchitectureModel model) {
@@ -42,15 +44,14 @@ import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
             }
         }
 
-        return Map.of(ElementRole.ARCHITECTURE_COMPONENT, Set.copyOf(components), ElementRole.ARCHITECTURE_INTERFACE,
-                Set.copyOf(interfaces));
+        return Map.of(ElementRole.ARCHITECTURE_COMPONENT, Set.copyOf(components), ElementRole.ARCHITECTURE_INTERFACE, Set.copyOf(interfaces));
     }
 
     /**
      * Extracts all (relevant) items from a given code model.
      *
      * @param model
-     *         The code model.
+     *              The code model.
      * @return A map, giving all items that fulfill a certain role.
      */
     public static Map<ElementRole, Set<CodeItem>> extractItemsFromModel(CodeModel model) {
@@ -79,8 +80,8 @@ import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
             }
         }
 
-        return Map.of(ElementRole.CODE_PACKAGE, Set.copyOf(packages), ElementRole.CODE_CLASS, Set.copyOf(classes),
-                ElementRole.CODE_INTERFACE, Set.copyOf(interfaces));
+        return Map.of(ElementRole.CODE_PACKAGE, Set.copyOf(packages), ElementRole.CODE_CLASS, Set.copyOf(classes), ElementRole.CODE_INTERFACE, Set.copyOf(
+                interfaces));
     }
 
     private static String getDatatypePath(Datatype datatype) {
@@ -95,7 +96,7 @@ import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
      * Gets the path of the given code item, a unique identifier.
      *
      * @param item
-     *         The code item, which is part of a code model.
+     *             The code item, which is part of a code model.
      * @return The path of the code item.
      */
     public static String getPath(CodeItem item) {
@@ -113,14 +114,11 @@ import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 
         if (item instanceof Datatype datatype) {
             String packagePath = "";
-            if (datatype.getCompilationUnit()
-                    .hasParent()) {
-                packagePath = getPath(datatype.getCompilationUnit()
-                        .getParent()) + ".";
+            if (datatype.getCompilationUnit().hasParent()) {
+                packagePath = getPath(datatype.getCompilationUnit().getParent()) + ".";
             }
 
-            return packagePath + getDatatypePath(datatype) + "[" + datatype.getCompilationUnit()
-                    .getPath() + "]";
+            return packagePath + getDatatypePath(datatype) + "[" + datatype.getCompilationUnit().getPath() + "]";
         }
 
         return null;
@@ -130,7 +128,7 @@ import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
      * Extracts all entities from a given model.
      *
      * @param model
-     *         The model.
+     *              The model.
      * @return A map, giving the entity corresponding to a certain ID or path.
      */
     public static Map<String, Entity> extractEntitiesFromModel(Model model) {

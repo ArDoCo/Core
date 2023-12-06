@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.stage3;
 
 import java.util.Arrays;
@@ -17,26 +18,23 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
  * This class describes a simplified version for serialization.
  *
  * @param name
- *         The name of the diagram.
+ *                        The name of the diagram.
  * @param inconsistencies
- *         The inconsistencies.
+ *                        The inconsistencies.
  */
-public record DiagramInconsistencies(@JsonProperty("name") String name,
-                                     @JsonProperty("inconsistencies") DiagramInconsistency[] inconsistencies) {
+public record DiagramInconsistencies(@JsonProperty("name") String name, @JsonProperty("inconsistencies") DiagramInconsistency[] inconsistencies) {
 
     /**
      * Convert in which class the inconsistencies are stored to the class used for pipeline logic. This step also
      * resolves all IDs to the actual objects.
      *
      * @param diagram
-     *         The diagram, providing the boxes.
+     *                The diagram, providing the boxes.
      * @param model
-     *         The model, providing the entities.
+     *                The model, providing the entities.
      * @return The inconsistencies.
      */
     public List<Inconsistency<Box, Entity>> toInconsistencies(Diagram diagram, Map<String, Entity> model) {
-        return Arrays.stream(this.inconsistencies)
-                .map(inconsistency -> inconsistency.toInconsistency(DiagramUtility.getBoxes(diagram), model))
-                .toList();
+        return Arrays.stream(this.inconsistencies).map(inconsistency -> inconsistency.toInconsistency(DiagramUtility.getBoxes(diagram), model)).toList();
     }
 }

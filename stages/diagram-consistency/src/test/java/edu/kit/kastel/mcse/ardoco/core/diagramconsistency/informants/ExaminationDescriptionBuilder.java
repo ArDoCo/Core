@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.informants;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
@@ -57,8 +58,7 @@ class ExaminationDescriptionBuilder {
     }
 
     ExaminationDescription createEvaluationDescription() {
-        return new ExaminationDescription(this.project, this.generalModelType, this.refactoringIndex, this.epsilon,
-                this.maxAlgorithmIterations, this.textSimilarityThreshold, this.archPreRefactoring,
-                this.codePreRefactoring);
+        return new ExaminationDescription(this.project, this.generalModelType, this.refactoringIndex, this.epsilon, this.maxAlgorithmIterations,
+                this.textSimilarityThreshold, this.archPreRefactoring, this.codePreRefactoring);
     }
 }

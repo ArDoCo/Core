@@ -159,7 +159,8 @@ public final class JavaModel {
             for (ITypeBinding referencedBinding : referencedBindings) {
                 javaTypes.stream()
                         .filter(otherJavaType -> otherJavaType.binding().getErasure().isEqualTo(referencedBinding.getErasure()))
-                        .findFirst().ifPresent(referencedJavaType -> dependencies.add(referencedJavaType.codeType()));
+                        .findFirst()
+                        .ifPresent(referencedJavaType -> dependencies.add(referencedJavaType.codeType()));
             }
             javaType.codeType().setDatatypeReference(dependencies);
         }

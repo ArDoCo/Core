@@ -1,25 +1,25 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactoring;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Vertex;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.InconsistencyType;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.NameInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.AnnotatedGraph;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Vertex;
 
 /**
  * This refactoring renames a graph element.
  *
  * @param <R>
- *         The type of the representatives that represent the model elements, e.g. boxes in a diagram.
+ *            The type of the representatives that represent the model elements, e.g. boxes in a diagram.
  * @param <M>
- *         The type of the model elements.
+ *            The type of the model elements.
  */
 public class Rename<R, M> extends Refactoring<R, M> {
     @Override
     public boolean applyTo(AnnotatedGraph<R, M> graph) {
-        Vertex<R> vertexToRename = this.selectEntry(graph.graph()
-                .vertexSet(), vertex -> this.isRenamingValid(graph, vertex));
+        Vertex<R> vertexToRename = this.selectEntry(graph.graph().vertexSet(), vertex -> this.isRenamingValid(graph, vertex));
         if (vertexToRename == null) {
             return false;
         }
@@ -29,9 +29,7 @@ public class Rename<R, M> extends Refactoring<R, M> {
 
         vertexToRename.rename(newName);
 
-        graph.addInconsistency(
-                new NameInconsistency<>(vertexToRename, this.findLinkedElement(vertexToRename, graph), oldName,
-                        newName));
+        graph.addInconsistency(new NameInconsistency<>(vertexToRename, this.findLinkedElement(vertexToRename, graph), oldName, newName));
 
         return true;
     }
@@ -45,8 +43,8 @@ public class Rename<R, M> extends Refactoring<R, M> {
         // Renaming a vertex that is already renamed does not introduce a new inconsistency.
         boolean alreadyRenamed = graph.inconsistencies()
                 .stream()
-                .anyMatch(inconsistency -> inconsistency.getBox() != null && inconsistency.getBox()
-                        .equals(vertexToRename) && inconsistency.getType() == InconsistencyType.NAME_INCONSISTENCY);
+                .anyMatch(inconsistency -> inconsistency.getBox() != null && inconsistency.getBox().equals(vertexToRename) && inconsistency
+                        .getType() == InconsistencyType.NAME_INCONSISTENCY);
 
         return !alreadyRenamed;
     }

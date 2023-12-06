@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies;
 
 import java.util.Objects;
@@ -8,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Indicates that a box is missing a line to another box.
+ * 
  * @param <B> The type of the box.
  * @param <E> The type of the entity.
  */
@@ -18,9 +20,9 @@ public class MissingLineInconsistency<B, E> extends Inconsistency<B, E> {
      * Creates a new MissingLineInconsistency.
      *
      * @param box
-     *         The box that is the source of the missing line.
+     *                           The box that is the source of the missing line.
      * @param expectedLineTarget
-     *         The box that is the target of the missing line.
+     *                           The box that is the target of the missing line.
      */
     public MissingLineInconsistency(B box, B expectedLineTarget) {
         super(box, null);
@@ -29,8 +31,7 @@ public class MissingLineInconsistency<B, E> extends Inconsistency<B, E> {
 
     @Override
     public <R, M> Inconsistency<R, M> map(Function<B, R> boxMapper, Function<E, M> entityMapper) {
-        return new MissingLineInconsistency<>(boxMapper.apply(this.getBox()),
-                boxMapper.apply(this.getExpectedLineTarget()));
+        return new MissingLineInconsistency<>(boxMapper.apply(this.getBox()), boxMapper.apply(this.getExpectedLineTarget()));
     }
 
     /**
@@ -72,7 +73,6 @@ public class MissingLineInconsistency<B, E> extends Inconsistency<B, E> {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this).append("expectedLineTarget", this.expectedLineTarget)
-                .toString();
+        return new ToStringBuilder(this).append("expectedLineTarget", this.expectedLineTarget).toString();
     }
 }

@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency;
 
 import java.util.List;
@@ -14,7 +15,8 @@ import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
  * Stores data created during the model selection process, as well as the selection itself. The data includes a created
  * text similarity function and all occurrences of diagram elements in models.
  */
-@Deterministic public interface DiagramMatchingModelSelectionState extends PipelineStepData {
+@Deterministic
+public interface DiagramMatchingModelSelectionState extends PipelineStepData {
     /**
      * The ID of this state.
      */
@@ -31,7 +33,7 @@ import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
      * Sets the model types that are in principle available, meaning their loading is attempted.
      *
      * @param availableModelTypes
-     *         The model types.
+     *                            The model types.
      */
     void setAvailableModelTypes(Set<ModelType> availableModelTypes);
 
@@ -46,7 +48,7 @@ import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
      * Sets the similarity function.
      *
      * @param similarity
-     *         The similarity function.
+     *                   The similarity function.
      */
     void setSimilarityFunction(WeightedTextSimilarity similarity);
 
@@ -61,7 +63,7 @@ import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
      * Sets the models that are selected to be matched with the diagram.
      *
      * @param modelTypes
-     *         The model types.
+     *                   The model types.
      */
     void setSelection(Set<ModelType> modelTypes);
 
@@ -88,7 +90,7 @@ import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
      * Get all occurrences of a diagram element in all models.
      *
      * @param diagramID
-     *         The ID of the diagram element.
+     *                  The ID of the diagram element.
      * @return The occurrences.
      */
     List<Occurrence> getOccurrences(String diagramID);
@@ -104,7 +106,7 @@ import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
      * Sets the explanation why the model type was selected.
      *
      * @param explanation
-     *         The explanation, which is a match value for each model type.
+     *                    The explanation, which is a match value for each model type.
      */
     void setSelectionExplanation(Map<ModelType, Double> explanation);
 
@@ -112,9 +114,9 @@ import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
      * Describes an occurrence of a diagram element in a model.
      *
      * @param modelID
-     *         The ID of the model element.
+     *                The ID of the model element.
      * @param role
-     *         The role of the model element.
+     *                The role of the model element.
      */
     public record Occurrence(String modelID, ElementRole role) {
     }

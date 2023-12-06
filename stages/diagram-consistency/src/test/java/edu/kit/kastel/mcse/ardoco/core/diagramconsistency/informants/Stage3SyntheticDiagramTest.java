@@ -1,16 +1,17 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.informants;
 
 import java.io.IOException;
 import java.util.List;
-
-import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.DiagramModelInconsistencyState;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Extractions;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.Inconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItem;
@@ -20,7 +21,6 @@ import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.Metrics;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.AnnotatedDiagram;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactoring.Mixed;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactoring.PartialSelection;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Extractions;
 
 class Stage3SyntheticDiagramTest extends SyntheticTestBase {
     @DisplayName("Examine stage 3 using synthetic diagrams")
@@ -68,23 +68,19 @@ class Stage3SyntheticDiagramTest extends SyntheticTestBase {
 
     @Override
     protected Metrics getResultsOfExamination(AnnotatedDiagram<?> diagram, ModelType modelType, DataRepository data) {
-        List<Inconsistency<String, String>> found = data.getData(DiagramModelInconsistencyState.ID,
-                        DiagramModelInconsistencyState.class)
+        List<Inconsistency<String, String>> found = data.getData(DiagramModelInconsistencyState.ID, DiagramModelInconsistencyState.class)
                 .orElseThrow()
                 .getInconsistencies(modelType);
 
-        List<Inconsistency<String, String>> expected = diagram.inconsistencies()
-                .stream()
-                .map(inconsistency -> inconsistency.map(Box::getUUID, entity -> {
-                    if (entity instanceof CodeItem codeItem) {
-                        return Extractions.getPath(codeItem);
-                    } else if (entity instanceof Entity item) {
-                        return item.getId();
-                    }
+        List<Inconsistency<String, String>> expected = diagram.inconsistencies().stream().map(inconsistency -> inconsistency.map(Box::getUUID, entity -> {
+            if (entity instanceof CodeItem codeItem) {
+                return Extractions.getPath(codeItem);
+            } else if (entity instanceof Entity item) {
+                return item.getId();
+            }
 
-                    return null;
-                }))
-                .toList();
+            return null;
+        })).toList();
 
         return MapMetrics.from(getMapBasedInconsistencySet(expected), getMapBasedInconsistencySet(found));
     }

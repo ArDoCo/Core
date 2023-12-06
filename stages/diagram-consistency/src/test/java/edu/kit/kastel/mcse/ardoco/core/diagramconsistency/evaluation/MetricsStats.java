@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation;
 
 /**
@@ -17,9 +18,9 @@ public class MetricsStats {
      * Consider the metrics for the statistics.
      *
      * @param metrics
-     *         The metrics to add.
+     *                The metrics to add.
      * @param weight
-     *         The weight of the metrics.
+     *                The weight of the metrics.
      */
     public void add(Metrics metrics, double weight) {
         this.minF1Score = Math.min(this.minF1Score, metrics.getF1Score());

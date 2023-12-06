@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.informants;
 
 import java.io.File;
@@ -27,9 +28,9 @@ public class DiagramProviderInformant extends Informant {
      * Creates a new DiagramProviderInformant.
      *
      * @param data
-     *         The DataRepository.
+     *                    The DataRepository.
      * @param diagramFile
-     *         The file from which the diagram is loaded.
+     *                    The file from which the diagram is loaded.
      */
     public DiagramProviderInformant(DataRepository data, File diagramFile) {
         super(DiagramProviderInformant.class.getSimpleName(), data);
@@ -40,10 +41,10 @@ public class DiagramProviderInformant extends Informant {
      * Loads a diagram from a file.
      *
      * @param file
-     *         The file from which the diagram is loaded.
+     *             The file from which the diagram is loaded.
      * @return The loaded diagram.
      * @throws IOException
-     *         If the file could not be read.
+     *                     If the file could not be read.
      */
     public static Diagram load(File file) throws IOException {
         Diagram diagram;

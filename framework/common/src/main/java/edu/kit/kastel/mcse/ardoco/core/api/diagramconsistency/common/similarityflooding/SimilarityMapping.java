@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.similarityflooding;
 
 import java.util.Collection;
@@ -7,18 +8,20 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import org.jgrapht.alg.util.Pair;
+
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 
 /**
  * Stores the similarities of pairs of elements.
  *
  * @param <A>
- *         The vertex type of the first graph.
+ *            The vertex type of the first graph.
  * @param <B>
- *         The vertex type of the second graph.
+ *            The vertex type of the second graph.
  */
-@Deterministic public class SimilarityMapping<A, B> {
+@Deterministic
+public class SimilarityMapping<A, B> {
     private final Map<Pair<A, B>, Double> similarities = new LinkedHashMap<>();
     private final Function<Pair<A, B>, Double> defaultProvider;
 
@@ -26,7 +29,7 @@ import org.jgrapht.alg.util.Pair;
      * Create a new instance of the SimilarityMap, where every element is mapped to the given similarity.
      *
      * @param defaultSimilarity
-     *         The similarity to use for every element.
+     *                          The similarity to use for every element.
      */
     public SimilarityMapping(double defaultSimilarity) {
         this.defaultProvider = pair -> defaultSimilarity;
@@ -37,7 +40,7 @@ import org.jgrapht.alg.util.Pair;
      * function. The function is never called more than once for the same element.
      *
      * @param defaultProvider
-     *         The function that provides the similarity for every element.
+     *                        The function that provides the similarity for every element.
      */
     public SimilarityMapping(Function<Pair<A, B>, Double> defaultProvider) {
         this.defaultProvider = defaultProvider;
@@ -47,9 +50,9 @@ import org.jgrapht.alg.util.Pair;
      * Initialize with two lists that can be zipped together.
      *
      * @param entries
-     *         The list of entries.
+     *                     The list of entries.
      * @param similarities
-     *         The list of similarities.
+     *                     The list of similarities.
      */
     public SimilarityMapping(List<Pair<A, B>> entries, List<Double> similarities) {
         this.defaultProvider = pair -> {
@@ -78,22 +81,20 @@ import org.jgrapht.alg.util.Pair;
      * Get all similarities of the given elements.
      *
      * @param entries
-     *         The elements.
+     *                The elements.
      * @return Their similarities.
      */
     public List<Double> getMappedValues(List<Pair<A, B>> entries) {
-        return entries.stream()
-                .map(this::getSimilarity)
-                .toList();
+        return entries.stream().map(this::getSimilarity).toList();
     }
 
     /**
      * Update the similarity of a pair of elements.
      *
      * @param pair
-     *         The element pair.
+     *                   The element pair.
      * @param similarity
-     *         The new similarity.
+     *                   The new similarity.
      */
     public void updateSimilarity(Pair<A, B> pair, double similarity) {
         this.similarities.put(pair, similarity);
@@ -103,7 +104,7 @@ import org.jgrapht.alg.util.Pair;
      * Get the similarity of a pair of elements.
      *
      * @param pair
-     *         The element pair.
+     *             The element pair.
      * @return The similarity of the pair.
      */
     public double getSimilarity(Pair<A, B> pair) {
@@ -114,9 +115,9 @@ import org.jgrapht.alg.util.Pair;
      * Get the similarity of a pair of elements.
      *
      * @param a
-     *         The first element of the pair.
+     *          The first element of the pair.
      * @param b
-     *         The second element of the pair.
+     *          The second element of the pair.
      * @return The similarity of the pair.
      */
     public double getSimilarity(A a, B b) {
@@ -128,9 +129,9 @@ import org.jgrapht.alg.util.Pair;
      * similarity is computed for every pair of elements.
      *
      * @param a
-     *         The first collection.
+     *          The first collection.
      * @param b
-     *         The second collection.
+     *          The second collection.
      */
     public void prepareCartesian(Collection<A> a, Collection<B> b) {
         for (A a1 : a) {

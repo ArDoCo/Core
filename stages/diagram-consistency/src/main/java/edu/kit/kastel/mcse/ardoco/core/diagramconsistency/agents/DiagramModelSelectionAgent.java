@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.agents;
 
 import java.util.List;
@@ -23,15 +24,13 @@ public class DiagramModelSelectionAgent extends PipelineAgent {
      * Creates a new DiagramModelSelectionAgent.
      *
      * @param availableModelTypes
-     *         All model types that are in principle available, meaning their loading is attempted.
+     *                            All model types that are in principle available, meaning their loading is attempted.
      * @param dataRepository
-     *         The DataRepository.
+     *                            The DataRepository.
      */
     public DiagramModelSelectionAgent(Set<ModelType> availableModelTypes, DataRepository dataRepository) {
-        super(List.of(new WeightedSimilarityInformant(dataRepository),
-                        new DiagramElementOccurrenceFinderInformant(dataRepository),
-                        new OccurrenceToDecisionInformant(dataRepository)), DiagramModelSelectionAgent.class.getSimpleName(),
-                dataRepository);
+        super(List.of(new WeightedSimilarityInformant(dataRepository), new DiagramElementOccurrenceFinderInformant(dataRepository),
+                new OccurrenceToDecisionInformant(dataRepository)), DiagramModelSelectionAgent.class.getSimpleName(), dataRepository);
 
         this.availableModelTypes = availableModelTypes;
     }
@@ -40,9 +39,9 @@ public class DiagramModelSelectionAgent extends PipelineAgent {
      * Creates a new DiagramModelSelectionAgent.
      *
      * @param availableModelTypes
-     *      All model types that are in principle available, meaning their loading is attempted.
+     *                            All model types that are in principle available, meaning their loading is attempted.
      * @param dataRepository
-     *         The DataRepository.
+     *                            The DataRepository.
      * @return The DiagramModelSelectionAgent.
      */
     public static DiagramModelSelectionAgent get(Set<ModelType> availableModelTypes, DataRepository dataRepository) {
@@ -53,11 +52,10 @@ public class DiagramModelSelectionAgent extends PipelineAgent {
     protected void initializeState() {
         DataRepository data = this.getDataRepository();
 
-        Optional<DiagramMatchingModelSelectionState> optionalModelSelectionState = data.getData(
-                DiagramMatchingModelSelectionState.ID, DiagramMatchingModelSelectionState.class);
+        Optional<DiagramMatchingModelSelectionState> optionalModelSelectionState = data.getData(DiagramMatchingModelSelectionState.ID,
+                DiagramMatchingModelSelectionState.class);
 
-        DiagramMatchingModelSelectionState state = optionalModelSelectionState.orElseGet(
-                DiagramMatchingModelSelectionStateImpl::new);
+        DiagramMatchingModelSelectionState state = optionalModelSelectionState.orElseGet(DiagramMatchingModelSelectionStateImpl::new);
 
         state.setAvailableModelTypes(this.availableModelTypes);
 

@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.refinement;
 
 import java.util.ArrayList;
@@ -9,21 +10,22 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
-import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.Inconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.InconsistencyType;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 
 /**
  * Indicates that the direction of a line is inverted.
  *
  * @param <B>
- *         The type of the box.
+ *            The type of the box.
  * @param <E>
- *         The type of the entity.
+ *            The type of the entity.
  */
-@Deterministic public class LineInversion<B, E> extends Inconsistency<B, E> {
+@Deterministic
+public class LineInversion<B, E> extends Inconsistency<B, E> {
     private final B expectedTarget;
 
     protected LineInversion(B expectedSource, B expectedTarget) {
@@ -35,11 +37,11 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsisten
      * Discovers inconsistencies of this type in a set of basic inconsistencies.
      *
      * @param inconsistencies
-     *         The list of inconsistencies, will be modified.
+     *                        The list of inconsistencies, will be modified.
      * @param <B>
-     *         The type used to represent boxes.
+     *                        The type used to represent boxes.
      * @param <E>
-     *         The type used to represent entities.
+     *                        The type used to represent entities.
      * @return The list of inconsistencies, modified to include the newly discovered ones and without the ones that were
      *         used to discover new ones.
      */
@@ -56,8 +58,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsisten
                         if (Objects.equals(unexpectedLineInconsistency.getOtherBox(), inconsistency.getBox())) {
                             newInconsistencies.remove(unexpectedLineInconsistency);
                             newInconsistencies.remove(inconsistency);
-                            newInconsistencies.add(
-                                    new LineInversion<>(inconsistency.getBox(), unexpectedLineInconsistency.getBox()));
+                            newInconsistencies.add(new LineInversion<>(inconsistency.getBox(), unexpectedLineInconsistency.getBox()));
                         }
                     }
                 }
@@ -67,13 +68,11 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsisten
         return new ArrayList<>(newInconsistencies);
     }
 
-    private static <B, E> Map<B, Set<Inconsistency<B, E>>> getAllBoxesWithUnexpectedLines(
-            List<Inconsistency<B, E>> inconsistencies) {
+    private static <B, E> Map<B, Set<Inconsistency<B, E>>> getAllBoxesWithUnexpectedLines(List<Inconsistency<B, E>> inconsistencies) {
         Map<B, Set<Inconsistency<B, E>>> boxesWithUnexpectedLine = new LinkedHashMap<>();
         for (var inconsistency : inconsistencies) {
             if (inconsistency.getType() == InconsistencyType.UNEXPECTED_LINE) {
-                boxesWithUnexpectedLine.computeIfAbsent(inconsistency.getBox(), k -> new LinkedHashSet<>())
-                        .add(inconsistency);
+                boxesWithUnexpectedLine.computeIfAbsent(inconsistency.getBox(), k -> new LinkedHashSet<>()).add(inconsistency);
             }
         }
         return boxesWithUnexpectedLine;
@@ -113,7 +112,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsisten
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this).append("expectedTarget", this.expectedTarget)
-                .toString();
+        return new ToStringBuilder(this).append("expectedTarget", this.expectedTarget).toString();
     }
 }

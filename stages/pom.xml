@@ -9,11 +9,11 @@
 
   <artifactId>stages</artifactId>
   <packaging>pom</packaging>
-    <modules>
-        <module>diagram-consistency</module>
-    </modules>
+  <modules>
+    <module>diagram-consistency</module>
+  </modules>
 
-    <profiles>
+  <profiles>
     <profile>
       <id>complete</id>
       <activation>

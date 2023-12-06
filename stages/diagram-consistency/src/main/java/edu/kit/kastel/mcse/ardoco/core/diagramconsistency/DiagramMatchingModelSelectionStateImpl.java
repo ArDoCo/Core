@@ -1,11 +1,12 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency;
+
+import java.util.*;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.DiagramMatchingModelSelectionState;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.ElementRole;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.WeightedTextSimilarity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelType;
-
-import java.util.*;
 
 /**
  * Implementation of {@link DiagramMatchingModelSelectionState}.
@@ -50,9 +51,7 @@ public class DiagramMatchingModelSelectionStateImpl implements DiagramMatchingMo
 
     @Override
     public void addOccurrence(String diagramID, ModelType modelType, String modelID, ElementRole role) {
-        this.occurrences.computeIfAbsent(modelType, k -> new TreeMap<>())
-                .computeIfAbsent(diagramID, k -> new ArrayList<>())
-                .add(new Occurrence(modelID, role));
+        this.occurrences.computeIfAbsent(modelType, k -> new TreeMap<>()).computeIfAbsent(diagramID, k -> new ArrayList<>()).add(new Occurrence(modelID, role));
     }
 
     @Override

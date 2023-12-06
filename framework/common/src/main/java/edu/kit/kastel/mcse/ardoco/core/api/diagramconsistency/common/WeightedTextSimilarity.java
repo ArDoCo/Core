@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common;
 
 import java.util.Arrays;
@@ -5,14 +6,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import org.apache.commons.lang3.StringUtils;
 import org.jgrapht.alg.util.UnorderedPair;
+
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 
 /**
  * A text similarity function that assigns weights to specific words.
  */
-@Deterministic public class WeightedTextSimilarity {
+@Deterministic
+public class WeightedTextSimilarity {
     private static final String ALPHA_NUMERIC_PATTERN = "[a-zA-Z0-9]+";
     private final Map<UnorderedPair<String, String>, Double> cache = new java.util.LinkedHashMap<>();
     private final Map<String, Double> weights;
@@ -21,7 +24,7 @@ import org.jgrapht.alg.util.UnorderedPair;
      * Create a new weighted text similarity function.
      *
      * @param weights
-     *         The weights to use for words.
+     *                The weights to use for words.
      */
     public WeightedTextSimilarity(Map<String, Double> weights) {
         this.weights = weights;
@@ -31,13 +34,11 @@ import org.jgrapht.alg.util.UnorderedPair;
      * Get all words in a text or identifier, taking camel case into account.
      *
      * @param text
-     *         The text.
+     *             The text.
      * @return A stream of words.
      */
     public static Stream<String> getWords(String text) {
-        return Arrays.stream(StringUtils.splitByCharacterTypeCamelCase(text))
-                .filter(s -> s.matches(ALPHA_NUMERIC_PATTERN))
-                .map(String::toLowerCase);
+        return Arrays.stream(StringUtils.splitByCharacterTypeCamelCase(text)).filter(s -> s.matches(ALPHA_NUMERIC_PATTERN)).map(String::toLowerCase);
     }
 
     private static double getMaxLength(List<String> words) {
@@ -53,14 +54,13 @@ import org.jgrapht.alg.util.UnorderedPair;
      * case. Word equality is determined using the levenshtein distance.
      *
      * @param textA
-     *         The first text.
+     *              The first text.
      * @param textB
-     *         The second text.
+     *              The second text.
      * @return The similarity of the two texts, in the range [0, 1].
      */
     public double apply(String textA, String textB) {
-        return this.cache.computeIfAbsent(new UnorderedPair<>(textA, textB),
-                pair -> this.calculate(pair.getFirst(), pair.getSecond()));
+        return this.cache.computeIfAbsent(new UnorderedPair<>(textA, textB), pair -> this.calculate(pair.getFirst(), pair.getSecond()));
     }
 
     private double calculate(String textA, String textB) {
@@ -107,8 +107,7 @@ import org.jgrapht.alg.util.UnorderedPair;
             for (String wordB : b) {
                 double lengthWeightB = wordB.length() / maxB;
                 double assignedWeightB = this.weights.getOrDefault(wordB, 1.0);
-                size += TextSimilarity.byLevenshtein(wordA, wordB) * lengthWeightA * lengthWeightB * assignedWeightA
-                        * assignedWeightB;
+                size += TextSimilarity.byLevenshtein(wordA, wordB) * lengthWeightA * lengthWeightB * assignedWeightA * assignedWeightB;
             }
         }
         return size;

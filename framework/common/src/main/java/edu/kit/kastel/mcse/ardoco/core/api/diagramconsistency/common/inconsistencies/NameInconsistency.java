@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies;
 
 import java.util.Objects;
@@ -5,6 +6,7 @@ import java.util.function.Function;
 
 /**
  * Indicates that the name of a box and the name of an entity are inconsistent.
+ * 
  * @param <B> The type of the box.
  * @param <E> The type of the entity.
  */
@@ -16,13 +18,13 @@ public class NameInconsistency<B, E> extends Inconsistency<B, E> {
      * Creates a new NameInconsistency.
      *
      * @param box
-     *         The box that is part of the inconsistency.
+     *                     The box that is part of the inconsistency.
      * @param entity
-     *         The entity that is part of the inconsistency.
+     *                     The entity that is part of the inconsistency.
      * @param expectedName
-     *         The name that the entity has.
+     *                     The name that the entity has.
      * @param actualName
-     *         The name that the box has.
+     *                     The name that the box has.
      */
     public NameInconsistency(B box, E entity, String expectedName, String actualName) {
         super(box, entity);
@@ -37,8 +39,7 @@ public class NameInconsistency<B, E> extends Inconsistency<B, E> {
 
     @Override
     public <R, M> Inconsistency<R, M> map(Function<B, R> boxMapper, Function<E, M> entityMapper) {
-        return new NameInconsistency<>(boxMapper.apply(this.getBox()), entityMapper.apply(this.getEntity()),
-                this.getExpectedName(), this.getActualName());
+        return new NameInconsistency<>(boxMapper.apply(this.getBox()), entityMapper.apply(this.getEntity()), this.getExpectedName(), this.getActualName());
     }
 
     @Override
@@ -58,8 +59,8 @@ public class NameInconsistency<B, E> extends Inconsistency<B, E> {
 
     @Override
     public String toString() {
-        return String.format("NameInconsistency[box=%s, entity=%s, actualName=%s, expectedName=%s]", this.getBox(),
-                this.getEntity(), this.actualName, this.expectedName);
+        return String.format("NameInconsistency[box=%s, entity=%s, actualName=%s, expectedName=%s]", this.getBox(), this.getEntity(), this.actualName,
+                this.expectedName);
     }
 
     @Override
@@ -71,8 +72,7 @@ public class NameInconsistency<B, E> extends Inconsistency<B, E> {
         if (!super.equals(object))
             return false;
         NameInconsistency<?, ?> that = (NameInconsistency<?, ?>) object;
-        return Objects.equals(this.getActualName(), that.getActualName()) && Objects.equals(this.getExpectedName(),
-                that.getExpectedName());
+        return Objects.equals(this.getActualName(), that.getActualName()) && Objects.equals(this.getExpectedName(), that.getExpectedName());
     }
 
     @Override

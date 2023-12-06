@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.rules;
 
 import java.util.List;
@@ -18,8 +19,7 @@ public class SameNameForLinkedElements extends Rule {
             return List.of();
         }
 
-        if (DiagramUtility.getBoxText(box)
-                .equals(entity.getName())) {
+        if (DiagramUtility.getBoxText(box).equals(entity.getName())) {
             return List.of();
         }
 

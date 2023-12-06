@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies;
 
 import java.util.Objects;
@@ -8,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * Indicates that the hierarchy is inconsistent, meaning the parent of a box is not as expected.
+ * 
  * @param <B> The type of the box.
  * @param <E> The type of the entity.
  */
@@ -18,11 +20,11 @@ public class HierarchyInconsistency<B, E> extends Inconsistency<B, E> {
      * Creates a new NameInconsistency.
      *
      * @param box
-     *         The box that is inconsistent.
+     *                       The box that is inconsistent.
      * @param entity
-     *         The entity that is inconsistent.
+     *                       The entity that is inconsistent.
      * @param expectedParent
-     *         The expected parent of the box.
+     *                       The expected parent of the box.
      */
     public HierarchyInconsistency(B box, E entity, B expectedParent) {
         super(box, entity);
@@ -31,8 +33,9 @@ public class HierarchyInconsistency<B, E> extends Inconsistency<B, E> {
 
     @Override
     public <R, M> Inconsistency<R, M> map(Function<B, R> boxMapper, Function<E, M> entityMapper) {
-        return new HierarchyInconsistency<>(boxMapper.apply(this.getBox()), entityMapper.apply(this.getEntity()),
-                this.getExpectedParent() == null ? null : boxMapper.apply(this.getExpectedParent()));
+        return new HierarchyInconsistency<>(boxMapper.apply(this.getBox()), entityMapper.apply(this.getEntity()), this.getExpectedParent() == null ?
+                null :
+                boxMapper.apply(this.getExpectedParent()));
     }
 
     /**
@@ -74,7 +77,6 @@ public class HierarchyInconsistency<B, E> extends Inconsistency<B, E> {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this).append("expectedParent", this.expectedParent)
-                .toString();
+        return new ToStringBuilder(this).append("expectedParent", this.expectedParent).toString();
     }
 }

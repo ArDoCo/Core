@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.informants;
 
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class InconsistencyGroupingInformant extends Informant {
      * Creates a new InconsistencyGroupingInformant.
      *
      * @param data
-     *         The DataRepository.
+     *             The DataRepository.
      */
     public InconsistencyGroupingInformant(DataRepository data) {
         super(InconsistencyGroupingInformant.class.getSimpleName(), data);
@@ -32,12 +33,9 @@ public class InconsistencyGroupingInformant extends Informant {
     public void run() {
         DataRepository data = this.getDataRepository();
 
-        DiagramMatchingModelSelectionState selection = data.getData(DiagramMatchingModelSelectionState.ID,
-                        DiagramMatchingModelSelectionStateImpl.class)
+        DiagramMatchingModelSelectionState selection = data.getData(DiagramMatchingModelSelectionState.ID, DiagramMatchingModelSelectionStateImpl.class)
                 .orElse(null);
-        DiagramModelInconsistencyState inconsistencyState = data.getData(DiagramModelInconsistencyState.ID,
-                        DiagramModelInconsistencyState.class)
-                .orElse(null);
+        DiagramModelInconsistencyState inconsistencyState = data.getData(DiagramModelInconsistencyState.ID, DiagramModelInconsistencyState.class).orElse(null);
 
         if (selection == null || inconsistencyState == null) {
             this.logger.error("InconsistencyGroupingInformant: Could not find all required data.");
@@ -45,16 +43,14 @@ public class InconsistencyGroupingInformant extends Informant {
         }
 
         for (var selectedModelType : selection.getSelection()) {
-            List<Inconsistency<String, String>> inconsistencies = inconsistencyState.getExtendedInconsistencies(
-                    selectedModelType);
+            List<Inconsistency<String, String>> inconsistencies = inconsistencyState.getExtendedInconsistencies(selectedModelType);
 
             Map<String, List<Inconsistency<String, String>>> groups = new LinkedHashMap<>();
             List<Inconsistency<String, String>> ungrouped = new ArrayList<>();
 
             for (var inconsistency : inconsistencies) {
                 if (inconsistency.getBox() != null) {
-                    groups.computeIfAbsent(inconsistency.getBox(), k -> new ArrayList<>())
-                            .add(inconsistency);
+                    groups.computeIfAbsent(inconsistency.getBox(), k -> new ArrayList<>()).add(inconsistency);
                 } else {
                     ungrouped.add(inconsistency);
                 }
@@ -62,12 +58,10 @@ public class InconsistencyGroupingInformant extends Informant {
 
             List<Inconsistency<String, String>> newInconsistencies = new ArrayList<>(ungrouped);
             for (var group : groups.entrySet()) {
-                if (group.getValue()
-                        .size() > 1) {
+                if (group.getValue().size() > 1) {
                     newInconsistencies.add(new Group<>(group.getKey(), group.getValue()));
                 } else {
-                    newInconsistencies.add(group.getValue()
-                            .get(0));
+                    newInconsistencies.add(group.getValue().get(0));
                 }
             }
 

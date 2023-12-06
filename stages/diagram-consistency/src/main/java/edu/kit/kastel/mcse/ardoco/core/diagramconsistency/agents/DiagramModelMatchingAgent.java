@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.agents;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public class DiagramModelMatchingAgent extends PipelineAgent {
      * Creates a new DiagramModelMatchingAgent.
      *
      * @param data
-     *         The DataRepository.
+     *             The DataRepository.
      */
     public DiagramModelMatchingAgent(DataRepository data) {
         super(List.of(new DiagramModelLinkInformant(data)), DiagramModelMatchingAgent.class.getSimpleName(), data);
@@ -27,7 +28,7 @@ public class DiagramModelMatchingAgent extends PipelineAgent {
      * Creates a new DiagramModelMatchingAgent.
      *
      * @param data
-     *         The DataRepository.
+     *             The DataRepository.
      * @return The DiagramModelMatchingAgent.
      */
     public static DiagramModelMatchingAgent get(DataRepository data) {
@@ -37,8 +38,7 @@ public class DiagramModelMatchingAgent extends PipelineAgent {
     @Override
     protected void initializeState() {
         DataRepository data = this.getDataRepository();
-        Optional<DiagramModelLinkState> optionalDiagramModelLinkState = data.getData(DiagramModelLinkState.ID,
-                DiagramModelLinkState.class);
+        Optional<DiagramModelLinkState> optionalDiagramModelLinkState = data.getData(DiagramModelLinkState.ID, DiagramModelLinkState.class);
         DiagramModelLinkState state = optionalDiagramModelLinkState.orElseGet(DiagramModelLinkStateImpl::new);
 
         if (optionalDiagramModelLinkState.isEmpty()) {

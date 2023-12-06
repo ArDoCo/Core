@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation;
 
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationMetrics;
@@ -51,7 +52,6 @@ public interface Metrics {
      * @return The F1 score.
      */
     default double getF1Score() {
-        return EvaluationMetrics.calculateF1(this.getTruePositiveCount(), this.getFalsePositiveCount(),
-                this.getFalseNegativeCount());
+        return EvaluationMetrics.calculateF1(this.getTruePositiveCount(), this.getFalsePositiveCount(), this.getFalseNegativeCount());
     }
 }

@@ -1,24 +1,24 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactoring;
 
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Edge;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Vertex;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.InconsistencyType;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.MissingLineInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.AnnotatedGraph;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Edge;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Vertex;
 
 /**
  * This refactoring removes a line between two elements.
  *
  * @param <R>
- *         The type of the representatives that represent the model elements, e.g. boxes in a diagram.
+ *            The type of the representatives that represent the model elements, e.g. boxes in a diagram.
  * @param <M>
- *         The type of the model elements.
+ *            The type of the model elements.
  */
 public class Disconnect<R, M> extends Refactoring<R, M> {
     @Override
     public boolean applyTo(AnnotatedGraph<R, M> graph) {
-        Vertex<R> vertexToDisconnect = this.selectEntry(graph.graph()
-                .vertexSet(), vertex -> this.isDisconnectingValid(graph, vertex));
+        Vertex<R> vertexToDisconnect = this.selectEntry(graph.graph().vertexSet(), vertex -> this.isDisconnectingValid(graph, vertex));
         if (vertexToDisconnect == null) {
             return false;
         }
@@ -26,17 +26,14 @@ public class Disconnect<R, M> extends Refactoring<R, M> {
         Vertex<R> targetVertex = this.selectEntry(graph.graph()
                 .outgoingEdgesOf(vertexToDisconnect)
                 .stream()
-                .filter(edge -> edge.getLabel()
-                        .equals(Edge.Label.DEFAULT))
-                .map(edge -> graph.graph()
-                        .getEdgeTarget(edge))
+                .filter(edge -> edge.getLabel().equals(Edge.Label.DEFAULT))
+                .map(edge -> graph.graph().getEdgeTarget(edge))
                 .toList());
         if (targetVertex == null) {
             return false;
         }
 
-        graph.graph()
-                .removeEdge(vertexToDisconnect, targetVertex);
+        graph.graph().removeEdge(vertexToDisconnect, targetVertex);
 
         graph.addInconsistency(new MissingLineInconsistency<>(vertexToDisconnect, targetVertex));
 
@@ -50,19 +47,15 @@ public class Disconnect<R, M> extends Refactoring<R, M> {
         }
 
         // Disconnecting is not possible if there are no outgoing lines.
-        if (graph.graph()
-                .outgoingEdgesOf(vertexToDisconnect)
-                .stream()
-                .noneMatch(edge -> edge.getLabel()
-                        .equals(Edge.Label.DEFAULT))) {
+        if (graph.graph().outgoingEdgesOf(vertexToDisconnect).stream().noneMatch(edge -> edge.getLabel().equals(Edge.Label.DEFAULT))) {
             return false;
         }
 
         // Disconnecting a vertex that is unexpectedly connected might repair that inconsistency.
         boolean isUnexpectedlyConnected = graph.inconsistencies()
                 .stream()
-                .anyMatch(inconsistency -> inconsistency.getBox() != null && inconsistency.getBox()
-                        .equals(vertexToDisconnect) && inconsistency.getType() == InconsistencyType.UNEXPECTED_LINE);
+                .anyMatch(inconsistency -> inconsistency.getBox() != null && inconsistency.getBox().equals(vertexToDisconnect) && inconsistency
+                        .getType() == InconsistencyType.UNEXPECTED_LINE);
 
         return !isUnexpectedlyConnected;
     }

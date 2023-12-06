@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.informants;
 
 import java.io.File;
@@ -10,8 +11,6 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.function.Consumer;
 
-import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram;
-
 import org.eclipse.collections.api.bimap.MutableBiMap;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 import org.jgrapht.alg.util.Pair;
@@ -22,6 +21,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.DiagramMatchingModelSelectionState;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.JsonMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.CodeModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelElement;
@@ -37,8 +37,8 @@ import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactoring
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactoring.Rename;
 
 class Stage1SyntheticDiagramTest extends SyntheticTestBase {
-    private static Result calculateResult(Diagram syntheticDiagram, DiagramMatchingModelSelectionState selectionState, MutableBiMap<String, String> expectedLinksInArchitecture,
-            MutableBiMap<String, String> expectedLinksInCode, GeneralModelType selected,
+    private static Result calculateResult(Diagram syntheticDiagram, DiagramMatchingModelSelectionState selectionState,
+            MutableBiMap<String, String> expectedLinksInArchitecture, MutableBiMap<String, String> expectedLinksInCode, GeneralModelType selected,
             boolean selectionIsArchitecture, Decision expected) {
         int countInArchitecture = 0;
         int countInCode = 0;
@@ -47,49 +47,42 @@ class Stage1SyntheticDiagramTest extends SyntheticTestBase {
         int unnecessaryLinksInCode = 0;
 
         for (var box : syntheticDiagram.getBoxes()) {
-            List<DiagramMatchingModelSelectionState.Occurrence> occurrencesInArchitecture = selectionState.getOccurrences(
-                    box.getUUID(), ArchitectureModelType.UML);
+            List<DiagramMatchingModelSelectionState.Occurrence> occurrencesInArchitecture = selectionState.getOccurrences(box.getUUID(),
+                    ArchitectureModelType.UML);
             if (!occurrencesInArchitecture.isEmpty()) {
                 countInArchitecture++;
 
                 var expectedLink = expectedLinksInArchitecture.get(box.getUUID());
 
                 for (var occurrence : occurrencesInArchitecture) {
-                    if (!occurrence.modelID()
-                            .equals(expectedLink)) {
+                    if (!occurrence.modelID().equals(expectedLink)) {
                         unnecessaryLinksInArchitecture++;
                     }
                 }
             }
-            List<DiagramMatchingModelSelectionState.Occurrence> occurrencesInCode = selectionState.getOccurrences(
-                    box.getUUID(), CodeModelType.CODE_MODEL);
+            List<DiagramMatchingModelSelectionState.Occurrence> occurrencesInCode = selectionState.getOccurrences(box.getUUID(), CodeModelType.CODE_MODEL);
             if (!occurrencesInCode.isEmpty()) {
                 countInCode++;
 
                 var expectedLink = expectedLinksInCode.get(box.getUUID());
 
                 for (var occurrence : occurrencesInCode) {
-                    if (!occurrence.modelID()
-                            .equals(expectedLink)) {
+                    if (!occurrence.modelID().equals(expectedLink)) {
                         unnecessaryLinksInCode++;
                     }
                 }
             }
         }
 
-        double ratioInArchitecture = (double) countInArchitecture / syntheticDiagram.getBoxes()
-                .size();
-        double ratioInCode = (double) countInCode / syntheticDiagram.getBoxes()
-                .size();
+        double ratioInArchitecture = (double) countInArchitecture / syntheticDiagram.getBoxes().size();
+        double ratioInCode = (double) countInCode / syntheticDiagram.getBoxes().size();
 
-        double percentageOfUnnecessaryLinksInArchitecture =
-                (double) unnecessaryLinksInArchitecture / countInArchitecture;
+        double percentageOfUnnecessaryLinksInArchitecture = (double) unnecessaryLinksInArchitecture / countInArchitecture;
         double percentageOfUnnecessaryLinksInCode = (double) unnecessaryLinksInCode / countInCode;
 
-        Decision actual = new Decision(selected, selectionIsArchitecture ? ratioInArchitecture : ratioInCode,
-                selectionIsArchitecture
-                        ? percentageOfUnnecessaryLinksInArchitecture
-                        : percentageOfUnnecessaryLinksInCode);
+        Decision actual = new Decision(selected, selectionIsArchitecture ? ratioInArchitecture : ratioInCode, selectionIsArchitecture ?
+                percentageOfUnnecessaryLinksInArchitecture :
+                percentageOfUnnecessaryLinksInCode);
 
         return new Result(expected, actual, selectionIsArchitecture ? ratioInCode : ratioInArchitecture);
     }
@@ -100,12 +93,9 @@ class Stage1SyntheticDiagramTest extends SyntheticTestBase {
     @Disabled
     void examineStage1Base(DiagramProject project) throws IOException {
         Consumer<Result> printer = (result) -> {
-            double difference = result.actual()
-                    .ratio() - result.otherRatio();
+            double difference = result.actual().ratio() - result.otherRatio();
             try {
-                this.writer.write(String.format("%s: r: %s, u: %s, d: %s%n", result.expected()
-                        .type(), result.actual()
-                        .ratio(), result.actual()
+                this.writer.write(String.format("%s: r: %s, u: %s, d: %s%n", result.expected().type(), result.actual().ratio(), result.actual()
                         .percentageOfUnnecessaryLinks(), difference));
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -117,11 +107,8 @@ class Stage1SyntheticDiagramTest extends SyntheticTestBase {
     }
 
     private Result examineStage1(DiagramProject project, GeneralModelType generalModelType) throws IOException {
-        String name = project.name()
-                .toLowerCase(Locale.ROOT);
-        File inputArchitectureModel = project.getSourceProject()
-                .getProject()
-                .getModelFile(ArchitectureModelType.UML);
+        String name = project.name().toLowerCase(Locale.ROOT);
+        File inputArchitectureModel = project.getSourceProject().getProject().getModelFile(ArchitectureModelType.UML);
         File inputCodeModel = new File(Objects.requireNonNull(project.getSourceProject().getCodeModelDirectory())).getAbsoluteFile();
         File inputDiagram = File.createTempFile("temp", ".json");
         File outputDir = new File(PIPELINE_OUTPUT);
@@ -134,8 +121,7 @@ class Stage1SyntheticDiagramTest extends SyntheticTestBase {
         Diagram syntheticDiagram = preparedDiagram.getFirst();
         MutableBiMap<String, String> expectedLinks = preparedDiagram.getSecond();
 
-        Decision expected = new Decision(generalModelType, (double) expectedLinks.size() / syntheticDiagram.getBoxes()
-                .size(), 0.0);
+        Decision expected = new Decision(generalModelType, (double) expectedLinks.size() / syntheticDiagram.getBoxes().size(), 0.0);
 
         JsonMapping.OBJECT_MAPPER.writeValue(inputDiagram, syntheticDiagram);
 
@@ -145,9 +131,7 @@ class Stage1SyntheticDiagramTest extends SyntheticTestBase {
         runner.setUp(inputArchitectureModel, inputCodeModel, inputDiagram, outputDir, config);
         runner.run();
 
-        ModelStates models = runner.getDataRepository()
-                .getData(ModelStates.ID, ModelStates.class)
-                .orElseThrow();
+        ModelStates models = runner.getDataRepository().getData(ModelStates.ID, ModelStates.class).orElseThrow();
         DiagramMatchingModelSelectionState selectionState = runner.getDataRepository()
                 .getData(DiagramMatchingModelSelectionState.ID, DiagramMatchingModelSelectionStateImpl.class)
                 .orElseThrow();
@@ -156,28 +140,23 @@ class Stage1SyntheticDiagramTest extends SyntheticTestBase {
             return new Result(expected, null, 0.0);
         }
 
-        boolean selectionIsArchitecture = selectionState.getSelection()
-                .contains(ArchitectureModelType.UML);
+        boolean selectionIsArchitecture = selectionState.getSelection().contains(ArchitectureModelType.UML);
         GeneralModelType selected = selectionIsArchitecture ? GeneralModelType.ARCHITECTURE : GeneralModelType.CODE;
 
-        MutableBiMap<String, String> expectedLinksInArchitecture = selectionIsArchitecture
-                ? expectedLinks
-                : new HashBiMap<>();
+        MutableBiMap<String, String> expectedLinksInArchitecture = selectionIsArchitecture ? expectedLinks : new HashBiMap<>();
         MutableBiMap<String, String> expectedLinksInCode = selectionIsArchitecture ? new HashBiMap<>() : expectedLinks;
 
         return calculateResult(syntheticDiagram, selectionState, expectedLinksInArchitecture, expectedLinksInCode, selected, selectionIsArchitecture, expected);
     }
 
-    private Pair<Diagram, MutableBiMap<String, String>> prepareDiagram(DiagramProject project,
-            GeneralModelType generalModelType) {
+    private Pair<Diagram, MutableBiMap<String, String>> prepareDiagram(DiagramProject project, GeneralModelType generalModelType) {
         switch (generalModelType) {
         case ARCHITECTURE -> {
             AnnotatedDiagram<ArchitectureItem> diagram = getAnnotatedArchitectureDiagram(project);
 
-            diagram = applyRefactoring(diagram, new RefactoringBundle<>(Map.of(new Rename<>(),
-                    (int) (REFACTORING_RATIO * diagram.diagram()
-                            .getBoxes()
-                            .size()))));
+            diagram = applyRefactoring(diagram, new RefactoringBundle<>(Map.of(new Rename<>(), (int) (REFACTORING_RATIO * diagram.diagram()
+                    .getBoxes()
+                    .size()))));
             if (diagram == null) {
                 return null;
             }
@@ -192,10 +171,9 @@ class Stage1SyntheticDiagramTest extends SyntheticTestBase {
                 return null;
             }
 
-            diagram = applyRefactoring(diagram, new RefactoringBundle<>(Map.of(new Rename<>(),
-                    (int) (REFACTORING_RATIO * diagram.diagram()
-                            .getBoxes()
-                            .size()))));
+            diagram = applyRefactoring(diagram, new RefactoringBundle<>(Map.of(new Rename<>(), (int) (REFACTORING_RATIO * diagram.diagram()
+                    .getBoxes()
+                    .size()))));
             if (diagram == null) {
                 return null;
             }

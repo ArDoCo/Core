@@ -94,6 +94,7 @@ public class Datatype extends CodeItem {
     public void setCompilationUnit(CodeCompilationUnit compilationUnit) {
         this.compilationUnitId = compilationUnit.getId();
     }
+
     public void setParentDatatype(Datatype parentDatatype) {
         this.parentDatatypeId = parentDatatype.getId();
     }

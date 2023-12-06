@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.informants;
 
 import java.util.Set;
@@ -9,20 +10,20 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.DiagramMatchingMod
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.DiagramState;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.DiagramUtility;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.ElementRole;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Extractions;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.TextSimilarity;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelType;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.ArchitectureModel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.ArchitectureModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItem;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.DiagramStateImpl;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Extractions;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 
 /**
@@ -49,15 +50,12 @@ public class DiagramElementOccurrenceFinderInformant extends Informant {
     @Configurable
     private TextSimilarityFunction similarityFunction = TextSimilarityFunction.ADAPTED_JACCARD;
 
-    private <E extends Entity> void findOccurrences(Input<E> input, ElementRole role, double threshold,
-            DiagramMatchingModelSelectionState selection) {
+    private <E extends Entity> void findOccurrences(Input<E> input, ElementRole role, double threshold, DiagramMatchingModelSelectionState selection) {
         BiFunction<String, String, Double> similarity = this.getSimilarityFunction(selection);
-        for (var box : input.diagram()
-                .getBoxes()) {
+        for (var box : input.diagram().getBoxes()) {
             for (var element : input.elements()) {
                 if (similarity.apply(DiagramUtility.getBoxText(box), element.getName()) > threshold) {
-                    selection.addOccurrence(box.getUUID(),input.modelType(), input.idProvider()
-                            .apply(element), role);
+                    selection.addOccurrence(box.getUUID(), input.modelType(), input.idProvider().apply(element), role);
                 }
             }
         }
@@ -67,7 +65,7 @@ public class DiagramElementOccurrenceFinderInformant extends Informant {
      * Creates a new DiagramElementOccurrenceFinderInformant.
      *
      * @param dataRepository
-     *         The DataRepository.
+     *                       The DataRepository.
      */
     public DiagramElementOccurrenceFinderInformant(DataRepository dataRepository) {
         super(DiagramElementOccurrenceFinderInformant.class.getSimpleName(), dataRepository);
@@ -81,12 +79,9 @@ public class DiagramElementOccurrenceFinderInformant extends Informant {
 
         DataRepository data = this.getDataRepository();
 
-        ModelStates models = data.getData(ModelStates.ID, ModelStates.class)
-                .orElse(null);
-        DiagramState diagram = data.getData(DiagramState.ID, DiagramStateImpl.class)
-                .orElse(null);
-        DiagramMatchingModelSelectionState selection = data.getData(DiagramMatchingModelSelectionState.ID,
-                        DiagramMatchingModelSelectionState.class)
+        ModelStates models = data.getData(ModelStates.ID, ModelStates.class).orElse(null);
+        DiagramState diagram = data.getData(DiagramState.ID, DiagramStateImpl.class).orElse(null);
+        DiagramMatchingModelSelectionState selection = data.getData(DiagramMatchingModelSelectionState.ID, DiagramMatchingModelSelectionState.class)
                 .orElse(null);
 
         if (models == null || diagram == null || selection == null) {
@@ -97,21 +92,16 @@ public class DiagramElementOccurrenceFinderInformant extends Informant {
         this.findOccurrencesInModels(diagram, models, selection);
     }
 
-    private void findOccurrencesInModels(DiagramState diagramState, ModelStates models,
-            DiagramMatchingModelSelectionState selection) {
+    private void findOccurrencesInModels(DiagramState diagramState, ModelStates models, DiagramMatchingModelSelectionState selection) {
         for (var modelType : selection.getAvailableModelTypes()) {
             Model model = models.getModel(modelType.getModelId());
             if (model instanceof ArchitectureModel architectureModel) {
-                for (var entry : Extractions.extractItemsFromModel(architectureModel)
-                        .entrySet()) {
-                    this.findOccurrencesInArchitecture(architectureModel, modelType, diagramState.getDiagram(), entry.getKey(),
-                            entry.getValue(), selection);
+                for (var entry : Extractions.extractItemsFromModel(architectureModel).entrySet()) {
+                    this.findOccurrencesInArchitecture(architectureModel, modelType, diagramState.getDiagram(), entry.getKey(), entry.getValue(), selection);
                 }
             } else if (model instanceof CodeModel codeModel) {
-                for (var entry : Extractions.extractItemsFromModel(codeModel)
-                        .entrySet()) {
-                    this.findOccurrencesInCode(codeModel, modelType, diagramState.getDiagram(), entry.getKey(), entry.getValue(),
-                            selection);
+                for (var entry : Extractions.extractItemsFromModel(codeModel).entrySet()) {
+                    this.findOccurrencesInCode(codeModel, modelType, diagramState.getDiagram(), entry.getKey(), entry.getValue(), selection);
                 }
             } else {
                 throw new IllegalArgumentException("Unexpected model type: " + modelType);
@@ -119,25 +109,22 @@ public class DiagramElementOccurrenceFinderInformant extends Informant {
         }
     }
 
-    private void findOccurrencesInArchitecture(Model model, ModelType modelType, Diagram diagram, ElementRole role,
-            Set<ArchitectureItem> elements, DiagramMatchingModelSelectionState selection) {
-        this.findOccurrences(new Input<>(model, modelType, diagram, elements, ArchitectureItem::getId), role,
-                this.similarityThresholdArchitecture, selection);
+    private void findOccurrencesInArchitecture(Model model, ModelType modelType, Diagram diagram, ElementRole role, Set<ArchitectureItem> elements,
+            DiagramMatchingModelSelectionState selection) {
+        this.findOccurrences(new Input<>(model, modelType, diagram, elements, ArchitectureItem::getId), role, this.similarityThresholdArchitecture, selection);
     }
 
     private void findOccurrencesInCode(Model model, ModelType modelType, Diagram diagram, ElementRole role, Set<CodeItem> elements,
             DiagramMatchingModelSelectionState selection) {
-        this.findOccurrences(new Input<>(model, modelType, diagram, elements, Extractions::getPath), role,
-                this.similarityThresholdCode, selection);
+        this.findOccurrences(new Input<>(model, modelType, diagram, elements, Extractions::getPath), role, this.similarityThresholdCode, selection);
     }
 
     private BiFunction<String, String, Double> getSimilarityFunction(DiagramMatchingModelSelectionState selection) {
         return switch (this.similarityFunction) {
-            case LEVENSHTEIN -> TextSimilarity::byLevenshteinCaseInsensitive;
-            case JARO_WINKLER -> TextSimilarity::byJaroWinkler;
-            case JACCARD -> TextSimilarity::byJaccard;
-            case ADAPTED_JACCARD -> (a, b) -> selection.getSimilarityFunction()
-                    .apply(a, b);
+        case LEVENSHTEIN -> TextSimilarity::byLevenshteinCaseInsensitive;
+        case JARO_WINKLER -> TextSimilarity::byJaroWinkler;
+        case JACCARD -> TextSimilarity::byJaccard;
+        case ADAPTED_JACCARD -> (a, b) -> selection.getSimilarityFunction().apply(a, b);
         };
     }
 
@@ -163,8 +150,7 @@ public class DiagramElementOccurrenceFinderInformant extends Informant {
         ADAPTED_JACCARD
     }
 
-    private record Input<E extends Entity>(Model model, ModelType modelType, Diagram diagram, Set<E> elements,
-                                           Function<E, String> idProvider) {
+    private record Input<E extends Entity>(Model model, ModelType modelType, Diagram diagram, Set<E> elements, Function<E, String> idProvider) {
 
     }
 

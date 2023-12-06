@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data;
 
 import java.io.File;
@@ -48,6 +49,7 @@ public enum DiagramProject {
     private final String path;
     private final CodeProject sourceProject;
     private final ModelType modelType;
+
     DiagramProject(String path, CodeProject sourceProject, ModelType modelType) {
         this.path = path;
         this.sourceProject = sourceProject;
@@ -78,8 +80,7 @@ public enum DiagramProject {
      * @return The diagram file.
      */
     public File getDiagramFile() {
-        URL resource = this.getDeclaringClass()
-                .getResource(this.getPath(DIAGRAM_FILE_NAME));
+        URL resource = this.getDeclaringClass().getResource(this.getPath(DIAGRAM_FILE_NAME));
 
         if (resource == null) {
             throw new RuntimeException("Could not find diagram file for " + this.name());
@@ -93,7 +94,7 @@ public enum DiagramProject {
      *
      * @return The text in the file.
      * @throws IOException
-     *         If the file could not be read.
+     *                     If the file could not be read.
      */
     public String getDiagram() throws IOException {
         return this.readFromPath(this.getPath(DIAGRAM_FILE_NAME));
@@ -104,7 +105,7 @@ public enum DiagramProject {
      *
      * @return The text in the file.
      * @throws IOException
-     *         If the file could not be read.
+     *                     If the file could not be read.
      */
     public String getIdentificationStage() throws IOException {
         return this.readFromPath(this.getPath(IDENTIFICATION_STAGE_FILE_NAME));
@@ -115,7 +116,7 @@ public enum DiagramProject {
      *
      * @return The text in the file.
      * @throws IOException
-     *         If the file could not be read.
+     *                     If the file could not be read.
      */
     public String getLinkingStage() throws IOException {
         return this.readFromPath(this.getPath(LINKING_STAGE_FILE_NAME));
@@ -126,7 +127,7 @@ public enum DiagramProject {
      *
      * @return The text in the file.
      * @throws IOException
-     *         If the file could not be read.
+     *                     If the file could not be read.
      */
     public String getValidationStage() throws IOException {
         return this.readFromPath(this.getPath(VALIDATION_STAGE_FILE_NAME));
@@ -137,8 +138,7 @@ public enum DiagramProject {
     }
 
     private String readFromPath(String path) throws IOException {
-        try (InputStream stream = this.getDeclaringClass()
-                .getResourceAsStream(path)) {
+        try (InputStream stream = this.getDeclaringClass().getResourceAsStream(path)) {
             if (stream == null) {
                 throw new IOException("Could not create stream for path " + path);
             }

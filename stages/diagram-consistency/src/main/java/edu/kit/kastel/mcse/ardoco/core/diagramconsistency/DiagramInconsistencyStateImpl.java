@@ -1,13 +1,14 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency;
-
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.DiagramModelInconsistencyState;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.Inconsistency;
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelType;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.DiagramModelInconsistencyState;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.Inconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelType;
 
 /**
  * Implementation of {@link DiagramModelInconsistencyState}.
@@ -18,8 +19,7 @@ public class DiagramInconsistencyStateImpl implements DiagramModelInconsistencyS
 
     @Override
     public void addInconsistency(ModelType modelType, Inconsistency<String, String> inconsistency) {
-        this.inconsistencies.computeIfAbsent(modelType, k -> new ArrayList<>())
-                .add(inconsistency);
+        this.inconsistencies.computeIfAbsent(modelType, k -> new ArrayList<>()).add(inconsistency);
     }
 
     @Override

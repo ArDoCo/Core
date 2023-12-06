@@ -1,16 +1,18 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.stage2;
 
 import org.eclipse.collections.api.bimap.MutableBiMap;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * All links between the diagram elements and the model elements.
  *
  * @param name
- *         The name of the diagram.
+ *              The name of the diagram.
  * @param links
- *         The links between the diagram elements and the model elements.
+ *              The links between the diagram elements and the model elements.
  */
 public record ElementLinks(@JsonProperty("name") String name, @JsonProperty("links") Link[] links) {
     /**

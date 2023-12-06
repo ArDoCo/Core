@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.similarityflooding;
 
 import java.util.ArrayList;
@@ -14,9 +15,9 @@ public interface FixpointFormula {
     /**
      * Add the three given mappings together.
      *
-     * @param first The first mapping.
+     * @param first  The first mapping.
      * @param second The second mapping.
-     * @param third The third mapping.
+     * @param third  The third mapping.
      * @return The sum of the mappings.
      */
     static List<Double> add(List<Double> first, List<Double> second, List<Double> third) {
@@ -27,9 +28,9 @@ public interface FixpointFormula {
      * Add the two given mappings together.
      *
      * @param first
-     *         The first mapping.
+     *               The first mapping.
      * @param second
-     *         The second mapping.
+     *               The second mapping.
      * @return The sum of the mappings.
      */
     static List<Double> add(List<Double> first, List<Double> second) {
@@ -49,22 +50,17 @@ public interface FixpointFormula {
      * Normalize the given mapping.
      *
      * @param mapping
-     *         The mapping to normalize.
+     *                The mapping to normalize.
      * @return The normalized mapping.
      */
     static List<Double> normalize(List<Double> mapping) {
-        double max = mapping.stream()
-                .mapToDouble(Double::doubleValue)
-                .max()
-                .orElse(0.0);
+        double max = mapping.stream().mapToDouble(Double::doubleValue).max().orElse(0.0);
 
         if (max == 0) {
             return mapping;
         }
 
-        return mapping.stream()
-                .map(value -> value / max)
-                .toList();
+        return mapping.stream().map(value -> value / max).toList();
     }
 
     /**
@@ -75,8 +71,7 @@ public interface FixpointFormula {
      * @return The basic formula.
      */
     static FixpointFormula getBasicFormula() {
-        return (initialMapping, previousMapping, flood) -> FixpointFormula.normalize(
-                FixpointFormula.add(previousMapping, flood.apply(previousMapping)));
+        return (initialMapping, previousMapping, flood) -> FixpointFormula.normalize(FixpointFormula.add(previousMapping, flood.apply(previousMapping)));
     }
 
     /**
@@ -86,8 +81,7 @@ public interface FixpointFormula {
      * @return The basic formula.
      */
     static FixpointFormula getAFormula() {
-        return (initialMapping, previousMapping, flood) -> FixpointFormula.normalize(
-                FixpointFormula.add(initialMapping, flood.apply(previousMapping)));
+        return (initialMapping, previousMapping, flood) -> FixpointFormula.normalize(FixpointFormula.add(initialMapping, flood.apply(previousMapping)));
     }
 
     /**
@@ -97,8 +91,7 @@ public interface FixpointFormula {
      * @return The basic formula.
      */
     static FixpointFormula getBFormula() {
-        return (initialMapping, previousMapping, flood) -> FixpointFormula.normalize(
-                flood.apply(FixpointFormula.add(initialMapping, previousMapping)));
+        return (initialMapping, previousMapping, flood) -> FixpointFormula.normalize(flood.apply(FixpointFormula.add(initialMapping, previousMapping)));
     }
 
     /**
@@ -108,22 +101,20 @@ public interface FixpointFormula {
      * @return The basic formula.
      */
     static FixpointFormula getCFormula() {
-        return (initialMapping, previousMapping, flood) -> FixpointFormula.normalize(
-                FixpointFormula.add(initialMapping, previousMapping,
-                        flood.apply(FixpointFormula.add(initialMapping, previousMapping))));
+        return (initialMapping, previousMapping, flood) -> FixpointFormula.normalize(FixpointFormula.add(initialMapping, previousMapping, flood.apply(
+                FixpointFormula.add(initialMapping, previousMapping))));
     }
 
     /**
      * Calculate the next mapping based on the previous mapping.
      *
      * @param initialMapping
-     *         The initial mapping.
+     *                        The initial mapping.
      * @param previousMapping
-     *         The previous mapping.
+     *                        The previous mapping.
      * @param flood
-     *         The flooding function.
+     *                        The flooding function.
      * @return The next mapping.
      */
-    List<Double> calculate(List<Double> initialMapping, List<Double> previousMapping,
-            UnaryOperator<List<Double>> flood);
+    List<Double> calculate(List<Double> initialMapping, List<Double> previousMapping, UnaryOperator<List<Double>> flood);
 }

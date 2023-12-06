@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -10,9 +11,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import javax.annotation.Nullable;
 
-import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
+import javax.annotation.Nullable;
 
 import org.eclipse.collections.api.bimap.MutableBiMap;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
@@ -24,12 +24,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.Inconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.ArchitectureModel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.CodeModel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItem;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItemRepository;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.AnnotatedDiagram;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.AnnotatedGraph;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.DiagramProject;
@@ -53,7 +54,6 @@ public class EvaluationBase {
 
     protected FileWriter writer;
 
-
     @BeforeAll
     static void init() {
         File output = new File(TEST_OUTPUT);
@@ -66,9 +66,7 @@ public class EvaluationBase {
 
     @BeforeEach
     void init(TestInfo testInfo) throws IOException {
-        File output = new File(TEST_OUTPUT + "/" + testInfo.getTestMethod()
-                .map(Method::getName)
-                .orElse("unknown"));
+        File output = new File(TEST_OUTPUT + "/" + testInfo.getTestMethod().map(Method::getName).orElse("unknown"));
         boolean created = output.mkdirs();
         if (created) {
             logger.info("Created output directory: {}", output.getAbsolutePath());
@@ -88,15 +86,11 @@ public class EvaluationBase {
 
     protected static List<DiagramProject> getDistinctDiagrams() {
         Set<CodeProject> projects = new LinkedHashSet<>();
-        return getDiagrams().stream()
-                .filter(d -> projects.add(d.getSourceProject()))
-                .toList();
+        return getDiagrams().stream().filter(d -> projects.add(d.getSourceProject())).toList();
     }
 
     protected static ArchitectureModel getArchitectureModel(DiagramProject project) {
-        File model = project.getSourceProject()
-                .getProject()
-                .getModelFile(ArchitectureModelType.UML);
+        File model = project.getSourceProject().getProject().getModelFile(ArchitectureModelType.UML);
         UmlExtractor extractor = new UmlExtractor(model.getAbsolutePath());
 
         ArchitectureModel architectureModel = extractor.extractModel();
@@ -105,8 +99,7 @@ public class EvaluationBase {
     }
 
     protected static CodeModel getCodeModel(DiagramProject project) {
-        File model = new File(project.getSourceProject()
-                .getCodeModelDirectory());
+        File model = new File(project.getSourceProject().getCodeModelDirectory());
         CodeExtractor extractor = new AllLanguagesExtractor(new CodeItemRepository(), model.getAbsolutePath());
 
         CodeModel codeModel = extractor.readInCodeModel();
@@ -114,8 +107,7 @@ public class EvaluationBase {
         return codeModel;
     }
 
-    protected static <M> @Nullable AnnotatedDiagram<M> applyRefactoring(AnnotatedDiagram<M> diagram,
-            Refactoring<Box, M> refactoring) {
+    protected static <M> @Nullable AnnotatedDiagram<M> applyRefactoring(AnnotatedDiagram<M> diagram, Refactoring<Box, M> refactoring) {
         AnnotatedGraph<Box, M> graph = AnnotatedGraph.createFrom(diagram);
 
         boolean successful = refactoring.applyTo(graph);
@@ -135,8 +127,7 @@ public class EvaluationBase {
         return diagram;
     }
 
-    protected static <B, E> MutableBiMap<Inconsistency<B, E>, Inconsistency<B, E>> getMapBasedInconsistencySet(
-            List<Inconsistency<B, E>> inconsistencies) {
+    protected static <B, E> MutableBiMap<Inconsistency<B, E>, Inconsistency<B, E>> getMapBasedInconsistencySet(List<Inconsistency<B, E>> inconsistencies) {
         MutableBiMap<Inconsistency<B, E>, Inconsistency<B, E>> map = new HashBiMap<>();
         for (Inconsistency<B, E> inconsistency : inconsistencies) {
             map.put(inconsistency, inconsistency);

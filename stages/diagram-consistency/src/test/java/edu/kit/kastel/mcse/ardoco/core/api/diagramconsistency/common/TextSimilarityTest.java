@@ -1,10 +1,9 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
-
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.TextSimilarity;
 
 class TextSimilarityTest {
     @Test

@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.refinement;
 
 import java.util.List;
@@ -13,9 +14,9 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsisten
  * A group of inconsistencies that all belong to the same box.
  *
  * @param <B>
- *         The type of the box.
+ *            The type of the box.
  * @param <E>
- *         The type of the entity.
+ *            The type of the entity.
  */
 public class Group<B, E> extends Inconsistency<B, E> {
     private final List<Inconsistency<B, E>> inconsistencies;
@@ -24,9 +25,9 @@ public class Group<B, E> extends Inconsistency<B, E> {
      * Creates a new Group.
      *
      * @param box
-     *         The box.
+     *                        The box.
      * @param inconsistencies
-     *         The inconsistencies.
+     *                        The inconsistencies.
      */
     public Group(B box, List<Inconsistency<B, E>> inconsistencies) {
         super(box, null);
@@ -64,7 +65,6 @@ public class Group<B, E> extends Inconsistency<B, E> {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this).append("inconsistencies", this.inconsistencies)
-                .toString();
+        return new ToStringBuilder(this).append("inconsistencies", this.inconsistencies).toString();
     }
 }

@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common;
 
 import org.jgrapht.graph.DefaultEdge;
@@ -14,7 +15,7 @@ public class Edge extends DefaultEdge implements LabeledEdge<Edge.Label> {
      * Creates a new edge with the given label.
      *
      * @param label
-     *         The label of the edge.
+     *              The label of the edge.
      */
     public Edge(Label label) {
         this.label = label;

@@ -1,22 +1,23 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.informants;
-
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.DiagramMatchingModelSelectionState;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.ElementRole;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.WeightedTextSimilarity;
-import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.ArchitectureModel;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.CodeModel;
-import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
-import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Extractions;
-import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.DiagramMatchingModelSelectionState;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.ElementRole;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Extractions;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.WeightedTextSimilarity;
+import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.ArchitectureModel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.CodeModel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
+import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
+import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 
 /**
  * Provides a weighted similarity function based on the word count in element names.
@@ -27,12 +28,11 @@ public class WeightedSimilarityInformant extends Informant {
     @Configurable
     private boolean skip = false;
 
-
     /**
      * Creates a new WeightedSimilarityInformant.
      *
      * @param dataRepository
-     *         The DataRepository.
+     *                       The DataRepository.
      */
     public WeightedSimilarityInformant(DataRepository dataRepository) {
         super(WeightedSimilarityInformant.class.getSimpleName(), dataRepository);
@@ -46,10 +46,8 @@ public class WeightedSimilarityInformant extends Informant {
 
         DataRepository data = this.getDataRepository();
 
-        ModelStates models = data.getData(ModelStates.ID, ModelStates.class)
-                .orElse(null);
-        DiagramMatchingModelSelectionState selection = data.getData(DiagramMatchingModelSelectionState.ID,
-                        DiagramMatchingModelSelectionState.class)
+        ModelStates models = data.getData(ModelStates.ID, ModelStates.class).orElse(null);
+        DiagramMatchingModelSelectionState selection = data.getData(DiagramMatchingModelSelectionState.ID, DiagramMatchingModelSelectionState.class)
                 .orElse(null);
 
         if (models == null || selection == null) {
@@ -83,18 +81,13 @@ public class WeightedSimilarityInformant extends Informant {
     private <E extends Entity> void countWords(Map<ElementRole, Set<E>> elements, Map<String, Integer> wordCounts) {
         for (var entry : elements.entrySet()) {
             for (Entity element : entry.getValue()) {
-                WeightedTextSimilarity.getWords(element.getName())
-                        .forEach(word -> wordCounts.merge(word, 1, Integer::sum));
+                WeightedTextSimilarity.getWords(element.getName()).forEach(word -> wordCounts.merge(word, 1, Integer::sum));
             }
         }
     }
 
     private Map<String, Double> calculateWeights(Map<String, Integer> wordCounts) {
-        double max = wordCounts.values()
-                .stream()
-                .mapToInt(Integer::intValue)
-                .max()
-                .orElse(0);
+        double max = wordCounts.values().stream().mapToInt(Integer::intValue).max().orElse(0);
         Map<String, Double> weights = new TreeMap<>();
 
         double weightRange = 1.0 - this.minWeight;

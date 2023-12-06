@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.refinement;
 
 import java.util.ArrayList;
@@ -7,21 +8,22 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
 
-import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.Inconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.InconsistencyType;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 
 /**
  * Indicates that some box texts use different casing conventions that the model.
  *
  * @param <B>
- *         The type of the box.
+ *            The type of the box.
  * @param <E>
- *         The type of the entity.
+ *            The type of the entity.
  */
-@Deterministic public class Casing<B, E> extends Inconsistency<B, E> {
+@Deterministic
+public class Casing<B, E> extends Inconsistency<B, E> {
     private final List<B> boxes = new ArrayList<>();
     private final List<String> expectedNames = new ArrayList<>();
 
@@ -35,11 +37,11 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsisten
      * Discovers inconsistencies of this type in a set of basic inconsistencies.
      *
      * @param inconsistencies
-     *         The list of inconsistencies, will be modified.
+     *                        The list of inconsistencies, will be modified.
      * @param <B>
-     *         The type used to represent boxes.
+     *                        The type used to represent boxes.
      * @param <E>
-     *         The type used to represent entities.
+     *                        The type used to represent entities.
      * @return The list of inconsistencies, modified to include the newly discovered ones and without the ones that were
      *         used to discover new ones.
      */
@@ -69,11 +71,8 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsisten
         return new ArrayList<>(newInconsistencies);
     }
 
-    private static <B, E> List<Inconsistency<B, E>> getAllNameInconsistencies(
-            Set<Inconsistency<B, E>> inconsistencies) {
-        return inconsistencies.stream()
-                .filter(inconsistency -> inconsistency.getType() == InconsistencyType.NAME_INCONSISTENCY)
-                .toList();
+    private static <B, E> List<Inconsistency<B, E>> getAllNameInconsistencies(Set<Inconsistency<B, E>> inconsistencies) {
+        return inconsistencies.stream().filter(inconsistency -> inconsistency.getType() == InconsistencyType.NAME_INCONSISTENCY).toList();
     }
 
     @Override
@@ -83,9 +82,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsisten
 
     @Override
     public <R, M> Inconsistency<R, M> map(Function<B, R> boxMapper, Function<E, M> entityMapper) {
-        return new Casing<>(this.boxes.stream()
-                .map(boxMapper)
-                .toList(), this.expectedNames);
+        return new Casing<>(this.boxes.stream().map(boxMapper).toList(), this.expectedNames);
     }
 
     @Override
@@ -112,8 +109,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsisten
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this).append("boxes", this.boxes)
-                .append("expectedNames", this.expectedNames)
-                .toString();
+        return new ToStringBuilder(this).append("boxes", this.boxes).append("expectedNames", this.expectedNames).toString();
     }
 }

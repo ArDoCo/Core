@@ -1,3 +1,4 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.informants;
 
 import java.util.LinkedHashMap;
@@ -41,7 +42,7 @@ public class OccurrenceToDecisionInformant extends Informant {
      * Creates a new OccurrenceToDecisionInformant.
      *
      * @param dataRepository
-     *         The DataRepository.
+     *                       The DataRepository.
      */
     public OccurrenceToDecisionInformant(DataRepository dataRepository) {
         super(OccurrenceToDecisionInformant.class.getSimpleName(), dataRepository);
@@ -55,12 +56,9 @@ public class OccurrenceToDecisionInformant extends Informant {
 
         DataRepository data = this.getDataRepository();
 
-        ModelStates models = data.getData(ModelStates.ID, ModelStates.class)
-                .orElse(null);
-        DiagramState diagram = data.getData(DiagramState.ID, DiagramStateImpl.class)
-                .orElse(null);
-        DiagramMatchingModelSelectionState selection = data.getData(DiagramMatchingModelSelectionState.ID,
-                        DiagramMatchingModelSelectionState.class)
+        ModelStates models = data.getData(ModelStates.ID, ModelStates.class).orElse(null);
+        DiagramState diagram = data.getData(DiagramState.ID, DiagramStateImpl.class).orElse(null);
+        DiagramMatchingModelSelectionState selection = data.getData(DiagramMatchingModelSelectionState.ID, DiagramMatchingModelSelectionState.class)
                 .orElse(null);
 
         if (models == null || diagram == null || selection == null) {
@@ -75,8 +73,7 @@ public class OccurrenceToDecisionInformant extends Informant {
         selection.setSelectionExplanation(ratios);
     }
 
-    private Map<ModelType, Double> calculateRatios(DiagramState diagramState,
-            DiagramMatchingModelSelectionState selection) {
+    private Map<ModelType, Double> calculateRatios(DiagramState diagramState, DiagramMatchingModelSelectionState selection) {
         Map<ModelType, Double> ratios = new LinkedHashMap<>();
 
         for (var modelType : selection.getAvailableModelTypes()) {
@@ -114,14 +111,12 @@ public class OccurrenceToDecisionInformant extends Informant {
         int numberOfElementsWithOccurrences = 0;
 
         for (var box : diagram.getBoxes()) {
-            if (!selection.getOccurrences(box.getUUID(), modelType)
-                    .isEmpty()) {
+            if (!selection.getOccurrences(box.getUUID(), modelType).isEmpty()) {
                 numberOfElementsWithOccurrences++;
             }
         }
 
-        return (double) numberOfElementsWithOccurrences / (double) diagram.getBoxes()
-                .size();
+        return (double) numberOfElementsWithOccurrences / (double) diagram.getBoxes().size();
     }
 
     @Override

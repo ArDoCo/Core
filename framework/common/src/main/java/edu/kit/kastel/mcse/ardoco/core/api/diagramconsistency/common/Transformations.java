@@ -1,24 +1,5 @@
+/* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common;
-
-import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Connector;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram;
-import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureComponent;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureInterface;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.ArchitectureModel;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItem;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.CodeModel;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodePackage;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.Datatype;
-
-import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
-import org.jgrapht.Graph;
-import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.graph.DirectedMultigraph;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -29,10 +10,31 @@ import java.util.SortedMap;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
+import org.jgrapht.Graph;
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.DirectedMultigraph;
+
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Connector;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram;
+import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.ArchitectureModel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.CodeModel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureComponent;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureInterface;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItem;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodePackage;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.Datatype;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
+
 /**
  * Utility to transform diagrams and models to graphs.
  */
-@Deterministic public final class Transformations {
+@Deterministic
+public final class Transformations {
     private Transformations() {
 
     }
@@ -41,7 +43,7 @@ import java.util.function.Function;
      * Transforms a diagram to a graph.
      *
      * @param diagram
-     *         The diagram to transform.
+     *                The diagram to transform.
      * @return The graph.
      */
     public static DirectedMultigraph<Vertex<Box>, Edge> toGraph(Diagram diagram) {
@@ -77,18 +79,18 @@ import java.util.function.Function;
      * Transforms an architecture model to a graph.
      *
      * @param model
-     *         The architecture model to transform.
+     *              The architecture model to transform.
      * @return The graph.
      */
     public static DirectedMultigraph<Vertex<ArchitectureItem>, Edge> toGraph(ArchitectureModel model) {
         DirectedMultigraph<Vertex<ArchitectureItem>, Edge> graph = new DirectedMultigraph<>(null, null, false);
 
         transform(model, item -> {
-                    Vertex<ArchitectureItem> vertex = new Vertex<>(item, item.getName());
-                    graph.addVertex(vertex);
-                    return vertex;
-                }, (source, target) -> graph.addEdge(source, target, new Edge(Edge.Label.DEFAULT)),
-                (child, parent) -> graph.addEdge(child, parent, new Edge(Edge.Label.HIERARCHY)));
+            Vertex<ArchitectureItem> vertex = new Vertex<>(item, item.getName());
+            graph.addVertex(vertex);
+            return vertex;
+        }, (source, target) -> graph.addEdge(source, target, new Edge(Edge.Label.DEFAULT)), (child, parent) -> graph.addEdge(child, parent, new Edge(
+                Edge.Label.HIERARCHY)));
 
         return graph;
     }
@@ -97,18 +99,18 @@ import java.util.function.Function;
      * Transforms an architecture model to a graph.
      *
      * @param model
-     *         The architecture model to transform.
+     *                          The architecture model to transform.
      * @param vertexSupplier
-     *         A function that creates a vertex from an architecture item.
+     *                          A function that creates a vertex from an architecture item.
      * @param edgeConsumer
-     *         A function that adds a default edge to the graph.
+     *                          A function that adds a default edge to the graph.
      * @param hierarchyConsumer
-     *         A function that adds a hierarchy edge to the graph.
+     *                          A function that adds a hierarchy edge to the graph.
      * @param <V>
-     *         The type of the vertices.
+     *                          The type of the vertices.
      */
-    public static <V> void transform(ArchitectureModel model, Function<ArchitectureItem, V> vertexSupplier,
-            BiConsumer<V, V> edgeConsumer, BiConsumer<V, V> hierarchyConsumer) {
+    public static <V> void transform(ArchitectureModel model, Function<ArchitectureItem, V> vertexSupplier, BiConsumer<V, V> edgeConsumer,
+            BiConsumer<V, V> hierarchyConsumer) {
         Map<ArchitectureInterface, List<ArchitectureComponent>> providers = new LinkedHashMap<>();
         Map<ArchitectureComponent, V> components = new LinkedHashMap<>();
 
@@ -118,8 +120,7 @@ import java.util.function.Function;
                 components.put(component, vertex);
 
                 for (ArchitectureInterface provided : component.getProvidedInterfaces()) {
-                    providers.computeIfAbsent(provided, k -> new ArrayList<>())
-                            .add(component);
+                    providers.computeIfAbsent(provided, k -> new ArrayList<>()).add(component);
                 }
             }
         }
@@ -150,18 +151,18 @@ import java.util.function.Function;
      * Transforms a code model to a graph.
      *
      * @param model
-     *         The code model to transform.
+     *              The code model to transform.
      * @return The graph.
      */
     public static DirectedMultigraph<Vertex<CodeItem>, Edge> toGraph(CodeModel model) {
         DirectedMultigraph<Vertex<CodeItem>, Edge> graph = new DirectedMultigraph<>(null, null, false);
 
         transform(model, item -> {
-                    Vertex<CodeItem> vertex = new Vertex<>(item, item.getName());
-                    graph.addVertex(vertex);
-                    return vertex;
-                }, (source, target) -> graph.addEdge(source, target, new Edge(Edge.Label.DEFAULT)),
-                (child, parent) -> graph.addEdge(child, parent, new Edge(Edge.Label.HIERARCHY)));
+            Vertex<CodeItem> vertex = new Vertex<>(item, item.getName());
+            graph.addVertex(vertex);
+            return vertex;
+        }, (source, target) -> graph.addEdge(source, target, new Edge(Edge.Label.DEFAULT)), (child, parent) -> graph.addEdge(child, parent, new Edge(
+                Edge.Label.HIERARCHY)));
 
         return graph;
     }
@@ -170,18 +171,17 @@ import java.util.function.Function;
      * Transform a code model using provided functions.
      *
      * @param model
-     *         The code model to transform.
+     *                          The code model to transform.
      * @param vertexSupplier
-     *         A function that creates a vertex from a code item.
+     *                          A function that creates a vertex from a code item.
      * @param edgeConsumer
-     *         A function that adds a default edge to the graph.
+     *                          A function that adds a default edge to the graph.
      * @param hierarchyConsumer
-     *         A function that adds a hierarchy edge to the graph.
+     *                          A function that adds a hierarchy edge to the graph.
      * @param <V>
-     *         The type of the vertices.
+     *                          The type of the vertices.
      */
-    public static <V> void transform(CodeModel model, Function<CodeItem, V> vertexSupplier,
-            BiConsumer<V, V> edgeConsumer, BiConsumer<V, V> hierarchyConsumer) {
+    public static <V> void transform(CodeModel model, Function<CodeItem, V> vertexSupplier, BiConsumer<V, V> edgeConsumer, BiConsumer<V, V> hierarchyConsumer) {
         Map<CodeItem, V> vertices = new LinkedHashMap<>();
         Graph<CodePackage, DefaultEdge> packages = new DirectedMultigraph<>(DefaultEdge.class);
 
@@ -276,18 +276,17 @@ import java.util.function.Function;
      * Transform any known model type using provided functions.
      *
      * @param model
-     *         The model to transform.
+     *                          The model to transform.
      * @param vertexSupplier
-     *         A function that creates a vertex from an entity.
+     *                          A function that creates a vertex from an entity.
      * @param edgeConsumer
-     *         A function that adds a default edge to the graph.
+     *                          A function that adds a default edge to the graph.
      * @param hierarchyConsumer
-     *         A function that adds a hierarchy edge to the graph.
+     *                          A function that adds a hierarchy edge to the graph.
      * @param <V>
-     *         The type of the vertices.
+     *                          The type of the vertices.
      */
-    public static <V> void transformAny(Model model, Function<Entity, V> vertexSupplier, BiConsumer<V, V> edgeConsumer,
-            BiConsumer<V, V> hierarchyConsumer) {
+    public static <V> void transformAny(Model model, Function<Entity, V> vertexSupplier, BiConsumer<V, V> edgeConsumer, BiConsumer<V, V> hierarchyConsumer) {
         if (model instanceof ArchitectureModel architectureModel) {
             transform(architectureModel, vertexSupplier::apply, edgeConsumer, hierarchyConsumer);
         } else if (model instanceof CodeModel codeModel) {
