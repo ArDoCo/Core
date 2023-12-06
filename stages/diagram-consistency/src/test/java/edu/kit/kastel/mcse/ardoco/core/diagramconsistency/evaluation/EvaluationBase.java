@@ -15,8 +15,6 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
-
 import org.eclipse.collections.api.bimap.MutableBiMap;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 import org.junit.jupiter.api.AfterEach;
