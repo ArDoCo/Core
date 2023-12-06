@@ -44,7 +44,7 @@ class ConverterUtilTest {
     void testGetChildPhrasesSentence() {
         // no child phrases
         SentenceImpl sentence1 = new SentenceImpl(0, null, null);
-        sentence1.setPhrases(Lists.immutable.empty());
+        sentence1.setPhrases(Lists.mutable.empty());
         List<Phrase> expected1 = new ArrayList<>();
         List<Phrase> actual1 = ConverterUtil.getChildPhrases(sentence1);
         Assertions.assertEquals(expected1, actual1);
@@ -53,7 +53,7 @@ class ConverterUtilTest {
         Phrase childPhrase1 = new PhraseImpl(null, null, new ArrayList<>());
         Phrase childPhrase2 = new PhraseImpl(null, null, new ArrayList<>());
         SentenceImpl sentence2 = new SentenceImpl(0, null, null);
-        sentence2.setPhrases(Lists.immutable.of(childPhrase1, childPhrase2));
+        sentence2.setPhrases(Lists.mutable.of(childPhrase1, childPhrase2));
         List<Phrase> expected2 = List.of(childPhrase1, childPhrase2);
         List<Phrase> actual2 = ConverterUtil.getChildPhrases(sentence2);
         Assertions.assertEquals(expected2, actual2);
@@ -63,7 +63,7 @@ class ConverterUtilTest {
         Phrase childPhrase4 = new PhraseImpl(null, null, new ArrayList<>());
         Phrase parentPhrase3 = new PhraseImpl(null, null, List.of(childPhrase3, childPhrase4));
         SentenceImpl sentence3 = new SentenceImpl(0, null, null);
-        sentence3.setPhrases(Lists.immutable.of(parentPhrase3));
+        sentence3.setPhrases(Lists.mutable.of(parentPhrase3));
         List<Phrase> expected3 = List.of(parentPhrase3);
         List<Phrase> actual3 = ConverterUtil.getChildPhrases(sentence3);
         Assertions.assertEquals(expected3, actual3);

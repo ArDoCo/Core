@@ -105,7 +105,7 @@ public final class TestUtil {
         Phrase phrase1 = new PhraseImpl(Lists.immutable.of(words.get(3)), PhraseType.S, subphrases);
         List<Phrase> phrases = new ArrayList<>(List.of(phrase1));
         Phrase rootPhrase = new PhraseImpl(Lists.immutable.empty(), PhraseType.ROOT, phrases);
-        sentence1.setPhrases(Lists.immutable.of(rootPhrase));
+        sentence1.setPhrases(Lists.mutable.of(rootPhrase));
 
         List<Sentence> sentences = new ArrayList<>();
         sentences.add(sentence1);
@@ -221,7 +221,7 @@ public final class TestUtil {
         Phrase phrase1 = new PhraseImpl(Lists.immutable.of(words.get(3)), PhraseType.S, subphrases);
         List<Phrase> phrases = new ArrayList<>(List.of(phrase1));
         Phrase rootPhrase = new PhraseImpl(Lists.immutable.empty(), PhraseType.ROOT, phrases);
-        sentence1.setPhrases(Lists.immutable.of(rootPhrase));
+        sentence1.setPhrases(Lists.mutable.of(rootPhrase));
 
         sentences.add(sentence1);
 
@@ -239,7 +239,7 @@ public final class TestUtil {
         Phrase phrase2 = new PhraseImpl(Lists.immutable.of(words2.get(3)), PhraseType.S, subphrases2);
         List<Phrase> phrases2 = new ArrayList<>(List.of(phrase2));
         Phrase rootPhrase2 = new PhraseImpl(Lists.immutable.empty(), PhraseType.ROOT, phrases2);
-        sentence2.setPhrases(Lists.immutable.of(rootPhrase2));
+        sentence2.setPhrases(Lists.mutable.of(rootPhrase2));
 
         sentences.add(sentence2);
 
@@ -307,7 +307,7 @@ public final class TestUtil {
         Phrase phrase1 = new PhraseImpl(Lists.immutable.ofAll(words), PhraseType.INTJ, new ArrayList<>());
         List<Phrase> phrases = new ArrayList<>(List.of(phrase1));
         Phrase rootPhrase = new PhraseImpl(Lists.immutable.empty(), PhraseType.ROOT, phrases);
-        sentence1.setPhrases(Lists.immutable.of(rootPhrase));
+        sentence1.setPhrases(Lists.mutable.of(rootPhrase));
 
         List<Sentence> sentences = new ArrayList<>();
         sentences.add(sentence1);
