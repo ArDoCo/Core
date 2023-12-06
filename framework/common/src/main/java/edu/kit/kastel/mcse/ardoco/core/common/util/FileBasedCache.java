@@ -26,7 +26,7 @@ public abstract class FileBasedCache<T> implements AutoCloseable {
     private boolean flagRead = false;
     private boolean flagWrite = false;
     private T currentState = null;
-    private T originalState = null;
+    private int originalStateHash;
 
     /**
      * Writes the content to the file at {@link #getFile()}
@@ -40,18 +40,20 @@ public abstract class FileBasedCache<T> implements AutoCloseable {
      */
     public T getOrRead() {
         if (currentState == null) {
+            T fileState = null;
             try {
-                originalState = read();
+                fileState = read();
             } catch (CacheException e) {
                 try {
                     resetFile();
-                    originalState = read();
+                    fileState = read();
                 } catch (CacheException ex) {
                     //If resetting doesn't solve the issue, fail entirely
                     throw new RuntimeException(ex);
                 }
             }
-            currentState = originalState;
+            originalStateHash = fileState.hashCode();
+            currentState = fileState;
             flagRead = true;
         }
         return currentState;
@@ -169,7 +171,7 @@ public abstract class FileBasedCache<T> implements AutoCloseable {
             if (currentState == null) {
                 deleteFile();
             } else {
-                if (currentState != originalState) {
+                if (currentState.hashCode() != originalStateHash) {
                     write(currentState);
                 }
             }

@@ -89,7 +89,9 @@ public final class AbbreviationDisambiguationHelper extends FileBasedCache<Linke
             return;
         var disambiguations = getPersistent();
         disambiguations.merge(disambiguation.getAbbreviation(), disambiguation, Disambiguation::addMeanings);
-        getInstance().cache(disambiguations);
+        try(var fbCache = getInstance()) {
+            fbCache.cache(disambiguations);
+        }
         ambiguated = new LinkedHashMap<>();
     }
 
