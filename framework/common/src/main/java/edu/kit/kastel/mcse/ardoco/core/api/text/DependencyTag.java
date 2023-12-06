@@ -1,10 +1,12 @@
 /* Licensed under MIT 2021-2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.text;
 
+import java.io.Serializable;
+
 /**
  * All possible dependency tags in the framework.
  */
-public enum DependencyTag {
+public enum DependencyTag implements Serializable {
 
     /**
      * An appositional modifier of an NP is an NP immediately to the right of the first NP that serves to define or

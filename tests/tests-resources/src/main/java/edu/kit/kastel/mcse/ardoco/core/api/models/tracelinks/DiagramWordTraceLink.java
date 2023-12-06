@@ -1,6 +1,7 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -23,7 +24,7 @@ public class DiagramWordTraceLink extends DiagramTextTraceLink {
 
     private final Word word;
     private final double confidence;
-    private final Object origin;
+    private final Serializable origin;
 
     private final TreeSet<DiagramWordTraceLink> relatedWordLinks = new TreeSet<>();
     private final TreeSet<DiagramGoldStandardTraceLink> relatedGSLinks = new TreeSet<>();

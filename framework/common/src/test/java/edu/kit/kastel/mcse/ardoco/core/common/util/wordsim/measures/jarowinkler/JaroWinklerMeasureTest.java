@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonContext;
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.UnicodeCharacter;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.UnicodeCharacterMatchFunctions;
 
 public class JaroWinklerMeasureTest {
     private static final double delta = 0.01;
@@ -19,32 +19,33 @@ public class JaroWinklerMeasureTest {
     @Test
     void testSimilarityDirectly() {
         String s = null;
-        assertThrows(IllegalArgumentException.class, () -> UnicodeJaroWinklerSimilarity.apply(s, s, UnicodeCharacter.EQUAL));
-        assertThrows(IllegalArgumentException.class, () -> UnicodeJaroWinklerSimilarity.apply("foo", null, UnicodeCharacter.EQUAL));
-        assertThrows(IllegalArgumentException.class, () -> UnicodeJaroWinklerSimilarity.apply(null, "foo", UnicodeCharacter.EQUAL));
-        assertEquals(1.0, UnicodeJaroWinklerSimilarity.apply("", "", UnicodeCharacter.EQUAL), delta);
-        assertEquals(1.0, UnicodeJaroWinklerSimilarity.apply("foo", "foo", UnicodeCharacter.EQUAL), delta);
-        assertEquals(0.94, UnicodeJaroWinklerSimilarity.apply("foo", "foo ", UnicodeCharacter.EQUAL), delta);
-        assertEquals(0.91, UnicodeJaroWinklerSimilarity.apply("foo", "foo  ", UnicodeCharacter.EQUAL), delta);
-        assertEquals(0.87, UnicodeJaroWinklerSimilarity.apply("foo", " foo ", UnicodeCharacter.EQUAL), delta);
-        assertEquals(0.51, UnicodeJaroWinklerSimilarity.apply("foo", "  foo", UnicodeCharacter.EQUAL), delta);
-        assertEquals(0.0, UnicodeJaroWinklerSimilarity.apply("", "a", UnicodeCharacter.EQUAL), delta);
-        assertEquals(0.0, UnicodeJaroWinklerSimilarity.apply("aaapppp", "", UnicodeCharacter.EQUAL), delta);
-        assertEquals(0.93, UnicodeJaroWinklerSimilarity.apply("frog", "fog", UnicodeCharacter.EQUAL), delta);
-        assertEquals(0.0, UnicodeJaroWinklerSimilarity.apply("fly", "ant", UnicodeCharacter.EQUAL));
-        assertEquals(0.44, UnicodeJaroWinklerSimilarity.apply("elephant", "hippo", UnicodeCharacter.EQUAL), delta);
-        assertEquals(0.44, UnicodeJaroWinklerSimilarity.apply("hippo", "elephant", UnicodeCharacter.EQUAL), delta);
-        assertEquals(0.0, UnicodeJaroWinklerSimilarity.apply("hippo", "zzzzzzzz", UnicodeCharacter.EQUAL), delta);
-        assertEquals(0.88, UnicodeJaroWinklerSimilarity.apply("hello", "hallo", UnicodeCharacter.EQUAL), delta);
-        assertEquals(0.91, UnicodeJaroWinklerSimilarity.apply("ABC Corporation", "ABC Corp", UnicodeCharacter.EQUAL), delta);
-        assertEquals(0.95, UnicodeJaroWinklerSimilarity.apply("D N H Enterprises Inc", "D & H Enterprises, Inc.", UnicodeCharacter.EQUAL), delta);
-        assertEquals(0.94, UnicodeJaroWinklerSimilarity.apply("My Gym Children's Fitness Center", "My Gym. Childrens Fitness", UnicodeCharacter.EQUAL), delta);
-        assertEquals(0.89, UnicodeJaroWinklerSimilarity.apply("PENNSYLVANIA", "PENNCISYLVNIA", UnicodeCharacter.EQUAL), delta);
+        assertThrows(IllegalArgumentException.class, () -> UnicodeJaroWinklerSimilarity.apply(s, s, UnicodeCharacterMatchFunctions.EQUAL));
+        assertThrows(IllegalArgumentException.class, () -> UnicodeJaroWinklerSimilarity.apply("foo", null, UnicodeCharacterMatchFunctions.EQUAL));
+        assertThrows(IllegalArgumentException.class, () -> UnicodeJaroWinklerSimilarity.apply(null, "foo", UnicodeCharacterMatchFunctions.EQUAL));
+        assertEquals(1.0, UnicodeJaroWinklerSimilarity.apply("", "", UnicodeCharacterMatchFunctions.EQUAL), delta);
+        assertEquals(1.0, UnicodeJaroWinklerSimilarity.apply("foo", "foo", UnicodeCharacterMatchFunctions.EQUAL), delta);
+        assertEquals(0.94, UnicodeJaroWinklerSimilarity.apply("foo", "foo ", UnicodeCharacterMatchFunctions.EQUAL), delta);
+        assertEquals(0.91, UnicodeJaroWinklerSimilarity.apply("foo", "foo  ", UnicodeCharacterMatchFunctions.EQUAL), delta);
+        assertEquals(0.87, UnicodeJaroWinklerSimilarity.apply("foo", " foo ", UnicodeCharacterMatchFunctions.EQUAL), delta);
+        assertEquals(0.51, UnicodeJaroWinklerSimilarity.apply("foo", "  foo", UnicodeCharacterMatchFunctions.EQUAL), delta);
+        assertEquals(0.0, UnicodeJaroWinklerSimilarity.apply("", "a", UnicodeCharacterMatchFunctions.EQUAL), delta);
+        assertEquals(0.0, UnicodeJaroWinklerSimilarity.apply("aaapppp", "", UnicodeCharacterMatchFunctions.EQUAL), delta);
+        assertEquals(0.93, UnicodeJaroWinklerSimilarity.apply("frog", "fog", UnicodeCharacterMatchFunctions.EQUAL), delta);
+        assertEquals(0.0, UnicodeJaroWinklerSimilarity.apply("fly", "ant", UnicodeCharacterMatchFunctions.EQUAL));
+        assertEquals(0.44, UnicodeJaroWinklerSimilarity.apply("elephant", "hippo", UnicodeCharacterMatchFunctions.EQUAL), delta);
+        assertEquals(0.44, UnicodeJaroWinklerSimilarity.apply("hippo", "elephant", UnicodeCharacterMatchFunctions.EQUAL), delta);
+        assertEquals(0.0, UnicodeJaroWinklerSimilarity.apply("hippo", "zzzzzzzz", UnicodeCharacterMatchFunctions.EQUAL), delta);
+        assertEquals(0.88, UnicodeJaroWinklerSimilarity.apply("hello", "hallo", UnicodeCharacterMatchFunctions.EQUAL), delta);
+        assertEquals(0.91, UnicodeJaroWinklerSimilarity.apply("ABC Corporation", "ABC Corp", UnicodeCharacterMatchFunctions.EQUAL), delta);
+        assertEquals(0.95, UnicodeJaroWinklerSimilarity.apply("D N H Enterprises Inc", "D & H Enterprises, Inc.", UnicodeCharacterMatchFunctions.EQUAL), delta);
+        assertEquals(0.94, UnicodeJaroWinklerSimilarity.apply("My Gym Children's Fitness Center", "My Gym. Childrens Fitness",
+                UnicodeCharacterMatchFunctions.EQUAL), delta);
+        assertEquals(0.89, UnicodeJaroWinklerSimilarity.apply("PENNSYLVANIA", "PENNCISYLVNIA", UnicodeCharacterMatchFunctions.EQUAL), delta);
     }
 
     @Test
     void testHomoglyphSimilarity() {
         var measure = new JaroWinklerMeasure();
-        assertEquals(1d, measure.getSimilarity(new ComparisonContext("ℜ𝘂ᖯʏ", "Ruby", UnicodeCharacter.EQUAL_OR_HOMOGLYPH)), delta);
+        assertEquals(1d, measure.getSimilarity(new ComparisonContext("ℜ𝘂ᖯʏ", "Ruby", UnicodeCharacterMatchFunctions.EQUAL_OR_HOMOGLYPH)), delta);
     }
 }

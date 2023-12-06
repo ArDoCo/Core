@@ -2,7 +2,6 @@
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim;
 
 import java.util.Objects;
-import java.util.function.BiFunction;
 import java.util.stream.IntStream;
 
 import org.eclipse.collections.api.list.ImmutableList;
@@ -54,7 +53,7 @@ public record UnicodeCharacterSequence(ImmutableList<UnicodeCharacter> character
      * @param oth            the other UnicodeCharacterSequence
      * @param characterMatch the function applied to determine if two UnicodeCharacters match
      */
-    public boolean match(@NotNull UnicodeCharacterSequence oth, @NotNull BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> characterMatch) {
+    public boolean match(@NotNull UnicodeCharacterSequence oth, @NotNull UnicodeCharacterMatchFunctions characterMatch) {
         if (this == oth)
             return true;
         if (length() != oth.length())

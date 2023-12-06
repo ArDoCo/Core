@@ -1,13 +1,14 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.common;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.function.ToDoubleFunction;
 
 /**
  * A set of various aggregation functions for collections of numbers.
  */
-public enum AggregationFunctions implements ToDoubleFunction<Collection<? extends Number>> {
+public enum AggregationFunctions implements ToDoubleFunction<Collection<? extends Number>>, Serializable {
     /**
      * Use the median of the scores as final score.
      */
@@ -60,9 +61,9 @@ public enum AggregationFunctions implements ToDoubleFunction<Collection<? extend
      */
     SUM(s -> s.stream().mapToDouble(d -> d).sum());
 
-    private final ToDoubleFunction<Collection<Double>> function;
+    private final ToDoubleFunctionSerializable<Collection<Double>> function;
 
-    AggregationFunctions(ToDoubleFunction<Collection<Double>> function) {
+    AggregationFunctions(ToDoubleFunctionSerializable<Collection<Double>> function) {
         this.function = function;
     }
 
@@ -70,5 +71,8 @@ public enum AggregationFunctions implements ToDoubleFunction<Collection<? extend
     public double applyAsDouble(Collection<? extends Number> value) {
         var doubleList = value.stream().map(Number::doubleValue).toList();
         return this.function.applyAsDouble(doubleList);
+    }
+
+    public interface ToDoubleFunctionSerializable<T> extends ToDoubleFunction<T>, Serializable {
     }
 }

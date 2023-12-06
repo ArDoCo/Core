@@ -30,7 +30,6 @@ class WordImpl implements Word {
     private final int sentenceNo;
     private Phrase phrase;
     private final String text;
-    private String generalizedText;
     private final POSTag posTag;
 
     WordImpl(CoreLabel token, int index, TextImpl parent) {

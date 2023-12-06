@@ -3,9 +3,8 @@ package edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator;
 
 import java.util.List;
 import java.util.SortedMap;
-import java.util.function.BiFunction;
 
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.UnicodeCharacter;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.UnicodeCharacterMatchFunctions;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.ExecutionStage;
 import edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator.DiagramConnectionStates;
@@ -33,7 +32,7 @@ public class DiagramConnectionGenerator extends ExecutionStage {
         getDataRepository().addData(DiagramConnectionStates.ID, diagramConnectionStates);
     }
 
-    private BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> previousCharacterMatchFunction;
+    private UnicodeCharacterMatchFunctions previousCharacterMatchFunction;
 
     /**
      * Saves the previous character match function and sets a character match function capable of matching homoglyphs.
@@ -42,7 +41,7 @@ public class DiagramConnectionGenerator extends ExecutionStage {
     protected void before() {
         super.before();
         previousCharacterMatchFunction = getMetaData().getWordSimUtils().getCharacterMatchFunction();
-        getMetaData().getWordSimUtils().setCharacterMatchFunction(UnicodeCharacter.EQUAL_OR_HOMOGLYPH);
+        getMetaData().getWordSimUtils().setCharacterMatchFunction(UnicodeCharacterMatchFunctions.EQUAL_OR_HOMOGLYPH);
     }
 
     /**

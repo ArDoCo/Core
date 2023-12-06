@@ -3,11 +3,11 @@ package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.jarowinkler
 
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.function.BiFunction;
 
 import org.jetbrains.annotations.NotNull;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.UnicodeCharacter;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.UnicodeCharacterMatchFunctions;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.UnicodeCharacterSequence;
 
 /**
@@ -38,8 +38,7 @@ public final class UnicodeJaroWinklerSimilarity implements Serializable {
      * @param characterMatch the function used to determine a match between two {@link UnicodeCharacter UnicodeCharacters}
      * @return mtp array containing: matches, half transpositions, and prefix
      */
-    private static int[] matches(UnicodeCharacterSequence first, UnicodeCharacterSequence second,
-            BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> characterMatch) {
+    private static int[] matches(UnicodeCharacterSequence first, UnicodeCharacterSequence second, UnicodeCharacterMatchFunctions characterMatch) {
         final UnicodeCharacterSequence max;
         final UnicodeCharacterSequence min;
         if (first.length() > second.length()) {
@@ -129,7 +128,7 @@ public final class UnicodeJaroWinklerSimilarity implements Serializable {
      * @throws IllegalArgumentException if either CharSequence input is {@code null}
      */
     public static Double apply(@NotNull UnicodeCharacterSequence left, @NotNull UnicodeCharacterSequence right,
-            @NotNull BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> characterMatch) {
+            @NotNull UnicodeCharacterMatchFunctions characterMatch) {
         final double defaultScalingFactor = 0.1;
 
         if (left == null || right == null) {
@@ -157,7 +156,7 @@ public final class UnicodeJaroWinklerSimilarity implements Serializable {
      * @return result similarity
      * @throws IllegalArgumentException if either CharSequence input is {@code null}
      */
-    public static Double apply(@NotNull String left, @NotNull String right, @NotNull BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> characterMatch) {
+    public static Double apply(@NotNull String left, @NotNull String right, @NotNull UnicodeCharacterMatchFunctions characterMatch) {
         if (left == null || right == null) {
             throw new IllegalArgumentException("Strings must not be null");
         }

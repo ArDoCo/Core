@@ -3,9 +3,8 @@ package edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency;
 
 import java.util.List;
 import java.util.SortedMap;
-import java.util.function.BiFunction;
 
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.UnicodeCharacter;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.UnicodeCharacterMatchFunctions;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.ExecutionStage;
@@ -38,7 +37,7 @@ public class DiagramInconsistencyChecker extends ExecutionStage {
         getDataRepository().addData(DiagramInconsistencyStates.ID, diagramInconsistencyStates);
     }
 
-    private BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> previousCharacterMatchFunction;
+    private UnicodeCharacterMatchFunctions previousCharacterMatchFunction;
 
     /**
      * Saves the previous character match function and sets a character match function capable of matching homoglyphs.
@@ -47,7 +46,7 @@ public class DiagramInconsistencyChecker extends ExecutionStage {
     protected void before() {
         super.before();
         previousCharacterMatchFunction = wordSimUtils.getCharacterMatchFunction();
-        wordSimUtils.setCharacterMatchFunction(UnicodeCharacter.EQUAL_OR_HOMOGLYPH);
+        wordSimUtils.setCharacterMatchFunction(UnicodeCharacterMatchFunctions.EQUAL_OR_HOMOGLYPH);
     }
 
     /**

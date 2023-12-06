@@ -4,6 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.common.util;
 import static edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils.cosineSimilarity;
 import static edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils.uniqueDot;
 
+import java.io.Serializable;
 import java.util.function.ToDoubleBiFunction;
 
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.PhraseMapping;
@@ -26,14 +27,17 @@ public enum PhraseMappingAggregatorStrategy implements ToDoubleBiFunction<Phrase
             .average()
             .orElse(Double.NaN));
 
-    private final ToDoubleBiFunction<PhraseMapping, PhraseMapping> mapper;
+    private final ToDoubleBiFunctionSerializable<PhraseMapping, PhraseMapping> mapper;
 
-    PhraseMappingAggregatorStrategy(ToDoubleBiFunction<PhraseMapping, PhraseMapping> mapper) {
+    PhraseMappingAggregatorStrategy(ToDoubleBiFunctionSerializable<PhraseMapping, PhraseMapping> mapper) {
         this.mapper = mapper;
     }
 
     @Override
     public double applyAsDouble(PhraseMapping phraseMapping, PhraseMapping phraseMapping2) {
         return this.mapper.applyAsDouble(phraseMapping, phraseMapping2);
+    }
+
+    public interface ToDoubleBiFunctionSerializable<T, U> extends ToDoubleBiFunction<T, U>, Serializable {
     }
 }

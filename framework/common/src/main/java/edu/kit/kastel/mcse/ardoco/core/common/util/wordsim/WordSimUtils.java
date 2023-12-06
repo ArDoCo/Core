@@ -5,7 +5,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -33,7 +32,7 @@ public class WordSimUtils implements Serializable {
     private MutableList<WordSimMeasure> measures = Lists.mutable.withAll(WordSimLoader.loadUsingProperties());
     private ComparisonStrategy strategy = ComparisonStrategy.AT_LEAST_ONE;
     private SimilarityStrategy similarityStrategy = SimilarityStrategy.AVERAGE;
-    private BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> characterMatch = UnicodeCharacter.EQUAL;
+    private UnicodeCharacterMatchFunctions characterMatch = UnicodeCharacterMatchFunctions.EQUAL;
     private boolean considerAbbreviations = CommonTextToolsConfig.CONSIDER_ABBREVIATIONS;
 
     public WordSimUtils() {
@@ -76,11 +75,11 @@ public class WordSimUtils implements Serializable {
         this.similarityStrategy = strategy;
     }
 
-    public void setCharacterMatchFunction(@NotNull BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> characterMatch) {
+    public void setCharacterMatchFunction(@NotNull UnicodeCharacterMatchFunctions characterMatch) {
         this.characterMatch = characterMatch;
     }
 
-    public @NotNull BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> getCharacterMatchFunction() {
+    public @NotNull UnicodeCharacterMatchFunctions getCharacterMatchFunction() {
         return this.characterMatch;
     }
 

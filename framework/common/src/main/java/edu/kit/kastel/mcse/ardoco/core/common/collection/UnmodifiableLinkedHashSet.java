@@ -21,6 +21,7 @@ import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
  */
 @Deterministic
 public class UnmodifiableLinkedHashSet<E> implements Set<E>, Serializable {
+    private Set<? extends Serializable> test;
     private final Set<E> set;
 
     public UnmodifiableLinkedHashSet(LinkedHashSet<E> set) {

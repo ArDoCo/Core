@@ -1,7 +1,6 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.sewordsim;
 
-import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Connection;
@@ -21,7 +20,7 @@ import opennlp.tools.stemmer.PorterStemmer;
  * Provides access to the SEWordSim sqlite database. Instances of this class keep an open connection to the sqlite file
  * until {@link #close()} is called.
  */
-public class SEWordSimDataSource implements AutoCloseable, Serializable {
+public class SEWordSimDataSource implements AutoCloseable {
 
     private static final String EXISTS_QUERY = "SELECT EXISTS(SELECT * FROM `wsim` WHERE `term_1` = ?) AS `ex`;";
     private static final String SELECT_QUERY = "SELECT `similarity` FROM `wsim` WHERE `term_1` = ? AND `term_2` = ?;";

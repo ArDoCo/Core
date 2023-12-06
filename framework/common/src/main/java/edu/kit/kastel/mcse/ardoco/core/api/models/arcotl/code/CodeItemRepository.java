@@ -1,6 +1,7 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 import java.util.SortedMap;
@@ -9,7 +10,7 @@ import org.eclipse.collections.api.factory.SortedMaps;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class CodeItemRepository {
+public class CodeItemRepository implements Serializable {
 
     @JsonProperty
     private final SortedMap<String, CodeItem> repository = SortedMaps.mutable.empty();

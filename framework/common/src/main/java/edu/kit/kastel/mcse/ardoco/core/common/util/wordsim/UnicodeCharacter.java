@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.BiFunction;
 
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.impl.factory.Lists;
@@ -21,10 +20,6 @@ import org.jetbrains.annotations.NotNull;
 //TODO More documentation
 public final class UnicodeCharacter implements Serializable {
     private static final LinkedHashMap<Integer, UnicodeCharacter> integerToUnicode = new LinkedHashMap<>();
-
-    public static final BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> EQUAL = (BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> & Serializable) UnicodeCharacter::equals;
-    public static final BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> EQUAL_OR_HOMOGLYPH = (BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean> & Serializable) (
-            a, b) -> a.equals(b) || ConfusablesHelper.areHomoglyphs(a, b);
 
     private final int codePoint;
 

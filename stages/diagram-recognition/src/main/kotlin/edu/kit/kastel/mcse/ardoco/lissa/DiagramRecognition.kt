@@ -2,7 +2,7 @@ package edu.kit.kastel.mcse.ardoco.lissa
 
 import edu.kit.kastel.mcse.ardoco.core.api.InputDiagramData
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.UnicodeCharacter
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.UnicodeCharacterMatchFunctions
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage
 import edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.agents.DiagramDisambiguationAgent
@@ -10,7 +10,6 @@ import edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.agents.DiagramReferenc
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.agents.DiagramRecognitionAgent
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.model.DiagramImpl
 import java.util.SortedMap
-import java.util.function.BiFunction
 
 class DiagramRecognition(
     dataRepository: DataRepository
@@ -23,7 +22,7 @@ class DiagramRecognition(
         ID,
         dataRepository
     ) {
-    private lateinit var previousCharacterMatchFunction: BiFunction<UnicodeCharacter, UnicodeCharacter, Boolean>
+    private lateinit var previousCharacterMatchFunction: UnicodeCharacterMatchFunctions
     private val wordSimUtils = metaData.getWordSimUtils()
 
     companion object {
@@ -69,7 +68,7 @@ class DiagramRecognition(
     override fun before() {
         super.before()
         previousCharacterMatchFunction = wordSimUtils.characterMatchFunction
-        wordSimUtils.characterMatchFunction = UnicodeCharacter.EQUAL_OR_HOMOGLYPH
+        wordSimUtils.characterMatchFunction = UnicodeCharacterMatchFunctions.EQUAL_OR_HOMOGLYPH
     }
 
     override fun after() {

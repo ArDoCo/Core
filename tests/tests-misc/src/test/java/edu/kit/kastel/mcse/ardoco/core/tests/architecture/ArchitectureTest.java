@@ -5,9 +5,21 @@ import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.fields;
 import static com.tngtech.archunit.library.Architectures.layeredArchitecture;
 
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+import com.tngtech.archunit.core.domain.JavaClass;
 import com.tngtech.archunit.core.domain.JavaField;
 import com.tngtech.archunit.core.domain.JavaFieldAccess;
 import com.tngtech.archunit.core.domain.JavaModifier;
+import com.tngtech.archunit.core.domain.JavaParameterizedType;
+import com.tngtech.archunit.core.domain.JavaType;
+import com.tngtech.archunit.core.domain.JavaTypeVariable;
 import com.tngtech.archunit.junit.AnalyzeClasses;
 import com.tngtech.archunit.junit.ArchTest;
 import com.tngtech.archunit.lang.ArchCondition;
@@ -119,13 +131,88 @@ public class ArchitectureTest {
     }).orShould(new ArchCondition<>("belongToClassWithCustomSerialization") {
         @Override
         public void check(JavaField javaField, ConditionEvents conditionEvents) {
-            if (javaField.getOwner().getMethods().stream().anyMatch(method -> method.getName().equalsIgnoreCase("writeObject"))) {
-                satisfied(conditionEvents, javaField, null);
-            } else {
+            if (javaField.getOwner().getMethods().stream().noneMatch(method -> method.getName().equalsIgnoreCase("writeObject"))) {
                 violated(conditionEvents, javaField, "Transient field " + javaField.getFullName() + " doesn't belong to a class with a custom serialization");
             }
         }
     });
+
+    @ArchTest
+    private static final ArchRule serializableRule = classes().that()
+            .areNotInterfaces()
+            .and()
+            .doNotHaveModifier(JavaModifier.ABSTRACT)
+            .and()
+            .areAssignableTo(Serializable.class)
+            .should(new ArchCondition<>("beSerializable") {
+                @Override
+                public void check(JavaClass javaClass, ConditionEvents conditionEvents) {
+                    if (javaClass.getMethods().stream().noneMatch(method -> method.getName().equalsIgnoreCase("writeObject"))) {
+                        Predicate<? super JavaField> transientOrStatic = (JavaField javaField) -> new LinkedHashSet<>(javaField.getModifiers()).removeAll(List
+                                .of(JavaModifier.STATIC, JavaModifier.TRANSIENT));
+                        var fields = javaClass.getFields();
+                        for (var field : fields) {
+                            if (transientOrStatic.test(field))
+                                continue;
+                            var erasure = field.getType().toErasure();
+                            if (isContainer.test(erasure)) {
+                                getAllInvolvedRawTypesExceptSelf(field).stream().filter(erasureIsSerializableShallow.negate()).forEach(parameter -> {
+                                    violated(conditionEvents, javaClass, "Non-transient field " + field.getFullName() + " of serializable class " + javaClass
+                                            .getFullName() + " needs to be serializable or the class must have custom serialization, but has non-serializable parameter " + parameter
+                                                    .getName());
+                                });
+                            } else {
+                                if (erasureIsSerializableShallow.negate().test(erasure)) {
+                                    //Class has non-transient field that is not serializable
+                                    violated(conditionEvents, javaClass, "Non-transient field " + field.getFullName() + " of serializable class " + javaClass
+                                            .getFullName() + " needs to be serializable or the class must have custom serialization");
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+    private static final Predicate<? super JavaClass> isContainer = (JavaClass javaClass) -> {
+        return javaClass.isArray() || javaClass.isAssignableTo(Collection.class) || javaClass.isAssignableTo(Map.class) || javaClass.isAssignableTo(
+                Iterable.class);
+    };
+
+    private static final Predicate<? super JavaClass> erasureIsSerializableShallow = (JavaClass javaClass) -> {
+        return javaClass.isPrimitive() || javaClass.isAssignableTo(Serializable.class) || isContainer.test(javaClass);
+    };
+
+    private static LinkedHashSet<JavaClass> isParameterizedGeneric(JavaField javaField) {
+        var javaType = javaField.getType();
+        if (javaType instanceof JavaParameterizedType javaParameterizedType) {
+            javaParameterizedType.getActualTypeArguments();
+        }
+        var set = new LinkedHashSet<>(javaType.getAllInvolvedRawTypes());
+        set.remove(javaType);
+        return set;
+    }
+
+    /**
+     * Returns all types of a field, except the (outer) type of the field itself. Generic type variables are not considered.
+     *
+     * @param javaField the field
+     * @return all types of a field
+     */
+    private static LinkedHashSet<JavaClass> getAllInvolvedRawTypesExceptSelf(JavaField javaField) {
+        var javaType = javaField.getType();
+        LinkedHashSet<JavaClass> set;
+        if (javaType instanceof JavaParameterizedType javaParameterizedType) {
+            set = javaParameterizedType.getActualTypeArguments()
+                    .stream()
+                    .filter(typeArgument -> !(typeArgument instanceof JavaTypeVariable<?>))
+                    .map(JavaType::toErasure)
+                    .collect(Collectors.toCollection(LinkedHashSet::new));
+        } else {
+            set = new LinkedHashSet<>(javaType.getAllInvolvedRawTypes());
+        }
+        set.remove(javaType);
+        return set;
+    }
 
     private static void satisfied(ConditionEvents events, Object location, String message) {
         var event = new SimpleConditionEvent(location, true, message);

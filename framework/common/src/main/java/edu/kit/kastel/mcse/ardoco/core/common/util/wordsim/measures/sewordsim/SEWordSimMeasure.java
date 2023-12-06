@@ -3,7 +3,6 @@ package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.sewordsim;
 
 import java.nio.file.Path;
 import java.sql.SQLException;
-import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,26 +18,22 @@ public class SEWordSimMeasure implements WordSimMeasure {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SEWordSimMeasure.class);
 
-    private final SEWordSimDataSource dataSource;
+    private transient SEWordSimDataSource dataSource;
     private final double similarityThreshold;
 
     /**
      * Constructs a new {@link SEWordSimMeasure} using the settings provided by {@link CommonTextToolsConfig}.
-     *
-     * @throws SQLException if establishing the connection to the data source fails
      */
-    public SEWordSimMeasure() throws SQLException {
-        this(new SEWordSimDataSource(Path.of(CommonTextToolsConfig.SEWORDSIM_DB_FILE_PATH)), CommonTextToolsConfig.SEWORDSIM_SIMILARITY_THRESHOLD);
+    public SEWordSimMeasure() {
+        this(CommonTextToolsConfig.SEWORDSIM_SIMILARITY_THRESHOLD);
     }
 
     /**
      * Constructs a new {@link SEWordSimMeasure} instance.
      *
-     * @param dataSource          the data source from which word similarities are loaded
      * @param similarityThreshold the threshold above which words are considered similar, between 0 and 1
      */
-    public SEWordSimMeasure(SEWordSimDataSource dataSource, double similarityThreshold) {
-        this.dataSource = Objects.requireNonNull(dataSource);
+    public SEWordSimMeasure(double similarityThreshold) {
         this.similarityThreshold = similarityThreshold;
 
         if (similarityThreshold < 0.0 || similarityThreshold > 1.0) {
@@ -57,7 +52,7 @@ public class SEWordSimMeasure implements WordSimMeasure {
         double similarity = Double.NaN;
 
         try {
-            similarity = this.dataSource.getSimilarity(ctx.firstTerm(), ctx.secondTerm()).orElse(Double.NaN);
+            similarity = getDataSource().getSimilarity(ctx.firstTerm(), ctx.secondTerm()).orElse(Double.NaN);
         } catch (SQLException e) {
             LOGGER.error("Failed to query the SEWordSim database for word comparison: " + ctx, e);
             return similarity;
@@ -65,4 +60,14 @@ public class SEWordSimMeasure implements WordSimMeasure {
         return similarity; // words are probably missing from the database
     }
 
+    private SEWordSimDataSource getDataSource() {
+        if (dataSource == null) {
+            try {
+                dataSource = new SEWordSimDataSource(Path.of(CommonTextToolsConfig.SEWORDSIM_DB_FILE_PATH));
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return dataSource;
+    }
 }
