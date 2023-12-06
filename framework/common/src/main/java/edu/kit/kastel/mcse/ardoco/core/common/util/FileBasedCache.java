@@ -3,6 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.common.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -52,7 +53,7 @@ public abstract class FileBasedCache<T> implements AutoCloseable {
                     throw new RuntimeException(ex);
                 }
             }
-            originalStateHash = fileState.hashCode();
+            originalStateHash = Objects.hash(fileState);
             currentState = fileState;
             flagRead = true;
         }
@@ -171,7 +172,7 @@ public abstract class FileBasedCache<T> implements AutoCloseable {
             if (currentState == null) {
                 deleteFile();
             } else {
-                if (currentState.hashCode() != originalStateHash) {
+                if (Objects.hash(currentState) != originalStateHash) {
                     write(currentState);
                 }
             }

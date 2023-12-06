@@ -8,7 +8,12 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.api.text.*;
+import edu.kit.kastel.mcse.ardoco.core.api.text.POSTag;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
+import edu.kit.kastel.mcse.ardoco.core.api.text.PhraseType;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.textproviderjson.dto.IncomingDependencyDto;
 import edu.kit.kastel.mcse.ardoco.core.textproviderjson.dto.OutgoingDependencyDto;
 import edu.kit.kastel.mcse.ardoco.core.textproviderjson.dto.SentenceDto;
@@ -60,7 +65,7 @@ public class DtoToObjectConverter {
         String constituencyTree = sentenceDTO.getConstituencyTree();
         SentenceImpl sentence = new SentenceImpl((int) sentenceDTO.getSentenceNo() - 1, sentenceDTO.getText(), Lists.immutable.ofAll(words));
         Phrase phrases = parseConstituencyTree(constituencyTree, new ArrayList<>(words));
-        sentence.setPhrases(Lists.immutable.of(phrases));
+        sentence.setPhrases(Lists.mutable.of(phrases));
         return sentence;
     }
 

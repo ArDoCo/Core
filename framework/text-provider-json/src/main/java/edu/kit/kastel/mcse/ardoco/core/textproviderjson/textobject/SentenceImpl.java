@@ -7,6 +7,7 @@ import java.util.Objects;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
+import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
@@ -15,7 +16,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 public class SentenceImpl implements Sentence {
 
     private final ImmutableList<Word> words;
-    private ImmutableList<Phrase> phrases = Lists.immutable.empty();
+    private MutableList<Phrase> phrases = Lists.mutable.empty();
 
     private final int sentenceNumber;
 
@@ -27,7 +28,7 @@ public class SentenceImpl implements Sentence {
         this.words = words;
     }
 
-    public void setPhrases(ImmutableList<Phrase> phrases) {
+    public void setPhrases(MutableList<Phrase> phrases) {
         this.phrases = phrases;
     }
 
@@ -72,6 +73,6 @@ public class SentenceImpl implements Sentence {
 
     @Override
     public void addPhrase(Phrase phrase) {
-        throw new UnsupportedOperationException();
+        phrases.add(phrase);
     }
 }
