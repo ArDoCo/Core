@@ -49,7 +49,7 @@ public class ConfusablesHelper {
         if (!line.startsWith("#" + separator))
             return FastList.newList();
 
-        MutableList<String> confusables = Lists.mutable.of(line.split(separator + "|\\R|\\s"));
+        MutableList<String> confusables = Lists.mutable.of(line.split("\\R|\\s"));
         confusables.remove(0); //Remove leading # symbol
 
         //FIXME skip confusables that consist of multiple unicode characters

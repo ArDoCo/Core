@@ -64,7 +64,7 @@ public record BoundingBox(int minX, int minY, int maxX, int maxY) implements Com
      * @return the area of a bounding box, area &gt;= 0
      */
     public double area() {
-        return (maxX() - minX()) * (maxY() - minY());
+        return ((double) maxX() - minX()) * (maxY() - minY());
     }
 
     /**
