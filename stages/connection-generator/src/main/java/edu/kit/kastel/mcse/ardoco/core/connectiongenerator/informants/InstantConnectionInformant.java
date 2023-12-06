@@ -47,8 +47,9 @@ public class InstantConnectionInformant extends Informant {
     private void findNamesOfModelInstancesInSupposedMappings(LegacyModelExtractionState modelState, RecommendationState recommendationState,
             ConnectionState connectionState) {
         var recommendedInstances = recommendationState.getRecommendedInstances();
+        var similarityUtils = getMetaData().getSimilarityUtils();
         for (ModelInstance instance : modelState.getInstances()) {
-            var mostLikelyRi = getMetaData().getSimilarityUtils().getMostRecommendedInstancesToInstanceByReferences(instance, recommendedInstances);
+            var mostLikelyRi = similarityUtils.getMostRecommendedInstancesToInstanceByReferences(instance, recommendedInstances);
 
             for (var recommendedInstance : mostLikelyRi) {
                 var riProbability = recommendedInstance.getTypeMappings().isEmpty() ? probabilityWithoutType : probability;

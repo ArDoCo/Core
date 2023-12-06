@@ -2,21 +2,24 @@
 package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code;
 
 import java.io.Serializable;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
-import java.util.SortedMap;
 
-import org.eclipse.collections.api.factory.SortedMaps;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashMap;
 
 public class CodeItemRepository implements Serializable {
 
     @JsonProperty
-    private final SortedMap<String, CodeItem> repository = SortedMaps.mutable.empty();
+    private LinkedHashMap<String, CodeItem> repository = new LinkedHashMap<>();
+    @JsonIgnore
+    private boolean initialized = false;
 
-    public SortedMap<String, CodeItem> getRepository() {
-        return repository;
+    public UnmodifiableLinkedHashMap<String, CodeItem> getRepository() {
+        return new UnmodifiableLinkedHashMap<>(repository);
     }
 
     void addCodeItem(CodeItem codeItem) {
@@ -37,7 +40,10 @@ public class CodeItemRepository implements Serializable {
         return codeItemIds.stream().map(this::getCodeItem).filter(Objects::nonNull).toList();
     }
 
-    public void init() {
+    public synchronized void init() {
+        if (initialized)
+            return;
         this.repository.values().forEach(it -> it.registerCurrentCodeItemRepository(this));
+        initialized = true;
     }
 }

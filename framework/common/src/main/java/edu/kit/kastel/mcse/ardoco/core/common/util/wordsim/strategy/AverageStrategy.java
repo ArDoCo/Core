@@ -20,6 +20,6 @@ public class AverageStrategy implements SimilarityStrategy {
             }
         }
 
-        return sum / successful;
+        return successful == 0 ? 0.0 : sum / successful;
     }
 }
