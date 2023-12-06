@@ -135,10 +135,6 @@ public final class SimilarityUtils implements Serializable {
     }
 
     private boolean compareWordWithStringListEntries(String word, ImmutableList<String> names) {
-        if (areWordsOfListsSimilar(names, Lists.immutable.with(word))) {
-            return true;
-        }
-
         for (String name : names) {
             if (areWordsSimilar(name, word)) {
                 return true;
@@ -187,16 +183,25 @@ public final class SimilarityUtils implements Serializable {
             return true;
         }
 
-        var counter = 0;
+        var max = Math.max(originals.size(), words2test.size());
+        var counterSimilar = 0;
+        var counterDissimilar = 0;
+        var possiblySimilar = originals.size() * words2test.size();
         for (String o : originals) {
             for (String wd : words2test) {
                 if (areWordsSimilar(o, wd)) {
-                    counter++;
+                    counterSimilar++;
+                    if (1.0 * counterSimilar / max >= minProportion)
+                        return true;
+                } else {
+                    counterDissimilar++;
+                    if (1.0 * (possiblySimilar - counterDissimilar) / max < minProportion)
+                        return false; //minProportion can no longer be achieved, can stop here
                 }
             }
         }
 
-        return 1.0 * counter / Math.max(originals.size(), words2test.size()) >= minProportion;
+        return 1.0 * counterSimilar / max >= minProportion;
     }
 
     /**

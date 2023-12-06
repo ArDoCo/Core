@@ -76,8 +76,10 @@ public final class CodeModel extends Model {
      */
     public List<? extends CodePackage> getAllPackages() {
         List<CodePackage> codePackages = new ArrayList<>();
-        for (CodeItem c : getContent()) {
-            for (CodePackage cp : c.getAllPackages()) {
+        var content = getContent();
+        for (CodeItem c : content) {
+            var allPackages = c.getAllPackages();
+            for (CodePackage cp : allPackages) {
                 if (!codePackages.contains(cp)) {
                     codePackages.add(cp);
                 }
@@ -88,7 +90,8 @@ public final class CodeModel extends Model {
     }
 
     private synchronized void initialize() {
-        if (initialized) return;
+        if (initialized)
+            return;
         this.codeItemRepository.init();
         initialized = true;
     }

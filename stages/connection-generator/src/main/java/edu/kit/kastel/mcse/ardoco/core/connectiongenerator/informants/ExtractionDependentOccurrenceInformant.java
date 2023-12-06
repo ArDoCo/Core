@@ -74,7 +74,8 @@ public class ExtractionDependentOccurrenceInformant extends Informant {
      * value is taken as reference.
      */
     private void searchForType(LegacyModelExtractionState modelState, TextState textState, Word word) {
-        var instanceTypeIsSimilar = modelState.getInstances().anySatisfy(i -> getMetaData().getSimilarityUtils().isWordSimilarToModelInstanceType(word, i));
+        var similarityUtils = getMetaData().getSimilarityUtils();
+        var instanceTypeIsSimilar = modelState.getInstances().anySatisfy(i -> similarityUtils.isWordSimilarToModelInstanceType(word, i));
         if (instanceTypeIsSimilar) {
             textState.addNounMapping(word, MappingKind.TYPE, this, probability);
         }
