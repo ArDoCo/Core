@@ -43,7 +43,6 @@ public abstract class CodeItem extends Entity {
     }
 
     void registerCurrentCodeItemRepository(CodeItemRepository codeItemRepository) {
-        codeItemRepository.addCodeItem(this);
         this.codeItemRepository = codeItemRepository;
     }
 

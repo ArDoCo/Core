@@ -52,22 +52,18 @@ public final class CodeModel extends Model {
 
     @JsonGetter("content")
     protected List<String> getContentIds() {
-        if (!initialized)
-            initialize();
+        initialize();
         return content;
     }
 
     @Override
     public List<? extends CodeItem> getContent() {
-        if (!initialized)
-            initialize();
+        initialize();
         return codeItemRepository.getCodeItemsFromIds(content);
     }
 
     @Override
     public List<? extends CodeCompilationUnit> getEndpoints() {
-        if (!initialized)
-            initialize();
         List<CodeCompilationUnit> compilationUnits = new ArrayList<>();
         getContent().forEach(c -> compilationUnits.addAll(c.getAllCompilationUnits()));
         return compilationUnits;
@@ -79,8 +75,6 @@ public final class CodeModel extends Model {
      * @return all code packages of this code model
      */
     public List<? extends CodePackage> getAllPackages() {
-        if (!initialized)
-            initialize();
         List<CodePackage> codePackages = new ArrayList<>();
         for (CodeItem c : getContent()) {
             for (CodePackage cp : c.getAllPackages()) {
@@ -93,8 +87,10 @@ public final class CodeModel extends Model {
         return codePackages;
     }
 
-    private void initialize() {
+    private synchronized void initialize() {
+        if (initialized) return;
         this.codeItemRepository.init();
+        initialized = true;
     }
 
     @Override
