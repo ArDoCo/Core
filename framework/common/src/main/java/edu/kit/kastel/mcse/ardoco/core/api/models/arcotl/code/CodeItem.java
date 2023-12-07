@@ -80,7 +80,7 @@ public abstract sealed class CodeItem extends Entity permits CodeModule, Computa
         return new TreeSet<>();
     }
 
-    public SortedSet<? extends CodePackage> getAllPackages() {
+    public SortedSet<CodePackage> getAllPackages() {
         return new TreeSet<>();
     }
 }

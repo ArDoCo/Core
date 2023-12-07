@@ -42,7 +42,7 @@ public final class CodePackage extends CodeModule {
     }
 
     @Override
-    public SortedSet<? extends CodePackage> getAllPackages() {
+    public SortedSet<CodePackage> getAllPackages() {
         SortedSet<CodePackage> result = new TreeSet<>();
         result.add(this);
         getContent().forEach(c -> result.addAll(c.getAllPackages()));

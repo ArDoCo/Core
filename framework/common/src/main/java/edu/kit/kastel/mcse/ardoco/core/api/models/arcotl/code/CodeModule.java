@@ -92,7 +92,7 @@ public sealed class CodeModule extends CodeItem permits CodeAssembly, CodeCompil
     }
 
     @Override
-    public SortedSet<? extends CodePackage> getAllPackages() {
+    public SortedSet<CodePackage> getAllPackages() {
         SortedSet<CodePackage> result = new TreeSet<>();
         getContent().forEach(c -> result.addAll(c.getAllPackages()));
         return result;
