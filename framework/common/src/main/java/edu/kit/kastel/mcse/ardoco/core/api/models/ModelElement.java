@@ -2,24 +2,17 @@
 package edu.kit.kastel.mcse.ardoco.core.api.models;
 
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
+
+import edu.kit.kastel.mcse.ardoco.core.common.IdentifierProvider;
 
 /**
  * A model element. Has an identifier. Two model elements are equal if and only if they have the same identifier.
  */
 public abstract class ModelElement implements Comparable<ModelElement> {
-
-    private static final AtomicInteger COUNTER = new AtomicInteger(0);
-
     private final String id;
 
     protected ModelElement() {
-        this.id = createId();
-    }
-
-    private static String createId() {
-        int currentCounter = COUNTER.getAndIncrement();
-        return "acm%06djsd".formatted(currentCounter);
+        this.id = IdentifierProvider.createId();
     }
 
     protected ModelElement(String id) {

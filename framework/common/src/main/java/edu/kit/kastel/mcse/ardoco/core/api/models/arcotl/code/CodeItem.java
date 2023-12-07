@@ -22,7 +22,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
         @JsonSubTypes.Type(value = ComputationalObject.class, name = "ComputationalObject"), //
         @JsonSubTypes.Type(value = Datatype.class, name = "Datatype") //
 })
-public abstract class CodeItem extends Entity {
+public abstract sealed class CodeItem extends Entity permits CodeModule, ComputationalObject, Datatype {
 
     @JsonIgnore
     protected CodeItemRepository codeItemRepository;

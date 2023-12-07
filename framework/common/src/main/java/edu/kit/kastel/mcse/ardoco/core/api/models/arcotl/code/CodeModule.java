@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
         @JsonSubTypes.Type(value = CodePackage.class, name = "CodePackage"), //
 })
 @JsonTypeName("CodeModule")
-public class CodeModule extends CodeItem {
+public sealed class CodeModule extends CodeItem permits CodeAssembly, CodeCompilationUnit, CodePackage {
 
     @JsonProperty
     private String parentId;

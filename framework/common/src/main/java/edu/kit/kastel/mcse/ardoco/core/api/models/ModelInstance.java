@@ -6,7 +6,7 @@ import org.eclipse.collections.api.list.ImmutableList;
 /**
  * The Interface IModelInstance defines instances from models.
  */
-public abstract class ModelInstance extends Entity {
+public abstract sealed class ModelInstance extends Entity permits ModelInstanceImpl {
 
     protected ModelInstance(String name, String id) {
         super(name, id);

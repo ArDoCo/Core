@@ -7,7 +7,7 @@ import java.util.TreeSet;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
 @JsonTypeName("CodePackage")
-public class CodePackage extends CodeModule {
+public final class CodePackage extends CodeModule {
 
     private CodePackage() {
         // Jackson
