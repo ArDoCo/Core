@@ -3,7 +3,8 @@ package edu.kit.kastel.mcse.ardoco.core.api.models;
 
 import java.io.Serializable;
 import java.util.Objects;
-import java.util.UUID;
+
+import edu.kit.kastel.mcse.ardoco.core.common.IdentifierProvider;
 
 /**
  * A model element. Has an identifier. Two model elements are equal if and only if they have the same identifier.
@@ -13,7 +14,7 @@ public abstract class ModelElement implements Comparable<ModelElement>, Serializ
     private final String id;
 
     protected ModelElement() {
-        this.id = UUID.randomUUID().toString();
+        this.id = IdentifierProvider.createId();
     }
 
     protected ModelElement(String id) {

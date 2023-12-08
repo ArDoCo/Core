@@ -7,14 +7,14 @@ import java.util.SortedMap;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
+import edu.kit.kastel.mcse.ardoco.core.common.IdentifierProvider;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.Extractor;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.CodeExtractor;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 
 /**
- * The model extractor extracts the instances and relations via a connector. The extracted items are stored in a model
- * extraction state.
+ * The model extractor extracts the instances and relations via a connector. The extracted items are stored in a model extraction state.
  */
 public final class ArCoTLModelProviderInformant extends Informant {
     private static final String MODEL_STATES_DATA = "ModelStatesData";
@@ -43,6 +43,8 @@ public final class ArCoTLModelProviderInformant extends Informant {
         if (extractor == null) {
             return;
         }
+
+        IdentifierProvider.reset();
 
         Model extractedModel = null;
         if (extractor instanceof CodeExtractor codeExtractor) {
