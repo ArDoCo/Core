@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
 @JsonTypeName("ClassUnit")
-public class ClassUnit extends Datatype {
+public final class ClassUnit extends Datatype {
 
     @JsonProperty
     private final List<String> content;

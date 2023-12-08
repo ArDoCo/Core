@@ -10,11 +10,10 @@ import org.eclipse.collections.api.list.MutableList;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 
 /**
- * This class represents an instance extracted from a model. The name of an instance (as well as the type) are splitted
- * at spaces and can be seen as multiple names. Therefore, the longestName (and type) is the original name (type) of the
- * instance.
+ * This class represents an instance extracted from a model. The name of an instance (as well as the type) are splitted at spaces and can be seen as multiple
+ * names. Therefore, the longestName (and type) is the original name (type) of the instance.
  */
-public class ModelInstanceImpl extends ModelInstance {
+public final class ModelInstanceImpl extends ModelInstance {
 
     private final String fullName;
     private final String fullType;

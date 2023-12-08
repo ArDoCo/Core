@@ -7,7 +7,7 @@ import java.util.TreeSet;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
 @JsonTypeName("CodePackage")
-public class CodePackage extends CodeModule {
+public final class CodePackage extends CodeModule {
 
     private CodePackage() {
         // Jackson
@@ -42,7 +42,7 @@ public class CodePackage extends CodeModule {
     }
 
     @Override
-    public SortedSet<? extends CodePackage> getAllPackages() {
+    public SortedSet<CodePackage> getAllPackages() {
         SortedSet<CodePackage> result = new TreeSet<>();
         result.add(this);
         getContent().forEach(c -> result.addAll(c.getAllPackages()));

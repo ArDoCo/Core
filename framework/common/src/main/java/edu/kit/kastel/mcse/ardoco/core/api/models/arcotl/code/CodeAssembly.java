@@ -6,7 +6,7 @@ import java.util.SortedSet;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
 @JsonTypeName("CodeAssembly")
-public class CodeAssembly extends CodeModule {
+public final class CodeAssembly extends CodeModule {
 
     private CodeAssembly() {
         // Jackson
