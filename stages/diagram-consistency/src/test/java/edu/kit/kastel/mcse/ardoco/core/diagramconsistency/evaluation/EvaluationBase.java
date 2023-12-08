@@ -15,15 +15,12 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
-import edu.kit.kastel.mcse.ardoco.core.common.RepositoryHandler;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.ProjectHelper;
-
+import org.apache.commons.io.FileUtils;
 import org.eclipse.collections.api.bimap.MutableBiMap;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +33,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItem;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItemRepository;
+import edu.kit.kastel.mcse.ardoco.core.common.RepositoryHandler;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.AnnotatedDiagram;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.AnnotatedGraph;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.DiagramProject;
@@ -110,7 +108,13 @@ public class EvaluationBase {
         CodeModel codeModel = extractor.readInCodeModel();
 
         if (codeModel == null) {
-            RepositoryHandler.shallowCloneRepository(project.getSourceProject().getCodeRepository(), project.getSourceProject().getCodeLocation(), project.getSourceProject().getCommitHash());
+            String repository = project.getSourceProject().getCodeRepository();
+            String codeLocation = project.getSourceProject().getCodeLocation();
+            String commitHash = project.getSourceProject().getCommitHash();
+
+            FileUtils.deleteQuietly(new File(codeLocation));
+
+            RepositoryHandler.shallowCloneRepository(repository, codeLocation, commitHash);
             codeModel = extractor.extractModel();
             extractor.writeOutCodeModel(codeModel);
         }
