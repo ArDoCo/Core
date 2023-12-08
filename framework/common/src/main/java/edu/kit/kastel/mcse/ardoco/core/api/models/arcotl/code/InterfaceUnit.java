@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
 @JsonTypeName("InterfaceUnit")
-public class InterfaceUnit extends Datatype {
+public final class InterfaceUnit extends Datatype {
 
     @JsonProperty
     private List<String> content;

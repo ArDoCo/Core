@@ -11,12 +11,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
 /**
- * A compilation unit of a code model. A possible candidate for the code endpoint of a
- * trace link that connects corresponding elements of an architecture model and
- * a code model.
+ * A compilation unit of a code model. A possible candidate for the code endpoint of a trace link that connects corresponding elements of an architecture model
+ * and a code model.
  */
 @JsonTypeName("CodeCompilationUnit")
-public class CodeCompilationUnit extends CodeModule {
+public final class CodeCompilationUnit extends CodeModule {
 
     @JsonProperty
     private List<String> pathElements;

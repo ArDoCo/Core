@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
         @JsonSubTypes.Type(value = CodePackage.class, name = "CodePackage"), //
 })
 @JsonTypeName("CodeModule")
-public class CodeModule extends CodeItem {
+public sealed class CodeModule extends CodeItem permits CodeAssembly, CodeCompilationUnit, CodePackage {
 
     @JsonProperty
     private String parentId;
@@ -92,7 +92,7 @@ public class CodeModule extends CodeItem {
     }
 
     @Override
-    public SortedSet<? extends CodePackage> getAllPackages() {
+    public SortedSet<CodePackage> getAllPackages() {
         SortedSet<CodePackage> result = new TreeSet<>();
         getContent().forEach(c -> result.addAll(c.getAllPackages()));
         return result;

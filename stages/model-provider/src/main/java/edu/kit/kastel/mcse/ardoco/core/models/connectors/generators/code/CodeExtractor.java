@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.CodeModelType;
@@ -36,15 +37,24 @@ public abstract class CodeExtractor extends Extractor {
         return CodeModelType.CODE_MODEL;
     }
 
-    public void writeOutCodeModel(CodeModel codeModel) {
+    public void writeOutCodeModel(CodeModel codeModel, File outputFile) {
         ObjectMapper objectMapper = createObjectMapper();
         objectMapper.registerModule(new Jdk8Module());
         try {
-            File file = new File(getCodeModelFileString());
-            objectMapper.writeValue(file, codeModel);
+            objectMapper.writeValue(outputFile, codeModel);
         } catch (IOException e) {
             logger.warn("An exception occurred when writing the code model.", e);
         }
+    }
+
+    /**
+     * Writes the code model to the default location, i.e., to the folder of the code with the name "codeModel.acm"
+     *
+     * @param codeModel the code model to write
+     */
+    public void writeOutCodeModel(CodeModel codeModel) {
+        File file = new File(getCodeModelFileString());
+        writeOutCodeModel(codeModel, file);
     }
 
     public CodeModel readInCodeModel() {
@@ -78,6 +88,7 @@ public abstract class CodeExtractor extends Extractor {
                 .withGetterVisibility(JsonAutoDetect.Visibility.NONE)//
                 .withSetterVisibility(JsonAutoDetect.Visibility.NONE)//
                 .withIsGetterVisibility(JsonAutoDetect.Visibility.NONE));
+        oom.enable(SerializationFeature.INDENT_OUTPUT);
         return oom;
     }
 

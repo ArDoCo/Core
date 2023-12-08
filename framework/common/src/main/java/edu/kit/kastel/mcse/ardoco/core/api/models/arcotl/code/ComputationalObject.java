@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({ @JsonSubTypes.Type(value = ControlElement.class, name = "ControlElement") })
 @JsonTypeName("ComputationalObject")
-public class ComputationalObject extends CodeItem {
+public sealed class ComputationalObject extends CodeItem permits ControlElement {
 
     ComputationalObject() {
         // Jackson
