@@ -83,11 +83,18 @@ class DiagramLoadingTest extends EvaluationBase {
             }
             return List.of();
         }, Entity::getId));
+        int idsInArchitecture = ids.size();
+        assertTrue(idsInArchitecture > 0, "No ids in architecture model");
+
         ids.addAll(getAllIds(getCodeModel(project).getContent().stream().map(item -> (CodeItem) item).toList(), CodeItem::getContent, Extractions::getPath));
+        int idsInCode = ids.size() - idsInArchitecture;
+        assertTrue(idsInCode > 0, "No ids in code model");
 
         for (Element element : identification.get().elements()) {
             for (Occurrence occurrence : element.occurrences()) {
-                assertTrue(ids.contains(occurrence.modelElementId()), occurrence.modelElementId());
+                assertTrue(ids.contains(occurrence.modelElementId()), String.format(
+                        "Element %s not contained in model %s, which contains the following ids: %s", occurrence.modelElementId(), project.getSourceProject(),
+                        ids));
             }
         }
     }

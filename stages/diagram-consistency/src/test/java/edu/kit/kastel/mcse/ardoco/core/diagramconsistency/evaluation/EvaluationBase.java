@@ -1,7 +1,7 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -111,6 +111,8 @@ public class EvaluationBase {
         }
 
         assertNotNull(codeModel);
+        assertNotEquals(0, codeModel.getContent().size());
+
         return codeModel;
     }
 

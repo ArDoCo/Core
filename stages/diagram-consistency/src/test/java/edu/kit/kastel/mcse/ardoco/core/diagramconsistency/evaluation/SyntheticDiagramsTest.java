@@ -46,7 +46,11 @@ class SyntheticDiagramsTest extends EvaluationBase {
         RefactoringBundle<Box, CodeItem> bundle = new RefactoringBundle<>(Map.of(new Connect<>(), 2, new Create<>(), 2, new Delete<>(), 2, new Disconnect<>(),
                 2, new Move<>(), 2, new Rename<>(), 2));
 
-        AnnotatedDiagram<CodeItem> diagram = applyRefactoring(getAnnotatedCodeDiagram(project), bundle);
+        AnnotatedDiagram<CodeItem> diagram = getAnnotatedCodeDiagram(project);
+        assertTrue(diagram.diagram().getBoxes().size() > 6 * 2);
+
+        diagram = applyRefactoring(diagram, bundle);
+
         assertNotNull(diagram);
         assertFalse(diagram.inconsistencies().isEmpty());
     }
