@@ -15,11 +15,15 @@ import java.util.Set;
 
 import javax.annotation.Nullable;
 
+import edu.kit.kastel.mcse.ardoco.core.common.RepositoryHandler;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.ProjectHelper;
+
 import org.eclipse.collections.api.bimap.MutableBiMap;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,6 +110,7 @@ public class EvaluationBase {
         CodeModel codeModel = extractor.readInCodeModel();
 
         if (codeModel == null) {
+            RepositoryHandler.shallowCloneRepository(project.getSourceProject().getCodeRepository(), project.getSourceProject().getCodeLocation(), project.getSourceProject().getCommitHash());
             codeModel = extractor.extractModel();
             extractor.writeOutCodeModel(codeModel);
         }
