@@ -26,7 +26,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
  * This class represents recommended instances. These instances should be contained by the model. The likelihood is
  * measured by the probability. Every recommended instance has a unique name.
  */
-public class RecommendedInstanceImpl extends RecommendedInstance implements Claimant, NounMappingChangeListener {
+public final class RecommendedInstanceImpl extends RecommendedInstance implements Claimant, NounMappingChangeListener {
 
     private static final AggregationFunctions GLOBAL_AGGREGATOR = AggregationFunctions.AVERAGE;
     /**

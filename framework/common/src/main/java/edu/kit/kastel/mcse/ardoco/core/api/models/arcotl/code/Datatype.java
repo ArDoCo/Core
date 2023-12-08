@@ -19,7 +19,8 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
         @JsonSubTypes.Type(value = InterfaceUnit.class, name = "InterfaceUnit") //
 })
 @JsonTypeName("Datatype")
-public class Datatype extends CodeItem {
+public sealed class Datatype extends CodeItem permits ClassUnit, InterfaceUnit {
+
     @JsonProperty
     private String compilationUnitId;
     @JsonProperty

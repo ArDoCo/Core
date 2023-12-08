@@ -26,7 +26,7 @@ public class ProjectHelper {
 
     /**
      * Load a resource to a temporary file
-     * 
+     *
      * @param resource the resource path
      * @return the file if loaded or null if not possible
      */
