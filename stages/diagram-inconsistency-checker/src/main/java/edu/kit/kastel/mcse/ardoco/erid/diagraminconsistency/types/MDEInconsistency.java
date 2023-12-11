@@ -5,7 +5,6 @@ import java.util.Locale;
 
 import org.eclipse.collections.api.collection.ImmutableCollection;
 import org.eclipse.collections.api.factory.Lists;
-import org.jetbrains.annotations.NotNull;
 
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.Inconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
@@ -39,7 +38,7 @@ public record MDEInconsistency(RecommendedInstance recommendedInstance) implemen
     }
 
     @Override
-    public int compareTo(@NotNull MDEInconsistency o) {
+    public int compareTo(MDEInconsistency o) {
         return recommendedInstance().getName().compareTo(o.recommendedInstance().getName());
     }
 }

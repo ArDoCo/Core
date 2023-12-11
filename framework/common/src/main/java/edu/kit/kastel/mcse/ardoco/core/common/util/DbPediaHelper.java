@@ -8,9 +8,7 @@ import java.util.List;
 import org.apache.commons.compress.utils.Lists;
 import org.apache.jena.query.ParameterizedSparqlString;
 import org.apache.jena.query.QueryExecution;
-import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.ResultSet;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +26,7 @@ public class DbPediaHelper extends FileBasedCache<DbPediaHelper.DbPediaData> {
     /**
      * {@return the singleton instance}
      */
-    static synchronized @NotNull DbPediaHelper getInstance() {
+    static synchronized DbPediaHelper getInstance() {
         if (instance == null) {
             instance = new DbPediaHelper();
         }
@@ -141,7 +139,7 @@ public class DbPediaHelper extends FileBasedCache<DbPediaHelper.DbPediaData> {
     private List<String> runQuery(ParameterizedSparqlString query) {
         var list = List.<String>of();
         ResultSet results;
-        try (QueryExecution exec = QueryExecutionFactory.sparqlService("http://dbpedia.org/sparql", query.asQuery())) {
+        try (QueryExecution exec = QueryExecution.service("http://dbpedia.org/sparql").query(query.asQuery()).build()) {
             results = exec.execSelect();
             var asList = Lists.newArrayList(results);
             list = asList.stream().map(l -> l.getLiteral("label").getLexicalForm().replaceAll("\\((.*?)\\)", "").trim()).sorted().toList();

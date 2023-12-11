@@ -11,7 +11,6 @@ import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.sorted.ImmutableSortedMap;
 import org.eclipse.collections.api.map.sorted.MutableSortedMap;
 import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
-import org.jetbrains.annotations.NotNull;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
@@ -20,9 +19,11 @@ import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.PhraseAbbreviation;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextStateStrategy;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.WordAbbreviation;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
+@Deterministic
 public abstract class DefaultTextStateStrategy implements TextStateStrategy {
     protected final TextStateImpl textState;
 
@@ -53,7 +54,6 @@ public abstract class DefaultTextStateStrategy implements TextStateStrategy {
         return new NounMappingImpl(System.currentTimeMillis(), words, distribution.toImmutable(), referenceWords, surfaceForms, reference);
     }
 
-    @NotNull
     @Override
     public NounMapping addNounMapping(ImmutableSortedSet<Word> words, ImmutableSortedMap<MappingKind, Confidence> distribution,
             ImmutableList<Word> referenceWords, ImmutableList<String> surfaceForms, String reference) {
@@ -65,10 +65,9 @@ public abstract class DefaultTextStateStrategy implements TextStateStrategy {
         return nounMapping;
     }
 
-    @NotNull
     @Override
-    public NounMapping addNounMapping(@NotNull ImmutableSortedSet<Word> words, @NotNull MappingKind kind, @NotNull Claimant claimant, double probability,
-            @NotNull ImmutableList<Word> referenceWords, @NotNull ImmutableList<String> surfaceForms, String reference) {
+    public NounMapping addNounMapping(ImmutableSortedSet<Word> words, MappingKind kind, Claimant claimant, double probability,
+            ImmutableList<Word> referenceWords, ImmutableList<String> surfaceForms, String reference) {
         MutableSortedMap<MappingKind, Confidence> distribution = SortedMaps.mutable.empty();
         distribution.put(MappingKind.NAME, new Confidence(DEFAULT_AGGREGATOR));
         distribution.put(MappingKind.TYPE, new Confidence(DEFAULT_AGGREGATOR));

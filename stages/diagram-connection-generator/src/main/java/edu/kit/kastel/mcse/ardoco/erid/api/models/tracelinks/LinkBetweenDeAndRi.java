@@ -1,11 +1,12 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.erid.api.models.tracelinks;
 
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Objects;
-
-import org.jetbrains.annotations.NotNull;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiagramWordTraceLink;
@@ -13,8 +14,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.EndpointTuple;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions;
-import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashMap;
-import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 /**
@@ -25,7 +24,7 @@ public class LinkBetweenDeAndRi extends EndpointTuple implements Claimant, Compa
     private final DiagramElement diagramElement;
     private final String projectName;
     private final Claimant claimant;
-    private final LinkedHashMap<Word, Double> confidenceMap;
+    private final SortedMap<Word, Double> confidenceMap;
 
     /**
      * Creates a new trace link for the given project with the confidence map provided by the claimant.
@@ -36,13 +35,13 @@ public class LinkBetweenDeAndRi extends EndpointTuple implements Claimant, Compa
      * @param claimant            the {@link Claimant} responsible for the creation of this link
      * @param confidenceMap       the confidence
      */
-    public LinkBetweenDeAndRi(@NotNull RecommendedInstance recommendedInstance, @NotNull DiagramElement diagramElement, @NotNull String projectName,
-            @NotNull Claimant claimant, @NotNull LinkedHashMap<Word, Double> confidenceMap) {
+    public LinkBetweenDeAndRi(RecommendedInstance recommendedInstance, DiagramElement diagramElement, String projectName, Claimant claimant,
+            SortedMap<Word, Double> confidenceMap) {
         super(recommendedInstance, diagramElement);
 
         //Assert that confidenceMap is complete
         assert confidenceMap.keySet().containsAll(recommendedInstance.getNameMappings().stream().flatMap(n -> n.getWords().stream()).toList());
-        assert new LinkedHashSet<>(recommendedInstance.getNameMappings().stream().flatMap(n -> n.getWords().stream()).toList()).size() == confidenceMap.size();
+        assert new TreeSet<>(recommendedInstance.getNameMappings().stream().flatMap(n -> n.getWords().stream()).toList()).size() == confidenceMap.size();
 
         this.recommendedInstance = recommendedInstance;
         this.diagramElement = diagramElement;
@@ -77,8 +76,8 @@ public class LinkBetweenDeAndRi extends EndpointTuple implements Claimant, Compa
     /**
      * {@return a map of confidences for each word that is part of the recommended instance}
      */
-    public UnmodifiableLinkedHashMap<Word, Double> getConfidenceMap() {
-        return UnmodifiableLinkedHashMap.of(confidenceMap);
+    public SortedMap<Word, Double> getConfidenceMap() {
+        return new TreeMap<>(confidenceMap);
     }
 
     /**
@@ -104,7 +103,7 @@ public class LinkBetweenDeAndRi extends EndpointTuple implements Claimant, Compa
     }
 
     @Override
-    public int compareTo(@NotNull LinkBetweenDeAndRi o) {
+    public int compareTo(LinkBetweenDeAndRi o) {
         if (equals(o))
             return 0;
         var comp = getRecommendedInstance().getName().compareTo(o.getRecommendedInstance().getName());
@@ -136,9 +135,10 @@ public class LinkBetweenDeAndRi extends EndpointTuple implements Claimant, Compa
      *
      * @return immutable set of diagram text tracelinks
      */
-    public @NotNull UnmodifiableLinkedHashSet<DiagramWordTraceLink> toTraceLinks() {
-        return UnmodifiableLinkedHashSet.of(getConfidenceMap().entrySet()
+    public Set<DiagramWordTraceLink> toTraceLinks() {
+        return new LinkedHashSet<>(getConfidenceMap().entrySet()
                 .stream()
-                .map(e -> new DiagramWordTraceLink(getDiagramElement(), e.getKey(), projectName, e.getValue(), this)));
+                .map(e -> new DiagramWordTraceLink(getDiagramElement(), e.getKey(), projectName, e.getValue(), this))
+                .toList());
     }
 }

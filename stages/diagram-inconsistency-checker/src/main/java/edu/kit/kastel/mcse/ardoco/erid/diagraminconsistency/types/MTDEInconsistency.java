@@ -5,7 +5,6 @@ import java.util.Locale;
 
 import org.eclipse.collections.api.collection.ImmutableCollection;
 import org.eclipse.collections.api.factory.Lists;
-import org.jetbrains.annotations.NotNull;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.Inconsistency;
@@ -39,7 +38,7 @@ public record MTDEInconsistency(DiagramElement diagramElement) implements Incons
     }
 
     @Override
-    public int compareTo(@NotNull MTDEInconsistency o) {
+    public int compareTo(MTDEInconsistency o) {
         return diagramElement().compareTo(o.diagramElement());
     }
 }

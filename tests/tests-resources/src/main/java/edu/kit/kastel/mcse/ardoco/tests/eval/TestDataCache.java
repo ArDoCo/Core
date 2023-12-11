@@ -3,8 +3,6 @@ package edu.kit.kastel.mcse.ardoco.tests.eval;
 
 import java.io.Serializable;
 
-import org.jetbrains.annotations.NotNull;
-
 import edu.kit.kastel.mcse.ardoco.core.common.util.SerializableFileBasedCache;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage;
 
@@ -25,8 +23,7 @@ public class TestDataCache<U extends Serializable> extends SerializableFileBased
      * @param identifier the identifier of the cache
      * @param subFolder  the sub-folder in the /test/X directory, must end with '/'
      */
-    public TestDataCache(@NotNull Class<? extends AbstractExecutionStage> stage, @NotNull Class<? extends U> cls, @NotNull String identifier,
-            @NotNull String subFolder) {
+    public TestDataCache(Class<? extends AbstractExecutionStage> stage, Class<? extends U> cls, String identifier, String subFolder) {
         super(cls, identifier, "test/" + stage.getSimpleName() + "/" + subFolder);
         this.stage = stage;
     }

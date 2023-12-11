@@ -5,8 +5,6 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.List;
 
-import org.jetbrains.annotations.NotNull;
-
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityComparable;
 import edu.kit.kastel.mcse.ardoco.core.data.MetaData;
 
@@ -64,7 +62,7 @@ public interface Diagram extends Comparable<Diagram>, SimilarityComparable<Diagr
     }
 
     @Override
-    default int compareTo(@NotNull Diagram o) {
+    default int compareTo(Diagram o) {
         if (equals(o))
             return 0;
         return getResourceName().compareTo(o.getResourceName());

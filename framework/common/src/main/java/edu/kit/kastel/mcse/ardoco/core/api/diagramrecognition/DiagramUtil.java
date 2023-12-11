@@ -1,14 +1,14 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
-import java.util.LinkedHashMap;
-
-import org.jetbrains.annotations.NotNull;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
-import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.strategy.SimilarityStrategy;
 
@@ -27,12 +27,11 @@ public class DiagramUtil {
      * @param box                 the box the target words are extracted from
      * @param recommendedInstance the recommended instance the words are extracted from
      * @return the map
-     * @see #calculateSimilarityMap(WordSimUtils, UnmodifiableLinkedHashSet, UnmodifiableLinkedHashSet)
+     * @see #calculateSimilarityMap(WordSimUtils, SortedSet, SortedSet)
      */
-    public static @NotNull LinkedHashMap<Word, Double> calculateSimilarityMap(@NotNull WordSimUtils wordSimUtils, @NotNull Box box,
-            @NotNull RecommendedInstance recommendedInstance) {
+    public static SortedMap<Word, Double> calculateSimilarityMap(WordSimUtils wordSimUtils, Box box, RecommendedInstance recommendedInstance) {
         var deNames = box.getReferences();
-        var words = UnmodifiableLinkedHashSet.of(recommendedInstance.getNameMappings().stream().flatMap(nm -> nm.getWords().stream()).toList());
+        var words = new TreeSet<>(recommendedInstance.getNameMappings().stream().flatMap(nm -> nm.getWords().stream()).toList());
         return calculateSimilarityMap(wordSimUtils, words, deNames);
     }
 
@@ -43,12 +42,11 @@ public class DiagramUtil {
      * @param words        the words
      * @param targets      the target words
      */
-    private static @NotNull LinkedHashMap<Word, Double> calculateSimilarityMap(@NotNull WordSimUtils wordSimUtils,
-            @NotNull UnmodifiableLinkedHashSet<Word> words, @NotNull UnmodifiableLinkedHashSet<String> targets) {
-        var map = new LinkedHashMap<Word, Double>();
+    private static SortedMap<Word, Double> calculateSimilarityMap(WordSimUtils wordSimUtils, SortedSet<Word> words, SortedSet<String> targets) {
+        var map = new TreeMap<Word, Double>();
         words.forEach(w -> map.put(w, calculateHighestSimilarity(wordSimUtils, w, targets)));
 
-        return new LinkedHashMap<>(map);
+        return new TreeMap<>(map);
     }
 
     /**
@@ -58,8 +56,7 @@ public class DiagramUtil {
      * @param word         the word
      * @param targets      the target words
      */
-    private static double calculateHighestSimilarity(@NotNull WordSimUtils wordSimUtils, @NotNull Word word,
-            @NotNull UnmodifiableLinkedHashSet<String> targets) {
+    private static double calculateHighestSimilarity(WordSimUtils wordSimUtils, Word word, SortedSet<String> targets) {
         return targets.stream()
                 .map(name -> wordSimUtils.getSimilarity(word.getText(), name, SimilarityStrategy.MAXIMUM, true))
                 .max(Double::compareTo)
@@ -73,7 +70,7 @@ public class DiagramUtil {
      * @param nounMapping  the noun mapping
      * @param box          the box
      */
-    public static double calculateHighestSimilarity(@NotNull WordSimUtils wordSimUtils, @NotNull NounMapping nounMapping, @NotNull Box box) {
+    public static double calculateHighestSimilarity(WordSimUtils wordSimUtils, NounMapping nounMapping, Box box) {
         return nounMapping.getReferenceWords().stream().map(word -> calculateHighestSimilarity(wordSimUtils, word, box)).max(Double::compareTo).orElse(0.0);
     }
 
@@ -84,7 +81,7 @@ public class DiagramUtil {
      * @param word         the word
      * @param box          the box
      */
-    public static double calculateHighestSimilarity(@NotNull WordSimUtils wordSimUtils, @NotNull Word word, @NotNull Box box) {
+    public static double calculateHighestSimilarity(WordSimUtils wordSimUtils, Word word, Box box) {
         return calculateHighestSimilarity(wordSimUtils, word, box.getReferences());
     }
 }

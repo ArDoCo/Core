@@ -3,13 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.api;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Objects;
-
-import org.jetbrains.annotations.NotNull;
+import java.util.*;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -18,29 +12,29 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashMap;
-import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 
 /**
  * This class represents an abbreviation with a known set of meanings. An abbreviation is a string such as "ArDoCo" and has the meaning "Architecture
  * Documentation Consistency". The abbreviation that is disambiguated by the meanings of this class is final, but the meanings can be changed. An instance of
  * this class can be serialized and deserialized into JSON using Jackson.
  */
+@Deterministic
 @JsonSerialize(using = Disambiguation.DisambiguationSerializer.class)
 public class Disambiguation implements Comparable<Disambiguation>, Serializable {
     private final String abbreviation;
-    private final LinkedHashSet<String> meanings;
+    private final SortedSet<String> meanings;
 
-    public @NotNull String getAbbreviation() {
+    public String getAbbreviation() {
         return abbreviation;
     }
 
-    public @NotNull UnmodifiableLinkedHashSet<String> getMeanings() {
-        return new UnmodifiableLinkedHashSet<>(meanings);
+    public SortedSet<String> getMeanings() {
+        return new TreeSet<>(meanings);
     }
 
     @Override
-    public int compareTo(@NotNull Disambiguation o) {
+    public int compareTo(Disambiguation o) {
         return abbreviation.compareTo(o.abbreviation);
     }
 
@@ -84,8 +78,8 @@ public class Disambiguation implements Comparable<Disambiguation>, Serializable 
      * @param meanings     an array of meanings for the abbreviation, may be empty
      */
     @JsonCreator
-    public Disambiguation(@JsonProperty("abbreviation") @NotNull String abbreviation, @JsonProperty("meanings") @NotNull String[] meanings) {
-        this(abbreviation, new LinkedHashSet<>(Arrays.stream(meanings).toList()));
+    public Disambiguation(@JsonProperty("abbreviation") String abbreviation, @JsonProperty("meanings") String[] meanings) {
+        this(abbreviation, new TreeSet<>(Arrays.stream(meanings).toList()));
     }
 
     /**
@@ -94,9 +88,9 @@ public class Disambiguation implements Comparable<Disambiguation>, Serializable 
      * @param abbreviation the abbreviation that is disambiguated by this instance
      * @param meanings     a set of meanings for the abbreviation, may be empty
      */
-    public Disambiguation(@NotNull String abbreviation, @NotNull LinkedHashSet<String> meanings) {
+    public Disambiguation(String abbreviation, SortedSet<String> meanings) {
         this.abbreviation = abbreviation;
-        this.meanings = meanings;
+        this.meanings = new TreeSet<>(meanings);
     }
 
     /**
@@ -105,7 +99,7 @@ public class Disambiguation implements Comparable<Disambiguation>, Serializable 
      * @param other the other disambiguation
      * @return this
      */
-    public @NotNull Disambiguation addMeanings(Disambiguation other) {
+    public Disambiguation addMeanings(Disambiguation other) {
         meanings.addAll(other.meanings);
         return this;
     }
@@ -117,7 +111,7 @@ public class Disambiguation implements Comparable<Disambiguation>, Serializable 
      * @param ignoreCase whether letter case should be ignored when searching for the meanings
      * @return the abbreviated text
      */
-    public @NotNull String replaceMeaningWithAbbreviation(@NotNull String text, boolean ignoreCase) {
+    public String replaceMeaningWithAbbreviation(String text, boolean ignoreCase) {
         var abbreviatedText = text;
         for (String meaning : meanings) {
             String pattern = ignoreCase ? "(?i)" : "";
@@ -128,31 +122,15 @@ public class Disambiguation implements Comparable<Disambiguation>, Serializable 
     }
 
     /**
-     * Creates a map with entries mapping each abbreviation to its disambiguation. This is useful if a list of disambiguations has to be searched for a
-     * particular abbreviation regularly.
-     *
-     * @param disambiguations a list of disambiguations, may be empty
-     * @return an immutable map
-     */
-    public @NotNull static UnmodifiableLinkedHashMap<String, Disambiguation> toMap(@NotNull List<Disambiguation> disambiguations) {
-        var map = new LinkedHashMap<String, Disambiguation>();
-        for (var disambiguation : disambiguations) {
-            map.merge(disambiguation.getAbbreviation(), disambiguation, Disambiguation::addMeanings);
-        }
-        return new UnmodifiableLinkedHashMap<>(map);
-    }
-
-    /**
      * Merges the first map with the second map in a new map. If a key already exists, the disambiguations are merged non-destructively.
      *
      * @param a the first map
      * @param b the second map
      * @return a mutable map
      */
-    @NotNull
-    public static LinkedHashMap<String, Disambiguation> merge(@NotNull UnmodifiableLinkedHashMap<String, Disambiguation> a,
-            @NotNull UnmodifiableLinkedHashMap<String, Disambiguation> b) {
-        var mergedMap = new LinkedHashMap<>(a);
+
+    public static SortedMap<String, Disambiguation> merge(SortedMap<String, Disambiguation> a, SortedMap<String, Disambiguation> b) {
+        var mergedMap = new TreeMap<>(a);
         for (var entry : b.entrySet()) {
             mergedMap.merge(entry.getKey(), entry.getValue(), Disambiguation::merge);
         }
@@ -166,9 +144,9 @@ public class Disambiguation implements Comparable<Disambiguation>, Serializable 
      * @param b second ambiguation
      * @return new merged disambiguation
      */
-    @NotNull
-    public static Disambiguation merge(@NotNull Disambiguation a, @NotNull Disambiguation b) {
-        var temp = new LinkedHashSet<>(a.meanings);
+
+    public static Disambiguation merge(Disambiguation a, Disambiguation b) {
+        var temp = new TreeSet<>(a.meanings);
         temp.addAll(b.meanings);
         return new Disambiguation(a.abbreviation, temp);
     }

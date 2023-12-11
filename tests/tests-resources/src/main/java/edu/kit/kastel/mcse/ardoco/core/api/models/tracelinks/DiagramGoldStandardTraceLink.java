@@ -3,8 +3,6 @@ package edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks;
 
 import java.util.Objects;
 
-import org.jetbrains.annotations.NotNull;
-
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 
@@ -20,8 +18,7 @@ public class DiagramGoldStandardTraceLink extends DiagramTextTraceLink {
      * @param projectName    project name
      * @param goldStandard   path to the textual gold standard file
      */
-    public DiagramGoldStandardTraceLink(@NotNull DiagramElement diagramElement, @NotNull Sentence sentence, @NotNull String projectName,
-            @NotNull String goldStandard) {
+    public DiagramGoldStandardTraceLink(DiagramElement diagramElement, Sentence sentence, String projectName, String goldStandard) {
         this(diagramElement, sentence, projectName, goldStandard, TraceType.ENTITY);
     }
 
@@ -34,8 +31,7 @@ public class DiagramGoldStandardTraceLink extends DiagramTextTraceLink {
      * @param goldStandard   path to the textual gold standard file
      * @param traceType      type of the trace
      */
-    public DiagramGoldStandardTraceLink(@NotNull DiagramElement diagramElement, @NotNull Sentence sentence, @NotNull String projectName,
-            @NotNull String goldStandard, @NotNull TraceType traceType) {
+    public DiagramGoldStandardTraceLink(DiagramElement diagramElement, Sentence sentence, String projectName, String goldStandard, TraceType traceType) {
         super(diagramElement, sentence, projectName);
         this.goldStandard = goldStandard;
         this.traceType = traceType;
@@ -44,14 +40,14 @@ public class DiagramGoldStandardTraceLink extends DiagramTextTraceLink {
     /**
      * {@return the path to the goldstandard text file}
      */
-    public @NotNull String getGoldStandard() {
+    public String getGoldStandard() {
         return goldStandard;
     }
 
     /**
      * {@return the type of this trace}
      */
-    public @NotNull TraceType getTraceType() {
+    public TraceType getTraceType() {
         return traceType;
     }
 
@@ -72,7 +68,7 @@ public class DiagramGoldStandardTraceLink extends DiagramTextTraceLink {
     }
 
     @Override
-    public int compareTo(@NotNull DiagramTextTraceLink o) {
+    public int compareTo(DiagramTextTraceLink o) {
         if (equals(o))
             return 0;
         if (o instanceof DiagramWordTraceLink)

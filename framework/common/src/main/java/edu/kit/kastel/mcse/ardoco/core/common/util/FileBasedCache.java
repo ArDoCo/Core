@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,7 +76,7 @@ public abstract class FileBasedCache<T> implements AutoCloseable {
      * @param fileExtension extension of the cache file
      * @param subFolder     sub-folder in the user directory, must end with "/"
      */
-    protected FileBasedCache(@NotNull String identifier, @NotNull String fileExtension, @NotNull String subFolder) {
+    protected FileBasedCache(String identifier, String fileExtension, String subFolder) {
         this.identifier = identifier;
         this.fileExtension = fileExtension;
         if (!subFolder.isEmpty() && !subFolder.endsWith("/"))

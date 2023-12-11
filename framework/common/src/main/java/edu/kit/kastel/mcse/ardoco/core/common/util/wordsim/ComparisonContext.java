@@ -3,8 +3,6 @@ package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim;
 
 import java.util.Objects;
 
-import org.jetbrains.annotations.NotNull;
-
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 
 /**
@@ -13,8 +11,8 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
  * be used for comparison. The field {@link #characterMatch} provides a function to determine whether two {@link UnicodeCharacter UnicodeCharacters} are
  * considered to be a match by the {@link WordSimMeasure WordSimMeasures}.
  */
-public record ComparisonContext(@NotNull String firstString, @NotNull String secondString, Word firstWord, Word secondWord, boolean lemmatize,
-                                @NotNull UnicodeCharacterMatchFunctions characterMatch) {
+public record ComparisonContext(String firstString, String secondString, Word firstWord, Word secondWord, boolean lemmatize,
+                                UnicodeCharacterMatchFunctions characterMatch) {
 
     /**
      * Constructs a string-based context with a given match function and no lemmatization.
@@ -23,7 +21,7 @@ public record ComparisonContext(@NotNull String firstString, @NotNull String sec
      * @param secondString   the second string
      * @param characterMatch the match function
      */
-    public ComparisonContext(@NotNull String firstString, @NotNull String secondString, @NotNull UnicodeCharacterMatchFunctions characterMatch) {
+    public ComparisonContext(String firstString, String secondString, UnicodeCharacterMatchFunctions characterMatch) {
         this(firstString, secondString, null, null, false, characterMatch);
     }
 
@@ -33,7 +31,7 @@ public record ComparisonContext(@NotNull String firstString, @NotNull String sec
      * @param firstString  the first string
      * @param secondString the second string
      */
-    public ComparisonContext(@NotNull String firstString, @NotNull String secondString) {
+    public ComparisonContext(String firstString, String secondString) {
         this(firstString, secondString, null, null, false, UnicodeCharacterMatchFunctions.EQUAL);
     }
 
@@ -44,7 +42,7 @@ public record ComparisonContext(@NotNull String firstString, @NotNull String sec
      * @param secondString the second string
      * @param lemmatize    whether the string should be lemmatized
      */
-    public ComparisonContext(@NotNull String firstString, @NotNull String secondString, boolean lemmatize) {
+    public ComparisonContext(String firstString, String secondString, boolean lemmatize) {
         this(firstString, secondString, null, null, lemmatize, UnicodeCharacterMatchFunctions.EQUAL);
     }
 
@@ -55,7 +53,7 @@ public record ComparisonContext(@NotNull String firstString, @NotNull String sec
      * @param secondWord the second word
      * @param lemmatize  whether the words should be lemmatized
      */
-    public ComparisonContext(@NotNull Word firstWord, @NotNull Word secondWord, boolean lemmatize) {
+    public ComparisonContext(Word firstWord, Word secondWord, boolean lemmatize) {
         this(firstWord.getText(), secondWord.getText(), firstWord, secondWord, lemmatize, UnicodeCharacterMatchFunctions.EQUAL);
     }
 

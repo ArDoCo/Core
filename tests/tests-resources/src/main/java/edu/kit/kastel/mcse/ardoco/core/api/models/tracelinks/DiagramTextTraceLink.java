@@ -5,8 +5,6 @@ import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.Objects;
 
-import org.jetbrains.annotations.NotNull;
-
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityComparable;
@@ -24,13 +22,13 @@ public class DiagramTextTraceLink implements SimilarityComparable<DiagramTextTra
      * @param sentence       sentence
      * @param projectName    project name
      */
-    public DiagramTextTraceLink(@NotNull DiagramElement diagramElement, @NotNull Sentence sentence, @NotNull String projectName) {
+    public DiagramTextTraceLink(DiagramElement diagramElement, Sentence sentence, String projectName) {
         this.diagramElement = diagramElement;
         this.sentence = sentence;
         this.projectName = projectName;
     }
 
-    public @NotNull DiagramElement getDiagramElement() {
+    public DiagramElement getDiagramElement() {
         return diagramElement;
     }
 
@@ -55,7 +53,7 @@ public class DiagramTextTraceLink implements SimilarityComparable<DiagramTextTra
         return MessageFormat.format("[{0}]-[{1}]", getDiagramElement(), getSentence().getSentenceNumberForOutput());
     }
 
-    public @NotNull Sentence getSentence() {
+    public Sentence getSentence() {
         return this.sentence;
     }
 
@@ -75,7 +73,7 @@ public class DiagramTextTraceLink implements SimilarityComparable<DiagramTextTra
     }
 
     @Override
-    public int compareTo(@NotNull DiagramTextTraceLink o) {
+    public int compareTo(DiagramTextTraceLink o) {
         if (equals(o))
             return 0;
         var comp = getDiagramElement().compareTo(o.getDiagramElement());

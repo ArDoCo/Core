@@ -318,7 +318,7 @@ public final class DataRepositoryHelper {
             var byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
             return (T) new ObjectInputStream(byteArrayInputStream).readObject();
         } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException(e);
         }
     }
 }

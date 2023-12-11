@@ -5,7 +5,6 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 import org.apache.commons.text.similarity.LevenshteinDistance;
-import org.jetbrains.annotations.NotNull;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.UnicodeCharacter;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.UnicodeCharacterMatchFunctions;
@@ -72,7 +71,7 @@ public class UnicodeLevenshteinDistance implements Serializable {
      * @return result distance, or -1
      */
     private static int limitedCompare(UnicodeCharacterSequence left, UnicodeCharacterSequence right, final int threshold,
-            @NotNull UnicodeCharacterMatchFunctions characterMatch) { // NOPMD
+            UnicodeCharacterMatchFunctions characterMatch) { // NOPMD
         if (left == null || right == null) {
             throw new IllegalArgumentException("CharSequences must not be null");
         }
@@ -248,7 +247,7 @@ public class UnicodeLevenshteinDistance implements Serializable {
      * @return result distance, or -1
      * @throws IllegalArgumentException if either UnicodeCharacterSequence input is {@code null}
      */
-    private static int unlimitedCompare(UnicodeCharacterSequence left, UnicodeCharacterSequence right, @NotNull UnicodeCharacterMatchFunctions characterMatch) {
+    private static int unlimitedCompare(UnicodeCharacterSequence left, UnicodeCharacterSequence right, UnicodeCharacterMatchFunctions characterMatch) {
         if (left == null || right == null) {
             throw new IllegalArgumentException("CharSequences must not be null");
         }
@@ -367,14 +366,14 @@ public class UnicodeLevenshteinDistance implements Serializable {
      * @return result distance, or -1
      * @throws IllegalArgumentException if either String input {@code null}
      */
-    public Integer apply(final UnicodeCharacterSequence left, final UnicodeCharacterSequence right, @NotNull UnicodeCharacterMatchFunctions characterMatch) {
+    public Integer apply(final UnicodeCharacterSequence left, final UnicodeCharacterSequence right, UnicodeCharacterMatchFunctions characterMatch) {
         if (threshold != null) {
             return limitedCompare(left, right, threshold, characterMatch);
         }
         return unlimitedCompare(left, right, characterMatch);
     }
 
-    public Integer apply(@NotNull String left, @NotNull String right, @NotNull UnicodeCharacterMatchFunctions characterMatch) {
+    public Integer apply(String left, String right, UnicodeCharacterMatchFunctions characterMatch) {
         if (left == null || right == null) {
             throw new IllegalArgumentException("Strings must not be null");
         }

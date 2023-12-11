@@ -2,24 +2,23 @@
 package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code;
 
 import java.io.Serializable;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashMap;
-
 public class CodeItemRepository implements Serializable {
 
     @JsonProperty
-    private LinkedHashMap<String, CodeItem> repository = new LinkedHashMap<>();
+    private SortedMap<String, CodeItem> repository = new TreeMap<>();
     @JsonIgnore
     private boolean initialized = false;
 
-    public UnmodifiableLinkedHashMap<String, CodeItem> getRepository() {
-        return new UnmodifiableLinkedHashMap<>(repository);
+    public SortedMap<String, CodeItem> getRepository() {
+        return new TreeMap<>(repository);
     }
 
     void addCodeItem(CodeItem codeItem) {

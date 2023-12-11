@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.function.Function;
 import java.util.prefs.Preferences;
 
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +30,7 @@ public class TestDataRepositoryCache<T extends GoldStandardProject> extends Test
      * @param stage   the stage
      * @param project the project
      */
-    public TestDataRepositoryCache(@NotNull Class<? extends AbstractExecutionStage> stage, T project) {
+    public TestDataRepositoryCache(Class<? extends AbstractExecutionStage> stage, T project) {
         super(stage, HashMap.class, project.getProjectName(), "data-repositories/");
         this.project = project;
     }
@@ -60,7 +59,7 @@ public class TestDataRepositoryCache<T extends GoldStandardProject> extends Test
      * @param mappingFunction a function to compute the data repository of a project
      * @return a deep copy of the data repository
      */
-    @NotNull
+
     @DeepCopy
     public DataRepository get(Function<T, DataRepository> mappingFunction) {
         checkVersion();

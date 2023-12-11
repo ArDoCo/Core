@@ -16,7 +16,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.integration.InconsistencyDetectionE
  * Performs the inconsistency detection using the standard ArDoCo baseline.
  */
 @Disabled
-public class InconsistencyDetectionBaselineERID extends InconsistencyDetectionEvaluationIT {
+public class InconsistencyDetectionBaselineERIDIT extends InconsistencyDetectionEvaluationIT {
     @DisplayName("Evaluating MME-Inconsistency Detection (Mock)")
     @ParameterizedTest(name = "Evaluating MME-Inconsistency for {0}")
     @MethodSource("edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject#getNonHistoricalProjects")

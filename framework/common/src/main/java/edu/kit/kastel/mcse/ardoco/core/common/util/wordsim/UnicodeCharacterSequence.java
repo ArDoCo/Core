@@ -5,7 +5,6 @@ import java.util.Objects;
 import java.util.stream.IntStream;
 
 import org.eclipse.collections.api.list.ImmutableList;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * {@link UnicodeCharacter} equivalent of {@link CharSequence}.
@@ -53,7 +52,7 @@ public record UnicodeCharacterSequence(ImmutableList<UnicodeCharacter> character
      * @param oth            the other UnicodeCharacterSequence
      * @param characterMatch the function applied to determine if two UnicodeCharacters match
      */
-    public boolean match(@NotNull UnicodeCharacterSequence oth, @NotNull UnicodeCharacterMatchFunctions characterMatch) {
+    public boolean match(UnicodeCharacterSequence oth, UnicodeCharacterMatchFunctions characterMatch) {
         if (this == oth)
             return true;
         if (length() != oth.length())

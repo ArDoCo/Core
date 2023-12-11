@@ -4,9 +4,9 @@ package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 import java.awt.*;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
-
-import org.jetbrains.annotations.NotNull;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -14,11 +14,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiagramGoldStandardTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
-import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 
 /**
  * Connector for the {@link Box} JSON representation.
  */
+@Deterministic
 public class BoxGS extends Box implements Serializable {
     private final DiagramGS diagramGS;
     private final BoxGS[] subBoxes;
@@ -48,12 +49,12 @@ public class BoxGS extends Box implements Serializable {
      *
      * @param sentences the sentences from the text
      */
-    public UnmodifiableLinkedHashSet<DiagramGoldStandardTraceLink> getTraceLinks(List<Sentence> sentences) {
+    public Set<DiagramGoldStandardTraceLink> getTraceLinks(List<Sentence> sentences) {
         var list = Arrays.stream(tracelinks)
                 .filter(t -> getDiagram().getDiagramProject().getTextResourceName().contains(t.name()))
                 .flatMap(t -> t.toTraceLinks(this, sentences).stream())
                 .toList();
-        var set = new UnmodifiableLinkedHashSet<>(list);
+        var set = new LinkedHashSet<>(list);
         assert set.size() == list.size();
         return set;
     }
@@ -69,7 +70,7 @@ public class BoxGS extends Box implements Serializable {
     /**
      * {@return the diagram this box belongs to}
      */
-    public @NotNull DiagramGS getDiagram() {
+    public DiagramGS getDiagram() {
         return this.diagramGS;
     }
 

@@ -15,7 +15,6 @@ import java.util.stream.Stream;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.impl.factory.Lists;
 import org.eclipse.collections.impl.list.mutable.FastList;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * This class provides functionality regarding confusables and homoglyphs of a {@link UnicodeCharacter}. The information is based on the <a
@@ -29,13 +28,10 @@ public class ConfusablesHelper {
 
     private static final LinkedHashMap<UnicodeCharacter, FastList<UnicodeCharacter>> homoglyphs = new LinkedHashMap<>();
 
-    private static final String confusablesSummary = "/wordsim/confusablesSummary.txt";
+    private static final String CONFUSABLES_SUMMARY = "/wordsim/confusablesSummary.txt";
 
-    private static final String separator = "	";
+    private static final String SEPARATOR = "\t";
 
-    /**
-     * Parse the file
-     */
     static {
         parseConfusablesSummary();
     }
@@ -45,15 +41,15 @@ public class ConfusablesHelper {
      *
      * @param line the line
      */
-    static @NotNull FastList<UnicodeCharacter> extractHomoglyphsFromLine(String line) {
-        if (!line.startsWith("#" + separator))
+    static FastList<UnicodeCharacter> extractHomoglyphsFromLine(String line) {
+        if (!line.startsWith("#" + SEPARATOR))
             return FastList.newList();
 
         MutableList<String> confusables = Lists.mutable.of(line.split("\\R|\\s"));
         confusables.remove(0); //Remove leading # symbol
 
-        //FIXME skip confusables that consist of multiple unicode characters
-        //Filter because only homoglyphs are interesting
+        // FIXME skip confusables that consist of multiple unicode characters
+        // Filter because only homoglyphs are interesting
         return FastList.newList(confusables.stream()
                 .filter(c -> c.codePointCount(0, c.length()) == 1)
                 .mapToInt(c -> c.codePointAt(0))
@@ -65,9 +61,9 @@ public class ConfusablesHelper {
      * Parses the confusablesSummary.txt line by line and build the confusables map.
      */
     private static void parseConfusablesSummary() {
-        try (InputStream is = ConfusablesHelper.class.getResourceAsStream(confusablesSummary)) {
+        try (InputStream is = ConfusablesHelper.class.getResourceAsStream(CONFUSABLES_SUMMARY)) {
             if (is == null)
-                throw new MissingResourceException("Could not find the resource " + confusablesSummary, File.class.getSimpleName(), confusablesSummary);
+                throw new MissingResourceException("Could not find the resource " + CONFUSABLES_SUMMARY, File.class.getSimpleName(), CONFUSABLES_SUMMARY);
             try (BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
                 String line;
                 while ((line = br.readLine()) != null) {

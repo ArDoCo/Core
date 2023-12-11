@@ -4,8 +4,6 @@ package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.jarowinkler
 import java.io.Serializable;
 import java.util.Arrays;
 
-import org.jetbrains.annotations.NotNull;
-
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.UnicodeCharacter;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.UnicodeCharacterMatchFunctions;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.UnicodeCharacterSequence;
@@ -127,8 +125,7 @@ public final class UnicodeJaroWinklerSimilarity implements Serializable {
      * @return result similarity
      * @throws IllegalArgumentException if either CharSequence input is {@code null}
      */
-    public static Double apply(@NotNull UnicodeCharacterSequence left, @NotNull UnicodeCharacterSequence right,
-            @NotNull UnicodeCharacterMatchFunctions characterMatch) {
+    public static Double apply(UnicodeCharacterSequence left, UnicodeCharacterSequence right, UnicodeCharacterMatchFunctions characterMatch) {
         final double defaultScalingFactor = 0.1;
 
         if (left == null || right == null) {
@@ -156,7 +153,7 @@ public final class UnicodeJaroWinklerSimilarity implements Serializable {
      * @return result similarity
      * @throws IllegalArgumentException if either CharSequence input is {@code null}
      */
-    public static Double apply(@NotNull String left, @NotNull String right, @NotNull UnicodeCharacterMatchFunctions characterMatch) {
+    public static Double apply(String left, String right, UnicodeCharacterMatchFunctions characterMatch) {
         if (left == null || right == null) {
             throw new IllegalArgumentException("Strings must not be null");
         }

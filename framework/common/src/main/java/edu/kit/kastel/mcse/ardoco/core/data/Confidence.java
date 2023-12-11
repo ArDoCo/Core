@@ -3,15 +3,16 @@ package edu.kit.kastel.mcse.ardoco.core.data;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
+import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions;
 import edu.kit.kastel.mcse.ardoco.core.common.ICopyable;
-import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Triple;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
@@ -59,11 +60,11 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
      *
      * @return the claimants
      */
-    public UnmodifiableLinkedHashSet<Claimant> getClaimants() {
-        LinkedHashSet<Claimant> identitySet = new LinkedHashSet<>();
+    public Set<Claimant> getClaimants() {
+        Set<Claimant> identitySet = Collections.newSetFromMap(new IdentityHashMap<>());
         for (var confidence : this.agentConfidences)
             identitySet.add(confidence.first());
-        return UnmodifiableLinkedHashSet.of(identitySet);
+        return identitySet;
     }
 
     @Override

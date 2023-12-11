@@ -3,8 +3,6 @@ package edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator.informants;
 
 import java.util.Locale;
 
-import org.jetbrains.annotations.NotNull;
-
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramUtil;
@@ -64,8 +62,8 @@ public class DiagramTextInformant extends Informant {
      * @param recommendationState    the recommendation state
      * @param diagramConnectionState the diagram connection state
      */
-    private void createLinksBasedOnDiagramElements(@NotNull DiagramRecognitionState diagramState, @NotNull RecommendationState recommendationState,
-            @NotNull DiagramConnectionState diagramConnectionState) {
+    private void createLinksBasedOnDiagramElements(DiagramRecognitionState diagramState, RecommendationState recommendationState,
+            DiagramConnectionState diagramConnectionState) {
         var diagrams = diagramState.getDiagrams();
         for (Diagram diagram : diagrams) {
             var boxes = diagram.getBoxes();

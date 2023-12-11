@@ -7,6 +7,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
@@ -16,7 +18,6 @@ import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.ArchitectureModel;
-import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
 import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 
@@ -121,7 +122,7 @@ public enum Project implements GoldStandardProject {
     private final String goldStandardMissingTextForModelElement;
     private final ExpectedResults expectedTraceLinkResults;
     private final ExpectedResults expectedInconsistencyResults;
-    private final UnmodifiableLinkedHashSet<String> resourceNames;
+    private final SortedSet<String> resourceNames;
 
     Project(String alias, String model, String textFile, String goldStandardTraceabilityLinkRecovery, String configurationsFile,
             String goldStandardMissingTextForModelElement, ExpectedResults expectedTraceLinkResults, ExpectedResults expectedInconsistencyResults) {
@@ -133,7 +134,7 @@ public enum Project implements GoldStandardProject {
         this.goldStandardMissingTextForModelElement = goldStandardMissingTextForModelElement;
         this.expectedTraceLinkResults = expectedTraceLinkResults;
         this.expectedInconsistencyResults = expectedInconsistencyResults;
-        resourceNames = new UnmodifiableLinkedHashSet<>(List.of(model, textFile, goldStandardTraceabilityLinkRecovery, configurationsFile,
+        resourceNames = new TreeSet<>(List.of(model, textFile, goldStandardTraceabilityLinkRecovery, configurationsFile,
                 goldStandardMissingTextForModelElement));
     }
 
@@ -266,7 +267,7 @@ public enum Project implements GoldStandardProject {
     }
 
     @Override
-    public UnmodifiableLinkedHashSet<String> getResourceNames() {
-        return resourceNames;
+    public SortedSet<String> getResourceNames() {
+        return new TreeSet<>(resourceNames);
     }
 }

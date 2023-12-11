@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
-import org.jetbrains.annotations.NotNull;
 import org.sqlite.SQLiteConfig;
 import org.sqlite.SQLiteOpenMode;
 
@@ -75,11 +74,11 @@ public class WordSimUtils implements Serializable {
         this.similarityStrategy = strategy;
     }
 
-    public void setCharacterMatchFunction(@NotNull UnicodeCharacterMatchFunctions characterMatch) {
+    public void setCharacterMatchFunction(UnicodeCharacterMatchFunctions characterMatch) {
         this.characterMatch = characterMatch;
     }
 
-    public @NotNull UnicodeCharacterMatchFunctions getCharacterMatchFunction() {
+    public UnicodeCharacterMatchFunctions getCharacterMatchFunction() {
         return this.characterMatch;
     }
 

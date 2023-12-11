@@ -2,19 +2,30 @@
 package edu.kit.kastel.mcse.ardoco.tests.eval;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.Set;
+import java.util.SortedMap;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.impl.factory.SortedMaps;
-import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashMap;
-import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
 import edu.kit.kastel.mcse.ardoco.core.configuration.ConfigurationUtility;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.data.DeepCopy;
@@ -61,8 +72,8 @@ public abstract class StageTest<T extends AbstractExecutionStage, U extends Gold
     private static final Logger logger = LoggerFactory.getLogger(StageTest.class);
     private transient final T stage;
     private transient final List<U> allProjects;
-    private transient final UnmodifiableLinkedHashSet<Class<? extends PipelineAgent>> agents;
-    private transient final UnmodifiableLinkedHashMap<Class<? extends PipelineAgent>, UnmodifiableLinkedHashSet<Class<? extends Informant>>> informantsMap;
+    private transient final Set<Class<? extends PipelineAgent>> agents;
+    private transient final Map<Class<? extends PipelineAgent>, Set<Class<? extends Informant>>> informantsMap;
     private transient final Map<U, TestDataRepositoryCache<U>> dataRepositoryCaches = new HashMap<>();
 
     /**
@@ -71,7 +82,7 @@ public abstract class StageTest<T extends AbstractExecutionStage, U extends Gold
      * @param stage       dummy instance of the stage that should be tested
      * @param allProjects all projects that should be used for testing
      */
-    public StageTest(@NotNull T stage, @NotNull U[] allProjects) {
+    public StageTest(T stage, U[] allProjects) {
         this.stage = stage;
         this.agents = ConfigurationUtility.getAgents(stage);
         this.informantsMap = ConfigurationUtility.getInformantsMap(stage);
@@ -83,7 +94,7 @@ public abstract class StageTest<T extends AbstractExecutionStage, U extends Gold
      *
      * @param project the project that is executed by the pre-runner
      */
-    private DataRepository setup(@NotNull U project) {
+    private DataRepository setup(U project) {
         logger.info("Run PreTestRunner for {}", project.getProjectName());
         var preRunDataRepository = runPreTestRunner(project);
         logger.info("Finished PreTestRunner for {}", project.getProjectName());
@@ -97,7 +108,7 @@ public abstract class StageTest<T extends AbstractExecutionStage, U extends Gold
      * @param project the project
      * @return the data repository produced by the test-runner
      */
-    protected DataRepository run(@NotNull U project) {
+    protected DataRepository run(U project) {
         return run(project, SortedMaps.mutable.empty());
     }
 
@@ -109,7 +120,7 @@ public abstract class StageTest<T extends AbstractExecutionStage, U extends Gold
      * @param additionalConfigurations a map of additional configurations
      * @return the data repository produced by the test-runner
      */
-    protected DataRepository run(@NotNull U project, @NotNull SortedMap<String, String> additionalConfigurations) {
+    protected DataRepository run(U project, SortedMap<String, String> additionalConfigurations) {
         return run(project, additionalConfigurations, true);
     }
 
@@ -122,7 +133,7 @@ public abstract class StageTest<T extends AbstractExecutionStage, U extends Gold
      * @param cachePreRun              if false, the cache is ignored and the pre-runner is executed again
      * @return the data repository produced by the test-runner
      */
-    protected DataRepository run(@NotNull U project, @NotNull SortedMap<String, String> additionalConfigurations, boolean cachePreRun) {
+    protected DataRepository run(U project, SortedMap<String, String> additionalConfigurations, boolean cachePreRun) {
         var preRunDataRepository = getDataRepository(project, cachePreRun);
         logger.info("Run TestRunner for {}", project.getProjectName());
         var dataRepository = runTestRunner(project, additionalConfigurations, preRunDataRepository);
@@ -137,7 +148,7 @@ public abstract class StageTest<T extends AbstractExecutionStage, U extends Gold
      * @param id  the identifier of the test data cache
      * @param obj the object that should be cached
      */
-    protected void debugCacheWithPrompt(@NotNull String id, Serializable obj) {
+    protected void debugCacheWithPrompt(String id, Serializable obj) {
         if (Boolean.parseBoolean(System.getenv().getOrDefault(ENV_DEBUG, "false"))) {
             System.out.println("Cache " + obj.getClass().getSimpleName() + " at " + id + "? y/n:");
             if (new Scanner(System.in).nextLine().equals("y")) {
@@ -170,7 +181,7 @@ public abstract class StageTest<T extends AbstractExecutionStage, U extends Gold
      * @param id  the identifier of the test data cache
      * @param obj the object that should be cached
      */
-    protected void debugCacheIfCachingFlag(@NotNull String id, @NotNull Serializable obj) {
+    protected void debugCacheIfCachingFlag(String id, Serializable obj) {
         if (Boolean.parseBoolean(System.getProperty(CACHING, "false"))) {
             cache(id, obj);
         }
@@ -183,7 +194,7 @@ public abstract class StageTest<T extends AbstractExecutionStage, U extends Gold
      * @param id  the identifier of the test data cache
      * @param obj the object that should be cached
      */
-    protected void cache(@NotNull String id, @NotNull Serializable obj) {
+    protected void cache(String id, Serializable obj) {
         try (TestDataCache<Serializable> drCache = new TestDataCache<>(stage.getClass(), obj.getClass(), id, "cache/") {
         }) {
             drCache.cache(obj);
@@ -197,7 +208,7 @@ public abstract class StageTest<T extends AbstractExecutionStage, U extends Gold
      * @param cls the class object of the serialized object
      * @param <W> the type of the serialized object
      */
-    protected <W extends Serializable> W getCached(@NotNull String id, @NotNull Class<W> cls) {
+    protected <W extends Serializable> W getCached(String id, Class<W> cls) {
         try (TestDataCache<W> drCache = new TestDataCache<>(stage.getClass(), cls, id, "cache/")) {
             return drCache.getOrRead();
         }
@@ -211,9 +222,9 @@ public abstract class StageTest<T extends AbstractExecutionStage, U extends Gold
      * @param project     the project
      * @param cachePreRun if false, the cache is ignored and the pre-runner is executed again
      */
-    @NotNull
+
     @DeepCopy
-    protected DataRepository getDataRepository(@NotNull U project, boolean cachePreRun) {
+    protected DataRepository getDataRepository(U project, boolean cachePreRun) {
         if (!cachePreRun) {
             return this.setup(project);
         }
@@ -233,7 +244,7 @@ public abstract class StageTest<T extends AbstractExecutionStage, U extends Gold
      * @param cachePreRun              if false, the cache is ignored and the pre-runner is executed again
      * @return the record that is produced from the test-runner data repository
      */
-    protected abstract V runComparable(@NotNull U project, @NotNull SortedMap<String, String> additionalConfigurations, boolean cachePreRun);
+    protected abstract V runComparable(U project, SortedMap<String, String> additionalConfigurations, boolean cachePreRun);
 
     /**
      * Runs the test-runner for the specified project with the supplied additional configurations using {@link #run} and creates a record that summarizes the
@@ -243,7 +254,7 @@ public abstract class StageTest<T extends AbstractExecutionStage, U extends Gold
      * @param additionalConfigurations a map of additional configurations
      * @return the record that is produced from the test-runner data repository
      */
-    protected V runComparable(@NotNull U project, @NotNull SortedMap<String, String> additionalConfigurations) {
+    protected V runComparable(U project, SortedMap<String, String> additionalConfigurations) {
         return runComparable(project, additionalConfigurations, true);
     }
 
@@ -254,7 +265,7 @@ public abstract class StageTest<T extends AbstractExecutionStage, U extends Gold
      * @param cachePreRun if false, the cache is ignored and the pre-runner is executed again
      * @return the record that is produced from the test-runner data repository
      */
-    protected V runComparable(@NotNull U project, boolean cachePreRun) {
+    protected V runComparable(U project, boolean cachePreRun) {
         return runComparable(project, SortedMaps.mutable.empty(), cachePreRun);
     }
 
@@ -264,7 +275,7 @@ public abstract class StageTest<T extends AbstractExecutionStage, U extends Gold
      * @param project the project
      * @return the record that is produced from the test-runner data repository
      */
-    protected V runComparable(@NotNull U project) {
+    protected V runComparable(U project) {
         return runComparable(project, SortedMaps.mutable.empty(), true);
     }
 
@@ -278,7 +289,7 @@ public abstract class StageTest<T extends AbstractExecutionStage, U extends Gold
      * @param project the project that is executed by the pre-runner
      * @return the original data repository that was produced by the pre-runner
      */
-    protected abstract DataRepository runPreTestRunner(@NotNull U project);
+    protected abstract DataRepository runPreTestRunner(U project);
 
     /**
      * Runs the test-runner and returns the data repository produced by it. The test-runner should include the stage being tested. For test-runners, it is
@@ -290,8 +301,8 @@ public abstract class StageTest<T extends AbstractExecutionStage, U extends Gold
      * @param preRunDataRepository     a deep copy of the pre-runner data repository
      * @return the original data repository that was produced by the test-runner
      */
-    protected abstract DataRepository runTestRunner(@NotNull U project, @NotNull SortedMap<String, String> additionalConfigurations,
-            @DeepCopy @NotNull DataRepository preRunDataRepository);
+    protected abstract DataRepository runTestRunner(U project, SortedMap<String, String> additionalConfigurations,
+            @DeepCopy DataRepository preRunDataRepository);
 
     private static final int repetitions = 2;
 
@@ -345,11 +356,11 @@ public abstract class StageTest<T extends AbstractExecutionStage, U extends Gold
     @ParameterizedTest(name = "{0}")
     @MethodSource("getAgents")
     @Order(-2)
-    void agentRepetitionTest(@NotNull Class<? extends PipelineAgent> clazzAgent) {
+    void agentRepetitionTest(Class<? extends PipelineAgent> clazzAgent) {
         var results = new ArrayList<V>(repetitions);
         for (var i = 0; i < repetitions; i++) {
             logger.info("Agent {} repetition {}/{}", clazzAgent.getSimpleName(), i + 1, repetitions);
-            results.add(runComparable(allProjects.get(0), ConfigurationUtility.enableAgents(stage.getClass(), UnmodifiableLinkedHashSet.of(clazzAgent))));
+            results.add(runComparable(allProjects.get(0), ConfigurationUtility.enableAgents(stage.getClass(), Set.of(clazzAgent))));
         }
         Assertions.assertEquals(1, results.stream().distinct().toList().size());
     }
@@ -364,11 +375,11 @@ public abstract class StageTest<T extends AbstractExecutionStage, U extends Gold
     @ParameterizedTest(name = "{0}")
     @MethodSource("getInformants")
     @Order(-3)
-    void informantRepetitionTest(@NotNull Class<? extends Informant> clazzInformant) {
+    void informantRepetitionTest(Class<? extends Informant> clazzInformant) {
         var results = new ArrayList<V>(repetitions);
         for (var i = 0; i < repetitions; i++) {
             logger.info("Informant {} repetition {}/{}", clazzInformant.getSimpleName(), i + 1, repetitions);
-            results.add(runComparable(allProjects.get(0), ConfigurationUtility.enableInformants(stage, UnmodifiableLinkedHashSet.of(clazzInformant))));
+            results.add(runComparable(allProjects.get(0), ConfigurationUtility.enableInformants(stage, Set.of(clazzInformant))));
         }
         Assertions.assertEquals(1, results.stream().distinct().toList().size());
     }

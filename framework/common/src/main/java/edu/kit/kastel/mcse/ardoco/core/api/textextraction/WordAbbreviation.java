@@ -2,12 +2,11 @@
 package edu.kit.kastel.mcse.ardoco.core.api.textextraction;
 
 import java.util.LinkedHashSet;
-
-import org.jetbrains.annotations.NotNull;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.Disambiguation;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
-import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
 
 /**
  * An abbreviation with meanings that are words. For example, "DB" is an abbreviation of the word "Database".
@@ -15,8 +14,8 @@ import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashS
 public class WordAbbreviation extends Disambiguation {
     private final LinkedHashSet<Word> words;
 
-    public WordAbbreviation(@NotNull String abbreviation, @NotNull LinkedHashSet<Word> words) {
-        super(abbreviation, new LinkedHashSet<>(words.stream().map(Word::getText).toList()));
+    public WordAbbreviation(String abbreviation, LinkedHashSet<Word> words) {
+        super(abbreviation, new TreeSet<>(words.stream().map(Word::getText).toList()));
         this.words = words;
     }
 
@@ -32,7 +31,7 @@ public class WordAbbreviation extends Disambiguation {
     /**
      * {@return the meanings, which are words}
      */
-    public UnmodifiableLinkedHashSet<Word> getWords() {
-        return new UnmodifiableLinkedHashSet<>(words);
+    public SortedSet<Word> getWords() {
+        return new TreeSet<>(words);
     }
 }

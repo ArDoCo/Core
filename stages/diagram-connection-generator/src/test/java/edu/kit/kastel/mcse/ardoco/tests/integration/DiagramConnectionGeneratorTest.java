@@ -8,7 +8,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.impl.factory.SortedMaps;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -48,7 +47,7 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
     }
 
     @Override
-    protected Results runComparable(@NotNull DiagramProject project, @NotNull SortedMap<String, String> additionalConfigurations, boolean cachePreRun) {
+    protected Results runComparable(DiagramProject project, SortedMap<String, String> additionalConfigurations, boolean cachePreRun) {
         var dataRepository = run(project, additionalConfigurations, cachePreRun);
         var text = dataRepository.getData(PreprocessingData.ID, PreprocessingData.class).orElseThrow().getText();
         var diagramConnectionStates = dataRepository.getData(DiagramConnectionStates.ID, DiagramConnectionStates.class).orElseThrow();
@@ -96,7 +95,7 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
     }
 
     @Override
-    protected DataRepository runPreTestRunner(@NotNull DiagramProject project) {
+    protected DataRepository runPreTestRunner(DiagramProject project) {
         logger.info("Run PreTestRunner for {}", project.name());
         var params = new PreTestRunner.Parameters(project, new File(OUTPUT_DIR), true);
         var runner = new PreTestRunner(project.name(), params);
@@ -104,8 +103,7 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
     }
 
     @Override
-    protected DataRepository runTestRunner(@NotNull DiagramProject project, @NotNull SortedMap<String, String> additionalConfigurations,
-            @NotNull DataRepository preRunDataRepository) {
+    protected DataRepository runTestRunner(DiagramProject project, SortedMap<String, String> additionalConfigurations, DataRepository preRunDataRepository) {
         logger.info("Run TestRunner for {}", project.name());
         var combinedConfigs = new TreeMap<>(project.getAdditionalConfigurations());
         combinedConfigs.putAll(additionalConfigurations);

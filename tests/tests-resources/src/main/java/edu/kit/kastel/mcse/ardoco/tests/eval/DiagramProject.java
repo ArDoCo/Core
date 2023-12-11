@@ -9,10 +9,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.fasterxml.jackson.databind.InjectableValues;
@@ -25,8 +26,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiagramGoldStandardTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TraceType;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
-import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
-import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.ProjectHelper;
@@ -124,10 +123,10 @@ public enum DiagramProject implements GoldStandardDiagramsWithTLR {
     private final ExpectedResults expectedSadSamTlrResultsMock;
     private final ExpectedResults expectedSadSamTlrResultsNoMock;
 
-    private final UnmodifiableLinkedHashSet<String> diagramResourceNames;
+    private final SortedSet<String> diagramResourceNames;
 
     private final ArchitectureModelType architectureModelType;
-    private final UnmodifiableLinkedHashSet<String> resourceNames;
+    private final SortedSet<String> resourceNames;
 
     /**
      * Sole constructor for a project with diagrams.
@@ -154,12 +153,12 @@ public enum DiagramProject implements GoldStandardDiagramsWithTLR {
         this.expectedMMEResultsNoMock = expectedMMEResultsNoMock;
         this.expectedSadSamTlrResultsMock = expectedSadSamTlrResultsMock;
         this.expectedSadSamTlrResultsNoMock = expectedSadSamTlrResultsNoMock;
-        this.diagramResourceNames = new UnmodifiableLinkedHashSet<>(diagramResourceNames);
+        this.diagramResourceNames = new TreeSet<>(diagramResourceNames);
         this.architectureModelType = setupArchitectureModelType();
-        var set = new LinkedHashSet<>(project.getResourceNames());
+        var set = new TreeSet<>(project.getResourceNames());
         set.add(goldStandardDiagrams);
         set.addAll(diagramResourceNames);
-        resourceNames = new UnmodifiableLinkedHashSet<>(set);
+        resourceNames = set;
     }
 
     @Override
@@ -167,10 +166,9 @@ public enum DiagramProject implements GoldStandardDiagramsWithTLR {
         return this.name();
     }
 
-    @Deterministic
     @Override
-    public UnmodifiableLinkedHashSet<String> getResourceNames() {
-        return resourceNames;
+    public SortedSet<String> getResourceNames() {
+        return new TreeSet<>(resourceNames);
     }
 
     /**
@@ -279,35 +277,35 @@ public enum DiagramProject implements GoldStandardDiagramsWithTLR {
     }
 
     @Override
-    public Set<DiagramGoldStandardTraceLink> getDiagramTraceLinks(@NotNull List<Sentence> sentences) {
+    public Set<DiagramGoldStandardTraceLink> getDiagramTraceLinks(List<Sentence> sentences) {
         return getDiagramTraceLinks(sentences, baseProject.getTextResourceName());
     }
 
     @Override
-    public Map<TraceType, List<DiagramGoldStandardTraceLink>> getDiagramTraceLinksAsMap(@NotNull List<Sentence> sentences) {
+    public Map<TraceType, List<DiagramGoldStandardTraceLink>> getDiagramTraceLinksAsMap(List<Sentence> sentences) {
         var traceLinks = getDiagramTraceLinks(sentences);
         return traceLinks.stream().collect(Collectors.groupingBy(DiagramGoldStandardTraceLink::getTraceType));
     }
 
-    private Set<DiagramGoldStandardTraceLink> getDiagramTraceLinks(@NotNull List<Sentence> sentences, @Nullable String textGoldstandard) {
+    private Set<DiagramGoldStandardTraceLink> getDiagramTraceLinks(List<Sentence> sentences, @Nullable String textGoldstandard) {
         return getDiagramsGoldStandard().stream().flatMap(d -> d.getTraceLinks(sentences, textGoldstandard).stream()).collect(Collectors.toSet());
     }
 
     @Override
-    public UnmodifiableLinkedHashSet<DiagramGS> getDiagramsGoldStandard() {
+    public Set<DiagramGS> getDiagramsGoldStandard() {
         try {
             var objectMapper = new ObjectMapper();
             var file = getDiagramsGoldStandardFile();
             objectMapper.setInjectableValues(new InjectableValues.Std().addValue(DiagramProject.class, this));
-            return new UnmodifiableLinkedHashSet<>(List.of(objectMapper.readValue(file, DiagramsGS.class).diagrams));
+            return new LinkedHashSet<>(List.of(objectMapper.readValue(file, DiagramsGS.class).diagrams));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public UnmodifiableLinkedHashSet<String> getDiagramResourceNames() {
-        return diagramResourceNames;
+    public SortedSet<String> getDiagramResourceNames() {
+        return new TreeSet<>(diagramResourceNames);
     }
 
     @Override

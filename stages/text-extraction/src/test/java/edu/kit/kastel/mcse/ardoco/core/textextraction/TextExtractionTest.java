@@ -5,11 +5,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
+import java.util.SortedSet;
 
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 import org.eclipse.collections.impl.factory.Lists;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -18,7 +18,6 @@ import org.junit.jupiter.params.provider.EnumSource;
 import edu.kit.kastel.mcse.ardoco.core.api.Disambiguation;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.PhraseAbbreviation;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.WordAbbreviation;
-import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
@@ -47,7 +46,7 @@ public class TextExtractionTest extends StageTest<TextExtraction, TextExtraction
     }
 
     @Override
-    protected DataRepository runPreTestRunner(@NotNull TextProject project) {
+    protected DataRepository runPreTestRunner(TextProject project) {
         return new AnonymousRunner(project.getProjectName()) {
             @Override
             public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) throws IOException {
@@ -66,8 +65,7 @@ public class TextExtractionTest extends StageTest<TextExtraction, TextExtraction
     }
 
     @Override
-    protected DataRepository runTestRunner(@NotNull TextProject project, @NotNull SortedMap<String, String> additionalConfigurations,
-            @NotNull DataRepository preRunDataRepository) {
+    protected DataRepository runTestRunner(TextProject project, SortedMap<String, String> additionalConfigurations, DataRepository preRunDataRepository) {
         return new AnonymousRunner(project.getProjectName(), preRunDataRepository) {
             @Override
             public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) {
@@ -149,7 +147,7 @@ public class TextExtractionTest extends StageTest<TextExtraction, TextExtraction
         }
 
         @Override
-        public UnmodifiableLinkedHashSet<String> getResourceNames() {
+        public SortedSet<String> getResourceNames() {
             return project.getResourceNames();
         }
     }

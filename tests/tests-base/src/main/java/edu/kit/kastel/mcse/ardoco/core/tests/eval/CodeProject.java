@@ -7,8 +7,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.function.Predicate;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -17,7 +18,6 @@ import org.eclipse.collections.api.list.MutableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
 import edu.kit.kastel.mcse.ardoco.core.common.util.TraceLinkUtilities;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 
@@ -101,7 +101,7 @@ public enum CodeProject implements GoldStandardProject {
     private final Project project;
     private final ExpectedResults expectedResultsForSamCode;
     private final ExpectedResults expectedResultsForSadSamCode;
-    private final UnmodifiableLinkedHashSet<String> resourceNames;
+    private final SortedSet<String> resourceNames;
 
     CodeProject(Project project, String codeRepository, String commitHash, String codeModelLocationInResources, String samCodeGoldStandardLocation,
             String sadCodeGoldStandardLocation, ExpectedResults expectedResultsForSamCode, ExpectedResults expectedResultsForSadSamCode) {
@@ -113,11 +113,11 @@ public enum CodeProject implements GoldStandardProject {
         this.sadCodeGoldStandardLocation = sadCodeGoldStandardLocation;
         this.expectedResultsForSamCode = expectedResultsForSamCode;
         this.expectedResultsForSadSamCode = expectedResultsForSadSamCode;
-        var set = new LinkedHashSet<>(project.getResourceNames());
+        SortedSet<String> set = new TreeSet<>(project.getResourceNames());
         set.add(codeModelLocationInResources);
         set.add(samCodeGoldStandardLocation);
         set.add(sadCodeGoldStandardLocation);
-        resourceNames = new UnmodifiableLinkedHashSet<>(set);
+        resourceNames = set;
     }
 
     @Override
@@ -126,8 +126,8 @@ public enum CodeProject implements GoldStandardProject {
     }
 
     @Override
-    public UnmodifiableLinkedHashSet<String> getResourceNames() {
-        return resourceNames;
+    public SortedSet<String> getResourceNames() {
+        return new TreeSet<>(resourceNames);
     }
 
     /**

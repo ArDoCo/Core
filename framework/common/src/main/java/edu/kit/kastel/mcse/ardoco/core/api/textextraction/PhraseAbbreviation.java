@@ -2,14 +2,13 @@
 package edu.kit.kastel.mcse.ardoco.core.api.textextraction;
 
 import java.util.LinkedHashSet;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
-
-import org.jetbrains.annotations.NotNull;
 
 import edu.kit.kastel.mcse.ardoco.core.api.Disambiguation;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
-import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
 
 /**
  * An abbreviation with meanings that are phrases. For example, "ArDoCo" is an abbreviation of the phrase "Architecture Documentation Consistency".
@@ -17,8 +16,8 @@ import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashS
 public class PhraseAbbreviation extends Disambiguation {
     private final LinkedHashSet<Phrase> phrases;
 
-    public PhraseAbbreviation(@NotNull String abbreviation, @NotNull LinkedHashSet<Phrase> phrases) {
-        super(abbreviation, new LinkedHashSet<>(phrases.stream()
+    public PhraseAbbreviation(String abbreviation, LinkedHashSet<Phrase> phrases) {
+        super(abbreviation, new TreeSet<>(phrases.stream()
                 .map(phrase -> phrase.getContainedWords().stream().map(Word::getText).collect(Collectors.joining(" ")))
                 .toList()));
         this.phrases = phrases;
@@ -29,14 +28,14 @@ public class PhraseAbbreviation extends Disambiguation {
      *
      * @param phrase the phrase
      */
-    public void addPhrase(@NotNull Phrase phrase) {
+    public void addPhrase(Phrase phrase) {
         phrases.add(phrase);
     }
 
     /**
      * {@return the meanings, which are phrases}
      */
-    public @NotNull UnmodifiableLinkedHashSet<Phrase> getPhrases() {
-        return new UnmodifiableLinkedHashSet<>(phrases);
+    public SortedSet<Phrase> getPhrases() {
+        return new TreeSet<>(phrases);
     }
 }

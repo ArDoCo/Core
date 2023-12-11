@@ -108,7 +108,7 @@ public final class CommonTextToolsConfig {
     /**
      * The threshold for a diagram element to be considered similar to a word.
      */
-    public static final double DE_Word_SIMILARITY_THRESHOLD = CONFIG.getPropertyAsDouble("de_Word_SimilarityThreshold");
+    public static final double DE_WORD_SIMILARITY_THRESHOLD = CONFIG.getPropertyAsDouble("de_Word_SimilarityThreshold");
 
     private static ResourceAccessor loadParameters(String filePath) {
         return new ResourceAccessor(filePath, true);

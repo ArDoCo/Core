@@ -9,7 +9,6 @@ import java.util.Optional;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.SortedSets;
 import org.eclipse.collections.api.list.ImmutableList;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +56,7 @@ public class DiagramBackedTextStateStrategy extends OriginalTextStateStrategy {
      * relationship between mappings and the available {@link edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement DiagramElements} to further
      * subdivide them.
      */
-    @NotNull
+
     @Override
     public NounMapping addOrExtendNounMapping(Word word, MappingKind kind, Claimant claimant, double probability, ImmutableList<String> surfaceForms) {
         if (diagramRecognitionState == null) {
@@ -137,7 +136,7 @@ public class DiagramBackedTextStateStrategy extends OriginalTextStateStrategy {
     protected Optional<Box> getMostSimilar(List<Box> diagramElements, Word word) {
         var wordPairs = diagramElements.stream()
                 .map(box -> new Pair<>(DiagramUtil.calculateHighestSimilarity(wordSimUtils, word, box), box))
-                .filter(p -> p.first() >= CommonTextToolsConfig.DE_Word_SIMILARITY_THRESHOLD)
+                .filter(p -> p.first() >= CommonTextToolsConfig.DE_WORD_SIMILARITY_THRESHOLD)
                 .toList();
         return wordPairs.stream().max(diagramElementSimilarity).map(Pair::second);
     }

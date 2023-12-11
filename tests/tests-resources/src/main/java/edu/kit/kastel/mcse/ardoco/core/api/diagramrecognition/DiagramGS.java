@@ -9,7 +9,6 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.eclipse.collections.api.factory.Lists;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import com.fasterxml.jackson.annotation.JacksonInject;
@@ -23,6 +22,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiagramGoldStandardTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
+import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 
@@ -30,6 +30,7 @@ import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
  * Implementation of the {@link Diagram} interface used for JSON deserialization. Instances are created from a
  * {@link edu.kit.kastel.mcse.ardoco.tests.eval.GoldStandardDiagrams GoldStandardDiagrams}.
  */
+@Deterministic
 public class DiagramGS implements Diagram {
     private String resourceName;
     private List<Box> properBoxes = new ArrayList<>();
@@ -176,13 +177,13 @@ public class DiagramGS implements Diagram {
      * @param textGoldstandard Partial path to the goldstandard text file
      * @return List of tracelinks
      */
-    public @NotNull List<DiagramGoldStandardTraceLink> getTraceLinks(List<Sentence> sentences, @Nullable String textGoldstandard) {
+    public List<DiagramGoldStandardTraceLink> getTraceLinks(List<Sentence> sentences, @Nullable String textGoldstandard) {
         if (textGoldstandard == null)
             return getTraceLinks(sentences);
         return getTraceLinks(sentences).stream().filter(t -> textGoldstandard.contains(t.getGoldStandard())).distinct().toList();
     }
 
-    public @NotNull DiagramProject getDiagramProject() {
+    public DiagramProject getDiagramProject() {
         return project;
     }
 

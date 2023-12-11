@@ -9,7 +9,6 @@ import java.util.Objects;
 
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.impl.factory.Lists;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Represents a Unicode character corresponding to a particular Unicode code point. Refer to the
@@ -33,27 +32,27 @@ public final class UnicodeCharacter implements Serializable {
         return representation;
     }
 
-    public static @NotNull ImmutableList<UnicodeCharacter> from(@NotNull String input) {
+    public static ImmutableList<UnicodeCharacter> from(String input) {
         return Lists.immutable.fromStream(Arrays.stream(input.codePoints().toArray()).mapToObj(UnicodeCharacter::valueOf));
     }
 
-    public static @NotNull String toString(@NotNull List<UnicodeCharacter> unicodeCharacters) {
+    public static String toString(List<UnicodeCharacter> unicodeCharacters) {
         return unicodeCharacters.stream().map(UnicodeCharacter::toString).reduce("", (a, b) -> a + b);
     }
 
-    public static @NotNull String toUnicodeCharacter(int codePoint) {
+    public static String toUnicodeCharacter(int codePoint) {
         return Character.toString(codePoint);
     }
 
-    public @NotNull String toString() {
+    public String toString() {
         return toUnicodeCharacter(codePoint);
     }
 
-    public static @NotNull UnicodeCharacter valueOf(int codePoint) {
+    public static UnicodeCharacter valueOf(int codePoint) {
         return integerToUnicode.computeIfAbsent(codePoint, UnicodeCharacter::new);
     }
 
-    public static @NotNull UnicodeCharacter valueOf(String representation) {
+    public static UnicodeCharacter valueOf(String representation) {
         if (representation.codePointCount(0, representation.length()) != 1) {
             throw new IllegalArgumentException(String.format("%s is not a valid unicode character", representation));
         }
@@ -65,11 +64,11 @@ public final class UnicodeCharacter implements Serializable {
         this(codePoint, toUnicodeCharacter(codePoint));
     }
 
-    private UnicodeCharacter(@NotNull String representation) {
+    private UnicodeCharacter(String representation) {
         this(representation.codePointAt(0), representation);
     }
 
-    private UnicodeCharacter(int codePoint, @NotNull String representation) {
+    private UnicodeCharacter(int codePoint, String representation) {
         this.codePoint = codePoint;
         this.representation = representation;
     }

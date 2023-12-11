@@ -13,7 +13,6 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.sorted.MutableSortedMap;
 import org.eclipse.collections.api.set.sorted.MutableSortedSet;
-import org.jetbrains.annotations.NotNull;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
@@ -28,7 +27,6 @@ public class OriginalTextStateStrategy extends DefaultTextStateStrategy implemen
         super(textState);
     }
 
-    @NotNull
     @Override
     public NounMapping addOrExtendNounMapping(Word word, MappingKind kind, Claimant claimant, double probability, ImmutableList<String> surfaceForms) {
 
@@ -47,10 +45,9 @@ public class OriginalTextStateStrategy extends DefaultTextStateStrategy implemen
         return disposableNounMapping;
     }
 
-    @NotNull
     @Override
-    public NounMappingImpl mergeNounMappingsStateless(@NotNull NounMapping firstNounMapping, @NotNull NounMapping secondNounMapping,
-            ImmutableList<Word> referenceWords, String reference, @NotNull MappingKind mappingKind, @NotNull Claimant claimant, double probability) {
+    public NounMappingImpl mergeNounMappingsStateless(NounMapping firstNounMapping, NounMapping secondNounMapping, ImmutableList<Word> referenceWords,
+            String reference, MappingKind mappingKind, Claimant claimant, double probability) {
 
         MutableSortedSet<Word> mergedWords = firstNounMapping.getWords().toSortedSet();
         mergedWords.add(secondNounMapping.getReferenceWords().get(0));
@@ -80,7 +77,6 @@ public class OriginalTextStateStrategy extends DefaultTextStateStrategy implemen
                 mergedDistribution.toImmutable(), mergedReferenceWords.toImmutable(), mergedSurfaceForms.toImmutable(), mergedReference);
     }
 
-    @NotNull
     @Override
     public NounMappingImpl mergeNounMappings(NounMapping firstNounMapping, NounMapping secondNounMapping, ImmutableList<Word> referenceWords, String reference,
             MappingKind mappingKind, Claimant claimant, double probability) {

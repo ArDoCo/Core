@@ -9,7 +9,6 @@ import java.util.function.Function;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.map.sorted.ImmutableSortedMap;
 import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
-import org.jetbrains.annotations.NotNull;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
@@ -37,7 +36,7 @@ public interface TextStateStrategy extends Serializable {
      * @param surfaceForms the surface forms
      * @return the resulting noun mapping, either new or merged
      */
-    @NotNull
+
     NounMapping addOrExtendNounMapping(Word word, MappingKind kind, Claimant claimant, double probability, ImmutableList<String> surfaceForms);
 
     /**
@@ -50,7 +49,7 @@ public interface TextStateStrategy extends Serializable {
      * @param reference      the reference, nullable
      * @return the newly created noun mapping
      */
-    @NotNull
+
     NounMapping addNounMapping(ImmutableSortedSet<Word> words, ImmutableSortedMap<MappingKind, Confidence> distribution, ImmutableList<Word> referenceWords,
             ImmutableList<String> surfaceForms, String reference);
 
@@ -66,9 +65,9 @@ public interface TextStateStrategy extends Serializable {
      * @param reference      the reference, nullable
      * @return the newly created noun mapping
      */
-    @NotNull
-    NounMapping addNounMapping(@NotNull ImmutableSortedSet<Word> words, @NotNull MappingKind kind, @NotNull Claimant claimant, double probability,
-            @NotNull ImmutableList<Word> referenceWords, @NotNull ImmutableList<String> surfaceForms, String reference);
+
+    NounMapping addNounMapping(ImmutableSortedSet<Word> words, MappingKind kind, Claimant claimant, double probability, ImmutableList<Word> referenceWords,
+            ImmutableList<String> surfaceForms, String reference);
 
     /**
      * Merges two noun mappings into a new mapping of the given kind, probability and claimant without adding it to the state.
@@ -82,9 +81,9 @@ public interface TextStateStrategy extends Serializable {
      * @param probability       the probability
      * @return the merged noun mapping
      */
-    @NotNull
-    NounMapping mergeNounMappingsStateless(@NotNull NounMapping firstNounMapping, @NotNull NounMapping secondNounMapping, ImmutableList<Word> referenceWords,
-            String reference, @NotNull MappingKind mappingKind, @NotNull Claimant claimant, double probability);
+
+    NounMapping mergeNounMappingsStateless(NounMapping firstNounMapping, NounMapping secondNounMapping, ImmutableList<Word> referenceWords, String reference,
+            MappingKind mappingKind, Claimant claimant, double probability);
 
     /**
      * Merges two noun mappings into a new mapping of the given kind, probability and claimant and adds it to the state.
@@ -98,7 +97,7 @@ public interface TextStateStrategy extends Serializable {
      * @param probability       the probability
      * @return the merged noun mapping
      */
-    @NotNull
+
     NounMapping mergeNounMappings(NounMapping firstNounMapping, NounMapping secondNounMapping, ImmutableList<Word> referenceWords, String reference,
             MappingKind mappingKind, Claimant claimant, double probability);
 
@@ -110,7 +109,7 @@ public interface TextStateStrategy extends Serializable {
      * @param referenceWords the reference words
      * @return a joined reference
      */
-    default @NotNull String calculateNounMappingReference(@NotNull ImmutableList<Word> referenceWords) {
+    default String calculateNounMappingReference(ImmutableList<Word> referenceWords) {
         StringBuilder refBuilder = new StringBuilder();
         referenceWords.toSortedListBy(Word::getPosition);
         referenceWords.toSortedListBy(Word::getSentenceNo);
@@ -129,8 +128,8 @@ public interface TextStateStrategy extends Serializable {
      * @param word         the word
      * @return the resulting {@link edu.kit.kastel.mcse.ardoco.core.api.Disambiguation} in the stage
      */
-    @NotNull
-    WordAbbreviation addOrExtendWordAbbreviation(@NotNull String abbreviation, @NotNull Word word);
+
+    WordAbbreviation addOrExtendWordAbbreviation(String abbreviation, Word word);
 
     /**
      * Tries to add a phrase abbreviation to the state. If the abbreviation already exists, it is extended.
@@ -139,6 +138,6 @@ public interface TextStateStrategy extends Serializable {
      * @param phrase       the phrase
      * @return the resulting {@link edu.kit.kastel.mcse.ardoco.core.api.Disambiguation} in the stage
      */
-    @NotNull
-    PhraseAbbreviation addOrExtendPhraseAbbreviation(@NotNull String abbreviation, @NotNull Phrase phrase);
+
+    PhraseAbbreviation addOrExtendPhraseAbbreviation(String abbreviation, Phrase phrase);
 }

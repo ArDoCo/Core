@@ -8,7 +8,6 @@ import java.util.Optional;
 
 import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 import org.eclipse.collections.impl.factory.SortedSets;
-import org.jetbrains.annotations.NotNull;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelElement;
@@ -31,7 +30,7 @@ public abstract class DiagramElement extends Entity implements SimilarityCompara
      * @param diagram the diagram this element is associated with
      * @param uuid    the unique identifier
      */
-    protected DiagramElement(@NotNull Diagram diagram, @NotNull String uuid) {
+    protected DiagramElement(Diagram diagram, String uuid) {
         super(uuid);
         this.diagram = diagram;
     }
@@ -41,14 +40,14 @@ public abstract class DiagramElement extends Entity implements SimilarityCompara
      *
      * @return the {@link BoundingBox}
      */
-    public abstract @NotNull BoundingBox getBoundingBox();
+    public abstract BoundingBox getBoundingBox();
 
     /**
      * Returns the {@link Diagram}, which this element belongs to.
      *
      * @return the {@link Diagram}
      */
-    public @NotNull Diagram getDiagram() {
+    public Diagram getDiagram() {
         return this.diagram;
     }
 
@@ -58,7 +57,7 @@ public abstract class DiagramElement extends Entity implements SimilarityCompara
      *
      * @see #getParent()
      */
-    public @NotNull ImmutableSortedSet<DiagramElement> getChildren() {
+    public ImmutableSortedSet<DiagramElement> getChildren() {
         if (children == null) {
             var all = getDiagram().getBoxes();
             var alist = new ArrayList<>(all.stream()
@@ -101,7 +100,7 @@ public abstract class DiagramElement extends Entity implements SimilarityCompara
     }
 
     @Override
-    public int compareTo(@NotNull ModelElement o) {
+    public int compareTo(ModelElement o) {
         if (equals(o))
             return 0;
         if (o instanceof DiagramElement other) {

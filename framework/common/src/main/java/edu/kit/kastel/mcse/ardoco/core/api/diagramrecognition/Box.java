@@ -7,18 +7,15 @@ import java.awt.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
-
-import org.jetbrains.annotations.NotNull;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import com.fasterxml.jackson.annotation.JacksonInject;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
-import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
 
 /**
  * This class represents a box that is detected by the image recognition.
@@ -32,9 +29,9 @@ public class Box extends DiagramElement implements Serializable {
     private List<TextBox> textBoxes = new ArrayList<>();
     private Color dominatingColor = null;
     @JsonIgnore
-    private LinkedHashSet<String> references = new LinkedHashSet<>();
+    private SortedSet<String> references = new TreeSet<>();
 
-    private static @NotNull String calculateUUID(@NotNull int[] coordinates) {
+    private static String calculateUUID(int[] coordinates) {
         return String.format("Box [%s]", getBoundingBoxConcat(coordinates));
     }
 
@@ -43,7 +40,7 @@ public class Box extends DiagramElement implements Serializable {
      *
      * @param coordinates bounding box coordinates
      */
-    public static @NotNull String getBoundingBoxConcat(@NotNull int[] coordinates) {
+    public static String getBoundingBoxConcat(int[] coordinates) {
         return Arrays.stream(coordinates).mapToObj((Integer::toString)).reduce((l, r) -> l + "-" + r).orElseThrow();
     }
 
@@ -98,7 +95,7 @@ public class Box extends DiagramElement implements Serializable {
      *
      * @return a UUID of the box
      */
-    public @NotNull String getUUID() {
+    public String getUUID() {
         return getName();
     }
 
@@ -125,7 +122,7 @@ public class Box extends DiagramElement implements Serializable {
      *
      * @return the classification
      */
-    public @NotNull Classification getClassification() {
+    public Classification getClassification() {
         return Classification.byString(classification);
     }
 
@@ -143,7 +140,7 @@ public class Box extends DiagramElement implements Serializable {
      *
      * @param textBox the textbox
      */
-    public void removeTextBox(@NotNull TextBox textBox) {
+    public void removeTextBox(TextBox textBox) {
         Objects.requireNonNull(textBox);
         this.textBoxes.removeIf(it -> it == textBox);
     }
@@ -153,12 +150,12 @@ public class Box extends DiagramElement implements Serializable {
      *
      * @return all associated text boxes
      */
-    public @NotNull List<TextBox> getTexts() {
+    public List<TextBox> getTexts() {
         return new ArrayList<>(textBoxes);
     }
 
-    public @NotNull UnmodifiableLinkedHashSet<String> getReferences() {
-        return new UnmodifiableLinkedHashSet<>(references);
+    public SortedSet<String> getReferences() {
+        return new TreeSet<>(references);
     }
 
     /**
@@ -167,12 +164,12 @@ public class Box extends DiagramElement implements Serializable {
      * @param reference the reference string
      * @return true if the reference wasn't already contained, false otherwise
      */
-    public boolean addReference(@NotNull String reference) {
+    public boolean addReference(String reference) {
         return references.add(reference);
     }
 
-    public void setReferences(@NotNull List<String> references) {
-        this.references = new LinkedHashSet<>(references);
+    public void setReferences(List<String> references) {
+        this.references = new TreeSet<>(references);
     }
 
     /**
@@ -181,7 +178,7 @@ public class Box extends DiagramElement implements Serializable {
      * @param reference the reference
      * @return true if removed, false otherwise
      */
-    public boolean removeReference(@NotNull String reference) {
+    public boolean removeReference(String reference) {
         return references.remove(reference);
     }
 
@@ -190,7 +187,7 @@ public class Box extends DiagramElement implements Serializable {
      *
      * @return the dominating color or {@code null} if not present
      */
-    public @NotNull Color getDominatingColor() {
+    public Color getDominatingColor() {
         return dominatingColor;
     }
 
@@ -199,12 +196,12 @@ public class Box extends DiagramElement implements Serializable {
      *
      * @param dominatingColor the dominating color
      */
-    public void setDominatingColor(@NotNull Color dominatingColor) {
+    public void setDominatingColor(Color dominatingColor) {
         this.dominatingColor = dominatingColor;
     }
 
     @Override
-    public @NotNull BoundingBox getBoundingBox() {
+    public BoundingBox getBoundingBox() {
         return new BoundingBox(coordinates[0], coordinates[1], coordinates[2], coordinates[3]);
     }
 

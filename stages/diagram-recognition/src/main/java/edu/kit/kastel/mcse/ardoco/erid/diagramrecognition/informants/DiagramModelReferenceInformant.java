@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.impl.factory.Lists;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -172,7 +171,7 @@ public class DiagramModelReferenceInformant extends Informant {
      * @param textBox the textBox
      * @return a set of possible names
      */
-    private static @NotNull Set<String> getReferences(@NotNull TextBox textBox) {
+    private static Set<String> getReferences(TextBox textBox) {
         var names = new LinkedHashSet<String>();
 
         var text = textBox.getText();
@@ -202,7 +201,7 @@ public class DiagramModelReferenceInformant extends Informant {
      *
      * @param text the text
      */
-    private static @NotNull Set<String> processText(@NotNull String text) {
+    private static Set<String> processText(String text) {
         var words = new LinkedHashSet<String>();
         var split = splitBracketsAndEnumerations(text);
         var deCameledSplit = split.stream().map(DiagramModelReferenceInformant::getDeCameledText).toList();
@@ -219,7 +218,7 @@ public class DiagramModelReferenceInformant extends Informant {
      * @param text the text
      * @return a non-empty list of splits
      */
-    private static @NotNull List<String> splitBracketsAndEnumerations(@NotNull String text) {
+    private static List<String> splitBracketsAndEnumerations(String text) {
         return Arrays.stream(text.split("[,()]")).map(String::trim).toList();
     }
 
@@ -230,7 +229,7 @@ public class DiagramModelReferenceInformant extends Informant {
      * @param word the word that should be decameled
      * @return the decameled word
      */
-    private static @NotNull String getDeCameledText(@NotNull String word) {
+    private static String getDeCameledText(String word) {
         return String.join(" ", word.split("(?<!([A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])")).replaceAll("\\s+", " ");
     }
 }

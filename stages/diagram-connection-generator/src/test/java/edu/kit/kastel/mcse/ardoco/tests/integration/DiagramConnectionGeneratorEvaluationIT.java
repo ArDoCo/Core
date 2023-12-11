@@ -3,7 +3,6 @@ package edu.kit.kastel.mcse.ardoco.tests.integration;
 
 import java.io.File;
 
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
@@ -23,8 +22,8 @@ import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class DiagramConnectionGeneratorEvaluation extends DiagramConnectionGeneratorTest {
-    private static final Logger logger = LoggerFactory.getLogger(DiagramConnectionGeneratorEvaluation.class);
+public class DiagramConnectionGeneratorEvaluationIT extends DiagramConnectionGeneratorTest {
+    private static final Logger logger = LoggerFactory.getLogger(DiagramConnectionGeneratorEvaluationIT.class);
     private static final String OUTPUT_DIR = "src/test/resources/testout";
 
     @Override
@@ -33,7 +32,7 @@ public class DiagramConnectionGeneratorEvaluation extends DiagramConnectionGener
     }
 
     @Override
-    protected DataRepository runPreTestRunner(@NotNull DiagramProject project) {
+    protected DataRepository runPreTestRunner(DiagramProject project) {
         logger.info("Run PreTestRunner for {}", project.name());
         var params = new PreTestRunner.Parameters(project, new File(OUTPUT_DIR), false);
         var runner = new PreTestRunner(project.name(), params);

@@ -12,7 +12,6 @@ import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.MutableMap;
 import org.eclipse.collections.api.map.sorted.ImmutableSortedMap;
 import org.eclipse.collections.api.map.sorted.MutableSortedMap;
-import org.jetbrains.annotations.NotNull;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.PhraseType;
@@ -126,7 +125,7 @@ public class PhraseImpl implements Phrase {
     }
 
     @Override
-    public int compareTo(@NotNull Phrase o) {
+    public int compareTo(Phrase o) {
         if (this == o)
             return 0;
         return Comparator.comparing(Phrase::getSentenceNo)

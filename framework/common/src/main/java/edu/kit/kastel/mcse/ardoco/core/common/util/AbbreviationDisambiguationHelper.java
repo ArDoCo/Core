@@ -5,14 +5,15 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
-import org.jetbrains.annotations.NotNull;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -22,8 +23,6 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.kit.kastel.mcse.ardoco.core.api.Disambiguation;
-import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashMap;
-import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashSet;
 
 /**
  * Provides functions to identify and disambiguate abbreviations. Caches results divided into a persistent {@link FileBasedCache} and a transient cache that is
@@ -32,12 +31,12 @@ import edu.kit.kastel.mcse.ardoco.core.common.collection.UnmodifiableLinkedHashS
  * lookups. Such disambiguations are saved in the persistent cache. The transient cache is populated by the stages. When comparing two words, it is generally
  * advised to ambiguate both rather than disambiguating.
  */
-public final class AbbreviationDisambiguationHelper extends FileBasedCache<LinkedHashMap<String, Disambiguation>> {
+public final class AbbreviationDisambiguationHelper extends FileBasedCache<SortedMap<String, Disambiguation>> {
     /**
      * Matches abbreviations with up to 1 lowercase letter between uppercase letters. Accounts for camelCase by lookahead, e.g. UserDBAdapter is matched as "DB"
      * rather than "DBA". Matches abbreviations at any point in the word, including at the start and end.
      */
-    private final static Pattern abbreviationsPattern = Pattern.compile("(?:([A-Z]+[a-z]?)+[A-Z])(?=([A-Z][a-z])|\\b)");
+    private static final Pattern abbreviationsPattern = Pattern.compile("(?:([A-Z]+[a-z]?)+[A-Z])(?=([A-Z][a-z])|\\b)");
     /*
     (?:([A-Z]+[a-z]?)+(?(?<=[A-Z])\w|[A-Z]))(?=([A-Z][a-z])|\b)
     potential improvement, can also match ArDoCo for example, assumes that two letters with first letter capital is an abbr. such as Id, Db..
@@ -46,16 +45,16 @@ public final class AbbreviationDisambiguationHelper extends FileBasedCache<Linke
     public static final int LIMIT = 2;
     public static final double SIMILARITY_THRESHOLD = 0.9;
     private static final Logger logger = LoggerFactory.getLogger(AbbreviationDisambiguationHelper.class);
-    private static final String abbreviationsCom = "https://www.abbreviations.com/";
-    private static final String acronymFinderCom = "https://www.acronymfinder.com/Information-Technology/";
+    private static final String ABBREVIATIONS_COM = "https://www.abbreviations.com/";
+    private static final String ACRONYM_FINDER_COM = "https://www.acronymfinder.com/Information-Technology/";
     private static AbbreviationDisambiguationHelper instance;
-    private static LinkedHashMap<String, String> ambiguated = new LinkedHashMap<>();
-    private static final LinkedHashMap<String, Disambiguation> local = new LinkedHashMap<>();
+    private static SortedMap<String, String> ambiguated = new TreeMap<>();
+    private static final SortedMap<String, Disambiguation> local = new TreeMap<>();
 
     /**
      * {@return the singleton instance of this class}
      */
-    static synchronized @NotNull AbbreviationDisambiguationHelper getInstance() {
+    static synchronized AbbreviationDisambiguationHelper getInstance() {
         if (instance == null) {
             instance = new AbbreviationDisambiguationHelper();
         }
@@ -73,7 +72,7 @@ public final class AbbreviationDisambiguationHelper extends FileBasedCache<Linke
      */
     public static void addTransient(Disambiguation disambiguation) {
         local.merge(disambiguation.getAbbreviation(), disambiguation, Disambiguation::addMeanings);
-        ambiguated = new LinkedHashMap<>();
+        ambiguated = new TreeMap<>();
     }
 
     /**
@@ -95,7 +94,7 @@ public final class AbbreviationDisambiguationHelper extends FileBasedCache<Linke
         try (var fbCache = getInstance()) {
             fbCache.cache(disambiguations);
         }
-        ambiguated = new LinkedHashMap<>();
+        ambiguated = new TreeMap<>();
     }
 
     /**
@@ -104,7 +103,7 @@ public final class AbbreviationDisambiguationHelper extends FileBasedCache<Linke
      * @param abbreviation the abbreviation
      * @return a set of meanings
      */
-    public static @NotNull UnmodifiableLinkedHashSet<String> disambiguate(@NotNull String abbreviation) {
+    public static SortedSet<String> disambiguate(String abbreviation) {
         //Specifically check. We do not want to mess up our files.
         Objects.requireNonNull(abbreviation);
         if (abbreviation.isBlank())
@@ -131,8 +130,8 @@ public final class AbbreviationDisambiguationHelper extends FileBasedCache<Linke
      * @param ignoreCase whether to ignore the casing when searching for a meaning inside the text
      * @return a single string where all meanings have been replaced with known abbreviations
      */
-    public static String ambiguateAll(@NotNull String text, boolean ignoreCase) {
-        return ambiguated.computeIfAbsent(text, (key) -> replaceAllMeanings(key, ignoreCase));
+    public static String ambiguateAll(String text, boolean ignoreCase) {
+        return ambiguated.computeIfAbsent(text, key -> replaceAllMeanings(key, ignoreCase));
     }
 
     /**
@@ -142,7 +141,7 @@ public final class AbbreviationDisambiguationHelper extends FileBasedCache<Linke
      * @param ignoreCase whether to ignore the casing when searching for a meaning inside the text
      * @return a single string where all meanings have been replaced with known abbreviations
      */
-    private static String replaceAllMeanings(@NotNull String text, boolean ignoreCase) {
+    private static String replaceAllMeanings(String text, boolean ignoreCase) {
         var replaced = text;
         var disambiguations = getAll().values();
         for (var disambiguation : disambiguations) {
@@ -151,15 +150,15 @@ public final class AbbreviationDisambiguationHelper extends FileBasedCache<Linke
         return replaced;
     }
 
-    private static LinkedHashMap<String, Disambiguation> getPersistent() {
+    private static SortedMap<String, Disambiguation> getPersistent() {
         return getInstance().getOrRead();
     }
 
     /**
      * {@return all disambiguations merged from both caches}
      */
-    public static UnmodifiableLinkedHashMap<String, Disambiguation> getAll() {
-        return new UnmodifiableLinkedHashMap<>(Disambiguation.merge(new UnmodifiableLinkedHashMap<>(local), new UnmodifiableLinkedHashMap<>(getPersistent())));
+    public static SortedMap<String, Disambiguation> getAll() {
+        return new TreeMap<>(Disambiguation.merge(new TreeMap<>(local), new TreeMap<>(getPersistent())));
     }
 
     /**
@@ -168,7 +167,7 @@ public final class AbbreviationDisambiguationHelper extends FileBasedCache<Linke
      * @param abbreviation the abbreviation
      * @return a potentially empty set of meanings
      */
-    static Disambiguation crawl(@NotNull String abbreviation) {
+    static Disambiguation crawl(String abbreviation) {
         logger.info("Using crawler to disambiguate {}", abbreviation);
         var meanings = crawlAcronymFinderCom(abbreviation);
         meanings.addAll(crawlAbbreviationsCom(abbreviation));
@@ -181,17 +180,17 @@ public final class AbbreviationDisambiguationHelper extends FileBasedCache<Linke
      * @param abbreviation the abbreviation
      * @return a potentially empty set of meanings
      */
-    static LinkedHashSet<String> crawlAbbreviationsCom(@NotNull String abbreviation) {
-        var meanings = new LinkedHashSet<String>();
+    static SortedSet<String> crawlAbbreviationsCom(String abbreviation) {
+        SortedSet<String> meanings = new TreeSet<>();
         try {
-            Document document = Jsoup.connect(abbreviationsCom + abbreviation).get();
+            Document document = Jsoup.connect(ABBREVIATIONS_COM + abbreviation).get();
             var elements = document.select("td > p.desc");
             meanings.addAll(elements.stream().limit(LIMIT).map(e -> removeAllBrackets(e.childNode(0).toString())).toList());
-            logger.info("Crawler found {} -> {} on {}", abbreviation, meanings, abbreviationsCom);
+            logger.info("Crawler found {} -> {} on {}", abbreviation, meanings, ABBREVIATIONS_COM);
         } catch (IOException e) {
             logger.error(e.getCause().getMessage());
         } catch (IndexOutOfBoundsException e) {
-            logger.warn("Could not parse {} website document, did the layout change?", abbreviationsCom);
+            logger.warn("Could not parse {} website document, did the layout change?", ABBREVIATIONS_COM);
         }
         return meanings;
     }
@@ -202,26 +201,26 @@ public final class AbbreviationDisambiguationHelper extends FileBasedCache<Linke
      * @param abbreviation the abbreviation
      * @return a potentially empty set of meanings
      */
-    static LinkedHashSet<String> crawlAcronymFinderCom(@NotNull String abbreviation) {
-        var meanings = new LinkedHashSet<String>();
+    static SortedSet<String> crawlAcronymFinderCom(String abbreviation) {
+        SortedSet<String> meanings = new TreeSet<>();
         try {
-            Document document = Jsoup.connect(acronymFinderCom + abbreviation + ".html").get();
+            Document document = Jsoup.connect(ACRONYM_FINDER_COM + abbreviation + ".html").get();
             var elements = document.select("td.result-list__body__meaning > a, td" + ".result-list__body__meaning");
             meanings.addAll(elements.stream().limit(LIMIT).map(Element::text).map(AbbreviationDisambiguationHelper::removeAllBrackets).toList());
-            logger.info("Crawler found {} -> {} on {}", abbreviation, meanings, acronymFinderCom);
+            logger.info("Crawler found {} -> {} on {}", abbreviation, meanings, ACRONYM_FINDER_COM);
         } catch (IOException e) {
             logger.error(e.getCause().getMessage());
         } catch (IndexOutOfBoundsException e) {
-            logger.warn("Could not parse {} website document, did the layout change?", acronymFinderCom);
+            logger.warn("Could not parse {} website document, did the layout change?", ACRONYM_FINDER_COM);
         }
         return meanings;
     }
 
     @Override
-    protected @NotNull LinkedHashMap<String, Disambiguation> read() throws CacheException {
+    protected SortedMap<String, Disambiguation> read() throws CacheException {
         try {
             logger.info("Reading abbreviations file");
-            var read = toLinkedHashMap(new ObjectMapper().readValue(getFile(), Disambiguation[].class));
+            var read = toMap(new ObjectMapper().readValue(getFile(), Disambiguation[].class));
             logger.info("Found {} cached abbreviation", read.size());
             return read;
         } catch (IOException e) {
@@ -230,12 +229,12 @@ public final class AbbreviationDisambiguationHelper extends FileBasedCache<Linke
     }
 
     @Override
-    public LinkedHashMap<String, Disambiguation> getDefault() {
-        return new LinkedHashMap<>();
+    public SortedMap<String, Disambiguation> getDefault() {
+        return new TreeMap<>();
     }
 
     @Override
-    protected void write(LinkedHashMap<String, Disambiguation> content) {
+    protected void write(SortedMap<String, Disambiguation> content) {
         Collection<Disambiguation> values = content.values();
         try (PrintWriter out = new PrintWriter(getFile())) {
             //Parse before writing to the file, so we don't mess up the entire file due to a parsing error
@@ -247,8 +246,8 @@ public final class AbbreviationDisambiguationHelper extends FileBasedCache<Linke
         }
     }
 
-    private static @NotNull LinkedHashMap<String, Disambiguation> toLinkedHashMap(@NotNull Disambiguation[] abbreviations) {
-        var all = new LinkedHashMap<String, Disambiguation>();
+    private static SortedMap<String, Disambiguation> toMap(Disambiguation[] abbreviations) {
+        var all = new TreeMap<String, Disambiguation>();
         for (var abbr : abbreviations) {
             all.put(abbr.getAbbreviation(), abbr);
         }
@@ -261,13 +260,14 @@ public final class AbbreviationDisambiguationHelper extends FileBasedCache<Linke
      * @param text the text
      * @return the text without brackets
      */
-    private static @NotNull String removeAllBrackets(String text) {
+    private static String removeAllBrackets(String text) {
         String prev = null;
-        var current = removeBracket(text);
+        String current = removeBracket(text);
         while (!Objects.equals(prev, current)) {
             prev = current;
             current = removeBracket(current);
         }
+        assert current != null;
         return current.trim().replaceAll("\\s+", " ");
     }
 
@@ -277,7 +277,7 @@ public final class AbbreviationDisambiguationHelper extends FileBasedCache<Linke
      * @param text the text
      * @return the text without the first bracket
      */
-    private static @NotNull String removeBracket(String text) {
+    private static String removeBracket(String text) {
         var innerMostOpen = text.indexOf("(");
         var innerMostClose = text.indexOf(")");
         if (innerMostOpen == -1 || innerMostClose == -1 || innerMostOpen > innerMostClose)
@@ -299,9 +299,9 @@ public final class AbbreviationDisambiguationHelper extends FileBasedCache<Linke
      * @param text the text
      * @return a set of possible abbreviations
      */
-    public static @NotNull UnmodifiableLinkedHashSet<String> getAbbreviationCandidates(String text) {
+    public static SortedSet<String> getAbbreviationCandidates(String text) {
         var matcher = abbreviationsPattern.matcher(text);
-        return UnmodifiableLinkedHashSet.of(matcher.results().map(MatchResult::group).toList());
+        return new TreeSet<>(matcher.results().map(MatchResult::group).toList());
     }
 
     /**
@@ -311,7 +311,7 @@ public final class AbbreviationDisambiguationHelper extends FileBasedCache<Linke
      * @param initialismCandidate the initialism candidate
      * @param initialismThreshold the percentage of characters in a word that need to be uppercase for a word to be considered an initialism candidate
      */
-    public static boolean isInitialismOf(@NotNull String text, @NotNull String initialismCandidate, double initialismThreshold) {
+    public static boolean isInitialismOf(String text, String initialismCandidate, double initialismThreshold) {
         if (!couldBeAbbreviation(initialismCandidate, initialismThreshold))
             return false;
 
@@ -342,7 +342,7 @@ public final class AbbreviationDisambiguationHelper extends FileBasedCache<Linke
      * @param candidate the initialism candidate
      * @param threshold the initialism threshold
      */
-    public static boolean couldBeAbbreviation(@NotNull String candidate, double threshold) {
+    public static boolean couldBeAbbreviation(String candidate, double threshold) {
         if (candidate.isEmpty())
             return false;
         var upperCaseCharacters = 0;
@@ -361,7 +361,7 @@ public final class AbbreviationDisambiguationHelper extends FileBasedCache<Linke
      * @param text  the text
      * @param query the query
      */
-    public static boolean containsAllInOrder(@NotNull String text, @NotNull String query) {
+    public static boolean containsAllInOrder(String text, String query) {
         return containsInOrder(text, query) == query.length();
     }
 
@@ -372,7 +372,7 @@ public final class AbbreviationDisambiguationHelper extends FileBasedCache<Linke
      * @param text  the text
      * @param query the query
      */
-    public static long containsInOrder(@NotNull String text, @NotNull String query) {
+    public static long containsInOrder(String text, String query) {
         return Math.round(maximumAbbreviationScore(text, query, 0, 0, 1, 0));
     }
 
@@ -392,8 +392,8 @@ public final class AbbreviationDisambiguationHelper extends FileBasedCache<Linke
      * @param textIndex          start index, used for recursion, usually 0 at start
      * @return the score >= 0
      */
-    public static double maximumAbbreviationScore(@NotNull String meaningCandidate, @NotNull String abbreviation, double rewardInitialMatch,
-            double rewardAnyMatch, double rewardCaseMatch, int textIndex) {
+    public static double maximumAbbreviationScore(String meaningCandidate, String abbreviation, double rewardInitialMatch, double rewardAnyMatch,
+            double rewardCaseMatch, int textIndex) {
         if (abbreviation.isEmpty() || textIndex >= meaningCandidate.length())
             return 0;
         var current = abbreviation.substring(0, 1);

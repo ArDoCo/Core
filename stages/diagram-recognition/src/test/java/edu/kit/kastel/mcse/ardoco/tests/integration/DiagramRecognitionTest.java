@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
 
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -68,7 +67,7 @@ public class DiagramRecognitionTest extends StageTest<DiagramRecognition, GoldSt
     }
 
     @Override
-    protected DataRepository runPreTestRunner(@NotNull GoldStandardDiagrams project) {
+    protected DataRepository runPreTestRunner(GoldStandardDiagrams project) {
         return new AnonymousRunner(project.getProjectName()) {
             @Override
             public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) {
@@ -83,8 +82,8 @@ public class DiagramRecognitionTest extends StageTest<DiagramRecognition, GoldSt
     }
 
     @Override
-    protected DataRepository runTestRunner(@NotNull GoldStandardDiagrams project, @NotNull SortedMap<String, String> additionalConfigurations,
-            @NotNull DataRepository preRunDataRepository) {
+    protected DataRepository runTestRunner(GoldStandardDiagrams project, SortedMap<String, String> additionalConfigurations,
+            DataRepository preRunDataRepository) {
         return new AnonymousRunner(project.getProjectName(), preRunDataRepository) {
             @Override
             public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) {

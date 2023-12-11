@@ -9,7 +9,6 @@ import java.util.Objects;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement;
@@ -38,8 +37,7 @@ public class DiagramWordTraceLink extends DiagramTextTraceLink {
      * @param confidence     confidence
      * @param origin         claimant this link was derived from
      */
-    public DiagramWordTraceLink(@NotNull DiagramElement diagramElement, @NotNull Word word, @NotNull String projectName, double confidence,
-            @Nullable Claimant origin) {
+    public DiagramWordTraceLink(DiagramElement diagramElement, Word word, String projectName, double confidence, @Nullable Claimant origin) {
         super(diagramElement, word.getSentence(), projectName);
 
         this.word = word;
@@ -47,7 +45,7 @@ public class DiagramWordTraceLink extends DiagramTextTraceLink {
         this.origin = origin;
     }
 
-    public @NotNull Word getWord() {
+    public Word getWord() {
         return this.word;
     }
 
@@ -56,7 +54,7 @@ public class DiagramWordTraceLink extends DiagramTextTraceLink {
     }
 
     @Override
-    public boolean equals(@NotNull Object obj) {
+    public boolean equals(Object obj) {
         if (this == obj)
             return true;
         else if (obj instanceof DiagramWordTraceLink other) {
@@ -72,7 +70,7 @@ public class DiagramWordTraceLink extends DiagramTextTraceLink {
     }
 
     @Override
-    public int compareTo(@NotNull DiagramTextTraceLink o) {
+    public int compareTo(DiagramTextTraceLink o) {
         if (equals(o))
             return 0;
         var supComp = super.compareTo(o);
