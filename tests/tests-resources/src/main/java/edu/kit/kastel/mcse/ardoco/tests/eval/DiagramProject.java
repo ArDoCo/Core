@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
 import com.fasterxml.jackson.databind.InjectableValues;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -38,7 +37,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 public enum DiagramProject implements GoldStandardDiagramsWithTLR {
     MEDIASTORE(//
             Project.MEDIASTORE, //
-            "/benchmark/mediastore/diagrams_2016/goldstandard.json", //
+            "/benchmark/mediastore/goldstandards/goldstandard_sad_id_2016.json", //
             new ExpectedResults(.87, .93, .9, .99, .89, .99), //Expected Diagram-Sentence TLR results (Mock)
             new ExpectedResults(.81, .93, .87, .98, .86, .98), //Expected Diagram-Sentence TLR results (No-Mock)
             new ExpectedResults(.89, .72, .68, .94, .72, .96), //Expected MME results (Mock)
@@ -49,7 +48,7 @@ public enum DiagramProject implements GoldStandardDiagramsWithTLR {
     ), //
     TEASTORE( //
             Project.TEASTORE, //
-            "/benchmark/teastore/diagrams_2018/goldstandard.json", //
+            "/benchmark/teastore/goldstandards/goldstandard_sad_id_2018.json", //
             new ExpectedResults(1, .74, .85, .97, .85, 1), //Expected Diagram-Sentence TLR results (Mock)
             new ExpectedResults(.65, .74, .69, .93, .65, .95), //Expected Diagram-Sentence TLR results (No-Mock)
             new ExpectedResults(1, .70, .80, .96, .83, 1), //Expected MME results (Mock)
@@ -60,7 +59,7 @@ public enum DiagramProject implements GoldStandardDiagramsWithTLR {
     ), //
     TEAMMATES( //
             Project.TEAMMATES, //
-            "/benchmark/teammates/diagrams_2023/goldstandard.json", //
+            "/benchmark/teammates/goldstandards/goldstandard_sad_id_2023.json", //
             new ExpectedResults(.60, .67, .63, .98, .62, .99), //Expected Diagram-Sentence TLR results (Mock)
             new ExpectedResults(.37, .25, .30, .97, .29, .99), //Expected Diagram-Sentence TLR results (No-Mock)
             new ExpectedResults(.61, .70, .53, .96, .58, .97), //Expected MME results (Mock)
@@ -71,7 +70,7 @@ public enum DiagramProject implements GoldStandardDiagramsWithTLR {
     ), //
     BIGBLUEBUTTON( //
             Project.BIGBLUEBUTTON, //
-            "/benchmark/bigbluebutton/diagrams_2021/goldstandard.json", //
+            "/benchmark/bigbluebutton/goldstandards/goldstandard_sad_id_2021.json", //
             new ExpectedResults(.79, .72, .75, .97, .74, .99), //Expected Diagram-Sentence TLR results (Mock)
             new ExpectedResults(.76, .61, .67, .97, .66, .99), //Expected Diagram-Sentence TLR results (No-Mock)
             new ExpectedResults(.93, .38, .39, .96, .55, .99), //Expected MME results (Mock)
@@ -82,7 +81,7 @@ public enum DiagramProject implements GoldStandardDiagramsWithTLR {
     ), //
     TEASTORE_HISTORICAL( //
             Project.TEASTORE_HISTORICAL, //
-            "/benchmark/teastore/diagrams_2018/goldstandard.json", //
+            "/benchmark/teastore/goldstandards/goldstandard_sad_id_2018.json", //
             new ExpectedResults(1, .92, .96, .99, .95, 1), //Expected Diagram-Sentence TLR results (Mock)
             new ExpectedResults(.77, .92, .84, .96, .82, .96), //Expected Diagram-Sentence TLR results (No-Mock)
             new ExpectedResults(1, .91, .91, .99, .95, 1), //Expected MME results (Mock)
@@ -93,7 +92,7 @@ public enum DiagramProject implements GoldStandardDiagramsWithTLR {
     ), //
     TEAMMATES_HISTORICAL( //
             Project.TEAMMATES_HISTORICAL, //
-            "/benchmark/teammates/diagrams_2015/goldstandard.json", //
+            "/benchmark/teammates/goldstandards/goldstandard_sad_id_2015.json", //
             new ExpectedResults(.63, .71, .66, .98, .66, .99), //Expected Diagram-Sentence TLR results (Mock)
             new ExpectedResults(.51, .39, .44, .98, .43, .99), //Expected Diagram-Sentence TLR results (No-Mock)
             new ExpectedResults(.31, .69, .42, .93, .44, .94), //Expected MME results (Mock)
@@ -104,7 +103,7 @@ public enum DiagramProject implements GoldStandardDiagramsWithTLR {
     ), //
     BIGBLUEBUTTON_HISTORICAL( //
             Project.BIGBLUEBUTTON_HISTORICAL, //
-            "/benchmark/bigbluebutton/diagrams_2015/goldstandard.json", //
+            "/benchmark/bigbluebutton/goldstandards/goldstandard_sad_id_2015.json", //
             new ExpectedResults(.73, .91, .81, .98, .8, .98), //Expected Diagram-Sentence TLR results (Mock)
             new ExpectedResults(.69, .77, .73, .97, .71, .98), //Expected Diagram-Sentence TLR results (No-Mock)
             new ExpectedResults(.07, .20, .10, .73, -0.01, .79), //Expected MME results (Mock)
