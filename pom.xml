@@ -71,7 +71,7 @@
   </distributionManagement>
 
   <properties>
-    <revision>0.33.0-SNAPSHOT</revision>
+    <revision>0.34.0-SNAPSHOT</revision>
     <ardoco.version>${revision}</ardoco.version>
 
     <project.source.encoding>UTF-8</project.source.encoding>
@@ -91,7 +91,7 @@
     <junit.version>5.10.1</junit.version>
     <eclipse-collections.version>12.0.0.M3</eclipse-collections.version>
     <jackson.version>2.16.0</jackson.version>
-    <javaparser.version>3.25.6</javaparser.version>
+    <javaparser.version>3.25.7</javaparser.version>
     <error-prone.version>2.23.0</error-prone.version>
     <mockito.version>5.2.0</mockito.version>
     <jgrapht.version>1.5.2</jgrapht.version>
@@ -331,7 +331,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-failsafe-plugin</artifactId>
-          <version>3.2.2</version>
+          <version>3.2.3</version>
           <executions>
             <execution>
               <goals>
@@ -362,7 +362,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>3.2.2</version>
+          <version>3.2.3</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
