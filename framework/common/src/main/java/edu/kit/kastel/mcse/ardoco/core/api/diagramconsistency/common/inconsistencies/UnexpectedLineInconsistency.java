@@ -5,7 +5,6 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Indicates that a box has an unexpected line.
@@ -43,7 +42,6 @@ public class UnexpectedLineInconsistency<B, E> extends Inconsistency<B, E> {
         return this.unexpectedLineTarget;
     }
 
-    @Nullable
     @Override
     public B getOtherBox() {
         return this.getUnexpectedLineTarget();

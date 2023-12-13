@@ -59,29 +59,37 @@ public final class Extractions {
         Set<ClassUnit> classes = new LinkedHashSet<>();
         Set<InterfaceUnit> interfaces = new LinkedHashSet<>();
 
+        extractPackagesFromModel(model, packages);
+
+        for (CodePackage codePackage : packages) {
+            extractItemsFromPackage(codePackage, classes, interfaces);
+        }
+
+        return Map.of(ElementRole.CODE_PACKAGE, Set.copyOf(packages), ElementRole.CODE_CLASS, Set.copyOf(classes), ElementRole.CODE_INTERFACE, Set.copyOf(
+                interfaces));
+    }
+
+    private static void extractPackagesFromModel(CodeModel model, Set<CodePackage> packages) {
         for (CodeItem item : model.getContent()) {
             if (item instanceof CodePackage codePackage) {
                 packages.add(codePackage);
                 packages.addAll(codePackage.getAllPackages());
             }
         }
+    }
 
-        for (CodePackage codePackage : packages) {
-            for (CodeCompilationUnit compilationUnit : codePackage.getCompilationUnits()) {
-                for (Datatype datatype : compilationUnit.getAllDataTypes()) {
-                    if (datatype instanceof ClassUnit classUnit) {
-                        classes.add(classUnit);
-                    }
+    private static void extractItemsFromPackage(CodePackage codePackage, Set<ClassUnit> classes, Set<InterfaceUnit> interfaces) {
+        for (CodeCompilationUnit compilationUnit : codePackage.getCompilationUnits()) {
+            for (Datatype datatype : compilationUnit.getAllDataTypes()) {
+                if (datatype instanceof ClassUnit classUnit) {
+                    classes.add(classUnit);
+                }
 
-                    if (datatype instanceof InterfaceUnit interfaceUnit) {
-                        interfaces.add(interfaceUnit);
-                    }
+                if (datatype instanceof InterfaceUnit interfaceUnit) {
+                    interfaces.add(interfaceUnit);
                 }
             }
         }
-
-        return Map.of(ElementRole.CODE_PACKAGE, Set.copyOf(packages), ElementRole.CODE_CLASS, Set.copyOf(classes), ElementRole.CODE_INTERFACE, Set.copyOf(
-                interfaces));
     }
 
     private static String getDatatypePath(Datatype datatype) {

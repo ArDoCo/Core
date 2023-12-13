@@ -2,6 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.informants;
 
 import static org.apache.commons.lang3.ClassUtils.getSimpleName;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,8 +13,6 @@ import java.util.Optional;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import org.jetbrains.annotations.Nullable;
-
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.JsonMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
@@ -23,17 +22,16 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.Architectu
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItem;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.DiagramConsistency;
-import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.EvaluationBase;
+import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.EvaluationTestBase;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.Metrics;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.MetricsStats;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.AnnotatedDiagram;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.DiagramProject;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactoring.*;
 
-class SyntheticTestBase extends EvaluationBase {
+class SyntheticTestBase extends EvaluationTestBase {
     protected static final int REFACTORING_TYPE_COUNT = 6;
 
-    @Nullable
     protected AnnotatedDiagram<ArchitectureItem> getAnnotatedAndRefactoredArchitectureDiagram(ExaminationDescription description) {
         AnnotatedDiagram<ArchitectureItem> diagram = getAnnotatedArchitectureDiagram(description.project());
 
@@ -50,7 +48,6 @@ class SyntheticTestBase extends EvaluationBase {
         return diagram;
     }
 
-    @Nullable
     protected AnnotatedDiagram<CodeItem> getAnnotatedAndRefactoredCodeDiagram(ExaminationDescription description) {
         AnnotatedDiagram<CodeItem> diagram = getAnnotatedCodeDiagram(description.project());
 
@@ -110,6 +107,8 @@ class SyntheticTestBase extends EvaluationBase {
 
             stats.add(metrics, 1.0);
         }
+
+        assertNotEquals(0, stats.getCount());
 
         Object preProcessing = description.generalModelType() == GeneralModelType.ARCHITECTURE ?
                 description.archPreRefactoring() :

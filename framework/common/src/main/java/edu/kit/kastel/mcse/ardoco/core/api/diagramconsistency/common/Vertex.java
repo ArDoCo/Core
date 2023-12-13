@@ -1,8 +1,6 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common;
 
-import org.eclipse.jgit.annotations.Nullable;
-
 /**
  * The vertex type used in the graphs that are matched.
  *
@@ -11,7 +9,7 @@ import org.eclipse.jgit.annotations.Nullable;
  *            model.
  */
 public final class Vertex<T> {
-    @Nullable
+
     private final T represented;
     private String name;
 
@@ -21,7 +19,7 @@ public final class Vertex<T> {
      * @param name
      *                    The name of the vertex, which is used for matching.
      */
-    public Vertex(@Nullable T represented, String name) {
+    public Vertex(T represented, String name) {
         this.represented = represented;
         this.name = name;
     }
@@ -31,7 +29,7 @@ public final class Vertex<T> {
      *
      * @return The element that the vertex represents.
      */
-    @Nullable
+
     public T getRepresented() {
         return this.represented;
     }

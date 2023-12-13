@@ -8,11 +8,10 @@ import java.util.Random;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import javax.annotation.Nullable;
-
 import org.eclipse.collections.impl.factory.Sets;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Edge;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Label;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Vertex;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.AnnotatedGraph;
 
@@ -49,7 +48,7 @@ public abstract class Refactoring<R, M> {
     /**
      * Randomly select an entry from a collection.
      */
-    protected <T> @Nullable T selectEntry(Collection<T> elements, Predicate<T> filter) {
+    protected <T> T selectEntry(Collection<T> elements, Predicate<T> filter) {
         List<T> filtered = elements.stream().filter(filter).toList();
 
         if (filtered.isEmpty()) {
@@ -63,14 +62,14 @@ public abstract class Refactoring<R, M> {
     /**
      * Randomly select an entry from a collection.
      */
-    protected <T> @Nullable T selectEntry(Collection<T> elements) {
+    protected <T> T selectEntry(Collection<T> elements) {
         return this.selectEntry(elements, e -> true);
     }
 
     /**
      * Find the element that is linked to a given representative.
      */
-    protected @Nullable M findLinkedElement(Vertex<R> vertex, AnnotatedGraph<R, M> graph) {
+    protected M findLinkedElement(Vertex<R> vertex, AnnotatedGraph<R, M> graph) {
         return graph.links().get(vertex);
     }
 
@@ -90,7 +89,7 @@ public abstract class Refactoring<R, M> {
             }
 
             for (Edge incoming : graph.graph().incomingEdgesOf(current)) {
-                if (incoming.getLabel() == Edge.Label.HIERARCHY) {
+                if (incoming.getLabel() == Label.HIERARCHY) {
                     queue.add(graph.graph().getEdgeSource(incoming));
                 }
             }

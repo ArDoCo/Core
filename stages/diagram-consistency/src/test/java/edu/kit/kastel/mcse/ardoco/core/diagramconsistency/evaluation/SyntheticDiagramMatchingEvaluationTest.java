@@ -17,6 +17,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Edge;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Label;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.TextSimilarity;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Transformations;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Vertex;
@@ -39,7 +40,7 @@ import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactoring
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactoring.RefactoringBundle;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactoring.Rename;
 
-class SyntheticDiagramMatchingEvaluationTest extends EvaluationBase {
+class SyntheticDiagramMatchingEvaluationTest extends EvaluationTestBase {
     private static final double DEFAULT_EPSILON = 0.075;
 
     @DisplayName("Compare architecture matching quality depending on inconsistent side")
@@ -141,7 +142,7 @@ class SyntheticDiagramMatchingEvaluationTest extends EvaluationBase {
     }
 
     private <M> MutableBiMap<Vertex<Box>, Vertex<M>> match(DirectedMultigraph<Vertex<Box>, Edge> a, DirectedMultigraph<Vertex<M>, Edge> b) {
-        SimilarityFloodingAlgorithm<Vertex<Box>, Vertex<M>, Edge.Label> algorithm = new SimilarityFloodingAlgorithm<>(
+        SimilarityFloodingAlgorithm<Vertex<Box>, Vertex<M>, Label> algorithm = new SimilarityFloodingAlgorithm<>(
                 SyntheticDiagramMatchingEvaluationTest.DEFAULT_EPSILON, 10000, PropagationCoefficientFormula.getInverseProductFormula(), FixpointFormula
                         .getBasicFormula());
 

@@ -12,6 +12,7 @@ import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 import org.jgrapht.graph.DirectedMultigraph;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Edge;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Label;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Transformations;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Vertex;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.Inconsistency;
@@ -53,8 +54,8 @@ public record AnnotatedGraph<R, M>(DirectedMultigraph<Vertex<R>, Edge> graph, Mu
             graph.addVertex(vertex);
             links.put(item, vertex);
             return vertex;
-        }, (source, target) -> graph.addEdge(source, target, new Edge(Edge.Label.DEFAULT)), (child, parent) -> graph.addEdge(child, parent, new Edge(
-                Edge.Label.HIERARCHY)));
+        }, (source, target) -> graph.addEdge(source, target, new Edge(Label.DEFAULT)), (child, parent) -> graph.addEdge(child, parent, new Edge(
+                Label.HIERARCHY)));
 
         return new AnnotatedGraph<>(graph, links.inverse(), new LinkedHashSet<>());
     }
@@ -75,8 +76,8 @@ public record AnnotatedGraph<R, M>(DirectedMultigraph<Vertex<R>, Edge> graph, Mu
             graph.addVertex(vertex);
             links.put(item, vertex);
             return vertex;
-        }, (source, target) -> graph.addEdge(source, target, new Edge(Edge.Label.DEFAULT)), (child, parent) -> graph.addEdge(child, parent, new Edge(
-                Edge.Label.HIERARCHY)));
+        }, (source, target) -> graph.addEdge(source, target, new Edge(Label.DEFAULT)), (child, parent) -> graph.addEdge(child, parent, new Edge(
+                Label.HIERARCHY)));
 
         return new AnnotatedGraph<>(graph, links.inverse(), new LinkedHashSet<>());
     }

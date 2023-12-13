@@ -4,9 +4,8 @@ package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactorin
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.jetbrains.annotations.Nullable;
-
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Edge;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Label;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Vertex;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.HierarchyInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.InconsistencyType;
@@ -22,19 +21,18 @@ import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.Annota
  */
 public class Move<R, M> extends Refactoring<R, M> {
 
-    @Nullable
     private static <R, M> Vertex<R> getParent(AnnotatedGraph<R, M> graph, Vertex<R> vertexToMove) {
         return graph.graph()
                 .outgoingEdgesOf(vertexToMove)
                 .stream()
-                .filter(edge -> edge.getLabel() == Edge.Label.HIERARCHY)
+                .filter(edge -> edge.getLabel() == Label.HIERARCHY)
                 .map(graph.graph()::getEdgeTarget)
                 .findFirst()
                 .orElse(null);
     }
 
     private static <R, M> void attachToParent(AnnotatedGraph<R, M> graph, Vertex<R> vertexToMove, Vertex<R> newParentVertex) {
-        graph.graph().addEdge(vertexToMove, newParentVertex, new Edge(Edge.Label.HIERARCHY));
+        graph.graph().addEdge(vertexToMove, newParentVertex, new Edge(Label.HIERARCHY));
     }
 
     private static <R, M> void detachFromParent(AnnotatedGraph<R, M> graph, Vertex<R> vertexToMove) {
@@ -42,7 +40,7 @@ public class Move<R, M> extends Refactoring<R, M> {
                 .removeAllEdges(graph.graph()
                         .outgoingEdgesOf(vertexToMove)
                         .stream()
-                        .filter(edge -> edge.getLabel() == Edge.Label.HIERARCHY)
+                        .filter(edge -> edge.getLabel() == Label.HIERARCHY)
                         .collect(Collectors.toSet()));
     }
 

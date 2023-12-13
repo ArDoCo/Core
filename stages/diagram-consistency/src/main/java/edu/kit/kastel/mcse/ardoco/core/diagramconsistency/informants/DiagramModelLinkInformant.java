@@ -13,6 +13,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.DiagramModelLinkSt
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.DiagramState;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Edge;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Extractions;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Label;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Transformations;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Vertex;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.WeightedTextSimilarity;
@@ -125,7 +126,7 @@ public class DiagramModelLinkInformant extends Informant {
 
     private <M> void match(ModelType modelType, DiagramModelLinkState matching, DirectedMultigraph<Vertex<Box>, Edge> diagramAsGraph,
             DirectedMultigraph<Vertex<M>, Edge> modelAsGraph, Function<M, String> idExtractor, WeightedTextSimilarity similarityFunction) {
-        SimilarityFloodingAlgorithm<Vertex<Box>, Vertex<M>, Edge.Label> algorithm = new SimilarityFloodingAlgorithm<>(this.epsilon, this.maxIterations,
+        SimilarityFloodingAlgorithm<Vertex<Box>, Vertex<M>, Label> algorithm = new SimilarityFloodingAlgorithm<>(this.epsilon, this.maxIterations,
                 PropagationCoefficientFormula.getInverseAverageFormula(), FixpointFormula.getCFormula());
 
         SimilarityMapping<Vertex<Box>, Vertex<M>> initialSimilarity = new SimilarityMapping<>(pair -> {

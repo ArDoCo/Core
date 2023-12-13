@@ -4,7 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactorin
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Edge;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Label;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Vertex;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.AnnotatedGraph;
 
@@ -61,7 +61,7 @@ public class PartialSelection<R, M> extends Refactoring<R, M> {
             current = this.selectEntry(graph.graph()
                     .outgoingEdgesOf(current)
                     .stream()
-                    .filter(edge -> edge.getLabel().equals(Edge.Label.HIERARCHY))
+                    .filter(edge -> edge.getLabel().equals(Label.HIERARCHY))
                     .map(edge -> graph.graph().getEdgeTarget(edge))
                     .collect(Collectors.toList()), vertex -> true);
         }
@@ -76,9 +76,9 @@ public class PartialSelection<R, M> extends Refactoring<R, M> {
     }
 
     private boolean isLeaf(AnnotatedGraph<R, M> graph, Vertex<R> vertex) {
-        return graph.graph().outgoingEdgesOf(vertex).stream().anyMatch(edge -> edge.getLabel().equals(Edge.Label.HIERARCHY)) && graph.graph()
+        return graph.graph().outgoingEdgesOf(vertex).stream().anyMatch(edge -> edge.getLabel().equals(Label.HIERARCHY)) && graph.graph()
                 .incomingEdgesOf(vertex)
                 .stream()
-                .noneMatch(edge -> edge.getLabel().equals(Edge.Label.HIERARCHY));
+                .noneMatch(edge -> edge.getLabel().equals(Label.HIERARCHY));
     }
 }

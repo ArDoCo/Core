@@ -4,8 +4,6 @@ package edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsiste
 import java.util.Objects;
 import java.util.function.Function;
 
-import org.eclipse.jgit.annotations.Nullable;
-
 /**
  * Base class for all inconsistencies between the diagram and the given models.
  * 
@@ -48,7 +46,7 @@ public abstract class Inconsistency<B, E> {
      *
      * @return The box, or null if there is no box.
      */
-    public @Nullable B getBox() {
+    public B getBox() {
         return this.box;
     }
 
@@ -58,7 +56,7 @@ public abstract class Inconsistency<B, E> {
      *
      * @return The other box, or null if there is no other box.
      */
-    public @Nullable B getOtherBox() {
+    public B getOtherBox() {
         return null;
     }
 
@@ -67,7 +65,7 @@ public abstract class Inconsistency<B, E> {
      *
      * @return The entity, or null if there is no entity.
      */
-    public @Nullable E getEntity() {
+    public E getEntity() {
         return this.entity;
     }
 
@@ -76,7 +74,7 @@ public abstract class Inconsistency<B, E> {
      *
      * @return The name, or null if not a name inconsistency.
      */
-    public @Nullable String getActualName() {
+    public String getActualName() {
         return null;
     }
 
@@ -85,7 +83,7 @@ public abstract class Inconsistency<B, E> {
      *
      * @return The expected name, or null if not a name inconsistency.
      */
-    public @Nullable String getExpectedName() {
+    public String getExpectedName() {
         return null;
     }
 

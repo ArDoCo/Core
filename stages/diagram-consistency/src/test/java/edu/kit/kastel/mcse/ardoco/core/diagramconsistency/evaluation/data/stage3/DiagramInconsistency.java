@@ -4,8 +4,6 @@ package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.stage
 import java.util.Map;
 import java.util.Objects;
 
-import javax.annotation.Nullable;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.DiagramUtility;
@@ -30,10 +28,10 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
  * @param name
  *                       Further information in case the type is {@link InconsistencyType#NAME_INCONSISTENCY}.
  */
-public record DiagramInconsistency(@JsonProperty("type") InconsistencyType type, @JsonProperty("diagram_id") @Nullable Integer boxId,
-                                   @JsonProperty("model_id") @Nullable String modelElementId, @JsonProperty("line_id") @Nullable int[] line,
-                                   @JsonProperty("name_inconsistency") @Nullable NameInformation name,
-                                   @JsonProperty("hierarchy_inconsistency") @Nullable HierarchyInformation hierarchy) {
+public record DiagramInconsistency(@JsonProperty("type") InconsistencyType type, @JsonProperty("diagram_id") Integer boxId,
+                                   @JsonProperty("model_id") String modelElementId, @JsonProperty("line_id") int[] line,
+                                   @JsonProperty("name_inconsistency") NameInformation name,
+                                   @JsonProperty("hierarchy_inconsistency") HierarchyInformation hierarchy) {
     /**
      * Provides further information in case the type is {@link InconsistencyType#NAME_INCONSISTENCY}.
      *

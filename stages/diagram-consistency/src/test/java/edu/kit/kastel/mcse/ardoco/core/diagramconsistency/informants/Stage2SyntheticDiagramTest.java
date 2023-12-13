@@ -1,6 +1,7 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.informants;
 
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -38,8 +39,9 @@ import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactoring
 class Stage2SyntheticDiagramTest extends SyntheticTestBase {
     @DisplayName("Examine stage 2 using synthetic diagrams")
     @Test
-    @Disabled
+    @Disabled("Only for manual testing")
     void examineBaseOnSyntheticDiagram() throws IOException {
+        assertNotEquals(0, GeneralModelType.values().length);
         int iterationsPerCase = 1;
         for (GeneralModelType generalModelType : GeneralModelType.values()) {
             for (int refactoringIndex = 0; refactoringIndex < REFACTORING_TYPE_COUNT; refactoringIndex++) {
@@ -53,8 +55,9 @@ class Stage2SyntheticDiagramTest extends SyntheticTestBase {
 
     @DisplayName("Examine stage 2 using partial synthetic code diagrams")
     @Test
-    @Disabled
+    @Disabled("Only for manual testing")
     void examineStage2OnPartialSyntheticDiagram() throws IOException {
+        assertNotEquals(0, GeneralModelType.values().length);
         int iterationsPerCase = 2;
         for (int refactoringIndex = 0; refactoringIndex < REFACTORING_TYPE_COUNT; refactoringIndex++) {
             this.doEvaluationIterations(new ExaminationDescriptionBuilder().setProject(null)
@@ -67,8 +70,9 @@ class Stage2SyntheticDiagramTest extends SyntheticTestBase {
 
     @DisplayName("Examine stage 2 using mixed refactorings on synthetic code diagrams")
     @Test
-    @Disabled
+    @Disabled("Only for manual testing")
     void examineStage2OnMixedRefactoredDiagram() throws IOException {
+        assertNotEquals(0, GeneralModelType.values().length);
         for (GeneralModelType generalModelType : GeneralModelType.values()) {
             this.doEvaluationIterations(new ExaminationDescriptionBuilder().setProject(null)
                     .setGeneralModelType(generalModelType)
@@ -82,8 +86,9 @@ class Stage2SyntheticDiagramTest extends SyntheticTestBase {
     @DisplayName("Examine the impact of iteration count on stage 2 using synthetic diagrams")
     @ParameterizedTest(name = "{0}")
     @MethodSource("getDistinctDiagrams")
-    @Disabled
+    @Disabled("Only for manual testing")
     void examineIterationCountOnSyntheticDiagram(DiagramProject project) throws IOException {
+        assertNotEquals(0, GeneralModelType.values().length);
         int iterationsPerCase = 5;
         for (GeneralModelType generalModelType : GeneralModelType.values()) {
             for (int refactoringIndex = 0; refactoringIndex < REFACTORING_TYPE_COUNT; refactoringIndex++) {
@@ -101,10 +106,10 @@ class Stage2SyntheticDiagramTest extends SyntheticTestBase {
     @DisplayName("Examine the impact of iteration count on stage 2 using (partial) synthetic diagrams")
     @ParameterizedTest(name = "{0}")
     @MethodSource("getDistinctDiagrams")
-    @Disabled
+    @Disabled("Only for manual testing")
     void examineIterationCountPartialOnSyntheticDiagram(DiagramProject project) throws IOException {
+        assertNotEquals(0, GeneralModelType.values().length);
         List<Boolean> booleans = List.of(false, true);
-
         int iterationsPerCase = 10;
         for (int refactoringIndex = 0; refactoringIndex < REFACTORING_TYPE_COUNT; refactoringIndex++) {
             for (var usePartial : booleans) {
@@ -123,10 +128,10 @@ class Stage2SyntheticDiagramTest extends SyntheticTestBase {
     @DisplayName("Examine the impact of the epsilon on stage 2 using synthetic diagrams")
     @ParameterizedTest(name = "{0}")
     @MethodSource("getDistinctDiagrams")
-    @Disabled
+    @Disabled("Only for manual testing")
     void examineEpsilonOnSyntheticDiagram(DiagramProject project) throws IOException {
+        assertNotEquals(0, GeneralModelType.values().length);
         List<Double> epsilons = List.of(2.0, 1.5, 1.0, 0.75, 0.5, 0.25);
-
         int iterationsPerCase = 5;
         for (GeneralModelType generalModelType : GeneralModelType.values()) {
             for (int refactoringIndex = 0; refactoringIndex < REFACTORING_TYPE_COUNT; refactoringIndex++) {
@@ -144,10 +149,10 @@ class Stage2SyntheticDiagramTest extends SyntheticTestBase {
     @DisplayName("Examine the impact of the (limited range) epsilon on stage 2 using synthetic diagrams")
     @ParameterizedTest(name = "{0}")
     @MethodSource("getDistinctDiagrams")
-    @Disabled
+    @Disabled("Only for manual testing")
     void examineEpsilon2OnSyntheticDiagram(DiagramProject project) throws IOException {
+        assertNotEquals(0, GeneralModelType.values().length);
         List<Double> epsilons = List.of(1.25, 1.125, 1.0, 0.8, 0.65, 0.5);
-
         int iterationsPerCase = 5;
         for (GeneralModelType generalModelType : GeneralModelType.values()) {
             for (int refactoringIndex = 0; refactoringIndex < REFACTORING_TYPE_COUNT; refactoringIndex++) {
@@ -165,10 +170,10 @@ class Stage2SyntheticDiagramTest extends SyntheticTestBase {
     @DisplayName("Examine the impact of the (limited range) epsilon on stage 2 using (partial) synthetic diagrams and mixed refactorings")
     @ParameterizedTest(name = "{0}")
     @MethodSource("getDistinctDiagrams")
-    @Disabled
+    @Disabled("Only for manual testing")
     void examineEpsilonPartial2MixedOnSyntheticDiagram(DiagramProject project) throws IOException {
+        assertNotEquals(0, GeneralModelType.values().length);
         List<Double> epsilons = List.of(1.25, 1.125, 1.0, 0.8, 0.65, 0.5);
-
         int iterationsPerCase = 50;
         for (GeneralModelType generalModelType : GeneralModelType.values()) {
             for (var epsilon : epsilons) {
@@ -185,10 +190,10 @@ class Stage2SyntheticDiagramTest extends SyntheticTestBase {
     @DisplayName("Examine the impact of the (limited range) epsilon on stage 2 using (partial) synthetic diagrams")
     @ParameterizedTest(name = "{0}")
     @MethodSource("getDistinctDiagrams")
-    @Disabled
+    @Disabled("Only for manual testing")
     void examineEpsilon2PartialOnSyntheticDiagram(DiagramProject project) throws IOException {
+        assertNotEquals(0, GeneralModelType.values().length);
         List<Double> epsilons = List.of(1.25, 1.125, 1.0, 0.8, 0.65, 0.5);
-
         int iterationsPerCase = 10;
         for (int refactoringIndex = 0; refactoringIndex < REFACTORING_TYPE_COUNT; refactoringIndex++) {
             for (var epsilon : epsilons) {
@@ -205,10 +210,10 @@ class Stage2SyntheticDiagramTest extends SyntheticTestBase {
     @DisplayName("Examine the impact of the levenshtein threshold on stage 2 using synthetic diagrams")
     @ParameterizedTest(name = "{0}")
     @MethodSource("getDistinctDiagrams")
-    @Disabled
+    @Disabled("Only for manual testing")
     void examineLevenshteinOnSyntheticDiagram(DiagramProject project) throws IOException {
+        assertNotEquals(0, GeneralModelType.values().length);
         List<Double> thresholds = List.of(0.0, 0.1, 0.2, 0.3, 0.4, 0.5);
-
         int iterationsPerCase = 5;
         for (GeneralModelType generalModelType : GeneralModelType.values()) {
             for (int refactoringIndex = 0; refactoringIndex < REFACTORING_TYPE_COUNT; refactoringIndex++) {
@@ -226,10 +231,10 @@ class Stage2SyntheticDiagramTest extends SyntheticTestBase {
     @DisplayName("Examine the impact of the levenshtein threshold on stage 2 using (partial) synthetic diagrams")
     @ParameterizedTest(name = "{0}")
     @MethodSource("getDistinctDiagrams")
-    @Disabled
+    @Disabled("Only for manual testing")
     void examineLevenshteinPartialOnSyntheticDiagram(DiagramProject project) throws IOException {
+        assertNotEquals(0, GeneralModelType.values().length);
         List<Double> thresholds = List.of(0.0, 0.1, 0.2, 0.3, 0.4, 0.5);
-
         int iterationsPerCase = 10;
         for (int refactoringIndex = 0; refactoringIndex < REFACTORING_TYPE_COUNT; refactoringIndex++) {
             for (var threshold : thresholds) {
@@ -246,10 +251,10 @@ class Stage2SyntheticDiagramTest extends SyntheticTestBase {
     @DisplayName("Examine the impact of only using parts on stage 2 using synthetic diagrams")
     @ParameterizedTest(name = "{0}")
     @MethodSource("getDistinctDiagrams")
-    @Disabled
+    @Disabled("Only for manual testing")
     void examinePartialOnSyntheticDiagram(DiagramProject project) throws IOException {
+        assertNotEquals(0, GeneralModelType.values().length);
         List<Boolean> booleans = List.of(false, true);
-
         int iterationsPerCase = 10;
         for (int refactoringIndex = -1; refactoringIndex < REFACTORING_TYPE_COUNT; refactoringIndex++) {
             for (var usePartial : booleans) {
@@ -265,10 +270,10 @@ class Stage2SyntheticDiagramTest extends SyntheticTestBase {
     @DisplayName("Examine the impact of a suffix on stage 2 using synthetic diagrams")
     @ParameterizedTest(name = "{0}")
     @MethodSource("getDistinctDiagrams")
-    @Disabled
+    @Disabled("Only for manual testing")
     void examineSuffixOnSyntheticDiagram(DiagramProject project) throws IOException {
+        assertNotEquals(0, GeneralModelType.values().length);
         List<Boolean> booleans = List.of(false, true);
-
         int iterationsPerCase = 5;
         for (GeneralModelType generalModelType : GeneralModelType.values()) {
             for (int refactoringIndex = 0; refactoringIndex < REFACTORING_TYPE_COUNT; refactoringIndex++) {
@@ -287,10 +292,10 @@ class Stage2SyntheticDiagramTest extends SyntheticTestBase {
     @DisplayName("Examine the impact of a suffix on stage 2 using partial synthetic diagrams")
     @ParameterizedTest(name = "{0}")
     @MethodSource("getDistinctDiagrams")
-    @Disabled
+    @Disabled("Only for manual testing")
     void examineSuffixAndPartialOnSyntheticDiagram(DiagramProject project) throws IOException {
+        assertNotEquals(0, GeneralModelType.values().length);
         List<Boolean> booleans = List.of(false, true);
-
         int iterationsPerCase = 10;
         for (int refactoringIndex = 0; refactoringIndex < REFACTORING_TYPE_COUNT; refactoringIndex++) {
             for (var useSuffixAndPartial : booleans) {

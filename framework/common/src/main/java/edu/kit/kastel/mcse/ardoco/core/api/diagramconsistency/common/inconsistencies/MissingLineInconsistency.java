@@ -5,7 +5,6 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Indicates that a box is missing a line to another box.
@@ -43,7 +42,6 @@ public class MissingLineInconsistency<B, E> extends Inconsistency<B, E> {
         return this.expectedLineTarget;
     }
 
-    @Nullable
     @Override
     public B getOtherBox() {
         return this.getExpectedLineTarget();

@@ -36,7 +36,7 @@ import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.DiagramConsistency;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.DiagramMatchingModelSelectionStateImpl;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.DiagramModelLinkStateImpl;
-import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.EvaluationBase;
+import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.EvaluationTestBase;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.IntegerMetrics;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.MapMetrics;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.Metrics;
@@ -52,7 +52,7 @@ import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactoring
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactoring.RefactoringBundle;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactoring.Rename;
 
-class DiagramConsistencyTest extends EvaluationBase {
+class DiagramConsistencyTest extends EvaluationTestBase {
     private static final Map<DiagramProject, double[]> expectedFinalJaccardResults = Map.of(DiagramProject.BIG_BLUE_BUTTON, new double[] { 0.69, 0.38, 0.89,
             0.72, 0.80 }, DiagramProject.TEAMMATES_ARCHITECTURE, new double[] { 0.33, 0.33, 1.00, 0.35, 0.52 }, DiagramProject.TEAMMATES_PACKAGES,
             new double[] { 0.52, 0.00, 0.63, 0.72, 0.68 }, DiagramProject.TEAMMATES_UI, new double[] { 0.48, 0.40, 0.67, 1.00, 0.80 }, DiagramProject.TEA_STORE,
@@ -90,7 +90,7 @@ class DiagramConsistencyTest extends EvaluationBase {
     @DisplayName("Evaluate the model consistency pipeline (Stage 1) with initial parameters")
     @ParameterizedTest(name = "{0}")
     @MethodSource("getDiagrams")
-    @Disabled
+    @Disabled("No assertions, serves as evaluation runner only")
     void evaluateStage1WithInitialParameters(DiagramProject project) throws IOException {
         SortedMap<String, String> config = new TreeMap<>();
         config.put("DiagramElementOccurrenceFinderInformant::similarityThresholdArchitecture", String.valueOf(0.5));
@@ -109,7 +109,7 @@ class DiagramConsistencyTest extends EvaluationBase {
     @DisplayName("Evaluate the model consistency pipeline (Stage 1) with initial parameters")
     @ParameterizedTest(name = "{0}")
     @MethodSource("getDiagrams")
-    @Disabled
+    @Disabled("No assertions, serves as evaluation runner only")
     void evaluateStage1WithInitialParametersWithJaccard(DiagramProject project) throws IOException {
         SortedMap<String, String> config = new TreeMap<>();
         config.put("DiagramElementOccurrenceFinderInformant::similarityThresholdArchitecture", String.valueOf(0.5));
@@ -144,28 +144,28 @@ class DiagramConsistencyTest extends EvaluationBase {
 
     @DisplayName("Evaluate the model consistency pipeline 'similarityThresholdArchitecture' parameter (Stage 1)")
     @Test
-    @Disabled
+    @Disabled("No assertions, serves as evaluation runner only")
     void evaluateStage1ArchitectureThresholdParameterForLevenshtein() throws IOException {
         this.evaluateStage1Parameter("similarityThresholdArchitecture", DiagramElementOccurrenceFinderInformant.TextSimilarityFunction.LEVENSHTEIN);
     }
 
     @DisplayName("Evaluate the model consistency pipeline 'similarityThresholdArchitecture' parameter (Stage 1)")
     @Test
-    @Disabled
+    @Disabled("No assertions, serves as evaluation runner only")
     void evaluateStage1ArchitectureThresholdParameterForJaccard() throws IOException {
         this.evaluateStage1Parameter("similarityThresholdArchitecture", DiagramElementOccurrenceFinderInformant.TextSimilarityFunction.ADAPTED_JACCARD);
     }
 
     @DisplayName("Evaluate the model consistency pipeline 'similarityThresholdCode' parameter (Stage 1)")
     @Test
-    @Disabled
+    @Disabled("No assertions, serves as evaluation runner only")
     void evaluateStage1CodeThresholdParameterForLevenshtein() throws IOException {
         this.evaluateStage1Parameter("similarityThresholdCode", DiagramElementOccurrenceFinderInformant.TextSimilarityFunction.LEVENSHTEIN);
     }
 
     @DisplayName("Evaluate the model consistency pipeline 'similarityThresholdCode' parameter (Stage 1)")
     @Test
-    @Disabled
+    @Disabled("No assertions, serves as evaluation runner only")
     void evaluateStage1CodeThresholdParameterForJaccard() throws IOException {
         this.evaluateStage1Parameter("similarityThresholdCode", DiagramElementOccurrenceFinderInformant.TextSimilarityFunction.ADAPTED_JACCARD);
     }
@@ -257,7 +257,7 @@ class DiagramConsistencyTest extends EvaluationBase {
     @DisplayName("Evaluate the model consistency pipeline (Stage 2) with initial parameters")
     @ParameterizedTest(name = "{0}")
     @MethodSource("getDiagrams")
-    @Disabled
+    @Disabled("No assertions, serves as evaluation runner only")
     void evaluateStage2Initial(DiagramProject project) throws IOException {
         SortedMap<String, String> config = new TreeMap<>();
         config.put("DiagramModelLinkInformant::textSimilarityThreshold", String.valueOf(0.5));
@@ -265,6 +265,8 @@ class DiagramConsistencyTest extends EvaluationBase {
 
         Metrics metrics = this.runAndEvaluateStage2(project, config);
         this.writeStage2Result(project, metrics);
+
+        assertTrue(metrics.getF1Score() > 0.0);
     }
 
     private void writeStage2Result(DiagramProject project, Metrics metrics) throws IOException {
@@ -281,7 +283,7 @@ class DiagramConsistencyTest extends EvaluationBase {
     @DisplayName("Evaluate the model consistency pipeline (Stage 2) using a similarity threshold")
     @ParameterizedTest(name = "{0}")
     @MethodSource("getDiagrams")
-    @Disabled
+    @Disabled("No assertions, serves as evaluation runner only")
     void evaluateStage2WithSimilarityThreshold(DiagramProject project) throws IOException {
         SortedMap<String, String> config = new TreeMap<>();
         config.put("DiagramModelLinkInformant::textSimilarityThreshold", String.valueOf(0.5));
@@ -289,6 +291,8 @@ class DiagramConsistencyTest extends EvaluationBase {
 
         Metrics metrics = this.runAndEvaluateStage2(project, config);
         this.writeStage2Result(project, metrics);
+
+        assertTrue(metrics.getF1Score() > 0.0);
     }
 
     @DisplayName("Evaluate the model consistency pipeline (Stage 2) using new parameters")
@@ -314,18 +318,20 @@ class DiagramConsistencyTest extends EvaluationBase {
     @DisplayName("Evaluate the model consistency pipeline (Stage 2) using no iterations")
     @ParameterizedTest(name = "{0}")
     @MethodSource("getDiagrams")
-    @Disabled
+    @Disabled("No assertions, serves as evaluation runner only")
     void evaluateStage2ZeroIterations(DiagramProject project) throws IOException {
         SortedMap<String, String> config = new TreeMap<>();
         config.put("DiagramModelLinkInformant::maxIterations", String.valueOf(0));
 
         Metrics metrics = this.runAndEvaluateStage2(project, config);
         this.writeStage2Result(project, metrics);
+
+        assertTrue(metrics.getF1Score() > 0.0);
     }
 
     @DisplayName("Evaluate the best epsilon for the model consistency pipeline (Stage 2)")
     @Test
-    @Disabled
+    @Disabled("No assertions, serves as evaluation runner only")
     void evaluateStage2Epsilon() throws IOException {
         List<Double> epsilons = IntStream.range(1, 50).mapToDouble(i -> 0.05 * i).boxed().toList();
         SortedMap<String, String> config = new TreeMap<>();
@@ -337,7 +343,7 @@ class DiagramConsistencyTest extends EvaluationBase {
 
     @DisplayName("Evaluate the best levenshtein threshold for the model consistency pipeline (Stage 2)")
     @Test
-    @Disabled
+    @Disabled("No assertions, serves as evaluation runner only")
     void evaluateStage2Levenshtein() throws IOException {
         List<Double> thresholds = IntStream.range(0, 50).mapToDouble(i -> 0.02 * i).boxed().toList();
         SortedMap<String, String> config = new TreeMap<>();
@@ -349,7 +355,7 @@ class DiagramConsistencyTest extends EvaluationBase {
 
     @DisplayName("Evaluate the best similarity threshold for the model consistency pipeline (Stage 2)")
     @Test
-    @Disabled
+    @Disabled("No assertions, serves as evaluation runner only")
     void evaluateStage2SimilarityThreshold() throws IOException {
         List<Double> thresholds = IntStream.range(0, 50).mapToDouble(i -> 0.02 * i).boxed().toList();
         SortedMap<String, String> config = new TreeMap<>();
@@ -372,6 +378,7 @@ class DiagramConsistencyTest extends EvaluationBase {
 
     private void evaluateImpactOnStage(List<Double> values, int repetition, BiFunction<DiagramProject, Double, Metrics> function) throws IOException {
         List<MetricsStats> extrema = new ArrayList<>();
+        int totalEntryCount = 0;
 
         for (double value : values) {
             extrema.add(new MetricsStats());
@@ -382,9 +389,12 @@ class DiagramConsistencyTest extends EvaluationBase {
                         continue;
                     }
                     extrema.get(extrema.size() - 1).add(metrics, metrics.getTruePositiveCount());
+                    totalEntryCount++;
                 }
             }
         }
+
+        assertNotEquals(0, totalEntryCount);
 
         for (int index = 0; index < values.size(); index++) {
             this.writer.write(String.format(Locale.US, "%.3f,%.3f,%.3f,%.3f,%.3f%n", values.get(index), extrema.get(index).getMinF1Score(), extrema.get(index)
@@ -502,7 +512,7 @@ class DiagramConsistencyTest extends EvaluationBase {
 
     @DisplayName("Evaluate the impact of renaming on the model consistency pipeline (Stage 2)")
     @Test
-    @Disabled
+    @Disabled("No assertions, serves as evaluation runner only")
     void evaluateStage2StabilityToRename() throws IOException {
         List<Double> ratios = IntStream.range(0, 50).mapToDouble(i -> 0.02 * i).boxed().toList();
         this.evaluateImpactOnStage(ratios, 10, (project, ratio) -> {
@@ -517,7 +527,7 @@ class DiagramConsistencyTest extends EvaluationBase {
 
     @DisplayName("Evaluate the impact of disconnecting on the model consistency pipeline (Stage 2)")
     @Test
-    @Disabled
+    @Disabled("No assertions, serves as evaluation runner only")
     void evaluateStage2StabilityToDisconnect() throws IOException {
         List<Double> ratios = IntStream.range(0, 50).mapToDouble(i -> 0.02 * i).boxed().toList();
         this.evaluateImpactOnStage(ratios, 10, (project, ratio) -> {
@@ -646,7 +656,7 @@ class DiagramConsistencyTest extends EvaluationBase {
 
     @DisplayName("Evaluate the best epsilon (Stage 2) for the model consistency pipeline (Stage 3)")
     @Test
-    @Disabled
+    @Disabled("No assertions, serves as evaluation runner only")
     void evaluateStage3Epsilon() throws IOException {
         List<Double> epsilons = IntStream.range(1, 50).mapToDouble(i -> 0.05 * i).boxed().toList();
         SortedMap<String, String> config = new TreeMap<>();
@@ -655,7 +665,7 @@ class DiagramConsistencyTest extends EvaluationBase {
 
     @DisplayName("Evaluate the best levenshtein threshold (Stage 2) for the model consistency pipeline (Stage 3)")
     @Test
-    @Disabled
+    @Disabled("No assertions, serves as evaluation runner only")
     void evaluateStage3Levenshtein() throws IOException {
         List<Double> thresholds = IntStream.range(0, 50).mapToDouble(i -> 0.02 * i).boxed().toList();
         SortedMap<String, String> config = new TreeMap<>();
@@ -664,7 +674,7 @@ class DiagramConsistencyTest extends EvaluationBase {
 
     @DisplayName("Evaluate the best similarity threshold (Stage 2) for the model consistency pipeline (Stage 3)")
     @Test
-    @Disabled
+    @Disabled("No assertions, serves as evaluation runner only")
     void evaluateStage3SimilarityThreshold() throws IOException {
         List<Double> thresholds = IntStream.range(0, 50).mapToDouble(i -> 0.02 * i).boxed().toList();
         SortedMap<String, String> config = new TreeMap<>();
@@ -690,7 +700,7 @@ class DiagramConsistencyTest extends EvaluationBase {
     }
 
     @Test
-    @Disabled
+    @Disabled("No assertions, serves as evaluation runner only")
     void countInconsistencies() throws IOException {
         for (DiagramProject project : DiagramProject.values()) {
             DiagramInconsistencies inconsistencies = JsonMapping.OBJECT_MAPPER.readValue(project.getValidationStage(), DiagramInconsistencies.class);

@@ -26,7 +26,7 @@ import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactoring
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactoring.RefactoringBundle;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactoring.Rename;
 
-class SyntheticDiagramsTest extends EvaluationBase {
+class SyntheticDiagramsTest extends EvaluationTestBase {
     @DisplayName("Apply refactorings to synthetic architecture diagram")
     @ParameterizedTest(name = "{0}")
     @MethodSource("getDiagrams")

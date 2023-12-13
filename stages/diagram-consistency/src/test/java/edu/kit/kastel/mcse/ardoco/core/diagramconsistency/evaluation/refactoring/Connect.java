@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Edge;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Label;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Vertex;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.InconsistencyType;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.UnexpectedLineInconsistency;
@@ -38,7 +39,7 @@ public class Connect<R, M> extends Refactoring<R, M> {
             return false;
         }
 
-        graph.graph().addEdge(sourceToConnect, targetToConnect, new Edge(Edge.Label.DEFAULT));
+        graph.graph().addEdge(sourceToConnect, targetToConnect, new Edge(Label.DEFAULT));
 
         graph.addInconsistency(new UnexpectedLineInconsistency<>(sourceToConnect, targetToConnect));
 

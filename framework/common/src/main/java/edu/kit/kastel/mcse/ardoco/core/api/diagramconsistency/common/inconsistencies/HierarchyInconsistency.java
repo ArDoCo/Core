@@ -5,7 +5,6 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Indicates that the hierarchy is inconsistent, meaning the parent of a box is not as expected.
@@ -47,7 +46,6 @@ public class HierarchyInconsistency<B, E> extends Inconsistency<B, E> {
         return this.expectedParent;
     }
 
-    @Nullable
     @Override
     public B getOtherBox() {
         return this.getExpectedParent();

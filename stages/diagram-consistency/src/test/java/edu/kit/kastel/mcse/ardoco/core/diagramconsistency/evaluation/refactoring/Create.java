@@ -7,6 +7,7 @@ import java.util.Set;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Edge;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Label;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Vertex;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.UnexpectedBoxInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.AnnotatedGraph;
@@ -31,7 +32,7 @@ public class Create<R, M> extends Refactoring<R, M> {
         if (this.getRandom().nextBoolean()) {
             parentVertex = this.selectEntry(graph.graph().vertexSet());
             if (parentVertex != null && !parentVertex.equals(createdVertex)) {
-                graph.graph().addEdge(createdVertex, parentVertex, new Edge(Edge.Label.HIERARCHY));
+                graph.graph().addEdge(createdVertex, parentVertex, new Edge(Label.HIERARCHY));
             }
         }
 
@@ -50,7 +51,7 @@ public class Create<R, M> extends Refactoring<R, M> {
             for (int i = 0; i < incomingEdgeBudget; i++) {
                 Vertex<R> sourceVertex = this.selectEntry(graph.graph().vertexSet(), vertex -> !blackList.contains(vertex));
                 if (sourceVertex != null) {
-                    graph.graph().addEdge(sourceVertex, createdVertex, new Edge(Edge.Label.DEFAULT));
+                    graph.graph().addEdge(sourceVertex, createdVertex, new Edge(Label.DEFAULT));
                     blackList.add(sourceVertex);
                 }
             }
@@ -58,7 +59,7 @@ public class Create<R, M> extends Refactoring<R, M> {
             for (int i = 0; i < outgoingEdgeBudget; i++) {
                 Vertex<R> targetVertex = this.selectEntry(graph.graph().vertexSet(), vertex -> !blackList.contains(vertex));
                 if (targetVertex != null) {
-                    graph.graph().addEdge(createdVertex, targetVertex, new Edge(Edge.Label.DEFAULT));
+                    graph.graph().addEdge(createdVertex, targetVertex, new Edge(Label.DEFAULT));
                     blackList.add(targetVertex);
                 }
             }

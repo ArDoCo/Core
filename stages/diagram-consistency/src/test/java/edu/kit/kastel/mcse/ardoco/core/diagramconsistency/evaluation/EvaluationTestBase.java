@@ -13,8 +13,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import javax.annotation.Nullable;
-
 import org.apache.commons.io.FileUtils;
 import org.eclipse.collections.api.bimap.MutableBiMap;
 import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
@@ -33,6 +31,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItem;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItemRepository;
+import edu.kit.kastel.mcse.ardoco.core.common.IdentifierProvider;
 import edu.kit.kastel.mcse.ardoco.core.common.RepositoryHandler;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.AnnotatedDiagram;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.AnnotatedGraph;
@@ -46,14 +45,14 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.CodeProject;
 /**
  * Base class for all evaluation tests that require diagrams.
  */
-public class EvaluationBase {
+public class EvaluationTestBase {
     protected static final double PARTIAL_SELECTION_MIN = 0.05;
     protected static final double PARTIAL_SELECTION_MAX = 0.25;
     protected static final double REFACTORING_RATIO = 0.25;
 
     protected static final String PIPELINE_OUTPUT = "src/test/resources/pipeline_out";
     protected static final String TEST_OUTPUT = "src/test/resources/test_out";
-    protected static final Logger logger = LoggerFactory.getLogger(EvaluationBase.class);
+    protected static final Logger logger = LoggerFactory.getLogger(EvaluationTestBase.class);
 
     protected FileWriter writer;
 
@@ -113,8 +112,9 @@ public class EvaluationBase {
             String commitHash = project.getSourceProject().getCommitHash();
 
             FileUtils.deleteQuietly(new File(codeLocation));
-
             RepositoryHandler.shallowCloneRepository(repository, codeLocation, commitHash);
+
+            IdentifierProvider.reset();
             codeModel = extractor.extractModel();
             extractor.writeOutCodeModel(codeModel);
         }

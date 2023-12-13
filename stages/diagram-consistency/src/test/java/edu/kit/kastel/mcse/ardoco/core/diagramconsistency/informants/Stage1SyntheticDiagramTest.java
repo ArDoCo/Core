@@ -90,7 +90,7 @@ class Stage1SyntheticDiagramTest extends SyntheticTestBase {
     @DisplayName("Examine the stage 1 using synthetic diagrams")
     @ParameterizedTest(name = "{0}")
     @MethodSource("getDistinctDiagrams")
-    @Disabled
+    @Disabled("Only for manual testing")
     void examineStage1Base(DiagramProject project) throws IOException {
         Consumer<Result> printer = (result) -> {
             double difference = result.actual().ratio() - result.otherRatio();

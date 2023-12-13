@@ -26,7 +26,7 @@ import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.stage2
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.stage3.DiagramInconsistencies;
 import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.model.DiagramImpl;
 
-class DiagramLoadingTest extends EvaluationBase {
+class DiagramLoadingTest extends EvaluationTestBase {
     private static <E extends Entity> Set<String> getAllIds(List<E> start, Function<E, List<E>> contentProvider, Function<E, String> idProvider) {
         Set<E> visited = new LinkedHashSet<>();
         Queue<E> queue = new java.util.ArrayDeque<>(start);

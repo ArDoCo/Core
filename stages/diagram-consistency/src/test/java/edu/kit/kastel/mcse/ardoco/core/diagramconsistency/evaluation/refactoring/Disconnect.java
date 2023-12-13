@@ -1,7 +1,7 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactoring;
 
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Edge;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Label;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Vertex;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.InconsistencyType;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.MissingLineInconsistency;
@@ -26,7 +26,7 @@ public class Disconnect<R, M> extends Refactoring<R, M> {
         Vertex<R> targetVertex = this.selectEntry(graph.graph()
                 .outgoingEdgesOf(vertexToDisconnect)
                 .stream()
-                .filter(edge -> edge.getLabel().equals(Edge.Label.DEFAULT))
+                .filter(edge -> edge.getLabel().equals(Label.DEFAULT))
                 .map(edge -> graph.graph().getEdgeTarget(edge))
                 .toList());
         if (targetVertex == null) {
@@ -47,7 +47,7 @@ public class Disconnect<R, M> extends Refactoring<R, M> {
         }
 
         // Disconnecting is not possible if there are no outgoing lines.
-        if (graph.graph().outgoingEdgesOf(vertexToDisconnect).stream().noneMatch(edge -> edge.getLabel().equals(Edge.Label.DEFAULT))) {
+        if (graph.graph().outgoingEdgesOf(vertexToDisconnect).stream().noneMatch(edge -> edge.getLabel().equals(Label.DEFAULT))) {
             return false;
         }
 

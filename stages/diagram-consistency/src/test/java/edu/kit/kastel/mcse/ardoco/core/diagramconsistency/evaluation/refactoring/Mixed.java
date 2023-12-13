@@ -3,8 +3,6 @@ package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactorin
 
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.AnnotatedGraph;
 
 /**
@@ -17,7 +15,7 @@ import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.Annota
  */
 public class Mixed<R, M> extends Refactoring<R, M> {
     private final double ratio;
-    private final @Nullable Refactoring<R, M> preRefactoring;
+    private final Refactoring<R, M> preRefactoring;
     private final List<Refactoring<R, M>> refactorings = List.of(new Connect<>(), new Create<>(), new Delete<>(), new Disconnect<>(), new Move<>(),
             new Rename<>());
 
@@ -29,7 +27,7 @@ public class Mixed<R, M> extends Refactoring<R, M> {
      * @param preRefactoring
      *                       The refactoring that is applied before the standard refactorings, optional.
      */
-    public Mixed(double ratio, @Nullable Refactoring<R, M> preRefactoring) {
+    public Mixed(double ratio, Refactoring<R, M> preRefactoring) {
         this.ratio = ratio;
         this.preRefactoring = preRefactoring;
     }

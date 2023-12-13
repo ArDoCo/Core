@@ -1,6 +1,8 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.informants;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -25,8 +27,9 @@ import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactoring
 class Stage3SyntheticDiagramTest extends SyntheticTestBase {
     @DisplayName("Examine stage 3 using synthetic diagrams")
     @Test
-    @Disabled
+    @Disabled("Only for manual testing")
     void examineBaseOfStage3OnSyntheticDiagram() throws IOException {
+        assertNotEquals(0, GeneralModelType.values().length);
         int iterationsPerCase = 2;
         for (GeneralModelType generalModelType : GeneralModelType.values()) {
             for (int refactoringIndex = 0; refactoringIndex < REFACTORING_TYPE_COUNT; refactoringIndex++) {
@@ -40,8 +43,9 @@ class Stage3SyntheticDiagramTest extends SyntheticTestBase {
 
     @DisplayName("Examine stage 3 using partial synthetic code diagrams")
     @Test
-    @Disabled
+    @Disabled("Only for manual testing")
     void examineStage3OnPartialSyntheticDiagram() throws IOException {
+        assertNotEquals(0, GeneralModelType.values().length);
         int iterationsPerCase = 2;
         for (int refactoringIndex = 0; refactoringIndex < REFACTORING_TYPE_COUNT; refactoringIndex++) {
             this.doEvaluationIterations(new ExaminationDescriptionBuilder().setProject(null)
@@ -54,8 +58,9 @@ class Stage3SyntheticDiagramTest extends SyntheticTestBase {
 
     @DisplayName("Examine stage 3 using mixed refactorings on synthetic code diagrams")
     @Test
-    @Disabled
+    @Disabled("Only for manual testing")
     void examineStage3OnMixedRefactoredDiagram() throws IOException {
+        assertNotEquals(0, GeneralModelType.values().length);
         for (GeneralModelType generalModelType : GeneralModelType.values()) {
             this.doEvaluationIterations(new ExaminationDescriptionBuilder().setProject(null)
                     .setGeneralModelType(generalModelType)
