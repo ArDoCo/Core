@@ -125,7 +125,7 @@ public class EvaluationTestBase {
         return codeModel;
     }
 
-    protected static <M> @Nullable AnnotatedDiagram<M> applyRefactoring(AnnotatedDiagram<M> diagram, Refactoring<Box, M> refactoring) {
+    protected static <M> AnnotatedDiagram<M> applyRefactoring(AnnotatedDiagram<M> diagram, Refactoring<Box, M> refactoring) {
         AnnotatedGraph<Box, M> graph = AnnotatedGraph.createFrom(diagram);
 
         boolean successful = refactoring.applyTo(graph);
