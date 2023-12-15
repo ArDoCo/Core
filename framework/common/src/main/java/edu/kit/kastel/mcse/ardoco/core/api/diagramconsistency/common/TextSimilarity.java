@@ -1,6 +1,7 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.commons.text.similarity.JaccardSimilarity;
@@ -15,12 +16,12 @@ import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
  */
 @Deterministic
 public final class TextSimilarity {
-    private static final Map<UnorderedPair<String, String>, Double> CACHE_FOR_BASIC_FUNCTION = new java.util.LinkedHashMap<>();
-    private static final Map<UnorderedPair<String, String>, Double> CACHE_FOR_CASE_INSENSITIVE_FUNCTION = new java.util.LinkedHashMap<>();
+    private static final Map<UnorderedPair<String, String>, Double> CACHE_FOR_BASIC_FUNCTION = new LinkedHashMap<>();
+    private static final Map<UnorderedPair<String, String>, Double> CACHE_FOR_CASE_INSENSITIVE_FUNCTION = new LinkedHashMap<>();
     private static final JaroWinklerSimilarity JARO_WINKLER_SIMILARITY = new JaroWinklerSimilarity();
-    private static final Map<UnorderedPair<String, String>, Double> CACHE_FOR_JARO_WINKLER_FUNCTION = new java.util.LinkedHashMap<>();
+    private static final Map<UnorderedPair<String, String>, Double> CACHE_FOR_JARO_WINKLER_FUNCTION = new LinkedHashMap<>();
     private static final JaccardSimilarity JACCARD_SIMILARITY = new JaccardSimilarity();
-    private static final Map<UnorderedPair<String, String>, Double> CACHE_FOR_JACCARD_FUNCTION = new java.util.LinkedHashMap<>();
+    private static final Map<UnorderedPair<String, String>, Double> CACHE_FOR_JACCARD_FUNCTION = new LinkedHashMap<>();
 
     private TextSimilarity() {
     }

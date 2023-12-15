@@ -41,6 +41,7 @@ import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.AllLanguagesExtractor;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code.CodeExtractor;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.CodeProject;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.ProjectHelper;
 
 /**
  * Base class for all evaluation tests that require diagrams.
@@ -101,12 +102,15 @@ public class EvaluationTestBase {
     }
 
     protected static CodeModel getCodeModel(DiagramProject project) {
+        ProjectHelper.ANALYZE_CODE_DIRECTLY.set(false);
+
         File model = new File(Objects.requireNonNull(project.getSourceProject().getCodeModelDirectory())).getAbsoluteFile();
         CodeExtractor extractor = new AllLanguagesExtractor(new CodeItemRepository(), model.getAbsolutePath());
 
         CodeModel codeModel = extractor.readInCodeModel();
 
         if (codeModel == null) {
+            logger.error("Code Model was not loaded. Trying to recover ..");
             String repository = project.getSourceProject().getCodeRepository();
             String codeLocation = project.getSourceProject().getCodeLocation();
             String commitHash = project.getSourceProject().getCommitHash();
