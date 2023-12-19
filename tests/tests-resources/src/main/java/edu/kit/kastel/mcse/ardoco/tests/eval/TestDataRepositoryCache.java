@@ -7,6 +7,7 @@ import java.util.prefs.Preferences;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;

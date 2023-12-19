@@ -7,6 +7,7 @@ import java.lang.reflect.ParameterizedType;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 
 /**
@@ -49,8 +50,7 @@ public class SerializableFileBasedCache<T extends Serializable> extends FileBase
         }
         if (type instanceof Class<?> cls) {
             return cls;
-        }
-        else {
+        } else {
             throw new IllegalArgumentException("TypeReference type could not be resolved to a class");
         }
     }
