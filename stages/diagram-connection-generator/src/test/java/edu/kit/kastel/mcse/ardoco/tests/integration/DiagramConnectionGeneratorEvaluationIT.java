@@ -22,7 +22,8 @@ import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class DiagramConnectionGeneratorEvaluationIT extends DiagramConnectionGeneratorTest {
+@SuppressWarnings({ "java:S1607", "java:S2699" })
+class DiagramConnectionGeneratorEvaluationIT extends DiagramConnectionGeneratorTest {
     private static final Logger logger = LoggerFactory.getLogger(DiagramConnectionGeneratorEvaluationIT.class);
     private static final String OUTPUT_DIR = "src/test/resources/testout";
 
@@ -42,56 +43,56 @@ public class DiagramConnectionGeneratorEvaluationIT extends DiagramConnectionGen
     @Override
     @Test
     @Disabled
-    protected void evaluateAll() {
+    void evaluateAll() {
         super.evaluateAll();
     }
 
     @Override
     @Test
     @Disabled
-    protected void teammatesTest() {
+    void teammatesTest() {
         runComparable(DiagramProject.TEAMMATES, false);
     }
 
     @Override
     @Test
     @Disabled
-    protected void teammatesHistTest() {
+    void teammatesHistTest() {
         runComparable(DiagramProject.TEAMMATES_HISTORICAL, false);
     }
 
     @Override
     @Test
     @Disabled
-    protected void teastoreTest() {
+    void teastoreTest() {
         runComparable(DiagramProject.TEASTORE, false);
     }
 
     @Override
     @Test
     @Disabled
-    protected void teastoreHistTest() {
+    void teastoreHistTest() {
         runComparable(DiagramProject.TEASTORE_HISTORICAL, false);
     }
 
     @Override
     @Test
     @Disabled
-    protected void bbbTest() {
+    void bbbTest() {
         runComparable(DiagramProject.BIGBLUEBUTTON, false);
     }
 
     @Override
     @Test
     @Disabled
-    protected void bbbHistTest() {
+    void bbbHistTest() {
         runComparable(DiagramProject.BIGBLUEBUTTON_HISTORICAL, false);
     }
 
     @Override
     @Test
     @Disabled
-    protected void msTest() {
+    void msTest() {
         runComparable(DiagramProject.MEDIASTORE, false);
     }
 }

@@ -177,6 +177,7 @@ public final class SimilarityUtils implements Serializable {
      * @param minProportion threshold for proportional similarity between the lists
      * @return true if the list are similar, false if not
      */
+    @SuppressWarnings("java:S3776")
     public boolean areWordsOfListsSimilar(ImmutableList<String> originals, ImmutableList<String> words2test, double minProportion) {
 
         if (areWordsSimilar(String.join(" ", originals), String.join(" ", words2test))) {

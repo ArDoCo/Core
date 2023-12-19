@@ -58,11 +58,10 @@ class OcrInformant(
     ) {
         val textsWithHints =
             detectTextBoxes(
-                diagram,
                 ByteArrayInputStream(imageData),
                 diagram.boxes.filter { it.classification == Classification.LABEL }
             )
-        val textsWithoutHints = detectTextBoxes(diagram, ByteArrayInputStream(imageData), listOf())
+        val textsWithoutHints = detectTextBoxes(ByteArrayInputStream(imageData), listOf())
         val texts = mergeTexts(textsWithHints, textsWithoutHints)
         texts.forEach { diagram.addTextBox(it) }
     }
@@ -89,15 +88,12 @@ class OcrInformant(
     }
 
     private fun detectTextBoxes(
-        diagram: Diagram,
         image: InputStream,
         detectedBoxesOfObjectDetection: List<Box>
     ): List<TextBox> {
         val textRecognition =
             sendOCRRequest(
-                diagram,
                 image,
-                container.apiPort,
                 detectedBoxesOfObjectDetection.filter { it.classification == Classification.LABEL }
             )
         logger.debug("Processed OCRService Request")
@@ -105,12 +101,10 @@ class OcrInformant(
     }
 
     private fun sendOCRRequest(
-        diagram: Diagram,
         image: InputStream,
-        port: Int,
         labels: List<Box>
     ): String {
-        val boxCoordinates = enhanceLabels(diagram, labels).flatMap { it.box.toList() }.joinToString(",")
+        val boxCoordinates = enhanceLabels(labels).flatMap { it.box.toList() }.joinToString(",")
 
         val builder = MultipartEntityBuilder.create()
         builder.addBinaryBody("file", image, ContentType.APPLICATION_OCTET_STREAM, "image")
@@ -125,23 +119,17 @@ class OcrInformant(
         return executeRequest(uploadFile)
     }
 
-    private fun enhanceLabels(
-        diagram: Diagram,
-        labels: List<Box>
-    ): List<Box> {
+    private fun enhanceLabels(labels: List<Box>): List<Box> {
         val result = labels.filter { it.area() > MINIMUM_AREA_IN_PXPX }.toMutableList()
 
         for (idx in result.indices) {
-            result[idx] = expandPixels(diagram, result[idx])
+            result[idx] = expandPixels(result[idx])
         }
 
         return result
     }
 
-    private fun expandPixels(
-        diagram: Diagram,
-        box: Box
-    ): Box {
+    private fun expandPixels(box: Box): Box {
         // TODO Better expansion mechanism based on area
         val newPositions =
             listOf(

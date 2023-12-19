@@ -7,8 +7,6 @@ import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.impl.factory.Lists;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.TextBox;
@@ -28,8 +26,6 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
  * relationship between diagram elements and model elements is used to further reduce the set of references.
  */
 public class DiagramModelReferenceInformant extends Informant {
-    private final static Logger logger = LoggerFactory.getLogger(DiagramModelReferenceInformant.class);
-
     @Configurable
     private double textBoxSimilarityThreshold = 0.5;
 
@@ -49,7 +45,8 @@ public class DiagramModelReferenceInformant extends Informant {
     public void process() {
         var optModelStates = dataRepository.getData(ModelStates.ID, ModelStates.class);
         if (optModelStates.isEmpty()) {
-            logger.warn(String.format("%s couldn't be found, skipping informant", ModelStates.class.getSimpleName()));
+            var txt = String.format("%s couldn't be found, skipping informant", ModelStates.class.getSimpleName());
+            logger.warn(txt);
             return;
         }
 
@@ -78,7 +75,7 @@ public class DiagramModelReferenceInformant extends Informant {
             box.setReferences(List.of());
             var references = getReferencesPerTextBox(box);
             var similar = similarModelInstance(instances, references);
-            similar.forEach(s -> logger.debug(box + " similar to " + s));
+            similar.forEach(s -> logger.debug("{} similar to {}", box, s));
             var isEmpty = similar.isEmpty();
             for (var ref : references.entrySet()) {
                 if (isEmpty || similar.stream().anyMatch(t -> t.first().equals(ref.getKey()))) {

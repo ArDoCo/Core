@@ -60,6 +60,7 @@ public class SEWordSimMeasure implements WordSimMeasure {
         return similarity; // words are probably missing from the database
     }
 
+    @SuppressWarnings("java:S112")
     private SEWordSimDataSource getDataSource() {
         if (dataSource == null) {
             try {

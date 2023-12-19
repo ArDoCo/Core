@@ -3,6 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.common.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Objects;
 
 import org.slf4j.Logger;
@@ -17,13 +18,13 @@ import net.harawata.appdirs.AppDirsFactory;
  *
  * @param <T> the type of cached content
  */
+@SuppressWarnings("java:S112")
 public abstract class FileBasedCache<T> implements AutoCloseable {
     private static final Logger logger = LoggerFactory.getLogger(FileBasedCache.class);
     private File file;
     private final String identifier;
     private final String fileExtension;
     private final String subFolder;
-    private boolean flagRead = false;
     private boolean flagWrite = false;
     private T currentState = null;
     private int originalStateHash;
@@ -54,7 +55,6 @@ public abstract class FileBasedCache<T> implements AutoCloseable {
             }
             originalStateHash = Objects.hash(fileState);
             currentState = fileState;
-            flagRead = true;
         }
         return currentState;
     }
@@ -74,12 +74,12 @@ public abstract class FileBasedCache<T> implements AutoCloseable {
      *
      * @param identifier    name of the cache file
      * @param fileExtension extension of the cache file
-     * @param subFolder     sub-folder in the user directory, must end with "/"
+     * @param subFolder     sub-folder in the user directory, must end with {@link File#separator}
      */
     protected FileBasedCache(String identifier, String fileExtension, String subFolder) {
         this.identifier = identifier;
         this.fileExtension = fileExtension;
-        if (!subFolder.isEmpty() && !subFolder.endsWith("/"))
+        if (!subFolder.isEmpty() && !subFolder.endsWith(File.separator))
             throw new IllegalArgumentException();
         this.subFolder = subFolder;
     }
@@ -124,7 +124,7 @@ public abstract class FileBasedCache<T> implements AutoCloseable {
         try {
             if (file == null)
                 file = getFileHandle();
-            return file.delete();
+            return Files.deleteIfExists(file.toPath());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -138,7 +138,7 @@ public abstract class FileBasedCache<T> implements AutoCloseable {
     protected File getFileHandle() throws IOException {
         AppDirs appDirs = AppDirsFactory.getInstance();
         var arDoCoDataDir = appDirs.getUserDataDir("ArDoCo", null, "MCSE", true);
-        file = new File(arDoCoDataDir + "/" + subFolder + this.identifier + this.fileExtension);
+        file = new File(arDoCoDataDir + File.separator + subFolder + this.identifier + this.fileExtension);
         if (file.getParentFile().mkdirs()) {
             logger.info("Created directory {}", file.getParentFile().getCanonicalPath());
         }

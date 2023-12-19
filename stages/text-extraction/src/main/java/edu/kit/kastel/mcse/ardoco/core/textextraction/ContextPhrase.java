@@ -78,7 +78,7 @@ public class ContextPhrase implements Phrase {
     public ImmutableSortedMap<Word, Integer> getPhraseVector() {
         MutableSortedMap<Word, Integer> phraseVector = SortedMaps.mutable.empty();
 
-        getContainedWords().groupBy(Word::getText).forEachKeyImmutableList((text, words) -> phraseVector.put(words.getAny(), words.size()));
+        getContainedWords().groupBy(Word::getText).forEachKeyImmutableList((text, listOfWords) -> phraseVector.put(listOfWords.getAny(), listOfWords.size()));
 
         return phraseVector.toImmutable();
     }

@@ -51,14 +51,16 @@ public abstract class DefaultTextStateStrategy implements TextStateStrategy {
             reference = calculateNounMappingReference(referenceWords);
         }
 
-        return new NounMappingImpl(System.currentTimeMillis(), words, distribution.toImmutable(), referenceWords, surfaceForms, reference);
+        return new NounMappingImpl(words, distribution.toImmutable(), referenceWords, surfaceForms, reference);
     }
 
     @Override
     public NounMapping addNounMapping(ImmutableSortedSet<Word> words, ImmutableSortedMap<MappingKind, Confidence> distribution,
             ImmutableList<Word> referenceWords, ImmutableList<String> surfaceForms, String reference) {
         //Do not add noun mappings to the state, which do not have any claimants
-        assert distribution.valuesView().anySatisfy(d -> !d.getClaimants().isEmpty());
+        if (distribution.valuesView().noneSatisfy(d -> !d.getClaimants().isEmpty())) {
+            throw new IllegalArgumentException("Atleast 1 claimant is required");
+        }
 
         NounMapping nounMapping = createNounMappingStateless(words, distribution, referenceWords, surfaceForms, reference);
         getTextState().addNounMappingAddPhraseMapping(nounMapping);
@@ -127,7 +129,7 @@ public abstract class DefaultTextStateStrategy implements TextStateStrategy {
             return extendWordAbbreviation(wordAbbreviation.orElseThrow(), word);
         } else {
             var newWordAbbreviation = new WordAbbreviation(abbreviation, new LinkedHashSet<>(List.of(word)));
-            getTextState().wordAbbreviations.add(newWordAbbreviation);
+            getTextState().addWordAbbreviation(newWordAbbreviation);
             return newWordAbbreviation;
         }
     }
@@ -144,7 +146,7 @@ public abstract class DefaultTextStateStrategy implements TextStateStrategy {
             return extendPhraseAbbreviation(phraseAbbreviation.orElseThrow(), phrase);
         } else {
             var newPhraseAbbreviation = new PhraseAbbreviation(abbreviation, new LinkedHashSet<>(List.of(phrase)));
-            getTextState().phraseAbbreviations.add(newPhraseAbbreviation);
+            getTextState().addPhraseAbbreviation(newPhraseAbbreviation);
             return newPhraseAbbreviation;
         }
     }

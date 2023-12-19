@@ -1,9 +1,6 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator.informants;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
@@ -17,8 +14,6 @@ import edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator.DiagramCon
  * This informant filters the diagram elements and recommended instances that are below a configurable confidence threshold.
  */
 public class LinkBetweenDeAndRiProbabilityFilter extends Informant {
-    private final static Logger logger = LoggerFactory.getLogger(LinkBetweenDeAndRiProbabilityFilter.class);
-
     @Configurable
     private double confidenceThreshold = 0.75;
 

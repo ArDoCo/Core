@@ -20,7 +20,7 @@ public class DiagramBackedNounMappingImpl extends NounMappingImpl {
      * @param diagramElement the diagram element, nullable if none is associated
      */
     public DiagramBackedNounMappingImpl(NounMappingImpl nounMapping, @Nullable DiagramElement diagramElement) {
-        super(NounMappingImpl.earliestCreationTime(nounMapping), nounMapping.getWords(), nounMapping.getDistribution().toSortedMap().toImmutable(), nounMapping
+        super(CREATION_TIME_COUNTER.incrementAndGet(), nounMapping.getWords(), nounMapping.getDistribution().toSortedMap().toImmutable(), nounMapping
                 .getReferenceWords(), nounMapping.getSurfaceForms(), nounMapping.getReference());
         this.diagramElement = diagramElement;
     }

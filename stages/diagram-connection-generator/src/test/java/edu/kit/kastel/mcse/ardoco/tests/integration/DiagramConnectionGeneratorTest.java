@@ -4,11 +4,23 @@ package edu.kit.kastel.mcse.ardoco.tests.integration;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.impl.factory.SortedMaps;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.slf4j.Logger;
@@ -34,7 +46,8 @@ import edu.kit.kastel.mcse.ardoco.tests.eval.StageTest;
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionGenerator, DiagramProject, Results> {
+@SuppressWarnings({ "java:S1607", "java:S2699" })
+class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionGenerator, DiagramProject, Results> {
     private static final Logger logger = LoggerFactory.getLogger(DiagramConnectionGeneratorTest.class);
     private static final String OUTPUT_DIR = "src/test/resources/testout";
 
@@ -53,8 +66,8 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
         var diagramConnectionStates = dataRepository.getData(DiagramConnectionStates.ID, DiagramConnectionStates.class).orElseThrow();
         var diagramConnectionState = diagramConnectionStates.getDiagramConnectionState(project.getMetamodel());
         var linksBetweenDeAndRi = diagramConnectionState.getLinksBetweenDeAndRi().stream().sorted().collect(Collectors.toCollection(TreeSet::new));
-        var traceLinks = diagramConnectionState.getTraceLinks().stream().collect(Collectors.toCollection(TreeSet::new));
-        var mostSpecificTraceLinks = diagramConnectionState.getMostSpecificTraceLinks().stream().collect(Collectors.toCollection(TreeSet::new));
+        var traceLinks = new TreeSet<>(diagramConnectionState.getTraceLinks());
+        var mostSpecificTraceLinks = new TreeSet<>(diagramConnectionState.getMostSpecificTraceLinks());
         var pipelineMetaData = DataRepositoryHelper.getMetaData(dataRepository);
         var altResult = Results.create(pipelineMetaData, project, text, mostSpecificTraceLinks, getExpectedResults(project));
 
@@ -180,43 +193,43 @@ public class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionG
 
     @Disabled
     @Test
-    protected void teammatesTest() {
+    void teammatesTest() {
         runComparable(DiagramProject.TEAMMATES, false);
     }
 
     @Disabled
     @Test
-    protected void teammatesHistTest() {
+    void teammatesHistTest() {
         runComparable(DiagramProject.TEAMMATES_HISTORICAL, false);
     }
 
     @Disabled
     @Test
-    protected void teastoreTest() {
+    void teastoreTest() {
         runComparable(DiagramProject.TEASTORE, false);
     }
 
     @Disabled
     @Test
-    protected void teastoreHistTest() {
+    void teastoreHistTest() {
         runComparable(DiagramProject.TEASTORE_HISTORICAL, false);
     }
 
     @Disabled
     @Test
-    protected void bbbTest() {
+    void bbbTest() {
         runComparable(DiagramProject.BIGBLUEBUTTON, false);
     }
 
     @Disabled
     @Test
-    protected void bbbHistTest() {
+    void bbbHistTest() {
         runComparable(DiagramProject.BIGBLUEBUTTON_HISTORICAL, false);
     }
 
     @Disabled
     @Test
-    protected void msTest() {
+    void msTest() {
         runComparable(DiagramProject.MEDIASTORE, false);
     }
 }

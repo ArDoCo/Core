@@ -223,4 +223,14 @@ public class Box extends DiagramElement implements Serializable {
             return String.format("Box [%s]", formatted);
         return formatted;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
 }

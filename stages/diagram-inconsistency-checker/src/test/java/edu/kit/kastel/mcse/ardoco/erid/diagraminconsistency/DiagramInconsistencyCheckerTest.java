@@ -34,9 +34,10 @@ import edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognition;
 import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 import edu.kit.kastel.mcse.ardoco.tests.eval.StageTest;
 
-public class DiagramInconsistencyCheckerTest extends StageTest<DiagramInconsistencyChecker, DiagramProject, DiagramInconsistencyCheckerTest.Results> {
+@SuppressWarnings({ "java:S1607", "java:S2699" })
+class DiagramInconsistencyCheckerTest extends StageTest<DiagramInconsistencyChecker, DiagramProject, DiagramInconsistencyCheckerTest.Results> {
     private static final Logger logger = LoggerFactory.getLogger(DiagramInconsistencyCheckerTest.class);
-    private final static boolean useMockDiagrams = true;
+    private static final boolean useMockDiagrams = true;
 
     public record Results(SortedSet<MDEInconsistency> mdeInconsistencies, SortedSet<MTDEInconsistency> mtdeInconsistencies) {
         @Override

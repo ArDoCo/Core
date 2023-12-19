@@ -17,7 +17,7 @@ import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
 public abstract class ArDoCoRunner implements Serializable {
     private static final Logger logger = LoggerFactory.getLogger(ArDoCoRunner.class);
 
-    private transient final ArDoCo arDoCo;
+    private final transient ArDoCo arDoCo;
 
     private File outputDirectory;
     protected boolean isSetUp = false;

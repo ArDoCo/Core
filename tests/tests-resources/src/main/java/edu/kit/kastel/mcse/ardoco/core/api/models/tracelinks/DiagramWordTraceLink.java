@@ -19,12 +19,12 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
  * Represents a tracelink between a {@link DiagramElement} and a {@link Word}.
  */
 public class DiagramWordTraceLink extends DiagramTextTraceLink {
-    public final static Comparator<DiagramWordTraceLink> CONFIDENCE_COMPARATOR = Comparator.comparingDouble(DiagramWordTraceLink::getConfidence);
+    public static final Comparator<DiagramWordTraceLink> CONFIDENCE_COMPARATOR = Comparator.comparingDouble(DiagramWordTraceLink::getConfidence);
 
     private final Word word;
     private final double confidence;
+    @SuppressWarnings("java:S1068")
     private final Serializable origin;
-
     private final TreeSet<DiagramWordTraceLink> relatedWordLinks = new TreeSet<>();
     private final TreeSet<DiagramGoldStandardTraceLink> relatedGSLinks = new TreeSet<>();
 
@@ -74,14 +74,12 @@ public class DiagramWordTraceLink extends DiagramTextTraceLink {
         if (equals(o))
             return 0;
         var supComp = super.compareTo(o);
-        if (o instanceof DiagramWordTraceLink other) {
-            if (supComp == 0) {
-                var comp = Integer.compare(getWord().getPosition(), other.getWord().getPosition());
-                if (comp == 0) {
-                    return Double.compare(getConfidence(), other.getConfidence());
-                }
-                return comp;
+        if (o instanceof DiagramWordTraceLink other && supComp == 0) {
+            var comp = Integer.compare(getWord().getPosition(), other.getWord().getPosition());
+            if (comp == 0) {
+                return Double.compare(getConfidence(), other.getConfidence());
             }
+            return comp;
         }
         return supComp;
     }

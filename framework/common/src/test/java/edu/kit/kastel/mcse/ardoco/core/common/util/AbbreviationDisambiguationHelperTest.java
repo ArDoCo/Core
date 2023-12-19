@@ -34,7 +34,7 @@ class AbbreviationDisambiguationHelperTest {
         var abbr = new ObjectMapper().readValue(dbJSON, Disambiguation.class);
         assertEquals("DB", abbr.getAbbreviation());
         assertTrue(abbr.getMeanings().containsAll(List.of("Database", "Decibel")));
-        assertEquals(abbr.getMeanings().size(), 2);
+        assertEquals(2, abbr.getMeanings().size());
     }
 
     @Test

@@ -3,14 +3,7 @@ package edu.kit.kastel.mcse.ardoco.tests.eval;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -141,6 +134,7 @@ public enum DiagramProject implements GoldStandardDiagramsWithTLR {
      * @param expectedSadSamTlrResultsNoMock          the {@link ExpectedResults} for the SAD SAM TLR
      * @param diagramResourceNames                    a set of diagram-related resources
      */
+    @SuppressWarnings("java:S107")
     DiagramProject(Project project, String goldStandardDiagrams, ExpectedResults expectedDiagramSentenceTlrResultsMock,
             ExpectedResults expectedDiagramSentenceTlrResultsNoMock, ExpectedResults expectedMMEResultsMock, ExpectedResults expectedMMEResultsNoMock,
             ExpectedResults expectedSadSamTlrResultsMock, ExpectedResults expectedSadSamTlrResultsNoMock, List<String> diagramResourceNames) {
@@ -292,6 +286,7 @@ public enum DiagramProject implements GoldStandardDiagramsWithTLR {
     }
 
     @Override
+    @SuppressWarnings("java:S112")
     public Set<DiagramGS> getDiagramsGoldStandard() {
         try {
             var objectMapper = new ObjectMapper();

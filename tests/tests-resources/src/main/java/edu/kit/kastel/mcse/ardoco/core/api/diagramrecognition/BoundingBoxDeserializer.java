@@ -3,7 +3,6 @@ package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
 import java.io.IOException;
 
-import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -32,7 +31,7 @@ public class BoundingBoxDeserializer extends StdDeserializer<BoundingBox> {
     }
 
     @Override
-    public BoundingBox deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JacksonException {
+    public BoundingBox deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
 
         var x = node.get("x").asInt();

@@ -24,7 +24,7 @@ public class MedianStrategy implements SimilarityStrategy {
         if (array.length % 2 == 0) {
             return (array[array.length / 2] + array[array.length / 2 - 1]) / 2;
         } else {
-            return (double) array[array.length / 2];
+            return array[array.length / 2];
         }
     }
 }

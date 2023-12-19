@@ -13,6 +13,7 @@ import edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator.agents.Diagram
 /**
  * This stage is responsible for the creation of {@link edu.kit.kastel.mcse.ardoco.erid.api.models.tracelinks.LinkBetweenDeAndRi} trace links.
  */
+@SuppressWarnings("java:S110")
 public class DiagramConnectionGenerator extends ExecutionStage {
 
     /**

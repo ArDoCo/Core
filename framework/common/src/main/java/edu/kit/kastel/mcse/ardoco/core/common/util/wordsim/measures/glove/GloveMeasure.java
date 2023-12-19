@@ -61,6 +61,7 @@ public class GloveMeasure extends VectorBasedWordSimMeasure {
     }
 
     @Override
+    @SuppressWarnings("java:S112")
     protected WordVectorDataSource getVectorDataSource() {
         try {
             return new VectorSqliteDatabase(Path.of(CommonTextToolsConfig.GLOVE_DB_FILE_PATH));

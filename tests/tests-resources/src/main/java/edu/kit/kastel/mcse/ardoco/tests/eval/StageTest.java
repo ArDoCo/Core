@@ -2,25 +2,11 @@
 package edu.kit.kastel.mcse.ardoco.tests.eval;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.Set;
-import java.util.SortedMap;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.impl.factory.SortedMaps;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.slf4j.Logger;
@@ -70,11 +56,11 @@ public abstract class StageTest<T extends AbstractExecutionStage, U extends Gold
      */
     private static final String CACHING = "stageTestCaching";
     private static final Logger logger = LoggerFactory.getLogger(StageTest.class);
-    private transient final T stage;
-    private transient final List<U> allProjects;
-    private transient final Set<Class<? extends PipelineAgent>> agents;
-    private transient final Map<Class<? extends PipelineAgent>, Set<Class<? extends Informant>>> informantsMap;
-    private transient final Map<U, TestDataRepositoryCache<U>> dataRepositoryCaches = new HashMap<>();
+    private final transient T stage;
+    private final transient List<U> allProjects;
+    private final transient Set<Class<? extends PipelineAgent>> agents;
+    private final transient Map<Class<? extends PipelineAgent>, Set<Class<? extends Informant>>> informantsMap;
+    private final transient Map<U, TestDataRepositoryCache<U>> dataRepositoryCaches = new HashMap<>();
 
     /**
      * Sole constructor of stage tests.
@@ -149,7 +135,7 @@ public abstract class StageTest<T extends AbstractExecutionStage, U extends Gold
      * @param obj the object that should be cached
      */
     protected void debugCacheWithPrompt(String id, Serializable obj) {
-        if (Boolean.parseBoolean(System.getenv().getOrDefault(ENV_DEBUG, "false"))) {
+        if (Boolean.parseBoolean(System.getenv().getOrDefault(ENV_DEBUG, Boolean.FALSE.toString()))) {
             System.out.println("Cache " + obj.getClass().getSimpleName() + " at " + id + "? y/n:");
             if (new Scanner(System.in).nextLine().equals("y")) {
                 cache(id, obj);
@@ -164,7 +150,7 @@ public abstract class StageTest<T extends AbstractExecutionStage, U extends Gold
      * {@link #debugCacheIfCachingFlag} are ignored.
      */
     protected void debugSetCachingFlag() {
-        if (Boolean.parseBoolean(System.getenv().getOrDefault(ENV_DEBUG, "false"))) {
+        if (Boolean.parseBoolean(System.getenv().getOrDefault(ENV_DEBUG, Boolean.FALSE.toString()))) {
             System.out.println("Enable caching? y/n:");
             if (new Scanner(System.in).nextLine().equals("y")) {
                 System.setProperty(CACHING, "true");
@@ -304,7 +290,7 @@ public abstract class StageTest<T extends AbstractExecutionStage, U extends Gold
     protected abstract DataRepository runTestRunner(U project, SortedMap<String, String> additionalConfigurations,
             @DeepCopy DataRepository preRunDataRepository);
 
-    private static final int repetitions = 2;
+    private static final int REPETITIONS = 2;
 
     /**
      * If {@link #ENV_DEBUG_KEEP_CACHE} is not set, this function resets the pre-runner data repository caches for all projects.
@@ -339,9 +325,9 @@ public abstract class StageTest<T extends AbstractExecutionStage, U extends Gold
     @Test
     @Order(-1)
     void stageRepetitionTest() {
-        var results = new ArrayList<V>(repetitions);
-        for (var i = 0; i < repetitions; i++) {
-            logger.info("Stage {} repetition {}/{}", stage.getClass().getSimpleName(), i + 1, repetitions);
+        var results = new ArrayList<V>(REPETITIONS);
+        for (var i = 0; i < REPETITIONS; i++) {
+            logger.info("Stage {} repetition {}/{}", stage.getClass().getSimpleName(), i + 1, REPETITIONS);
             results.add(runComparable(allProjects.get(0)));
         }
         Assertions.assertEquals(1, results.stream().distinct().toList().size());
@@ -357,9 +343,9 @@ public abstract class StageTest<T extends AbstractExecutionStage, U extends Gold
     @MethodSource("getAgents")
     @Order(-2)
     void agentRepetitionTest(Class<? extends PipelineAgent> clazzAgent) {
-        var results = new ArrayList<V>(repetitions);
-        for (var i = 0; i < repetitions; i++) {
-            logger.info("Agent {} repetition {}/{}", clazzAgent.getSimpleName(), i + 1, repetitions);
+        var results = new ArrayList<V>(REPETITIONS);
+        for (var i = 0; i < REPETITIONS; i++) {
+            logger.info("Agent {} repetition {}/{}", clazzAgent.getSimpleName(), i + 1, REPETITIONS);
             results.add(runComparable(allProjects.get(0), ConfigurationUtility.enableAgents(stage.getClass(), Set.of(clazzAgent))));
         }
         Assertions.assertEquals(1, results.stream().distinct().toList().size());
@@ -376,9 +362,9 @@ public abstract class StageTest<T extends AbstractExecutionStage, U extends Gold
     @MethodSource("getInformants")
     @Order(-3)
     void informantRepetitionTest(Class<? extends Informant> clazzInformant) {
-        var results = new ArrayList<V>(repetitions);
-        for (var i = 0; i < repetitions; i++) {
-            logger.info("Informant {} repetition {}/{}", clazzInformant.getSimpleName(), i + 1, repetitions);
+        var results = new ArrayList<V>(REPETITIONS);
+        for (var i = 0; i < REPETITIONS; i++) {
+            logger.info("Informant {} repetition {}/{}", clazzInformant.getSimpleName(), i + 1, REPETITIONS);
             results.add(runComparable(allProjects.get(0), ConfigurationUtility.enableInformants(stage, Set.of(clazzInformant))));
         }
         Assertions.assertEquals(1, results.stream().distinct().toList().size());

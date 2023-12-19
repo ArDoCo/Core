@@ -18,11 +18,9 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
 public abstract class ParameterizedRunner<T extends Record> extends ArDoCoRunner implements Serializable {
     private static final Logger logger = LoggerFactory.getLogger(ParameterizedRunner.class);
 
-    private final List<AbstractPipelineStep> pipelineSteps;
-
     protected ParameterizedRunner(String projectName, T parameters) {
         super(projectName);
-        this.pipelineSteps = setUp(parameters);
+        setUp(parameters);
     }
 
     /**

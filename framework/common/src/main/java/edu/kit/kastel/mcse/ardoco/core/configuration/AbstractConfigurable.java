@@ -1,6 +1,10 @@
 /* Licensed under MIT 2022-2023. */
 package edu.kit.kastel.mcse.ardoco.core.configuration;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serial;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -11,6 +15,7 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +23,7 @@ import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 
 @Deterministic
 public abstract class AbstractConfigurable implements IConfigurable, Serializable {
-    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+    protected final transient Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public static final String CLASS_ATTRIBUTE_CONNECTOR = "::";
     public static final String KEY_VALUE_CONNECTOR = "=";
@@ -85,6 +90,7 @@ public abstract class AbstractConfigurable implements IConfigurable, Serializabl
         return configurableAnnotation.key().isBlank() ? (classOfDefinition + CLASS_ATTRIBUTE_CONNECTOR + field.getName()) : configurableAnnotation.key();
     }
 
+    @SuppressWarnings("java:S3011")
     private void setValue(Field field, String value) {
         var clazz = field.getType();
         var parsedValue = parse(field, clazz, value);
@@ -122,5 +128,23 @@ public abstract class AbstractConfigurable implements IConfigurable, Serializabl
         }
 
         throw new IllegalArgumentException("Could not find a parse method for fields of type: " + fieldsClass);
+    }
+
+    @Serial
+    private void writeObject(ObjectOutputStream objectOutputStream) throws IOException {
+        objectOutputStream.defaultWriteObject();
+    }
+
+    @Serial
+    @SuppressWarnings({ "java:S3011", "java:S112" })
+    private void readObject(ObjectInputStream objectInputStream) throws IOException, ClassNotFoundException {
+        objectInputStream.defaultReadObject();
+        try {
+            var loggerField = Arrays.stream(FieldUtils.getAllFields(getClass())).filter(f -> f.getName().equals("logger")).findFirst().orElseThrow();
+            loggerField.setAccessible(true);
+            loggerField.set(this, LoggerFactory.getLogger(this.getClass()));
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -26,6 +26,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.UnicodeCharacterSeque
  *
  * @since 1.0
  */
+@SuppressWarnings("all")
 public class UnicodeLevenshteinDistance implements Serializable {
 
     /**

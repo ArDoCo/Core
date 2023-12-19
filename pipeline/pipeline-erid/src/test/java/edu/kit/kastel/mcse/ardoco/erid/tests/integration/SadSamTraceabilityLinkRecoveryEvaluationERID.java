@@ -59,7 +59,7 @@ public class SadSamTraceabilityLinkRecoveryEvaluationERID extends SadSamTraceabi
         String name = project.getProjectName();
         File inputModelArchitecture = project.getModelFile();
         File inputText = project.getTextFile();
-        File outputDir = new File(TraceLinkEvaluationERID.OUTPUT);
+        File outputDir = new File(TraceLinkEvaluationEridIT.OUTPUT);
 
         var runner = new AnonymousRunner(name) {
             @Override

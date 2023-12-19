@@ -146,7 +146,8 @@ public class TestUtil {
     }
 
     public static void logExtendedResultsAsRow(Logger logger, String headerVal, String headerKey, EvaluationResults<?> results) {
-        logger.info(String.format("%n%s", results.toRow(headerVal, headerKey)));
+        var txt = String.format("%n%s", results.toRow(headerVal, headerKey));
+        logger.info(txt);
     }
 
     /**

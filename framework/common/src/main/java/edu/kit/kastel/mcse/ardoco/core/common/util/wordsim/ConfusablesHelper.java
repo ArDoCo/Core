@@ -41,6 +41,7 @@ public class ConfusablesHelper {
      *
      * @param line the line
      */
+    @SuppressWarnings("java:S6035")
     static FastList<UnicodeCharacter> extractHomoglyphsFromLine(String line) {
         if (!line.startsWith("#" + SEPARATOR))
             return FastList.newList();
@@ -48,7 +49,7 @@ public class ConfusablesHelper {
         MutableList<String> confusables = Lists.mutable.of(line.split("\\R|\\s"));
         confusables.remove(0); //Remove leading # symbol
 
-        // FIXME skip confusables that consist of multiple unicode characters
+        // TODO skip confusables that consist of multiple unicode characters
         // Filter because only homoglyphs are interesting
         return FastList.newList(confusables.stream()
                 .filter(c -> c.codePointCount(0, c.length()) == 1)
@@ -60,6 +61,7 @@ public class ConfusablesHelper {
     /**
      * Parses the confusablesSummary.txt line by line and build the confusables map.
      */
+    @SuppressWarnings("java:S112")
     private static void parseConfusablesSummary() {
         try (InputStream is = ConfusablesHelper.class.getResourceAsStream(CONFUSABLES_SUMMARY)) {
             if (is == null)
@@ -75,8 +77,6 @@ public class ConfusablesHelper {
                         }
                     }
                 }
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
             }
         } catch (IOException ex) {
             throw new RuntimeException(ex);

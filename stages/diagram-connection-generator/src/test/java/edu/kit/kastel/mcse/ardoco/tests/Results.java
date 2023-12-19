@@ -22,7 +22,7 @@ public record Results(DiagramProject project, SortedSet<DiagramWordTraceLink> tr
                       SortedSet<DiagramGoldStandardTraceLink> falseNegatives, long TN, ExpectedResults expectedResults, SortedSet<DiagramWordTraceLink> all)
         implements Serializable {
 
-    private final static Logger logger = LoggerFactory.getLogger(Results.class);
+    private static final Logger logger = LoggerFactory.getLogger(Results.class);
 
     public static Results create(MetaData metaData, DiagramProject project, Text text, Set<DiagramWordTraceLink> wordTraceLinks, ExpectedResults expected) {
         var allGoldStandardTraceLinks = project.getDiagramTraceLinksAsMap(text.getSentences().toList());

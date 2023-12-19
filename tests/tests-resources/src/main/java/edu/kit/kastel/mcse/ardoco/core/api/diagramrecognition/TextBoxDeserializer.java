@@ -41,8 +41,6 @@ public class TextBoxDeserializer extends StdDeserializer<TextBox> {
 
         var text = node.get("text").asText();
         var boundingBox = deserializationContext.readValue(node.get("boundingBox").traverse(jsonParser.getCodec()), BoundingBox.class);
-        var textBox = new TextBox(boundingBox.minX(), boundingBox.minY(), boundingBox.width(), boundingBox.height(), 1, text);
-
-        return textBox;
+        return new TextBox(boundingBox.minX(), boundingBox.minY(), boundingBox.width(), boundingBox.height(), 1, text);
     }
 }

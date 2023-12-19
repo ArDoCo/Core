@@ -42,9 +42,7 @@ public class TextStateImpl extends AbstractState implements TextState {
         int compare = Long.compare(nm1.earliestCreationTime(), nm2.earliestCreationTime());
         if (compare != 0)
             return compare;
-        //FIXME I think throwing this error is generally a bad idea, since it depends on the performance of the system and granularity of system time
-        //throw new IllegalStateException("NounMappings are not equal but have same creation time");
-        return 0;
+        throw new IllegalStateException("NounMappings are not equal but have same creation time");
     };
 
     /**
@@ -55,8 +53,8 @@ public class TextStateImpl extends AbstractState implements TextState {
     private static final double MAPPING_KIND_MAX_DIFF = 0.1;
     private MutableList<NounMapping> nounMappings;
     private MutableList<PhraseMapping> phraseMappings;
-    protected MutableSortedSet<WordAbbreviation> wordAbbreviations;
-    protected MutableSortedSet<PhraseAbbreviation> phraseAbbreviations;
+    private MutableSortedSet<WordAbbreviation> wordAbbreviations;
+    private MutableSortedSet<PhraseAbbreviation> phraseAbbreviations;
     private TextStateStrategy strategy;
 
     /**
@@ -209,6 +207,14 @@ public class TextStateImpl extends AbstractState implements TextState {
         return phraseAbbreviations.toImmutable();
     }
 
+    protected boolean addWordAbbreviation(WordAbbreviation wordAbbreviation) {
+        return this.wordAbbreviations.add(wordAbbreviation);
+    }
+
+    protected boolean addPhraseAbbreviation(PhraseAbbreviation phraseAbbreviation) {
+        return this.phraseAbbreviations.add(phraseAbbreviation);
+    }
+
     @Override
     public NounMapping mergeNounMappings(NounMapping nounMapping, NounMapping textuallyEqualNounMapping, Claimant claimant) {
         return strategy.mergeNounMappings(nounMapping, textuallyEqualNounMapping, null, null, nounMapping.getKind(), claimant, nounMapping
@@ -270,8 +276,8 @@ public class TextStateImpl extends AbstractState implements TextState {
         return n -> n.getKind() == mappingKind;
     }
 
+    @SuppressWarnings("java:S1905")
     void addNounMappingAddPhraseMapping(NounMapping nounMapping) {
-        //FIXME I think this should also be delegated to a strategy, rather than creating the phrasemappingimpl directly
         addNounMappingToState(nounMapping);
         if (phraseMappings.anySatisfy(it -> {
             var sortedIt = (SortedIterable<Phrase>) it.getPhrases();
@@ -337,5 +343,4 @@ public class TextStateImpl extends AbstractState implements TextState {
     protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration) {
         // handle additional configuration
     }
-
 }

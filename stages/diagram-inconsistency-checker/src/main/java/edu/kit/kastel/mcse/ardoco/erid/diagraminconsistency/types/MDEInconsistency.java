@@ -16,7 +16,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedIn
  * @param recommendedInstance the {@link RecommendedInstance}
  */
 public record MDEInconsistency(RecommendedInstance recommendedInstance) implements Inconsistency, Comparable<MDEInconsistency> {
-    private final static String type = "MissingDiagramElement";
+    private static final String type = "MissingDiagramElement";
 
     @Override
     public String getReason() {

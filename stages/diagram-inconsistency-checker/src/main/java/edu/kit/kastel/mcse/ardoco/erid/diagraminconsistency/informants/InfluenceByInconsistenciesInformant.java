@@ -4,9 +4,6 @@ package edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.informants;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
@@ -21,7 +18,6 @@ import edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.types.MDEInconsisten
  * increasing the confidence. The adjustment is based on a configurable {@link #maximumReward} and {@link #maximumPunishment}.
  */
 public class InfluenceByInconsistenciesInformant extends Informant {
-    private final static Logger logger = LoggerFactory.getLogger(InfluenceByInconsistenciesInformant.class);
 
     @Configurable
     private double maximumReward = .55;

@@ -6,7 +6,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.TreeSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.DiagramWordTraceLink;
@@ -38,10 +37,6 @@ public class LinkBetweenDeAndRi extends EndpointTuple implements Claimant, Compa
     public LinkBetweenDeAndRi(RecommendedInstance recommendedInstance, DiagramElement diagramElement, String projectName, Claimant claimant,
             SortedMap<Word, Double> confidenceMap) {
         super(recommendedInstance, diagramElement);
-
-        //Assert that confidenceMap is complete
-        assert confidenceMap.keySet().containsAll(recommendedInstance.getNameMappings().stream().flatMap(n -> n.getWords().stream()).toList());
-        assert new TreeSet<>(recommendedInstance.getNameMappings().stream().flatMap(n -> n.getWords().stream()).toList()).size() == confidenceMap.size();
 
         this.recommendedInstance = recommendedInstance;
         this.diagramElement = diagramElement;

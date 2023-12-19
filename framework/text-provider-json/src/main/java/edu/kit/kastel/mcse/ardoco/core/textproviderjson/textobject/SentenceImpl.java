@@ -15,7 +15,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 
 public class SentenceImpl implements Sentence {
 
-    private final ImmutableList<Word> words;
+    private final MutableList<Word> words;
     private MutableList<Phrase> phrases = Lists.mutable.empty();
 
     private final int sentenceNumber;
@@ -25,7 +25,7 @@ public class SentenceImpl implements Sentence {
     public SentenceImpl(int sentenceNumber, String text, ImmutableList<Word> words) {
         this.sentenceNumber = sentenceNumber;
         this.text = text;
-        this.words = words;
+        this.words = words == null ? Lists.mutable.empty() : words.toList();
     }
 
     public void setPhrases(MutableList<Phrase> phrases) {
@@ -39,7 +39,7 @@ public class SentenceImpl implements Sentence {
 
     @Override
     public ImmutableList<Word> getWords() {
-        return words;
+        return words.toImmutable();
     }
 
     @Override

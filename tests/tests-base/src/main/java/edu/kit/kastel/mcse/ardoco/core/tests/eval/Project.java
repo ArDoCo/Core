@@ -124,6 +124,7 @@ public enum Project implements GoldStandardProject {
     private final ExpectedResults expectedInconsistencyResults;
     private final SortedSet<String> resourceNames;
 
+    @SuppressWarnings("java:S107")
     Project(String alias, String model, String textFile, String goldStandardTraceabilityLinkRecovery, String configurationsFile,
             String goldStandardMissingTextForModelElement, ExpectedResults expectedTraceLinkResults, ExpectedResults expectedInconsistencyResults) {
         this.alias = alias;

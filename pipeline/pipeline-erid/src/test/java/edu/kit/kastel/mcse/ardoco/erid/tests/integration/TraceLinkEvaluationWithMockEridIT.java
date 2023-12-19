@@ -16,7 +16,8 @@ import edu.kit.kastel.mcse.ardoco.tests.eval.GoldStandardDiagramsWithTLR;
 /**
  * Performs the SAD SAM TLR using ERID with the diagram recognition mock.
  */
-public class TraceLinkEvaluationWithMockERID extends TraceLinkEvaluationIT<GoldStandardDiagramsWithTLR> {
+@SuppressWarnings("java:S1607")
+class TraceLinkEvaluationWithMockEridIT extends TraceLinkEvaluationIT<GoldStandardDiagramsWithTLR> {
     @DisplayName("Evaluate SAD-SAM")
     @ParameterizedTest(name = "{0}")
     @MethodSource("edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject#getNonHistoricalProjects")

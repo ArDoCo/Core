@@ -6,13 +6,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
@@ -26,7 +24,6 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.ContextPhrase;
 
 public class AbbreviationInformant extends Informant {
-    private final static Logger logger = LoggerFactory.getLogger(AbbreviationInformant.class);
     @Configurable
     private int adjacencyLimit = 4;
     @Configurable
@@ -154,7 +151,7 @@ public class AbbreviationInformant extends Informant {
         return list;
     }
 
-    Optional<Word> findFurthestWithSharedInitial(Function<Word, Word> iterate, Word word, String match, int tries, List<Character> stopAt) {
+    Optional<Word> findFurthestWithSharedInitial(UnaryOperator<Word> iterate, Word word, String match, int tries, List<Character> stopAt) {
         if (tries <= 0)
             return Optional.empty();
         var optNext = Optional.ofNullable(iterate.apply(word));
@@ -180,7 +177,7 @@ public class AbbreviationInformant extends Informant {
         return findFurthestWithSharedInitial(iterate, next, match, tries - 1, stopAt);
     }
 
-    Optional<Word> findClosestWithSharedInitial(Function<Word, Word> iterate, Word word, String match, int tries, List<Character> stopAt) {
+    Optional<Word> findClosestWithSharedInitial(UnaryOperator<Word> iterate, Word word, String match, int tries, List<Character> stopAt) {
         if (tries <= 0)
             return Optional.empty();
         var optNext = Optional.ofNullable(iterate.apply(word));
@@ -200,13 +197,24 @@ public class AbbreviationInformant extends Informant {
                 return findClosestWithSharedInitial(iterate, next, match, tries, stopAt);
         }
 
-        if (AbbreviationDisambiguationHelper.shareInitial(next.getText().toLowerCase(Locale.US), match.toLowerCase(Locale.US)))
+        if (AbbreviationDisambiguationHelper.shareInitial(next.getText().toLowerCase(Locale.ENGLISH), match.toLowerCase(Locale.ENGLISH)))
             return optNext;
 
         return findClosestWithSharedInitial(iterate, next, match, tries - 1, stopAt);
     }
 
-    Optional<Word> findClosest(Function<Word, Word> iterate, Word word, List<Character> search, int tries, List<Character> stopAt) {
+    /**
+     * Tries to find the closest word that begins with any character from a list of provided characters and stops if no tries are left or if a forbidden
+     * character is reached.
+     *
+     * @param iterate a function which returns the "next" word relative to the origin
+     * @param word    the word that is the point of origin (This word is not evaluated!)
+     * @param search  the list of initial characters
+     * @param tries   tries left
+     * @param stopAt  list of forbidden characters, e.g. {"(", ")"} if we are not allowed to enter brackets
+     * @return an optional closest word
+     */
+    Optional<Word> findClosest(UnaryOperator<Word> iterate, Word word, List<Character> search, int tries, List<Character> stopAt) {
         if (tries <= 0)
             return Optional.empty();
         var optNext = Optional.ofNullable(iterate.apply(word));
@@ -243,10 +251,20 @@ public class AbbreviationInformant extends Informant {
         }
     }
 
-    List<Triple<Double, ArrayList<Word>, String>> getScores(Word abbreviationCandidate, List<Word> meaningList, boolean caseSensitive) {
-        List<Triple<Double, ArrayList<Word>, String>> meaningScores = new ArrayList<>();
-        for (int i = 1; i <= meaningList.size(); i++) {
-            var subList = new ArrayList<>(new ArrayList<>(meaningList).subList(0, i));
+    /**
+     * Calculates a score for each potential meaning to an abbreviation. Each sublist of the word list is treated as a potential meaning.
+     * E.g. the word list {"Eurovision", "Song", "Contest"} is treated as "Eurovision", "Eurovision Song" and "Eurovision Song Contest".
+     * A higher score is considered better.
+     *
+     * @param abbreviationCandidate the abbreviation candidate, e.g. "ESC"
+     * @param wordList              a list of words, e.g. {"Eurovision", "Song", "Contest"}
+     * @param caseSensitive         whether the calculation should be case-sensitive
+     * @return a list containing a triple with the score, list of words and the potential meaning
+     */
+    List<Triple<Double, ArrayList<Word>, String>> getScores(Word abbreviationCandidate, List<Word> wordList, boolean caseSensitive) {
+        ArrayList<Triple<Double, ArrayList<Word>, String>> meaningScores = new ArrayList<>();
+        for (int i = 1; i <= wordList.size(); i++) {
+            var subList = new ArrayList<>(new ArrayList<>(wordList).subList(0, i));
             var lMeaning = subList.stream().map(Word::getText).collect(Collectors.joining(" "));
             var lAbbreviation = abbreviationCandidate.getText();
             if (!caseSensitive) {
@@ -255,29 +273,31 @@ public class AbbreviationInformant extends Informant {
             }
             var shareInitial = AbbreviationDisambiguationHelper.shareInitial(lMeaning, lAbbreviation);
 
-            if (!shareInitial)
-                continue;
+            if (shareInitial) {
+                processCandidate(lMeaning, lAbbreviation, caseSensitive, meaningScores, subList);
+            }
+        }
+        return meaningScores;
+    }
 
-            var inOrder = AbbreviationDisambiguationHelper.containsInOrder(lMeaning, lAbbreviation);
-            var dynamicThreshold = Math.max(1, Math.ceil(lAbbreviation.length() * multiplicativeOrderThreshold));
+    void processCandidate(String lMeaning, String lAbbreviation, boolean caseSensitive, ArrayList<Triple<Double, ArrayList<Word>, String>> meaningScores,
+            ArrayList<Word> subList) {
+        var inOrder = AbbreviationDisambiguationHelper.containsInOrder(lMeaning, lAbbreviation);
+        var dynamicThreshold = Math.max(1, Math.ceil(lAbbreviation.length() * multiplicativeOrderThreshold));
 
-            if (inOrder < dynamicThreshold)
-                continue;
-
+        if (inOrder >= dynamicThreshold) {
             if (!caseSensitive) {
                 var asInitial = AbbreviationDisambiguationHelper.maximumAbbreviationScore(lMeaning, lAbbreviation, 1, 0, 0, 0);
                 if (asInitial < dynamicThreshold)
-                    continue;
+                    return;
             }
 
             var newScore = AbbreviationDisambiguationHelper.maximumAbbreviationScore(lMeaning, lAbbreviation, rewardInitialMatch, rewardAnyMatch,
                     rewardCaseMatch, 0);
-            if (meaningScores.stream().anyMatch(t -> t.first() >= newScore))
-                continue;
-
-            meaningScores.add(new Triple<>(newScore, subList, lMeaning));
+            if (meaningScores.stream().noneMatch(t -> t.first() >= newScore)) {
+                meaningScores.add(new Triple<>(newScore, subList, lMeaning));
+            }
         }
-        return meaningScores;
     }
 
     void extractShortestMeaning(TextState textState, ImmutableList<Phrase> phrases, Word abbreviationCandidate, List<Word> meaningList) {

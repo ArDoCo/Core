@@ -2,10 +2,12 @@
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
 import java.io.*;
+import java.lang.reflect.ParameterizedType;
 
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 /**
  * A {@link FileBasedCache} that is implemented using Java's default serialization.
@@ -25,8 +27,32 @@ public class SerializableFileBasedCache<T extends Serializable> extends FileBase
      * @param subFolder    the sub-folder of the cache
      */
     public SerializableFileBasedCache(Class<? extends T> contentClass, String identifier, String subFolder) {
-        super(identifier, ".ser", subFolder + contentClass.getSimpleName() + "/");
+        super(identifier, ".ser", subFolder + contentClass.getSimpleName() + File.separator);
         this.contentClass = contentClass;
+    }
+
+    @SuppressWarnings("unchecked")
+    public SerializableFileBasedCache(TypeReference<? extends T> typeReference, String identifier, String subFolder) {
+        super(identifier, ".ser", subFolder + sanitizeFileName(processTypeReference(typeReference).getSimpleName()) + File.separator);
+        this.contentClass = (Class<? extends T>) processTypeReference(typeReference);
+    }
+
+    private static String sanitizeFileName(String name) {
+        var noForbiddenChars = name.replaceAll("[\\\\/:*?\"<>|]", "");
+        return noForbiddenChars.replace('.', '-');
+    }
+
+    private static Class<?> processTypeReference(TypeReference<?> typeReference) {
+        var type = typeReference.getType();
+        if (type instanceof ParameterizedType parameterizedType) {
+            type = parameterizedType.getRawType();
+        }
+        if (type instanceof Class<?> cls) {
+            return cls;
+        }
+        else {
+            throw new IllegalArgumentException("TypeReference type could not be resolved to a class");
+        }
     }
 
     @Override

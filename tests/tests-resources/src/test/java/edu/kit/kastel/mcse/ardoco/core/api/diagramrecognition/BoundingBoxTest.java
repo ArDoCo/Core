@@ -16,42 +16,42 @@ class BoundingBoxTest {
 
     @Test
     void area() {
-        assertEquals(new BoundingBox(5, 5, 15, 15).area(), 100.0, epsilon);
-        assertEquals(new BoundingBox(5, 5, 25, 15).area(), 200.0, epsilon);
-        assertEquals(new BoundingBox(5, 5, 15, 25).area(), 200.0, epsilon);
+        assertEquals(100.0, new BoundingBox(5, 5, 15, 15).area(), epsilon);
+        assertEquals(200.0, new BoundingBox(5, 5, 25, 15).area(), epsilon);
+        assertEquals(200.0, new BoundingBox(5, 5, 15, 25).area(), epsilon);
     }
 
     @Test
     void intersect() {
-        assertEquals(middle.intersect(middle).orElseThrow().area(), middle.area(), epsilon);
-        assertEquals(middle.intersect(topLeft).orElseThrow().area(), 25, epsilon);
-        assertEquals(middle.intersect(topRight).orElseThrow().area(), 25, epsilon);
-        assertEquals(middle.intersect(bottomLeft).orElseThrow().area(), 25, epsilon);
-        assertEquals(middle.intersect(bottomRight).orElseThrow().area(), 25, epsilon);
+        assertEquals(middle.area(), middle.intersect(middle).orElseThrow().area(), epsilon);
+        assertEquals(25, middle.intersect(topLeft).orElseThrow().area(), epsilon);
+        assertEquals(25, middle.intersect(topRight).orElseThrow().area(), epsilon);
+        assertEquals(25, middle.intersect(bottomLeft).orElseThrow().area(), epsilon);
+        assertEquals(25, middle.intersect(bottomRight).orElseThrow().area(), epsilon);
     }
 
     @Test
     void union() {
-        assertEquals(middle.union(middle), middle.area(), epsilon);
-        assertEquals(topLeft.union(topRight), topLeft.area() + topRight.area(), epsilon);
-        assertEquals(topLeft.union(middle), 175, epsilon);
+        assertEquals(middle.area(), middle.union(middle), epsilon);
+        assertEquals(topLeft.area() + topRight.area(), topLeft.union(topRight), epsilon);
+        assertEquals(175, topLeft.union(middle), epsilon);
     }
 
     @Test
     void intersectionOverUnion() {
-        assertEquals(middle.intersectionOverUnion(middle), 1, epsilon);
-        assertEquals(topLeft.intersectionOverUnion(topRight), 0, epsilon);
-        assertEquals(topLeft.intersectionOverUnion(middle), 25.0 / 175.0, epsilon);
+        assertEquals(1, middle.intersectionOverUnion(middle), epsilon);
+        assertEquals(0, topLeft.intersectionOverUnion(topRight), epsilon);
+        assertEquals(25.0 / 175.0, topLeft.intersectionOverUnion(middle), epsilon);
     }
 
     @Test
     void contains() {
-        assertEquals(middle.contains(middle), 1, epsilon);
-        assertEquals(middle.contains(subMiddle), 1, epsilon);
-        assertEquals(subMiddle.contains(middle), 0.36, epsilon);
-        assertEquals(subMiddle.contains(middle, true), 0.0, epsilon);
-        assertEquals(topLeft.contains(topRight), 0, epsilon);
-        assertEquals(topLeft.contains(middle), 0.25, epsilon);
+        assertEquals(1, middle.contains(middle), epsilon);
+        assertEquals(1, middle.contains(subMiddle), epsilon);
+        assertEquals(0.36, subMiddle.contains(middle), epsilon);
+        assertEquals(0.0, subMiddle.contains(middle, true), epsilon);
+        assertEquals(0, topLeft.contains(topRight), epsilon);
+        assertEquals(0.25, topLeft.contains(middle), epsilon);
     }
 
     @Test

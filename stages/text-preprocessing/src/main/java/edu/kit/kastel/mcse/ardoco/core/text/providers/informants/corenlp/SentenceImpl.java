@@ -4,6 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serial;
 import java.util.List;
 import java.util.Objects;
 
@@ -128,6 +129,8 @@ class SentenceImpl implements Sentence {
         return semanticGraph;
     }
 
+    @Serial
+    @SuppressWarnings("java:S125")
     private void writeObject(ObjectOutputStream out) throws IOException {
         getPhrases(); //Initialize before write
         dependencyParse(); //Initialize before write
@@ -140,6 +143,8 @@ class SentenceImpl implements Sentence {
          */
     }
 
+    @Serial
+    @SuppressWarnings("java:S125")
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         /* It is a lot cheaper to serialize the phrases (up to 70x less storage space and much

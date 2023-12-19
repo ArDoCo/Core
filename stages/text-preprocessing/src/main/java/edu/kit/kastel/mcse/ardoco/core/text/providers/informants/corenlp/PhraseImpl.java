@@ -23,7 +23,7 @@ import edu.stanford.nlp.trees.Tree;
 public class PhraseImpl implements Phrase {
 
     private final Tree tree;
-    private final ImmutableList<Word> words;
+    private final MutableList<Word> words;
 
     private final SentenceImpl parent;
 
@@ -31,7 +31,7 @@ public class PhraseImpl implements Phrase {
 
     public PhraseImpl(Tree tree, ImmutableList<Word> words, SentenceImpl parent) {
         this.tree = tree;
-        this.words = words;
+        this.words = words.toList();
         this.parent = parent;
     }
 
@@ -56,7 +56,7 @@ public class PhraseImpl implements Phrase {
 
     @Override
     public ImmutableList<Word> getContainedWords() {
-        return words;
+        return words.toImmutable();
     }
 
     @Override

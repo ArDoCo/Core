@@ -1,7 +1,10 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.tests.eval;
 
+import java.io.File;
 import java.io.Serializable;
+
+import com.fasterxml.jackson.core.type.TypeReference;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.SerializableFileBasedCache;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage;
@@ -10,9 +13,9 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage;
  * Persistent cache for {@link StageTest} test data. For any given stage with the name X, the test data is cached in ArDoCo's user directory folder in the
  * {@code /test/X} directory.
  *
- * @param <U> the type of serializable object that can be contained in this cache
+ * @param <T> the type of serializable object that can be contained in this cache
  */
-public class TestDataCache<U extends Serializable> extends SerializableFileBasedCache<U> {
+public class TestDataCache<T extends Serializable> extends SerializableFileBasedCache<T> {
     protected final Class<? extends AbstractExecutionStage> stage;
 
     /**
@@ -23,8 +26,13 @@ public class TestDataCache<U extends Serializable> extends SerializableFileBased
      * @param identifier the identifier of the cache
      * @param subFolder  the sub-folder in the /test/X directory, must end with '/'
      */
-    public TestDataCache(Class<? extends AbstractExecutionStage> stage, Class<? extends U> cls, String identifier, String subFolder) {
-        super(cls, identifier, "test/" + stage.getSimpleName() + "/" + subFolder);
+    public TestDataCache(Class<? extends AbstractExecutionStage> stage, Class<? extends T> cls, String identifier, String subFolder) {
+        super(cls, identifier, "test" + File.separator + stage.getSimpleName() + File.separator + subFolder);
+        this.stage = stage;
+    }
+
+    public TestDataCache(Class<? extends AbstractExecutionStage> stage, TypeReference<? extends T> typeReference, String identifier, String subFolder) {
+        super(typeReference, identifier, "test" + File.separator + stage.getSimpleName() + File.separator + subFolder);
         this.stage = stage;
     }
 }

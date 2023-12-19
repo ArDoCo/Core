@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonContext;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.UnicodeCharacterMatchFunctions;
 
-public class JaroWinklerMeasureTest {
+class JaroWinklerMeasureTest {
     private static final double delta = 0.01;
 
     /**

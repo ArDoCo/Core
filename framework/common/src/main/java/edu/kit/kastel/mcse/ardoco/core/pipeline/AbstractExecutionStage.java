@@ -58,6 +58,7 @@ public abstract class AbstractExecutionStage extends Pipeline {
     /**
      * Called before all agents
      */
+    @Override
     protected void before() {
         //Nothing by default
     }
@@ -65,6 +66,7 @@ public abstract class AbstractExecutionStage extends Pipeline {
     /**
      * Called after all agents
      */
+    @Override
     protected void after() {
         //Nothing by default
     }

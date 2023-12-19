@@ -4,6 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serial;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -78,6 +79,8 @@ public class TextImpl implements Text {
         }
     }
 
+    @Serial
+    @SuppressWarnings("java:S125")
     private void writeObject(ObjectOutputStream out) throws IOException {
         words(); //Initialize words
         getSentences(); //Initialize sentences
@@ -89,6 +92,8 @@ public class TextImpl implements Text {
          */
     }
 
+    @Serial
+    @SuppressWarnings("java:S125")
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         /* It is a lot cheaper to serialize the phrases (up to 70x less storage space and much

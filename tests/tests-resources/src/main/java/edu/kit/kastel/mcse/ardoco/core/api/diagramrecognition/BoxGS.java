@@ -2,6 +2,7 @@
 package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
 import java.awt.*;
+import java.io.File;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -70,6 +71,7 @@ public class BoxGS extends Box implements Serializable {
     /**
      * {@return the diagram this box belongs to}
      */
+    @Override
     public DiagramGS getDiagram() {
         return this.diagramGS;
     }
@@ -77,7 +79,17 @@ public class BoxGS extends Box implements Serializable {
     @Override
     public String toString() {
         var allText = getTexts().stream().map(TextBox::getText).reduce((l, r) -> l + " | " + r).orElse("");
-        var preText = getDiagram() + "/";
+        var preText = getDiagram() + File.separator;
         return String.format("BoxGS [%s %s]", super.toString(false), preText + allText.substring(0, Math.min(allText.length(), 20)));
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
     }
 }

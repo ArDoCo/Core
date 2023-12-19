@@ -24,7 +24,6 @@ public class ModelDisambiguationInformant extends Informant {
                     var abbreviations = AbbreviationDisambiguationHelper.getAbbreviationCandidates(name);
                     for (var abbreviation : abbreviations) {
                         var disambiguation = AbbreviationDisambiguationHelper.disambiguate(abbreviation);
-                        //TODO Add to state?
                         AbbreviationDisambiguationHelper.addTransient(new Disambiguation(abbreviation, disambiguation.toArray(new String[0])));
                     }
                 }

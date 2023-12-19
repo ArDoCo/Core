@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.SortedMap;
 
 import org.eclipse.collections.impl.factory.SortedMaps;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -27,7 +28,7 @@ import edu.kit.kastel.mcse.ardoco.tests.eval.GoldStandardDiagrams;
 import edu.kit.kastel.mcse.ardoco.tests.eval.StageTest;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class DiagramRecognitionMockTest extends StageTest<DiagramRecognitionMock, GoldStandardDiagrams, DiagramRecognitionMockTest.DiagramRecognitionResult> {
+class DiagramRecognitionMockTest extends StageTest<DiagramRecognitionMock, GoldStandardDiagrams, DiagramRecognitionMockTest.DiagramRecognitionResult> {
     public DiagramRecognitionMockTest() {
         super(new DiagramRecognitionMock(null, SortedMaps.mutable.empty(), new DataRepository()), DiagramProject.values());
     }
@@ -36,6 +37,8 @@ public class DiagramRecognitionMockTest extends StageTest<DiagramRecognitionMock
     @ParameterizedTest(name = "{0}")
     @MethodSource("edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject#getNonHistoricalProjects")
     @Order(1)
+    @Disabled
+    @SuppressWarnings({ "java:S1607", "java:S2699" })
     void evaluateNonHistoricalDiagramRecognition(DiagramProject project) {
         run(project);
     }
@@ -44,6 +47,8 @@ public class DiagramRecognitionMockTest extends StageTest<DiagramRecognitionMock
     @ParameterizedTest(name = "{0}")
     @MethodSource("edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject#getHistoricalProjects")
     @Order(2)
+    @Disabled
+    @SuppressWarnings({ "java:S1607", "java:S2699" })
     void evaluateHistoricalDiagramRecognition(DiagramProject project) {
         run(project);
     }

@@ -1,6 +1,7 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks;
 
+import java.util.Comparator;
 import java.util.Objects;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement;
@@ -74,23 +75,11 @@ public class DiagramGoldStandardTraceLink extends DiagramTextTraceLink {
         if (o instanceof DiagramWordTraceLink)
             return -1;
         if (o instanceof DiagramGoldStandardTraceLink other) {
-            var gs = 0;
-            if (goldStandard == null && other.goldStandard != null)
-                gs = 1;
-            if (goldStandard != null && other.goldStandard != null)
-                gs = goldStandard.compareTo(other.goldStandard);
-            if (gs == 0) {
-                var comp = diagramElement.compareTo(o.diagramElement);
-                if (comp == 0) {
-                    var sentenceComp = Integer.compare(getSentenceNo(), o.getSentenceNo());
-                    if (sentenceComp == 0) {
-                        return getTraceType().compareTo(other.getTraceType());
-                    }
-                    return sentenceComp;
-                }
-                return comp;
-            }
-            return gs;
+            return Comparator.comparing(DiagramGoldStandardTraceLink::getGoldStandard)
+                    .thenComparing(DiagramGoldStandardTraceLink::getDiagramElement)
+                    .thenComparingInt(DiagramGoldStandardTraceLink::getSentenceNo)
+                    .thenComparing(DiagramGoldStandardTraceLink::getTraceType)
+                    .compare(this, other);
         }
         return super.compareTo(o);
     }

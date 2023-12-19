@@ -34,9 +34,6 @@ public class WordSimUtils implements Serializable {
     private UnicodeCharacterMatchFunctions characterMatch = UnicodeCharacterMatchFunctions.EQUAL;
     private boolean considerAbbreviations = CommonTextToolsConfig.CONSIDER_ABBREVIATIONS;
 
-    public WordSimUtils() {
-    }
-
     /**
      * Sets which measures should be used for similarity comparison. The specified collection of measures will be used for all subsequent comparisons.
      *
@@ -107,11 +104,10 @@ public class WordSimUtils implements Serializable {
         if (getConsiderAbbreviations()) {
             var ambiguatedFirstTerm = AbbreviationDisambiguationHelper.ambiguateAll(firstTerm, true);
             var ambiguatedSecondTerm = AbbreviationDisambiguationHelper.ambiguateAll(secondTerm, true);
+            var different = !ambiguatedFirstTerm.equals(firstTerm) || !ambiguatedSecondTerm.equals(secondTerm);
 
-            if (!ambiguatedFirstTerm.equals(firstTerm) || !ambiguatedSecondTerm.equals(secondTerm)) {
-                if (areWordsSimilar(new ComparisonContext(ambiguatedFirstTerm, ambiguatedSecondTerm, null, null, false, ctx.characterMatch()))) {
-                    return true;
-                }
+            if (different && areWordsSimilar(new ComparisonContext(ambiguatedFirstTerm, ambiguatedSecondTerm, null, null, false, ctx.characterMatch()))) {
+                return true;
             }
         }
 
@@ -223,13 +219,13 @@ public class WordSimUtils implements Serializable {
      * @return Returns similarity in range [0,1]
      */
     public double getSimilarity(String firstWord, String secondWord, SimilarityStrategy strategy, boolean ignoreCase) {
-        var measures = this.measures.stream().filter(m -> !(m instanceof EqualityMeasure)).collect(Collectors.toCollection(ArrayList::new));
-        if (measures.isEmpty())
-            measures.add(new EqualityMeasure());
+        var allMeasuresExceptDefault = this.measures.stream().filter(m -> !(m instanceof EqualityMeasure)).collect(Collectors.toCollection(ArrayList::new));
+        if (allMeasuresExceptDefault.isEmpty())
+            allMeasuresExceptDefault.add(new EqualityMeasure());
 
         return strategy.getSimilarity(new ComparisonContext(ignoreCase ? firstWord.toLowerCase() : firstWord, ignoreCase ?
                 secondWord.toLowerCase() :
-                secondWord, null, null, false, characterMatch), measures);
+                secondWord, null, null, false, characterMatch), allMeasuresExceptDefault);
     }
 
     /**

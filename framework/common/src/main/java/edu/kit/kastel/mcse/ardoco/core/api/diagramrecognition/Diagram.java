@@ -22,7 +22,7 @@ public interface Diagram extends Comparable<Diagram>, SimilarityComparable<Diagr
      * {@return the short (resource) name of the diagram, e.g. "some-diagram.jpg"}
      */
     default String getShortResourceName() {
-        var split = getResourceName().split("/|\\\\");
+        var split = getResourceName().split("/|(\\\\)");
         return split[split.length - 1];
     }
 

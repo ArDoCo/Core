@@ -19,16 +19,14 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
 public abstract class AnonymousRunner extends ArDoCoRunner {
     private static final Logger logger = LoggerFactory.getLogger(AnonymousRunner.class);
 
-    private final List<AbstractPipelineStep> pipelineSteps;
-
     protected AnonymousRunner(String projectName) {
         super(projectName);
-        pipelineSteps = setUp(null);
+        setUp(null);
     }
 
     protected AnonymousRunner(String projectName, DataRepository preRunDataRepository) {
         super(projectName);
-        pipelineSteps = setUp(preRunDataRepository);
+        setUp(preRunDataRepository);
     }
 
     /**

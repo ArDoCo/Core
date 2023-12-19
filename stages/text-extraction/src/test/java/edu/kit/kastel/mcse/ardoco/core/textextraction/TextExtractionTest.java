@@ -28,7 +28,8 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.TextPreprocessingAgent;
 import edu.kit.kastel.mcse.ardoco.tests.eval.StageTest;
 
-public class TextExtractionTest extends StageTest<TextExtraction, TextExtractionTest.TextProject, TextExtractionTest.TextExtractionResult> {
+@SuppressWarnings({ "java:S1607", "java:S2699" })
+class TextExtractionTest extends StageTest<TextExtraction, TextExtractionTest.TextProject, TextExtractionTest.TextExtractionResult> {
     public TextExtractionTest() {
         super(new TextExtraction(null), TextProject.values());
     }

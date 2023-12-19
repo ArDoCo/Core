@@ -16,7 +16,7 @@ import edu.kit.kastel.mcse.ardoco.tests.eval.GoldStandardDiagramsWithTLR;
 /**
  * Performs the inconsistency detection using ERID with the diagram recognition.
  */
-public class InconsistencyDetectionEvaluationERID extends InconsistencyDetectionEvaluationIT {
+public class InconsistencyDetectionEvaluationEridIT extends InconsistencyDetectionEvaluationIT {
     @Override
     protected HoldBackRunResultsProducer getHoldBackRunResultsProducer() {
         return new HoldBackRunResultsProducerERID(false);

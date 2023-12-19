@@ -9,7 +9,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
  * Contains metadata about the pipeline which produced this data.
  */
 public class MetaData implements PipelineStepData {
-    public final static String ID = "PipelineMetaData";
+    public static final String ID = "PipelineMetaData";
     private Pipeline pipeline;
     private final WordSimUtils wordSimUtils;
     private final SimilarityUtils similarityUtils;

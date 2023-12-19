@@ -3,14 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.common.util;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.SortedMap;
-import java.util.SortedSet;
-import java.util.TreeMap;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
@@ -36,14 +29,14 @@ public final class AbbreviationDisambiguationHelper extends FileBasedCache<Sorte
      * Matches abbreviations with up to 1 lowercase letter between uppercase letters. Accounts for camelCase by lookahead, e.g. UserDBAdapter is matched as "DB"
      * rather than "DBA". Matches abbreviations at any point in the word, including at the start and end.
      */
-    private static final Pattern abbreviationsPattern = Pattern.compile("(?:([A-Z]+[a-z]?)+[A-Z])(?=([A-Z][a-z])|\\b)");
+    @SuppressWarnings("java:S5998")
+    private static final Pattern abbreviationsPattern = Pattern.compile("([A-Z]+[a-z]?)+[A-Z](?=([A-Z][a-z])|\\b)");
     /*
     (?:([A-Z]+[a-z]?)+(?(?<=[A-Z])\w|[A-Z]))(?=([A-Z][a-z])|\b)
     potential improvement, can also match ArDoCo for example, assumes that two letters with first letter capital is an abbr. such as Id, Db..
      */
 
     public static final int LIMIT = 2;
-    public static final double SIMILARITY_THRESHOLD = 0.9;
     private static final Logger logger = LoggerFactory.getLogger(AbbreviationDisambiguationHelper.class);
     private static final String ABBREVIATIONS_COM = "https://www.abbreviations.com/";
     private static final String ACRONYM_FINDER_COM = "https://www.acronymfinder.com/Information-Technology/";

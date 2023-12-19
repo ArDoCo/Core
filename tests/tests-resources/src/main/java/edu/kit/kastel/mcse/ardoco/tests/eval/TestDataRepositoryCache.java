@@ -7,6 +7,7 @@ import java.util.prefs.Preferences;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.data.DeepCopy;
@@ -19,8 +20,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
  *
  * @param <T> the type of project
  */
-@SuppressWarnings({ "unchecked", "rawtypes" })
-public class TestDataRepositoryCache<T extends GoldStandardProject> extends TestDataCache<HashMap> {
+public class TestDataRepositoryCache<T extends GoldStandardProject> extends TestDataCache<HashMap<T, DataRepository>> {
     private static final Logger logger = LoggerFactory.getLogger(TestDataRepositoryCache.class);
     private final T project;
 
@@ -31,24 +31,14 @@ public class TestDataRepositoryCache<T extends GoldStandardProject> extends Test
      * @param project the project
      */
     public TestDataRepositoryCache(Class<? extends AbstractExecutionStage> stage, T project) {
-        super(stage, HashMap.class, project.getProjectName(), "data-repositories/");
+        super(stage, new TypeReference<HashMap<T, DataRepository>>() {
+        }, project.getProjectName(), "data-repositories/");
         this.project = project;
     }
 
     @Override
     public HashMap<T, DataRepository> getDefault() {
         return new HashMap<>();
-    }
-
-    @Override
-    public HashMap<T, DataRepository> getOrRead() {
-        return super.getOrRead();
-    }
-
-    @Override
-    public void write(HashMap content) {
-        var cast = (HashMap<T, DataRepository>) content;
-        super.write(cast);
     }
 
     /**
@@ -59,8 +49,8 @@ public class TestDataRepositoryCache<T extends GoldStandardProject> extends Test
      * @param mappingFunction a function to compute the data repository of a project
      * @return a deep copy of the data repository
      */
-
     @DeepCopy
+    @SuppressWarnings("java:S3824")
     public DataRepository get(Function<T, DataRepository> mappingFunction) {
         checkVersion();
 

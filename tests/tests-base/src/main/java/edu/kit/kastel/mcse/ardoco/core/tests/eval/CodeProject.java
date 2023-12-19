@@ -103,6 +103,7 @@ public enum CodeProject implements GoldStandardProject {
     private final ExpectedResults expectedResultsForSadSamCode;
     private final SortedSet<String> resourceNames;
 
+    @SuppressWarnings("java:S107")
     CodeProject(Project project, String codeRepository, String commitHash, String codeModelLocationInResources, String samCodeGoldStandardLocation,
             String sadCodeGoldStandardLocation, ExpectedResults expectedResultsForSamCode, ExpectedResults expectedResultsForSadSamCode) {
         this.project = project;

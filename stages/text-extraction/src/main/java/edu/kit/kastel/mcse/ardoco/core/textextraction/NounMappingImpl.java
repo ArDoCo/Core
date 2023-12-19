@@ -38,14 +38,14 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 @NoHashCodeEquals
 public class NounMappingImpl implements NounMapping {
 
-    private static final AtomicLong CREATION_TIME_COUNTER = new AtomicLong(0);
+    protected static final AtomicLong CREATION_TIME_COUNTER = new AtomicLong(0);
     private static final AggregationFunctions DEFAULT_AGGREGATOR = AVERAGE;
     private final Long earliestCreationTime;
-    private final ImmutableSortedSet<Word> words;
-    private transient ImmutableSortedSet<Phrase> phrases;
+    private final MutableSortedSet<Word> words;
+    private MutableSortedSet<Phrase> phrases;
     private final MutableSortedMap<MappingKind, Confidence> distribution;
-    private final ImmutableList<Word> referenceWords;
-    private final ImmutableList<String> surfaceForms;
+    private final MutableList<Word> referenceWords;
+    private final MutableList<String> surfaceForms;
     private final String reference;
     private boolean isDefinedAsCompound;
     private final Set<NounMappingChangeListener> changeListeners;
@@ -94,10 +94,10 @@ public class NounMappingImpl implements NounMapping {
     public NounMappingImpl(Long earliestCreationTime, ImmutableSortedSet<Word> words, ImmutableSortedMap<MappingKind, Confidence> distribution,
             ImmutableList<Word> referenceWords, ImmutableList<String> surfaceForms, String reference) {
         this.earliestCreationTime = earliestCreationTime;
-        this.words = words;
+        this.words = words.toSortedSet();
         this.distribution = distribution.toSortedMap();
-        this.referenceWords = referenceWords;
-        this.surfaceForms = surfaceForms;
+        this.referenceWords = referenceWords.toList();
+        this.surfaceForms = surfaceForms.toList();
         this.reference = reference;
         this.isDefinedAsCompound = false;
         this.changeListeners = Collections.newSetFromMap(new IdentityHashMap<>());
@@ -137,7 +137,7 @@ public class NounMappingImpl implements NounMapping {
 
     @Override
     public final ImmutableSortedSet<Word> getWords() {
-        return words;
+        return words.toImmutable();
     }
 
     @Override
@@ -151,7 +151,7 @@ public class NounMappingImpl implements NounMapping {
 
     @Override
     public final ImmutableList<Word> getReferenceWords() {
-        return referenceWords;
+        return referenceWords.toImmutable();
     }
 
     @Override
@@ -166,15 +166,14 @@ public class NounMappingImpl implements NounMapping {
     @Override
     public ImmutableSortedSet<Phrase> getPhrases() {
         if (phrases == null) {
-            MutableSortedSet<Phrase> phrases = SortedSets.mutable.empty();
+            this.phrases = SortedSets.mutable.empty();
             for (Word word : words) {
                 if (phrases.contains(word.getPhrase()))
                     continue;
                 phrases.add(word.getPhrase());
             }
-            this.phrases = phrases.toImmutable();
         }
-        return this.phrases;
+        return this.phrases.toImmutable();
     }
 
     @Override
@@ -225,7 +224,7 @@ public class NounMappingImpl implements NounMapping {
 
     @Override
     public ImmutableList<String> getSurfaceForms() {
-        return this.surfaceForms;
+        return this.surfaceForms.toImmutable();
     }
 
     @Override
@@ -250,7 +249,7 @@ public class NounMappingImpl implements NounMapping {
     }
 
     public ImmutableSortedSet<Word> words() {
-        return words;
+        return words.toImmutable();
     }
 
     public MutableSortedMap<MappingKind, Confidence> distribution() {
@@ -258,11 +257,11 @@ public class NounMappingImpl implements NounMapping {
     }
 
     public ImmutableList<Word> referenceWords() {
-        return referenceWords;
+        return referenceWords.toImmutable();
     }
 
     public ImmutableList<String> surfaceForms() {
-        return surfaceForms;
+        return surfaceForms.toImmutable();
     }
 
     public String reference() {
@@ -272,5 +271,4 @@ public class NounMappingImpl implements NounMapping {
     public void setIsDefinedAsCompound(boolean isDefinedAsCompound) {
         this.isDefinedAsCompound = isDefinedAsCompound;
     }
-
 }

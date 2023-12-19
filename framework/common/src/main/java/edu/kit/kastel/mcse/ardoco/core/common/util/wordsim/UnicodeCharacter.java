@@ -64,10 +64,6 @@ public final class UnicodeCharacter implements Serializable {
         this(codePoint, toUnicodeCharacter(codePoint));
     }
 
-    private UnicodeCharacter(String representation) {
-        this(representation.codePointAt(0), representation);
-    }
-
     private UnicodeCharacter(int codePoint, String representation) {
         this.codePoint = codePoint;
         this.representation = representation;

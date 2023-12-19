@@ -16,7 +16,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.Inconsistency;
  * @param diagramElement the {@link DiagramElement}
  */
 public record MTDEInconsistency(DiagramElement diagramElement) implements Inconsistency, Comparable<MTDEInconsistency> {
-    private final static String type = "MissingTextForDiagramElement";
+    private static final String type = "MissingTextForDiagramElement";
 
     @Override
     public String getReason() {
