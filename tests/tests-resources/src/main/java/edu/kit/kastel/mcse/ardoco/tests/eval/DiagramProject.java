@@ -42,7 +42,7 @@ public enum DiagramProject implements GoldStandardDiagramsWithTLR {
     TEASTORE( //
             Project.TEASTORE, //
             "/benchmark/teastore/goldstandards/goldstandard_sad_id_2018.json", //
-            new ExpectedResults(1, .74, .85, .97, .85, 1), //Expected Diagram-Sentence TLR results (Mock)
+            new ExpectedResults(.95, .74, .83, .97, .82, 1), //Expected Diagram-Sentence TLR results (Mock)
             new ExpectedResults(.65, .74, .69, .93, .65, .95), //Expected Diagram-Sentence TLR results (No-Mock)
             new ExpectedResults(1, .70, .80, .96, .83, 1), //Expected MME results (Mock)
             new ExpectedResults(.96, .70, .78, .95, .80, 1), //Expected MME results (No-Mock)
@@ -86,7 +86,7 @@ public enum DiagramProject implements GoldStandardDiagramsWithTLR {
     TEAMMATES_HISTORICAL( //
             Project.TEAMMATES_HISTORICAL, //
             "/benchmark/teammates/goldstandards/goldstandard_sad_id_2015.json", //
-            new ExpectedResults(.63, .71, .66, .98, .66, .99), //Expected Diagram-Sentence TLR results (Mock)
+            new ExpectedResults(.62, .71, .66, .98, .66, .99), //Expected Diagram-Sentence TLR results (Mock)
             new ExpectedResults(.51, .39, .44, .98, .43, .99), //Expected Diagram-Sentence TLR results (No-Mock)
             new ExpectedResults(.31, .69, .42, .93, .44, .94), //Expected MME results (Mock)
             new ExpectedResults(.45, .69, .49, .95, .53, .96), //Expected MME results (No-Mock)

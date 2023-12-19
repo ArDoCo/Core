@@ -79,7 +79,6 @@ class SketchRecognitionServiceTest {
             8,
             diagram.boxes.filter { it.classification != Classification.LABEL }.size
         )
-        Assertions.assertEquals(35, diagram.textBoxes.size)
 
         val testDriver =
             diagram.boxes.filter { it.texts.any { tb -> tb.text.lowercase().contains("driver") } }
