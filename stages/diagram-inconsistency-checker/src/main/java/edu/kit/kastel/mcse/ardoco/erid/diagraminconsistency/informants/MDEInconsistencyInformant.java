@@ -29,14 +29,10 @@ public class MDEInconsistencyInformant extends Informant {
     @Override
     public void process() {
         var dataRepository = getDataRepository();
-        var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
         var diagramConnectionStates = dataRepository.getData(DiagramConnectionStates.ID, DiagramConnectionStates.class).orElseThrow();
         var diagramInconsistencyStates = dataRepository.getData(DiagramInconsistencyStates.ID, DiagramInconsistencyStates.class).orElseThrow();
         var recommendationStates = DataRepositoryHelper.getRecommendationStates(dataRepository);
-        var modelIds = modelStates.modelIds();
-        for (var model : modelIds) {
-            var modelState = modelStates.getModelExtractionState(model);
-            Metamodel mm = modelState.getMetamodel();
+        for (var mm : Metamodel.values()) {
             var diagramConnectionState = diagramConnectionStates.getDiagramConnectionState(mm);
             var diagramInconsistencyState = diagramInconsistencyStates.getDiagramInconsistencyState(mm);
             var allRecommendedInstances = recommendationStates.getRecommendationState(mm).getRecommendedInstances();

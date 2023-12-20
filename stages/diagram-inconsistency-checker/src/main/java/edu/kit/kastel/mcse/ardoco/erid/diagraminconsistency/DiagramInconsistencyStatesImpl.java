@@ -1,7 +1,7 @@
 /* Licensed under MIT 2023. */
 package edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
@@ -12,7 +12,7 @@ import edu.kit.kastel.mcse.ardoco.erid.api.diagraminconsistency.DiagramInconsist
  * @see DiagramInconsistencyStates
  */
 public class DiagramInconsistencyStatesImpl implements DiagramInconsistencyStates {
-    private final Map<Metamodel, DiagramInconsistencyStateImpl> diagramInconsistencyStates = new HashMap<>();
+    private final Map<Metamodel, DiagramInconsistencyStateImpl> diagramInconsistencyStates = new EnumMap<>(Metamodel.class);
 
     public DiagramInconsistencyStatesImpl() {
         for (Metamodel mm : Metamodel.values()) {

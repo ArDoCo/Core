@@ -3,7 +3,6 @@ package edu.kit.kastel.mcse.ardoco.erid.diagramconnectiongenerator.informants;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions;
-import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
@@ -24,12 +23,8 @@ public class LinkBetweenDeAndRiProbabilityFilter extends Informant {
     @Override
     public void process() {
         var dataRepository = getDataRepository();
-        var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
         var diagramConnectionStates = dataRepository.getData(DiagramConnectionStates.ID, DiagramConnectionStates.class).orElseThrow();
-        var modelIds = modelStates.modelIds();
-        for (var model : modelIds) {
-            var modelState = modelStates.getModelExtractionState(model);
-            Metamodel mm = modelState.getMetamodel();
+        for (var mm : Metamodel.values()) {
             var diagramConnectionState = diagramConnectionStates.getDiagramConnectionState(mm);
 
             filterByProbability(diagramConnectionState);

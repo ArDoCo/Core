@@ -76,8 +76,8 @@ public final class CodeModel extends Model {
      */
     public List<? extends CodePackage> getAllPackages() {
         List<CodePackage> codePackages = new ArrayList<>();
-        var content = getContent();
-        for (CodeItem c : content) {
+        var lContent = getContent();
+        for (CodeItem c : lContent) {
             var allPackages = c.getAllPackages();
             for (CodePackage cp : allPackages) {
                 if (!codePackages.contains(cp)) {

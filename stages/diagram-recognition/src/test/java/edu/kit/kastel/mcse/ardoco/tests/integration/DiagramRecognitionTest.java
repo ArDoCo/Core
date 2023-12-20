@@ -28,7 +28,7 @@ import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
 import edu.kit.kastel.mcse.ardoco.tests.eval.GoldStandardDiagrams;
 import edu.kit.kastel.mcse.ardoco.tests.eval.StageTest;
 
-public class DiagramRecognitionTest extends StageTest<DiagramRecognition, GoldStandardDiagrams, DiagramRecognitionTest.DiagramRecognitionResult> {
+class DiagramRecognitionTest extends StageTest<DiagramRecognition, GoldStandardDiagrams, DiagramRecognitionTest.DiagramRecognitionResult> {
 
     public DiagramRecognitionTest() {
         super(new DiagramRecognition(new DataRepository()), DiagramProject.values());

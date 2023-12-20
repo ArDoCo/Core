@@ -42,13 +42,9 @@ public class DiagramAsModelInformant extends Informant {
         var dataRepository = getDataRepository();
         this.projectName = dataRepository.getData(ProjectPipelineData.ID, ProjectPipelineData.class).orElseThrow().getProjectName();
         var diagramState = dataRepository.getData(DiagramRecognitionState.ID, DiagramRecognitionState.class).orElseThrow();
-        var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
         var recommendationStates = DataRepositoryHelper.getRecommendationStates(dataRepository);
         var diagramConnectionStates = dataRepository.getData(DiagramConnectionStates.ID, DiagramConnectionStates.class).orElseThrow();
-        var modelIds = modelStates.modelIds();
-        for (var model : modelIds) {
-            var modelState = modelStates.getModelExtractionState(model);
-            Metamodel mm = modelState.getMetamodel();
+        for (var mm : Metamodel.values()) {
             var recommendationState = recommendationStates.getRecommendationState(mm);
             var diagramConnectionState = diagramConnectionStates.getDiagramConnectionState(mm);
 

@@ -3,7 +3,6 @@ package edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.informants;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
-import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 import edu.kit.kastel.mcse.ardoco.erid.api.diagramconnectiongenerator.DiagramConnectionStates;
@@ -30,14 +29,10 @@ public class MTDEInconsistencyInformant extends Informant {
     @Override
     public void process() {
         var dataRepository = getDataRepository();
-        var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
         var diagramRecognitionState = dataRepository.getData(DiagramRecognitionState.ID, DiagramRecognitionState.class).orElseThrow();
         var diagramConnectionStates = dataRepository.getData(DiagramConnectionStates.ID, DiagramConnectionStates.class).orElseThrow();
         var diagramInconsistencyStates = dataRepository.getData(DiagramInconsistencyStates.ID, DiagramInconsistencyStates.class).orElseThrow();
-        var modelIds = modelStates.modelIds();
-        for (var model : modelIds) {
-            var modelState = modelStates.getModelExtractionState(model);
-            Metamodel mm = modelState.getMetamodel();
+        for (var mm : Metamodel.values()) {
             var diagramConnectionState = diagramConnectionStates.getDiagramConnectionState(mm);
             var diagramInconsistencyState = diagramInconsistencyStates.getDiagramInconsistencyState(mm);
             var allDiagramElements = diagramRecognitionState.getDiagrams().stream().flatMap(d -> d.getBoxes().stream()).distinct().toList();
