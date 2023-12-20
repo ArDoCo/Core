@@ -32,7 +32,6 @@ public class SerializableFileBasedCache<T extends Serializable> extends FileBase
         this.contentClass = contentClass;
     }
 
-    @SuppressWarnings("unchecked")
     public SerializableFileBasedCache(TypeReference<? extends T> typeReference, String identifier, String subFolder) {
         super(identifier, ".ser", subFolder + sanitizeFileName(processTypeReference(typeReference).getSimpleName()) + File.separator);
         this.contentClass = (Class<? extends T>) processTypeReference(typeReference);
@@ -66,7 +65,6 @@ public class SerializableFileBasedCache<T extends Serializable> extends FileBase
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected @Nullable T read() throws CacheException {
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(getFile()))) {
             logger.info("Reading {} file", getIdentifier());

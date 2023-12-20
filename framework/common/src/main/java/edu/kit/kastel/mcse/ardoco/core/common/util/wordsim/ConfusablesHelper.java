@@ -41,7 +41,6 @@ public class ConfusablesHelper {
      *
      * @param line the line
      */
-    @SuppressWarnings("java:S6035")
     static FastList<UnicodeCharacter> extractHomoglyphsFromLine(String line) {
         if (!line.startsWith("#" + SEPARATOR))
             return FastList.newList();
@@ -61,7 +60,6 @@ public class ConfusablesHelper {
     /**
      * Parses the confusablesSummary.txt line by line and build the confusables map.
      */
-    @SuppressWarnings("java:S112")
     private static void parseConfusablesSummary() {
         try (InputStream is = ConfusablesHelper.class.getResourceAsStream(CONFUSABLES_SUMMARY)) {
             if (is == null)

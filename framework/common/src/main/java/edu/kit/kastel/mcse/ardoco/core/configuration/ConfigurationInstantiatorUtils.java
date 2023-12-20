@@ -65,7 +65,6 @@ public final class ConfigurationInstantiatorUtils {
         return (AbstractConfigurable) c.newInstance(arguments);
     }
 
-    @SuppressWarnings("java:S3011")
     private static AbstractConfigurable findAndCreate(Collection<Constructor<?>> constructors, Predicate<Constructor<?>> selector, Object[] parameters)
             throws InvocationTargetException, InstantiationException, IllegalAccessException {
         if (constructors.stream().noneMatch(selector)) {

@@ -18,7 +18,6 @@ import net.harawata.appdirs.AppDirsFactory;
  *
  * @param <T> the type of cached content
  */
-@SuppressWarnings("java:S112")
 public abstract class FileBasedCache<T> implements AutoCloseable {
     private static final Logger logger = LoggerFactory.getLogger(FileBasedCache.class);
     private File file;

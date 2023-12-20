@@ -22,7 +22,6 @@ import edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject;
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@SuppressWarnings({ "java:S1607", "java:S2699" })
 class DiagramConnectionGeneratorEvaluationIT extends DiagramConnectionGeneratorTest {
     private static final Logger logger = LoggerFactory.getLogger(DiagramConnectionGeneratorEvaluationIT.class);
     private static final String OUTPUT_DIR = "src/test/resources/testout";

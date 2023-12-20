@@ -18,7 +18,6 @@ import edu.kit.kastel.mcse.ardoco.tests.eval.GoldStandardDiagrams;
  * This stage is responsible for mocking the {@link edu.kit.kastel.mcse.ardoco.lissa.DiagramRecognition} stage. It populates the {@link DiagramRecognitionState}
  * using the {@link GoldStandardDiagrams} gold standard.
  */
-@SuppressWarnings("java:S110")
 public class DiagramRecognitionMock extends ExecutionStage {
     private final WordSimUtils wordSimUtils;
     private final GoldStandardDiagrams goldStandardProject;

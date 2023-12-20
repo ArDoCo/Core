@@ -15,7 +15,6 @@ import edu.kit.kastel.mcse.ardoco.erid.diagraminconsistency.agents.RecommendedIn
 /**
  * This stage is responsible for creating the inconsistencies and uses them to adjust the confidence of recommended instances.
  */
-@SuppressWarnings("java:S110")
 public class DiagramInconsistencyChecker extends ExecutionStage {
     private final WordSimUtils wordSimUtils;
 

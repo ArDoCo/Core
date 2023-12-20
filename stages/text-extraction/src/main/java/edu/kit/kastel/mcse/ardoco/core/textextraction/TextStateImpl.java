@@ -276,7 +276,6 @@ public class TextStateImpl extends AbstractState implements TextState {
         return n -> n.getKind() == mappingKind;
     }
 
-    @SuppressWarnings("java:S1905")
     void addNounMappingAddPhraseMapping(NounMapping nounMapping) {
         addNounMappingToState(nounMapping);
         if (phraseMappings.anySatisfy(it -> {

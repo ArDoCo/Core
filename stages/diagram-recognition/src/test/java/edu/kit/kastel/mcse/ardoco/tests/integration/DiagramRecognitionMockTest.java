@@ -38,7 +38,6 @@ class DiagramRecognitionMockTest extends StageTest<DiagramRecognitionMock, GoldS
     @MethodSource("edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject#getNonHistoricalProjects")
     @Order(1)
     @Disabled
-    @SuppressWarnings({ "java:S1607", "java:S2699" })
     void evaluateNonHistoricalDiagramRecognition(DiagramProject project) {
         run(project);
     }
@@ -48,7 +47,6 @@ class DiagramRecognitionMockTest extends StageTest<DiagramRecognitionMock, GoldS
     @MethodSource("edu.kit.kastel.mcse.ardoco.tests.eval.DiagramProject#getHistoricalProjects")
     @Order(2)
     @Disabled
-    @SuppressWarnings({ "java:S1607", "java:S2699" })
     void evaluateHistoricalDiagramRecognition(DiagramProject project) {
         run(project);
     }

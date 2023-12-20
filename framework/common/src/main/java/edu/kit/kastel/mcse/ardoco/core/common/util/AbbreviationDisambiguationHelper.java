@@ -29,7 +29,6 @@ public final class AbbreviationDisambiguationHelper extends FileBasedCache<Sorte
      * Matches abbreviations with up to 1 lowercase letter between uppercase letters. Accounts for camelCase by lookahead, e.g. UserDBAdapter is matched as "DB"
      * rather than "DBA". Matches abbreviations at any point in the word, including at the start and end.
      */
-    @SuppressWarnings("java:S5998")
     private static final Pattern abbreviationsPattern = Pattern.compile("([A-Z]+[a-z]?)+[A-Z](?=([A-Z][a-z])|\\b)");
     /*
     (?:([A-Z]+[a-z]?)+(?(?<=[A-Z])\w|[A-Z]))(?=([A-Z][a-z])|\b)

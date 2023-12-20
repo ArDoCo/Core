@@ -23,7 +23,6 @@ public class DiagramWordTraceLink extends DiagramTextTraceLink {
 
     private final Word word;
     private final double confidence;
-    @SuppressWarnings("java:S1068")
     private final Serializable origin;
     private final TreeSet<DiagramWordTraceLink> relatedWordLinks = new TreeSet<>();
     private final TreeSet<DiagramGoldStandardTraceLink> relatedGSLinks = new TreeSet<>();

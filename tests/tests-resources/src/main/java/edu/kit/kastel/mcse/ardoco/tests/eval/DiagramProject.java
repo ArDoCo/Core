@@ -134,7 +134,6 @@ public enum DiagramProject implements GoldStandardDiagramsWithTLR {
      * @param expectedSadSamTlrResultsNoMock          the {@link ExpectedResults} for the SAD SAM TLR
      * @param diagramResourceNames                    a set of diagram-related resources
      */
-    @SuppressWarnings("java:S107")
     DiagramProject(Project project, String goldStandardDiagrams, ExpectedResults expectedDiagramSentenceTlrResultsMock,
             ExpectedResults expectedDiagramSentenceTlrResultsNoMock, ExpectedResults expectedMMEResultsMock, ExpectedResults expectedMMEResultsNoMock,
             ExpectedResults expectedSadSamTlrResultsMock, ExpectedResults expectedSadSamTlrResultsNoMock, List<String> diagramResourceNames) {
@@ -286,7 +285,6 @@ public enum DiagramProject implements GoldStandardDiagramsWithTLR {
     }
 
     @Override
-    @SuppressWarnings("java:S112")
     public Set<DiagramGS> getDiagramsGoldStandard() {
         try {
             var objectMapper = new ObjectMapper();

@@ -51,7 +51,6 @@ public class TestDataRepositoryCache<T extends GoldStandardProject> extends Test
      * @return a deep copy of the data repository
      */
     @DeepCopy
-    @SuppressWarnings("java:S3824")
     public DataRepository get(Function<T, DataRepository> mappingFunction) {
         checkVersion();
 

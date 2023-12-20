@@ -90,7 +90,6 @@ public abstract class AbstractConfigurable implements IConfigurable, Serializabl
         return configurableAnnotation.key().isBlank() ? (classOfDefinition + CLASS_ATTRIBUTE_CONNECTOR + field.getName()) : configurableAnnotation.key();
     }
 
-    @SuppressWarnings("java:S3011")
     private void setValue(Field field, String value) {
         var clazz = field.getType();
         var parsedValue = parse(field, clazz, value);
@@ -136,7 +135,6 @@ public abstract class AbstractConfigurable implements IConfigurable, Serializabl
     }
 
     @Serial
-    @SuppressWarnings({ "java:S3011", "java:S112" })
     private void readObject(ObjectInputStream objectInputStream) throws IOException, ClassNotFoundException {
         objectInputStream.defaultReadObject();
         try {

@@ -27,7 +27,6 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.UnicodeCharacterSeque
  * character match.
  * </p>
  */
-@SuppressWarnings({ "java:S5411", "java:S127", "java:S3776" })
 public final class UnicodeJaroWinklerSimilarity implements Serializable {
     /**
      * This method returns the Jaro-Winkler string matches, half transpositions, prefix array.

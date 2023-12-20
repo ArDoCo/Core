@@ -310,7 +310,6 @@ public final class DataRepositoryHelper {
      * @param object the object to copy
      */
     @DeepCopy
-    @SuppressWarnings("unchecked")
     public static <T extends Serializable> T deepCopy(T object) {
         try {
             var byteArrayOutputStream = new ByteArrayOutputStream();

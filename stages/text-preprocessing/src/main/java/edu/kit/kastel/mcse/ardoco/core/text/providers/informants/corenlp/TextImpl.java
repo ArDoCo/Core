@@ -80,7 +80,6 @@ public class TextImpl implements Text {
     }
 
     @Serial
-    @SuppressWarnings("java:S125")
     private void writeObject(ObjectOutputStream out) throws IOException {
         words(); //Initialize words
         getSentences(); //Initialize sentences
@@ -93,7 +92,6 @@ public class TextImpl implements Text {
     }
 
     @Serial
-    @SuppressWarnings("java:S125")
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         /* It is a lot cheaper to serialize the phrases (up to 70x less storage space and much
