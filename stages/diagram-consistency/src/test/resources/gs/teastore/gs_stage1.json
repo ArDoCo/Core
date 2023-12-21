@@ -1,0 +1,103 @@
+{
+  "name": "TeaStore",
+  "elements": [
+    {
+      "diagram_id": 0,
+      "occurrences": [
+        {
+          "role": "architecture:component",
+          "id": "_bC13QDVWEeqPG_FgW3bi6Q"
+        },
+        {
+          "role": "code:package",
+          "id": "tools.descartes.teastore.webui"
+        }
+      ]
+    },
+    {
+      "diagram_id": 1,
+      "occurrences": [
+        {
+          "role": "architecture:component",
+          "id": "_dhM6oDVXEeqPG_FgW3bi6Q"
+        },
+        {
+          "role": "code:package",
+          "id": "tools.descartes.teastore.registry"
+        },
+        {
+          "role": "code:class",
+          "id": "tools.descartes.teastore.registry.rest.Registry[services/tools.descartes.teastore.registry/src/main/java/tools/descartes/teastore/registry/rest/Registry.java]"
+        }
+      ]
+    },
+    {
+      "diagram_id": 2,
+      "occurrences": [
+        {
+          "role": "architecture:interface",
+          "id": "_oPBcMKTJEeqKjI323B3R3w"
+        },
+        {
+          "role": "architecture:component",
+          "id": "_yA04AKTKEeqKjI323B3R3w"
+        },
+        {
+          "role": "code:class",
+          "id": "tools.descartes.teastore.image.ImageProvider[services/tools.descartes.teastore.image/src/main/java/tools/descartes/teastore/image/ImageProvider.java]"
+        }
+      ]
+    },
+    {
+      "diagram_id": 3,
+      "occurrences": [
+        {
+          "role": "architecture:component",
+          "id": "_AiuxcDVdEeqPG_FgW3bi6Q"
+        },
+        {
+          "role": "code:package",
+          "id": "tools.descartes.teastore.auth"
+        }
+      ]
+    },
+    {
+      "diagram_id": 4,
+      "occurrences": [
+        {
+          "role": "architecture:interface",
+          "id": "_Mh_1QDVcEeqPG_FgW3bi6Q"
+        },
+        {
+          "role": "architecture:component",
+          "id": "_lnx1oDVWEeqPG_FgW3bi6Q"
+        },
+        {
+          "role": "code:package",
+          "id": "tools.descartes.teastore.persistence"
+        }
+      ]
+    },
+    {
+      "diagram_id": 5,
+      "occurrences": [
+        {
+          "role": "architecture:interface",
+          "id": "_Sb4SYDVfEeqPG_FgW3bi6Q"
+        },
+        {
+          "role": "architecture:component",
+          "id": "_m3fxEDVWEeqPG_FgW3bi6Q"
+        },
+        {
+          "role": "code:package",
+          "id": "tools.descartes.teastore.recommender"
+        },
+        {
+          "role": "code:interface",
+          "id": "tools.descartes.teastore.recommender.algorithm.IRecommender[services/tools.descartes.teastore.recommender/src/main/java/tools/descartes/teastore/recommender/algorithm/IRecommender.java]"
+        }
+      ]
+    }
+  ]
+}

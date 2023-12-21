@@ -1,0 +1,213 @@
+{
+  "name": "bigbluebutton",
+  "elements": [
+    {
+      "diagram_id": 0,
+      "occurrences": [
+        {
+          "role": "architecture:interface",
+          "id": "_r42CoFkIEeyewPSmlgszyA"
+        },
+        {
+          "role": "architecture:component",
+          "id": "_oN4CMFkHEeyewPSmlgszyA"
+        }
+      ]
+    },
+    {
+      "diagram_id": 1,
+      "occurrences": [
+        {
+          "role": "architecture:interface",
+          "id": "_ur280FkIEeyewPSmlgszyA"
+        },
+        {
+          "role": "architecture:component",
+          "id": "_s0aIcFkHEeyewPSmlgszyA"
+        }
+      ]
+    },
+    {
+      "diagram_id": 2,
+      "occurrences": [
+        {
+          "role": "architecture:interface",
+          "id": "_IixQcFkJEeyewPSmlgszyA"
+        },
+        {
+          "role": "architecture:component",
+          "id": "_6sergFkHEeyewPSmlgszyA"
+        },
+        {
+          "role": "code:package",
+          "id": "org.bigbluebutton.common2.redis"
+        },
+        {
+          "role": "code:package",
+          "id": "org.bigbluebutton.common2.redis.pubsub"
+        }
+      ]
+    },
+    {
+      "diagram_id": 3,
+      "occurrences": [
+        {
+          "role": "architecture:interface",
+          "id": "_2I1EsFkIEeyewPSmlgszyA"
+        },
+        {
+          "role": "architecture:component",
+          "id": "_0e5u8FkHEeyewPSmlgszyA"
+        },
+        {
+          "role": "code:package",
+          "id": "org.freeswitch.esl.client"
+        }
+      ]
+    },
+    {
+      "diagram_id": 4,
+      "occurrences": [
+        {
+          "role": "architecture:interface",
+          "id": "_xqkJoFkIEeyewPSmlgszyA"
+        },
+        {
+          "role": "architecture:component",
+          "id": "_yGgUMFkHEeyewPSmlgszyA"
+        }
+      ]
+    },
+    {
+      "diagram_id": 5,
+      "occurrences": [
+        {
+          "role": "architecture:interface",
+          "id": "_7b12cFkIEeyewPSmlgszyA"
+        },
+        {
+          "role": "architecture:component",
+          "id": "_2BgxMFkHEeyewPSmlgszyA"
+        },
+        {
+          "role": "code:package",
+          "id": "org.bigbluebutton.presentation"
+        }
+      ]
+    },
+    {
+      "diagram_id": 6,
+      "occurrences": [
+        {
+          "role": "architecture:interface",
+          "id": "_ZADiQFkJEeyewPSmlgszyA"
+        },
+        {
+          "role": "architecture:component",
+          "id": "_XuNf4FkJEeyewPSmlgszyA"
+        }
+      ]
+    },
+    {
+      "diagram_id": 7,
+      "occurrences": [
+        {
+          "role": "architecture:interface",
+          "id": "_MUFl8FkJEeyewPSmlgszyA"
+        },
+        {
+          "role": "architecture:component",
+          "id": "_9wZIcFkHEeyewPSmlgszyA"
+        }
+      ]
+    },
+    {
+      "diagram_id": 8,
+      "occurrences": [
+        {
+          "role": "architecture:interface",
+          "id": "_FhvIYFkJEeyewPSmlgszyA"
+        },
+        {
+          "role": "architecture:component",
+          "id": "_4yx-8FkHEeyewPSmlgszyA"
+        }
+      ]
+    },
+    {
+      "diagram_id": 9,
+      "occurrences": [
+        {
+          "role": "architecture:interface",
+          "id": "_d9jzgFkIEeyewPSmlgszyA"
+        },
+        {
+          "role": "architecture:component",
+          "id": "_kvWs4FkHEeyewPSmlgszyA"
+        },
+        {
+          "role": "code:class",
+          "id": "org.bigbluebutton.api.model.entity.Recording[bbb-common-web/src/main/java/org/bigbluebutton/api/model/entity/Recording.java]"
+        },
+        {
+          "role": "code:class",
+          "id": "org.bigbluebutton.api.domain.Recording[bbb-common-web/src/main/java/org/bigbluebutton/api/domain/Recording.java]"
+        },
+        {
+          "role": "code:interface",
+          "id": "org.bigbluebutton.api.RecordingService[bbb-common-web/src/main/java/org/bigbluebutton/api/RecordingService.java]"
+        },
+        {
+          "role": "code:interface",
+          "id": "org.bigbluebutton.api2.IRecordingService[bbb-common-web/src/main/java/org/bigbluebutton/api2/IRecordingService.java]"
+        },
+        {
+          "role": "code:interface",
+          "id": "org.bigbluebutton.api2.RecordingServiceGW[bbb-common-web/src/main/java/org/bigbluebutton/api2/RecordingServiceGW.java]"
+        }
+      ]
+    },
+    {
+      "diagram_id": 10,
+      "occurrences": [
+        {
+          "role": "architecture:interface",
+          "id": "_UV7gwFwPEeyiuNx_RO7j-Q"
+        },
+        {
+          "role": "architecture:component",
+          "id": "_RDHFIFwPEeyiuNx_RO7j-Q"
+        },
+        {
+          "role": "code:package",
+          "id": "org.bigbluebutton.common2.redis"
+        }
+      ]
+    },
+    {
+      "diagram_id": 11,
+      "occurrences": [
+        {
+          "role": "architecture:interface",
+          "id": "_qa5z0FwPEeyiuNx_RO7j-Q"
+        },
+        {
+          "role": "architecture:component",
+          "id": "_nwrCMFwPEeyiuNx_RO7j-Q"
+        },
+        {
+          "role": "code:package",
+          "id": "org.freeswitch"
+        },
+        {
+          "role": "code:package",
+          "id": "org.bigbluebutton.freeswitch"
+        }
+      ]
+    },
+    {
+      "diagram_id": 12,
+      "occurrences": []
+    }
+  ]
+}

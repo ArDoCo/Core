@@ -1,0 +1,125 @@
+{
+  "name": "teammates_architecture",
+  "inconsistencies": [
+    {
+      "type": "unexpected_box",
+      "diagram_id": 0,
+      "model_id": null
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 1,
+      "model_id": "_EIoe8KETEeu-mYqkDskRow",
+      "name_inconsistency": {
+        "expected": "E2E"
+      }
+    },
+    {
+      "type": "missing_line",
+      "line_id": [
+        1,
+        9
+      ]
+    },
+    {
+      "type": "unexpected_box",
+      "diagram_id": 2,
+      "model_id": null
+    },
+    {
+      "type": "unexpected_box",
+      "diagram_id": 3,
+      "model_id": null
+    },
+    {
+      "type": "unexpected_box",
+      "diagram_id": 4,
+      "model_id": null
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 5,
+      "model_id": "_Bae2oKETEeu-mYqkDskRow",
+      "name_inconsistency": {
+        "expected": "Test Driver"
+      }
+    },
+    {
+      "type": "missing_line",
+      "line_id": [
+        5,
+        9
+      ]
+    },
+    {
+      "type": "unexpected_box",
+      "diagram_id": 6,
+      "model_id": null
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 7,
+      "model_id": "_GaP8QKETEeu-mYqkDskRow",
+      "name_inconsistency": {
+        "expected": "Client"
+      }
+    },
+    {
+      "type": "unexpected_box",
+      "diagram_id": 8,
+      "model_id": null
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 9,
+      "model_id": "_1lMqsKESEeu-mYqkDskRow",
+      "name_inconsistency": {
+        "expected": "UI"
+      }
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 10,
+      "model_id": "_zUmhEKESEeu-mYqkDskRow",
+      "name_inconsistency": {
+        "expected": "Common"
+      }
+    },
+    {
+      "type": "missing_line",
+      "line_id": [
+        10,
+        12
+      ]
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 11,
+      "model_id": "_3LCnIKESEeu-mYqkDskRow",
+      "name_inconsistency": {
+        "expected": "Logic"
+      }
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 12,
+      "model_id": "_9JlCIKESEeu-mYqkDskRow",
+      "name_inconsistency": {
+        "expected": "Storage"
+      }
+    },
+    {
+      "type": "unexpected_box",
+      "diagram_id": 13,
+      "model_id": null
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 14,
+      "model_id": "_KGVMcKETEeu-mYqkDskRow",
+      "name_inconsistency": {
+        "expected": "GAE Datastore"
+      }
+    }
+  ]
+}

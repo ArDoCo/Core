@@ -1,0 +1,65 @@
+{
+  "name": "bigbluebutton",
+  "links": [
+    {
+      "diagram_id": 0,
+      "model_id": "_oN4CMFkHEeyewPSmlgszyA",
+      "role": "architecture:component"
+    },
+    {
+      "diagram_id": 1,
+      "model_id": "_s0aIcFkHEeyewPSmlgszyA",
+      "role": "architecture:component"
+    },
+    {
+      "diagram_id": 2,
+      "model_id": "_6sergFkHEeyewPSmlgszyA",
+      "role": "architecture:component"
+    },
+    {
+      "diagram_id": 3,
+      "model_id": "_0e5u8FkHEeyewPSmlgszyA",
+      "role": "architecture:component"
+    },
+    {
+      "diagram_id": 4,
+      "model_id": "_yGgUMFkHEeyewPSmlgszyA",
+      "role": "architecture:component"
+    },
+    {
+      "diagram_id": 5,
+      "model_id": "_2BgxMFkHEeyewPSmlgszyA",
+      "role": "architecture:component"
+    },
+    {
+      "diagram_id": 6,
+      "model_id": "_XuNf4FkJEeyewPSmlgszyA",
+      "role": "architecture:component"
+    },
+    {
+      "diagram_id": 7,
+      "model_id": "_9wZIcFkHEeyewPSmlgszyA",
+      "role": "architecture:component"
+    },
+    {
+      "diagram_id": 8,
+      "model_id": "_4yx-8FkHEeyewPSmlgszyA",
+      "role": "architecture:component"
+    },
+    {
+      "diagram_id": 9,
+      "model_id": "_kvWs4FkHEeyewPSmlgszyA",
+      "role": "architecture:component"
+    },
+    {
+      "diagram_id": 10,
+      "model_id": "_RDHFIFwPEeyiuNx_RO7j-Q",
+      "role": "architecture:component"
+    },
+    {
+      "diagram_id": 11,
+      "model_id": "_nwrCMFwPEeyiuNx_RO7j-Q",
+      "role": "architecture:component"
+    }
+  ]
+}
