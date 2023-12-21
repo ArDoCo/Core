@@ -9,7 +9,6 @@
 
   <artifactId>stages</artifactId>
   <packaging>pom</packaging>
-
   <profiles>
     <profile>
       <id>complete</id>
@@ -19,6 +18,7 @@
       <modules>
         <module>code-traceability</module>
         <module>connection-generator</module>
+        <module>diagram-consistency</module>
         <module>diagram-recognition</module>
         <module>inconsistency-detection</module>
         <module>model-provider</module>
@@ -35,6 +35,7 @@
       <modules>
         <module>code-traceability</module>
         <module>connection-generator</module>
+        <module>diagram-consistency</module>
         <module>diagram-recognition</module>
         <module>inconsistency-detection</module>
         <module>model-provider</module>
@@ -80,6 +81,7 @@
         <activeByDefault>false</activeByDefault>
       </activation>
       <modules>
+        <module>diagram-consistency</module>
         <module>diagram-recognition</module>
       </modules>
     </profile>

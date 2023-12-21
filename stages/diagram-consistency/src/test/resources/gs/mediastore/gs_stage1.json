@@ -1,0 +1,194 @@
+{
+  "name": "MediaStore",
+  "elements": [
+    {
+      "diagram_id": 0,
+      "occurrences": [
+        {
+          "role": "architecture:interface",
+          "id": "_jAJnML0YEeSAHuL4ItXOLQ"
+        },
+        {
+          "role": "architecture:component",
+          "id": "_ahv3gL0YEeSAHuL4ItXOLQ"
+        },
+        {
+          "role": "code:package",
+          "id": "edu.kit.ipd.sdq.mediastore.ejb.usermanagement"
+        },
+        {
+          "role": "code:class",
+          "id": "edu.kit.ipd.sdq.mediastore.ejb.usermanagement.UserManagementImpl[Implementation/mediastore.ejb.usermanagement/ejbModule/edu/kit/ipd/sdq/mediastore/ejb/usermanagement/UserManagementImpl.java]"
+        },
+        {
+          "role": "code:interface",
+          "id": "edu.kit.ipd.sdq.mediastore.basic.interfaces.IUserManagement[Implementation/mediastore.basic/src/edu/kit/ipd/sdq/mediastore/basic/interfaces/IUserManagement.java]"
+        }
+      ]
+    },
+    {
+      "diagram_id": 1,
+      "occurrences": [
+        {
+          "role": "architecture:interface",
+          "id": "_4TPZgHDpEeSqnN80MQ2uGw"
+        },
+        {
+          "role": "architecture:component",
+          "id": "_tBjC0HDpEeSqnN80MQ2uGw"
+        },
+        {
+          "role": "code:package",
+          "id": "edu.kit.ipd.sdq.mediastore.ejb.userdbadapter"
+        },
+        {
+          "role": "code:class",
+          "id": "edu.kit.ipd.sdq.mediastore.ejb.userdbadapter.UserDBAdapterImpl[Implementation/mediastore.ejb.userdbadapter/src/edu/kit/ipd/sdq/mediastore/ejb/userdbadapter/UserDBAdapterImpl.java]"
+        },
+        {
+          "role": "code:interface",
+          "id": "edu.kit.ipd.sdq.mediastore.basic.interfaces.IUserDBAdapter[Implementation/mediastore.basic/src/edu/kit/ipd/sdq/mediastore/basic/interfaces/IUserDBAdapter.java]"
+        }
+      ]
+    },
+    {
+      "diagram_id": 2,
+      "occurrences": [
+        {
+          "role": "architecture:component",
+          "id": "_j5vZQLhEEeSNPorBlo7x9g"
+        },
+        {
+          "role": "code:package",
+          "id": "edu.kit.ipd.sdq.mediastore.ejb.cache"
+        },
+        {
+          "role": "code:class",
+          "id": "edu.kit.ipd.sdq.mediastore.ejb.cache.CacheImpl[Implementation/mediastore.ejb.cache/ejbModule/edu/kit/ipd/sdq/mediastore/ejb/cache/CacheImpl.java]"
+        }
+      ]
+    },
+    {
+      "diagram_id": 4,
+      "occurrences": [
+        {
+          "role": "architecture:component",
+          "id": "_h_QpkLhEEeSNPorBlo7x9g"
+        },
+        {
+          "role": "code:package",
+          "id": "edu.kit.ipd.sdq.mediastore.ejb.tagwatermarking"
+        },
+        {
+          "role": "code:class",
+          "id": "edu.kit.ipd.sdq.mediastore.ejb.tagwatermarking.TagWatermarkingImpl[Implementation/mediastore.ejb.tagwatermarking/src/edu/kit/ipd/sdq/mediastore/ejb/tagwatermarking/TagWatermarkingImpl.java]"
+        }
+      ]
+    },
+    {
+      "diagram_id": 5,
+      "occurrences": [
+        {
+          "role": "architecture:component",
+          "id": "_o10-YHDrEeSqnN80MQ2uGw"
+        },
+        {
+          "role": "code:package",
+          "id": "edu.kit.ipd.sdq.mediastore.ejb.reencoder"
+        },
+        {
+          "role": "code:class",
+          "id": "edu.kit.ipd.sdq.mediastore.ejb.reencoder.ReEncoderImpl[Implementation/mediastore.ejb.reencoder/src/edu/kit/ipd/sdq/mediastore/ejb/reencoder/ReEncoderImpl.java]"
+        }
+      ]
+    },
+    {
+      "diagram_id": 6,
+      "occurrences": [
+        {
+          "role": "architecture:interface",
+          "id": "_68uVELg2EeSNPorBlo7x9g"
+        },
+        {
+          "role": "architecture:component",
+          "id": "_5LN7MLg2EeSNPorBlo7x9g"
+        }
+      ]
+    },
+    {
+      "diagram_id": 7,
+      "occurrences": [
+        {
+          "role": "architecture:interface",
+          "id": "_Nv-1oHDvEeSqnN80MQ2uGw"
+        },
+        {
+          "role": "architecture:component",
+          "id": "_p_EeYHDrEeSqnN80MQ2uGw"
+        },
+        {
+          "role": "code:package",
+          "id": "edu.kit.ipd.sdq.mediastore.ejb.mediamanagement"
+        },
+        {
+          "role": "code:class",
+          "id": "edu.kit.ipd.sdq.mediastore.ejb.mediamanagement.MediaManagementImpl[Implementation/mediastore.ejb.mediamanagement/src/edu/kit/ipd/sdq/mediastore/ejb/mediamanagement/MediaManagementImpl.java]"
+        },
+        {
+          "role": "code:interface",
+          "id": "edu.kit.ipd.sdq.mediastore.basic.interfaces.IMediaManagement[Implementation/mediastore.basic/src/edu/kit/ipd/sdq/mediastore/basic/interfaces/IMediaManagement.java]"
+        }
+      ]
+    },
+    {
+      "diagram_id": 8,
+      "occurrences": [
+        {
+          "role": "architecture:interface",
+          "id": "_psfEIHDsEeSqnN80MQ2uGw"
+        },
+        {
+          "role": "architecture:component",
+          "id": "_9eK7YHDrEeSqnN80MQ2uGw"
+        },
+        {
+          "role": "code:package",
+          "id": "edu.kit.ipd.sdq.mediastore.ejb.mediaaccess"
+        },
+        {
+          "role": "code:class",
+          "id": "edu.kit.ipd.sdq.mediastore.ejb.mediaaccess.MediaAccessImpl[Implementation/mediastore.ejb.mediaaccess/src/edu/kit/ipd/sdq/mediastore/ejb/mediaaccess/MediaAccessImpl.java]"
+        },
+        {
+          "role": "code:interface",
+          "id": "edu.kit.ipd.sdq.mediastore.basic.interfaces.IMediaAccess[Implementation/mediastore.basic/src/edu/kit/ipd/sdq/mediastore/basic/interfaces/IMediaAccess.java]"
+        }
+      ]
+    },
+    {
+      "diagram_id": 9,
+      "occurrences": [
+        {
+          "role": "architecture:interface",
+          "id": "_s3KlgHDuEeSqnN80MQ2uGw"
+        },
+        {
+          "role": "architecture:component",
+          "id": "_B5geQHDsEeSqnN80MQ2uGw"
+        },
+        {
+          "role": "code:package",
+          "id": "edu.kit.ipd.sdq.mediastore.ejb.packaging"
+        },
+        {
+          "role": "code:class",
+          "id": "edu.kit.ipd.sdq.mediastore.ejb.packaging.PackagingImpl[Implementation/mediastore.ejb.packaging/src/edu/kit/ipd/sdq/mediastore/ejb/packaging/PackagingImpl.java]"
+        },
+        {
+          "role": "code:interface",
+          "id": "edu.kit.ipd.sdq.mediastore.basic.interfaces.IPackaging[Implementation/mediastore.basic/src/edu/kit/ipd/sdq/mediastore/basic/interfaces/IPackaging.java]"
+        }
+      ]
+    }
+  ]
+}

@@ -11,6 +11,10 @@ class DiagramImpl(private val location: File) :
     private val boxes: MutableList<Box> = mutableListOf()
     private val textBoxes: MutableList<TextBox> = mutableListOf()
     private val connectors: MutableList<Connector> = mutableListOf()
+
+    private constructor() : this(File("")) {
+    }
+
     override fun getLocation(): File = location
 
     override fun addBox(box: Box) {

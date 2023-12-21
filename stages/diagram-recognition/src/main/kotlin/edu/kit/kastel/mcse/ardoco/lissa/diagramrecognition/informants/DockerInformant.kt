@@ -13,7 +13,6 @@ import java.io.IOException
 import java.util.stream.IntStream
 
 abstract class DockerInformant : Informant {
-
     companion object {
         // E.g., 127.0.0.1
         private val REMOTE_DOCKER_IP: String? = System.getenv("REMOTE_DOCKER_IP")
@@ -33,12 +32,13 @@ abstract class DockerInformant : Informant {
             if (namespace in dockerManagerCache.keys) {
                 return dockerManagerCache[namespace]!!
             }
-            val manager = if (REMOTE) {
-                // Use Remote Docker as it is faster (can only be used by admins of the ArDoCo Organization)
-                DockerManager(REMOTE_DOCKER_IP!!, REMOTE_DOCKER_PORT!!, "lissa", true)
-            } else {
-                DockerManager("lissa", true)
-            }
+            val manager =
+                if (REMOTE) {
+                    // Use Remote Docker as it is faster (can only be used by admins of the ArDoCo Organization)
+                    DockerManager(REMOTE_DOCKER_IP!!, REMOTE_DOCKER_PORT!!, "lissa", true)
+                } else {
+                    DockerManager("lissa", true)
+                }
             dockerManagerCache[namespace] = manager
             return manager
         }

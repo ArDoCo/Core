@@ -1,0 +1,306 @@
+{
+  "name": "teammates_packages",
+  "inconsistencies": [
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 0,
+      "model_id": "teammates.common.util",
+      "name_inconsistency": {
+        "expected": "util"
+      }
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 1,
+      "model_id": "teammates.common.exception",
+      "name_inconsistency": {
+        "expected": "exception"
+      }
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 2,
+      "model_id": "teammates.common.datatransfer",
+      "name_inconsistency": {
+        "expected": "datatransfer"
+      }
+    },
+    {
+      "type": "unexpected_line",
+      "line_id": [
+        2,
+        11
+      ]
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 3,
+      "model_id": "teammates.common",
+      "name_inconsistency": {
+        "expected": "common"
+      }
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 4,
+      "model_id": "teammates.ui.webapi",
+      "name_inconsistency": {
+        "expected": "webapi"
+      }
+    },
+    {
+      "type": "unexpected_line",
+      "line_id": [
+        4,
+        8
+      ]
+    },
+    {
+      "type": "unexpected_box",
+      "diagram_id": 5,
+      "model_id": null
+    },
+    {
+      "type": "missing_box",
+      "model_id": "teammates.ui.constants"
+    },
+    {
+      "type": "missing_box",
+      "model_id": "teammates.ui.output"
+    },
+    {
+      "type": "missing_box",
+      "model_id": "teammates.ui.request"
+    },
+    {
+      "type": "missing_box",
+      "model_id": "teammates.ui.servlets"
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 6,
+      "model_id": "teammates.ui",
+      "name_inconsistency": {
+        "expected": "ui"
+      }
+    },
+    {
+      "type": "unexpected_line",
+      "line_id": [
+        6,
+        3
+      ]
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 7,
+      "model_id": "teammates.logic.core",
+      "name_inconsistency": {
+        "expected": "core"
+      }
+    },
+    {
+      "type": "unexpected_line",
+      "line_id": [
+        7,
+        12
+      ]
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 8,
+      "model_id": "teammates.logic.api",
+      "name_inconsistency": {
+        "expected": "api"
+      }
+    },
+    {
+      "type": "unexpected_line",
+      "line_id": [
+        8,
+        7
+      ]
+    },
+    {
+      "type": "unexpected_line",
+      "line_id": [
+        8,
+        9
+      ]
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 9,
+      "model_id": "teammates.logic.external",
+      "name_inconsistency": {
+        "expected": "external"
+      }
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 10,
+      "model_id": "teammates.logic",
+      "name_inconsistency": {
+        "expected": "logic"
+      }
+    },
+    {
+      "type": "unexpected_line",
+      "line_id": [
+        10,
+        3
+      ]
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 11,
+      "model_id": "teammates.storage.entity",
+      "name_inconsistency": {
+        "expected": "entity"
+      }
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 12,
+      "model_id": "teammates.storage.api",
+      "name_inconsistency": {
+        "expected": "api"
+      }
+    },
+    {
+      "type": "unexpected_line",
+      "line_id": [
+        12,
+        11
+      ]
+    },
+    {
+      "type": "unexpected_line",
+      "line_id": [
+        12,
+        13
+      ]
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 13,
+      "model_id": "teammates.storage.search",
+      "name_inconsistency": {
+        "expected": "search"
+      }
+    },
+    {
+      "type": "unexpected_line",
+      "line_id": [
+        13,
+        12
+      ]
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 14,
+      "model_id": "teammates.storage",
+      "name_inconsistency": {
+        "expected": "storage"
+      }
+    },
+    {
+      "type": "unexpected_line",
+      "line_id": [
+        14,
+        3
+      ]
+    },
+    {
+      "type": "unexpected_box",
+      "diagram_id": 16,
+      "model_id": null
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 17,
+      "model_id": "teammates.e2e.pageobjects",
+      "name_inconsistency": {
+        "expected": "pageobjects"
+      }
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 18,
+      "model_id": "teammates.e2e.cases",
+      "name_inconsistency": {
+        "expected": "cases"
+      }
+    },
+    {
+      "type": "unexpected_line",
+      "line_id": [
+        18,
+        17
+      ]
+    },
+    {
+      "type": "unexpected_line",
+      "line_id": [
+        18,
+        19
+      ]
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 19,
+      "model_id": "teammates.e2e.util",
+      "name_inconsistency": {
+        "expected": "util"
+      }
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 20,
+      "model_id": "teammates.e2e",
+      "name_inconsistency": {
+        "expected": "e2e"
+      }
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 21,
+      "model_id": "teammates.client.scripts",
+      "name_inconsistency": {
+        "expected": "scripts"
+      }
+    },
+    {
+      "type": "unexpected_line",
+      "line_id": [
+        21,
+        22
+      ]
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 22,
+      "model_id": "teammates.client.connector",
+      "name_inconsistency": {
+        "expected": "connector"
+      }
+    },
+    {
+      "type": "missing_box",
+      "model_id": "teammates.client.util"
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 23,
+      "model_id": "teammates.client",
+      "name_inconsistency": {
+        "expected": "client"
+      }
+    },
+    {
+      "type": "unexpected_box",
+      "diagram_id": 24,
+      "model_id": null
+    }
+  ]
+}
