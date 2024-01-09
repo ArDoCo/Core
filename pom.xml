@@ -71,7 +71,7 @@
   </distributionManagement>
 
   <properties>
-    <revision>0.37.0</revision>
+    <revision>0.38.0-SNAPSHOT</revision>
     <ardoco.version>${revision}</ardoco.version>
 
     <project.source.encoding>UTF-8</project.source.encoding>
