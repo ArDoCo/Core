@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.informants;
 
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistencyState;

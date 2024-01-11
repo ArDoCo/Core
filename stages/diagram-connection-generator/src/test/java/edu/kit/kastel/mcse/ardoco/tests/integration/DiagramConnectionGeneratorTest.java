@@ -1,4 +1,4 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.tests.integration;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
