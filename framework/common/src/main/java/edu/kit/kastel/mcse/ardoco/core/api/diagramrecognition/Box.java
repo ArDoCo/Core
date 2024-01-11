@@ -22,12 +22,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class Box extends DiagramElement implements Serializable {
     // the four coordinates x1,y1,x2,y2
-
+    @JsonProperty("box")
     private int[] coordinates;
+    @JsonProperty
     private double confidence;
+    @JsonProperty("class")
     private String classification;
+    @JsonProperty("texts")
     private List<TextBox> textBoxes = new ArrayList<>();
-    private Color dominatingColor = null;
+    @JsonProperty("contained")
+    private List<String> containedBoxes = new ArrayList<>();
+    private transient Color dominatingColor = null;
     @JsonIgnore
     private SortedSet<String> references = new TreeSet<>();
 
@@ -133,6 +138,25 @@ public class Box extends DiagramElement implements Serializable {
      */
     public void addTextBox(TextBox textBox) {
         this.textBoxes.add(Objects.requireNonNull(textBox));
+    }
+
+    /**
+     * Mark another box as contained in this box.
+     *
+     * @param box the contained box
+     */
+    public void addContainedBox(Box box) {
+        this.containedBoxes.add(Objects.requireNonNull(box.getUUID()));
+    }
+
+    /**
+     * Get all boxes that have been marked as contained in this box.
+     * More boxes might be contained, to find these the overlapping area of the boxes has to be calculated.
+     *
+     * @return all contained boxes
+     */
+    public List<String> getContainedBoxes() {
+        return new ArrayList<>(containedBoxes);
     }
 
     /**

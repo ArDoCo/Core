@@ -152,6 +152,20 @@ public final class JavaModel {
         }
     }
 
+    private void initDependencies() {
+        for (JavaType javaType : javaTypes) {
+            List<ITypeBinding> referencedBindings = javaType.referencedBindings();
+            SortedSet<Datatype> dependencies = new TreeSet<>();
+            for (ITypeBinding referencedBinding : referencedBindings) {
+                javaTypes.stream()
+                        .filter(otherJavaType -> otherJavaType.binding().getErasure().isEqualTo(referencedBinding.getErasure()))
+                        .findFirst()
+                        .ifPresent(referencedJavaType -> dependencies.add(referencedJavaType.codeType()));
+            }
+            javaType.codeType().setDatatypeReference(dependencies);
+        }
+    }
+
     private static List<ITypeBinding> getReferencedBindings(AbstractTypeDeclaration abstractTypeDeclaration) {
         @SuppressWarnings("unchecked") List<BodyDeclaration> bodyDeclarations = abstractTypeDeclaration.bodyDeclarations();
         List<Type> referencedTypes = new ArrayList<>();
@@ -208,6 +222,7 @@ public final class JavaModel {
         initImplementedInterfaces();
         initExtendedInterfaces();
         initSuperclasses();
+        initDependencies();
 
         modelContent.addAll(mergedCodePackages);
 
@@ -215,16 +230,23 @@ public final class JavaModel {
     }
 
     private List<Datatype> extractTypes(CompilationUnit compilationUnit) {
-        List<Datatype> codeTypes = new ArrayList<>();
+        Map<ASTNode, Datatype> codeTypes = new LinkedHashMap<>();
         Set<TypeDeclaration> typeDeclarations = TypeDeclarationFinder.find(compilationUnit);
         for (TypeDeclaration typeDeclaration : typeDeclarations) {
-            codeTypes.add(processTypeDeclaration(typeDeclaration));
+            codeTypes.put(typeDeclaration, processTypeDeclaration(typeDeclaration));
         }
         Set<EnumDeclaration> enumDeclarations = EnumDeclarationFinder.find(compilationUnit);
         for (EnumDeclaration enumDeclaration : enumDeclarations) {
-            codeTypes.add(processEnumDeclaration(enumDeclaration));
+            codeTypes.put(enumDeclaration, processEnumDeclaration(enumDeclaration));
         }
-        return codeTypes;
+        for (var entry : codeTypes.entrySet()) {
+            ASTNode node = entry.getKey();
+            Datatype codeType = entry.getValue();
+            if (codeTypes.containsKey(node.getParent())) {
+                codeType.setParentDatatype(codeTypes.get(node.getParent()));
+            }
+        }
+        return codeTypes.values().stream().toList();
     }
 
     private ClassUnit processEnumDeclaration(EnumDeclaration enumDeclaration) {

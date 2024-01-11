@@ -13,6 +13,9 @@ class DiagramImpl(private val resourceName: String, private val location: File) 
     private val textBoxes: MutableList<TextBox> = mutableListOf()
     private val connectors: MutableList<Connector> = mutableListOf()
 
+    private constructor() : this("", File("")) {
+    }
+
     override fun getResourceName(): String {
         return resourceName
     }

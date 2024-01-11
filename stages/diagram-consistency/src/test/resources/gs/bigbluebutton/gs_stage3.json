@@ -1,0 +1,168 @@
+{
+  "name": "bigbluebutton",
+  "inconsistencies": [
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 1,
+      "model_id": "_s0aIcFkHEeyewPSmlgszyA",
+      "name_inconsistency": {
+        "expected": "WebRTC-SFU"
+      }
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 2,
+      "model_id": "_6sergFkHEeyewPSmlgszyA",
+      "name_inconsistency": {
+        "expected": "Redis PubSub"
+      }
+    },
+    {
+      "type": "unexpected_line",
+      "line_id": [
+        2,
+        4
+      ]
+    },
+    {
+      "type": "unexpected_line",
+      "line_id": [
+        2,
+        6
+      ]
+    },
+    {
+      "type": "unexpected_line",
+      "line_id": [
+        2,
+        7
+      ]
+    },
+    {
+      "type": "unexpected_line",
+      "line_id": [
+        2,
+        8
+      ]
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 3,
+      "model_id": "_0e5u8FkHEeyewPSmlgszyA",
+      "name_inconsistency": {
+        "expected": "HTML5 Client"
+      }
+    },
+    {
+      "type": "missing_line",
+      "line_id": [
+        3,
+        4
+      ]
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 4,
+      "model_id": "_yGgUMFkHEeyewPSmlgszyA",
+      "name_inconsistency": {
+        "expected": "HTML5 Server"
+      }
+    },
+    {
+      "type": "missing_line",
+      "line_id": [
+        4,
+        2
+      ]
+    },
+    {
+      "type": "unexpected_line",
+      "line_id": [
+        4,
+        3
+      ]
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 5,
+      "model_id": "_2BgxMFkHEeyewPSmlgszyA",
+      "name_inconsistency": {
+        "expected": "Presentation Conversion"
+      }
+    },
+    {
+      "type": "missing_line",
+      "line_id": [
+        5,
+        8
+      ]
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 6,
+      "model_id": "_XuNf4FkJEeyewPSmlgszyA",
+      "name_inconsistency": {
+        "expected": "Apps"
+      }
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 7,
+      "model_id": "_9wZIcFkHEeyewPSmlgszyA",
+      "name_inconsistency": {
+        "expected": "FSESL"
+      }
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 8,
+      "model_id": "_4yx-8FkHEeyewPSmlgszyA",
+      "name_inconsistency": {
+        "expected": "BBB web"
+      }
+    },
+    {
+      "type": "unexpected_line",
+      "line_id": [
+        8,
+        5
+      ]
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 9,
+      "model_id": "_kvWs4FkHEeyewPSmlgszyA",
+      "name_inconsistency": {
+        "expected": "Recording Service"
+      }
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 10,
+      "model_id": "_RDHFIFwPEeyiuNx_RO7j-Q",
+      "name_inconsistency": {
+        "expected": "Redis DB"
+      }
+    },
+    {
+      "type": "name_inconsistency",
+      "diagram_id": 11,
+      "model_id": "_nwrCMFwPEeyiuNx_RO7j-Q",
+      "name_inconsistency": {
+        "expected": "FreeSWITCH"
+      }
+    },
+    {
+      "type": "unexpected_line",
+      "line_id": [
+        11,
+        7
+      ]
+    },
+    {
+      "type": "unexpected_box",
+      "diagram_id": 12,
+      "model_id": null
+    }
+  ]
+}

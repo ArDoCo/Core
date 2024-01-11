@@ -27,8 +27,8 @@
     <developer>
       <id>Hossiphi</id>
       <name>Sophie Corallo</name>
-      <email>sophie.schulz@kit.edu</email>
-      <url>https://mcse.kastel.kit.edu/staff_sophie_schulz.php</url>
+      <email>sophie.corallo@kit.edu</email>
+      <url>https://mcse.kastel.kit.edu/staff_sophie_corallo.php</url>
       <organization>KASTEL</organization>
       <organizationUrl>https://mcse.kastel.kit.edu/</organizationUrl>
       <timezone>GMT+1</timezone>
@@ -71,7 +71,7 @@
   </distributionManagement>
 
   <properties>
-    <revision>0.34.0-SNAPSHOT</revision>
+    <revision>0.38.0-SNAPSHOT</revision>
     <ardoco.version>${revision}</ardoco.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -84,18 +84,19 @@
     <!-- Kotlin -->
     <kotlin.code.style>official</kotlin.code.style>
     <kotlin.compiler.jvmTarget>${java.version}</kotlin.compiler.jvmTarget>
-    <kotlin.version>1.9.21</kotlin.version>
+    <kotlin.version>1.9.22</kotlin.version>
 
     <!-- Plugin Versions -->
-    <slf4j.version>2.0.9</slf4j.version>
+    <slf4j.version>2.0.11</slf4j.version>
     <spotless.version>2.41.1</spotless.version>
     <junit.version>5.10.1</junit.version>
     <eclipse-collections.version>12.0.0.M3</eclipse-collections.version>
-    <jackson.version>2.16.0</jackson.version>
-    <javaparser.version>3.25.7</javaparser.version>
-    <error-prone.version>2.23.0</error-prone.version>
+    <jackson.version>2.16.1</jackson.version>
+    <javaparser.version>3.25.8</javaparser.version>
+    <error-prone.version>2.24.1</error-prone.version>
     <mockito.version>5.2.0</mockito.version>
     <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
+    <jgrapht.version>1.5.2</jgrapht.version>
 
     <sonar.projectKey>ArDoCo_Core</sonar.projectKey>
     <sonar.moduleKey>${project.groupId}:${project.artifactId}</sonar.moduleKey>
@@ -164,7 +165,7 @@
       <dependency>
         <groupId>org.assertj</groupId>
         <artifactId>assertj-core</artifactId>
-        <version>3.24.2</version>
+        <version>3.25.1</version>
         <scope>test</scope>
       </dependency>
       <dependency>
@@ -302,7 +303,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.11.0</version>
+          <version>3.12.1</version>
           <configuration>
             <release>${java.version}</release>
             <source>${java.version}</source>
@@ -368,7 +369,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>3.2.3</version>
+          <version>3.2.5</version>
         </plugin>
         <plugin>
           <groupId>org.codehaus.mojo</groupId>

@@ -40,10 +40,7 @@ class DiagramRecognition(
             additionalConfigs: SortedMap<String?, String?>?,
             dataRepository: DataRepository?
         ): DiagramRecognition {
-            val diagramDetection =
-                DiagramRecognition(
-                    dataRepository!!
-                )
+            val diagramDetection = DiagramRecognition(dataRepository!!)
             diagramDetection.applyConfiguration(additionalConfigs)
             return diagramDetection
         }
