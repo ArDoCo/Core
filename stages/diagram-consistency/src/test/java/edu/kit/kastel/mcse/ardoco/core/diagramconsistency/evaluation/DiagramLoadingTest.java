@@ -19,11 +19,18 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import com.fasterxml.jackson.databind.BeanProperty;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.InjectableValues;
+import com.fasterxml.jackson.databind.JsonMappingException;
+
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Extractions;
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureComponent;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItem;
+import edu.kit.kastel.mcse.ardoco.core.common.JsonHandling;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.DiagramProject;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.stage1.Element;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.stage1.ElementIdentification;
@@ -60,7 +67,20 @@ class DiagramLoadingTest extends EvaluationTestBase {
         String text = project.getDiagram();
 
         assertDoesNotThrow(() -> {
-            var diagram = createObjectMapper().readValue(text, DiagramImpl.class);
+            var oom = JsonHandling.createObjectMapper();
+            oom.setInjectableValues(new InjectableValues() {
+                @Override
+                public Object findInjectableValue(Object o, DeserializationContext deserializationContext, BeanProperty beanProperty, Object o1)
+                        throws JsonMappingException {
+                    if (beanProperty.getType().getRawClass() != Diagram.class)
+                        throw new JsonMappingException(deserializationContext.getParser(), "Could not inject value into " + beanProperty.getName());
+                    Object parent = deserializationContext.getParser().getParsingContext().getParent().getCurrentValue();
+                    if (!(parent instanceof DiagramImpl parentDiagram))
+                        throw new JsonMappingException(deserializationContext.getParser(), "Could not inject value into " + beanProperty.getName());
+                    return parentDiagram;
+                }
+            });
+            var diagram = oom.readValue(text, DiagramImpl.class);
             assertNotNull(diagram);
         });
     }
