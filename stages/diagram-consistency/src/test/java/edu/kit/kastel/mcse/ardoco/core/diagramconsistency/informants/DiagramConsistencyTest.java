@@ -79,8 +79,8 @@ class DiagramConsistencyTest extends EvaluationTestBase {
             DiagramProject.MEDIA_STORE, new double[] { 0.82, 0.90, 0.86 });
 
     private final static Map<DiagramProject, double[]> expectedStage3 = Map.of(DiagramProject.BIG_BLUE_BUTTON, new double[] { 1.00, 1.00, 1.00 },
-            DiagramProject.TEAMMATES_ARCHITECTURE, new double[] { 0.78, 0.78, 0.78 }, DiagramProject.TEAMMATES_PACKAGES, new double[] { 0.71, 0.92, 0.80 },
-            DiagramProject.TEAMMATES_UI, new double[] { 0.74, 0.85, 0.80 }, DiagramProject.TEA_STORE, new double[] { 0.60, 0.47, 0.53 },
+            DiagramProject.TEAMMATES_ARCHITECTURE, new double[] { 0.76, 0.76, 0.76 }, DiagramProject.TEAMMATES_PACKAGES, new double[] { 0.71, 0.92, 0.80 },
+            DiagramProject.TEAMMATES_UI, new double[] { 0.73, 0.85, 0.78 }, DiagramProject.TEA_STORE, new double[] { 0.60, 0.47, 0.53 },
             DiagramProject.MEDIA_STORE, new double[] { 0.79, 0.73, 0.76 });
 
     private static Decision rateStage1Decision(DiagramProject project, DiagramMatchingModelSelectionState selection) {

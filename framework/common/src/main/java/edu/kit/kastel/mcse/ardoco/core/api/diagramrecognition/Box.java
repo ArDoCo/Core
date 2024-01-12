@@ -275,7 +275,7 @@ public class Box extends DiagramElement implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        return super.equals(obj);
+        return super.equals(obj) && obj instanceof Box otherBox && this.textBoxes.equals(otherBox.textBoxes);
     }
 
     @Override
