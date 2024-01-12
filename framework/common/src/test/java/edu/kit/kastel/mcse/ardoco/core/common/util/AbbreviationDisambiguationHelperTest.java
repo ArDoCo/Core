@@ -1,6 +1,7 @@
 /* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
+import static edu.kit.kastel.mcse.ardoco.core.common.JsonHandling.createObjectMapper;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
@@ -8,7 +9,6 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.kit.kastel.mcse.ardoco.core.api.Disambiguation;
 
@@ -31,7 +31,7 @@ class AbbreviationDisambiguationHelperTest {
 
     @Test
     void deserialize() throws JsonProcessingException {
-        var abbr = new ObjectMapper().readValue(dbJSON, Disambiguation.class);
+        var abbr = createObjectMapper().readValue(dbJSON, Disambiguation.class);
         assertEquals("DB", abbr.getAbbreviation());
         assertTrue(abbr.getMeanings().containsAll(List.of("Database", "Decibel")));
         assertEquals(2, abbr.getMeanings().size());

@@ -1,6 +1,8 @@
 /* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
+import static edu.kit.kastel.mcse.ardoco.core.common.JsonHandling.createObjectMapper;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
@@ -12,8 +14,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.kit.kastel.mcse.ardoco.core.api.Disambiguation;
 
@@ -212,7 +212,7 @@ public final class AbbreviationDisambiguationHelper extends FileBasedCache<Sorte
     protected SortedMap<String, Disambiguation> read() throws CacheException {
         try {
             logger.info("Reading abbreviations file");
-            var read = toMap(new ObjectMapper().readValue(getFile(), Disambiguation[].class));
+            var read = toMap(createObjectMapper().readValue(getFile(), Disambiguation[].class));
             logger.info("Found {} cached abbreviation", read.size());
             return read;
         } catch (IOException e) {
@@ -230,7 +230,7 @@ public final class AbbreviationDisambiguationHelper extends FileBasedCache<Sorte
         Collection<Disambiguation> values = content.values();
         try (PrintWriter out = new PrintWriter(getFile())) {
             //Parse before writing to the file, so we don't mess up the entire file due to a parsing error
-            String json = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(values);
+            String json = createObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(values);
             out.print(json);
             logger.info("Saved abbreviations file");
         } catch (IOException e) {

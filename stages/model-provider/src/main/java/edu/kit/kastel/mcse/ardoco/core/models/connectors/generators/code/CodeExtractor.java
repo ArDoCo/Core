@@ -1,5 +1,7 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.code;
+
+import static edu.kit.kastel.mcse.ardoco.core.common.JsonHandling.createObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,10 +9,7 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.CodeModelType;
@@ -79,19 +78,6 @@ public abstract class CodeExtractor extends Extractor {
 
     private String getCodeModelFileString() {
         return path + File.separator + CODE_MODEL_FILE_NAME;
-    }
-
-    private static ObjectMapper createObjectMapper() {
-        ObjectMapper oom = new ObjectMapper();
-        oom.setVisibility(oom.getSerializationConfig()
-                .getDefaultVisibilityChecker() //
-                .withFieldVisibility(JsonAutoDetect.Visibility.ANY)//
-                .withGetterVisibility(JsonAutoDetect.Visibility.NONE)//
-                .withSetterVisibility(JsonAutoDetect.Visibility.NONE)//
-                .withIsGetterVisibility(JsonAutoDetect.Visibility.NONE));
-        oom.enable(SerializationFeature.INDENT_OUTPUT);
-        oom.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-        return oom;
     }
 
 }

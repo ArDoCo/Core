@@ -1,10 +1,17 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static edu.kit.kastel.mcse.ardoco.core.common.JsonHandling.createObjectMapper;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
@@ -13,7 +20,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Extractions;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.JsonMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureComponent;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
@@ -54,7 +60,7 @@ class DiagramLoadingTest extends EvaluationTestBase {
         String text = project.getDiagram();
 
         assertDoesNotThrow(() -> {
-            var diagram = JsonMapping.OBJECT_MAPPER.readValue(text, DiagramImpl.class);
+            var diagram = createObjectMapper().readValue(text, DiagramImpl.class);
             assertNotNull(diagram);
         });
     }
@@ -68,7 +74,7 @@ class DiagramLoadingTest extends EvaluationTestBase {
         AtomicReference<ElementIdentification> identification = new AtomicReference<>();
 
         assertDoesNotThrow(() -> {
-            identification.set(JsonMapping.OBJECT_MAPPER.readValue(text, ElementIdentification.class));
+            identification.set(createObjectMapper().readValue(text, ElementIdentification.class));
             assertNotNull(identification.get());
         });
 
@@ -106,7 +112,7 @@ class DiagramLoadingTest extends EvaluationTestBase {
         String text = project.getLinkingStage();
 
         assertDoesNotThrow(() -> {
-            var object = JsonMapping.OBJECT_MAPPER.readValue(text, ElementLinks.class);
+            var object = createObjectMapper().readValue(text, ElementLinks.class);
             assertNotNull(object);
         });
     }
@@ -118,7 +124,7 @@ class DiagramLoadingTest extends EvaluationTestBase {
         String text = project.getValidationStage();
 
         assertDoesNotThrow(() -> {
-            var object = JsonMapping.OBJECT_MAPPER.readValue(text, DiagramInconsistencies.class);
+            var object = createObjectMapper().readValue(text, DiagramInconsistencies.class);
             assertNotNull(object);
         });
     }

@@ -1,6 +1,8 @@
 /* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
+import static edu.kit.kastel.mcse.ardoco.core.common.JsonHandling.createObjectMapper;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -51,7 +53,7 @@ public class DiagramGS implements Diagram {
         SimpleModule module = new SimpleModule();
         module.addDeserializer(BoundingBox.class, new BoundingBoxDeserializer());
         module.addDeserializer(TextBox.class, new TextBoxDeserializer());
-        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectMapper objectMapper = createObjectMapper();
         objectMapper.registerModule(module);
         objectMapper.setInjectableValues(new InjectableValues.Std().addValue(DiagramGS.class, this));
         var boxes = objectMapper.treeToValue(boxesNode, BoxGS[].class);

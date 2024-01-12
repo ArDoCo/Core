@@ -1,4 +1,4 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data;
 
 import java.io.File;
@@ -61,7 +61,7 @@ public record AnnotatedDiagram<M>(Diagram diagram, MutableBiMap<Box, M> links, S
      * @return The diagram.
      */
     public static AnnotatedDiagram<ArchitectureItem> createFrom(String source, ArchitectureModel model) {
-        Diagram diagram = new DiagramImpl(new File(source));
+        Diagram diagram = new DiagramImpl(source, new File(source));
         MutableBiMap<ArchitectureItem, Box> links = new HashBiMap<>();
 
         Transformations.transform(model, (item) -> {
@@ -81,7 +81,7 @@ public record AnnotatedDiagram<M>(Diagram diagram, MutableBiMap<Box, M> links, S
      * @return The diagram.
      */
     public static AnnotatedDiagram<CodeItem> createFrom(String source, CodeModel model) {
-        Diagram diagram = new DiagramImpl(new File(source));
+        Diagram diagram = new DiagramImpl(source, new File(source));
         MutableBiMap<CodeItem, Box> links = new HashBiMap<>();
 
         Transformations.transform(model, (item) -> {
@@ -102,7 +102,7 @@ public record AnnotatedDiagram<M>(Diagram diagram, MutableBiMap<Box, M> links, S
      * @return The diagram.
      */
     public static <T> AnnotatedDiagram<T> createFrom(String source, AnnotatedGraph<Box, T> graph) {
-        Diagram diagram = new DiagramImpl(new File(source));
+        Diagram diagram = new DiagramImpl(source, new File(source));
         Map<Vertex<Box>, Box> vertexToBox = new LinkedHashMap<>();
 
         for (Vertex<Box> vertex : graph.graph().vertexSet()) {

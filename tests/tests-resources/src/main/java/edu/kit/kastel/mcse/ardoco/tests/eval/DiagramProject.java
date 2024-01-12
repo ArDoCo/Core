@@ -1,6 +1,8 @@
 /* Licensed under MIT 2021-2024. */
 package edu.kit.kastel.mcse.ardoco.tests.eval;
 
+import static edu.kit.kastel.mcse.ardoco.core.common.JsonHandling.createObjectMapper;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -10,7 +12,6 @@ import java.util.stream.Collectors;
 import org.jetbrains.annotations.Nullable;
 
 import com.fasterxml.jackson.databind.InjectableValues;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramGS;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramsGS;
@@ -287,7 +288,7 @@ public enum DiagramProject implements GoldStandardDiagramsWithTLR {
     @Override
     public Set<DiagramGS> getDiagramsGoldStandard() {
         try {
-            var objectMapper = new ObjectMapper();
+            var objectMapper = createObjectMapper();
             var file = getDiagramsGoldStandardFile();
             objectMapper.setInjectableValues(new InjectableValues.Std().addValue(DiagramProject.class, this));
             return new LinkedHashSet<>(List.of(objectMapper.readValue(file, DiagramsGS.class).diagrams));

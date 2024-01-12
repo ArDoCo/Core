@@ -1,6 +1,8 @@
 /* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
+import static edu.kit.kastel.mcse.ardoco.core.common.JsonHandling.createObjectMapper;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -13,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * This class provides lists of computer- and software-related terminology. It retrieves the terminology from the DBPedia ontology using SPARQL queries. The
@@ -151,7 +152,7 @@ public class DbPediaHelper extends FileBasedCache<DbPediaHelper.DbPediaData> {
     protected void write(DbPediaData r) {
         try (PrintWriter out = new PrintWriter(getFile())) {
             //Parse before writing to the file, so we don't mess up the entire file due to a parsing error
-            String json = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(r);
+            String json = createObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(r);
             out.print(json);
             logger.info("Saved {} file", getIdentifier());
         } catch (IOException e) {
@@ -168,7 +169,7 @@ public class DbPediaHelper extends FileBasedCache<DbPediaHelper.DbPediaData> {
     protected DbPediaData read() throws CacheException {
         try {
             logger.info("Reading {} file", getIdentifier());
-            return new ObjectMapper().readValue(getFile(), new TypeReference<>() {
+            return createObjectMapper().readValue(getFile(), new TypeReference<>() {
             });
         } catch (IOException e) {
             logger.error("Error reading {} file", getIdentifier());

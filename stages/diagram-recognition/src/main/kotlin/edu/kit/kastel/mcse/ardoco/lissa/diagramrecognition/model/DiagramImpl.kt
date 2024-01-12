@@ -7,11 +7,22 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.TextBox
 import java.io.File
 import java.util.Objects
 
-class DiagramImpl(private val resourceName: String, private val location: File) :
+class DiagramImpl :
     Diagram {
-    private val boxes: MutableList<Box> = mutableListOf()
-    private val textBoxes: MutableList<TextBox> = mutableListOf()
-    private val connectors: MutableList<Connector> = mutableListOf()
+    private val resourceName: String
+    private val location: File
+
+    constructor(resourceName: String, location: File) {
+        this.resourceName = resourceName
+        this.location = location
+        this.boxes = mutableListOf()
+        this.textBoxes = mutableListOf()
+        this.connectors = mutableListOf()
+    }
+
+    private val boxes: MutableList<Box>
+    private val textBoxes: MutableList<TextBox>
+    private val connectors: MutableList<Connector>
 
     private constructor() : this("", File("")) {
     }

@@ -1,5 +1,7 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.textproviderjson.converter;
+
+import static edu.kit.kastel.mcse.ardoco.core.common.JsonHandling.createObjectMapper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,7 +42,7 @@ public final class JsonConverter {
      * @return whether the json string matches the text schema
      */
     public static boolean validateJson(String json) throws IOException {
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = createObjectMapper();
         JsonSchemaFactory schemaFactory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V4);
 
         InputStream inputSchema = JsonConverter.class.getClassLoader().getResourceAsStream(SCHEMA_PATH);
@@ -69,7 +71,7 @@ public final class JsonConverter {
         if (!validateJson(json)) {
             throw new InvalidJsonException("The json string is no valid text DTO.");
         }
-        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectMapper objectMapper = createObjectMapper();
         return objectMapper.readValue(json, TextDto.class);
     }
 
@@ -80,7 +82,7 @@ public final class JsonConverter {
      * @return the JSON string or null
      */
     public static String toJsonString(TextDto obj) throws IOException, InvalidJsonException {
-        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectMapper objectMapper = createObjectMapper();
         String jsonString = objectMapper.writeValueAsString(obj);
         if (!validateJson(jsonString)) {
             throw new InvalidJsonException("The text DTO could not be converted into a json string. No valid text Dto");

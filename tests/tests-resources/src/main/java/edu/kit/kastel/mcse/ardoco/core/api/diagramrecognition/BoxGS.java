@@ -38,7 +38,8 @@ public class BoxGS extends Box implements Serializable {
     @JsonCreator
     public BoxGS(@JacksonInject DiagramGS diagram, @JsonProperty("boundingBox") BoundingBox boundingBox, @JsonProperty("textBoxes") TextBox[] textBoxes,
             @JsonProperty("subBoxes") BoxGS[] subBoxes, @JsonProperty("tracelinks") TraceLinkGS[] tracelinks) {
-        super(diagram, boundingBox.toCoordinates(), 1, Classification.UNKNOWN.getClassificationString(), Arrays.asList(textBoxes), Color.BLACK);
+        super(diagram, calculateUUID(boundingBox.toCoordinates()), boundingBox.toCoordinates(), 1, Classification.UNKNOWN.getClassificationString(), Arrays
+                .asList(textBoxes), Color.BLACK);
         this.diagramGS = diagram;
         this.subBoxes = subBoxes;
         this.tracelinks = tracelinks;

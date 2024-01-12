@@ -1,4 +1,4 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency;
 
 import java.io.File;
@@ -19,7 +19,7 @@ import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.agents.DiagramModelSel
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.agents.DiagramProviderAgent;
 import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.ArDoCoRunner;
-import edu.kit.kastel.mcse.ardoco.core.models.ArCoTLModelProviderAgent;
+import edu.kit.kastel.mcse.ardoco.core.models.agents.ArCoTLModelProviderAgent;
 
 /**
  * A runner that checks the consistency of a diagram and the represented architecture/code model.

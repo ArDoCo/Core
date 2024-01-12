@@ -32,11 +32,12 @@ public class Box extends DiagramElement implements Serializable {
     private List<TextBox> textBoxes = new ArrayList<>();
     @JsonProperty("contained")
     private List<String> containedBoxes = new ArrayList<>();
-    private transient Color dominatingColor = null;
+    @JsonProperty("dominatingColor")
+    private Color dominatingColor = null;
     @JsonIgnore
     private SortedSet<String> references = new TreeSet<>();
 
-    private static String calculateUUID(int[] coordinates) {
+    protected static String calculateUUID(int[] coordinates) {
         return String.format("Box [%s]", getBoundingBoxConcat(coordinates));
     }
 
@@ -47,6 +48,26 @@ public class Box extends DiagramElement implements Serializable {
      */
     public static String getBoundingBoxConcat(int[] coordinates) {
         return Arrays.stream(coordinates).mapToObj((Integer::toString)).reduce((l, r) -> l + "-" + r).orElseThrow();
+    }
+
+    /**
+     * Create a new box that is detected on the image.
+     *
+     * @param diagram         the diagram the box belongs to
+     * @param uuid            the unique identifier of the box
+     * @param coordinates     the coordinates of two corners of the box in pixel. (x1,y1,x2,y2)
+     * @param confidence      a confidence value
+     * @param classification  the classification (e.g., "LABEL"), see {@link Classification} for further details
+     * @param textBoxes       the text boxes that are attached to this box
+     * @param dominatingColor a dominating color in the box (iff present)
+     */
+    public Box(Diagram diagram, String uuid, int[] coordinates, double confidence, String classification, List<TextBox> textBoxes, Color dominatingColor) {
+        super(diagram, uuid);
+        this.coordinates = coordinates;
+        this.confidence = confidence;
+        this.classification = classification;
+        this.textBoxes = textBoxes;
+        this.dominatingColor = dominatingColor;
     }
 
     /**
@@ -71,18 +92,22 @@ public class Box extends DiagramElement implements Serializable {
     /**
      * Create a new box that is detected on the image.
      *
-     * @param diagram        the diagram this box belongs to
-     * @param coordinates    the coordinates of two corners of the box in pixel. (x1,y1,x2,y2)
-     * @param confidence     a confidence value
-     * @param classification the classification (e.g., "LABEL"), see {@link Classification} for further details
+     * @param diagram         the diagram this box belongs to
+     * @param uuid            the unique identifier of the box
+     * @param coordinates     the coordinates of two corners of the box in pixel. (x1,y1,x2,y2)
+     * @param confidence      a confidence value
+     * @param classification  the classification (e.g., "LABEL"), see {@link Classification} for further details
+     * @param dominatingColor a dominating color in the box (iff present)
      */
     @JsonCreator
-    public Box(@JacksonInject Diagram diagram, @JsonProperty("box") int[] coordinates, @JsonProperty("confidence") double confidence,
-            @JsonProperty("class") String classification) {
-        super(diagram, calculateUUID(coordinates));
+    public Box(@JacksonInject Diagram diagram, @JsonProperty("uuid") String uuid, @JsonProperty("box") int[] coordinates,
+            @JsonProperty("confidence") double confidence, @JsonProperty("class") String classification,
+            @JsonProperty("dominatingColor") Color dominatingColor) {
+        super(diagram, uuid == null ? calculateUUID(coordinates) : uuid);
         this.coordinates = coordinates;
         this.confidence = confidence;
         this.classification = classification;
+        this.dominatingColor = dominatingColor;
     }
 
     /**

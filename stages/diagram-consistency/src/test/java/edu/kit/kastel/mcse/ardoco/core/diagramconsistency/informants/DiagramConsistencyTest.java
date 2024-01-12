@@ -1,11 +1,24 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.informants;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static edu.kit.kastel.mcse.ardoco.core.common.JsonHandling.createObjectMapper;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
@@ -23,7 +36,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.DiagramModelLinkSt
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.DiagramState;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.DiagramUtility;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.Extractions;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.JsonMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.Inconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.inconsistencies.InconsistencyType;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
@@ -93,6 +105,7 @@ class DiagramConsistencyTest extends EvaluationTestBase {
     @Disabled("No assertions, serves as evaluation runner only")
     void evaluateStage1WithInitialParameters(DiagramProject project) throws IOException {
         SortedMap<String, String> config = new TreeMap<>();
+        config.put("DiagramRecognition::enabledAgents", "DiagramRecognitionAgent");
         config.put("DiagramElementOccurrenceFinderInformant::similarityThresholdArchitecture", String.valueOf(0.5));
         config.put("DiagramElementOccurrenceFinderInformant::similarityThresholdCode", String.valueOf(0.75));
         config.put("DiagramElementOccurrenceFinderInformant::similarityFunction", String.valueOf(
@@ -112,6 +125,7 @@ class DiagramConsistencyTest extends EvaluationTestBase {
     @Disabled("No assertions, serves as evaluation runner only")
     void evaluateStage1WithInitialParametersWithJaccard(DiagramProject project) throws IOException {
         SortedMap<String, String> config = new TreeMap<>();
+        config.put("DiagramRecognition::enabledAgents", "DiagramRecognitionAgent");
         config.put("DiagramElementOccurrenceFinderInformant::similarityThresholdArchitecture", String.valueOf(0.5));
         config.put("DiagramElementOccurrenceFinderInformant::similarityThresholdCode", String.valueOf(0.75));
         config.put("DiagramElementOccurrenceFinderInformant::similarityFunction", String.valueOf(
@@ -173,6 +187,7 @@ class DiagramConsistencyTest extends EvaluationTestBase {
     private void evaluateStage1Parameter(String parameter, DiagramElementOccurrenceFinderInformant.TextSimilarityFunction textSimilarityFunction)
             throws IOException {
         SortedMap<String, String> config = new TreeMap<>();
+        config.put("DiagramRecognition::enabledAgents", "DiagramRecognitionAgent");
         config.put("DiagramElementOccurrenceFinderInformant::similarityThresholdArchitecture", String.valueOf(0.5));
         config.put("DiagramElementOccurrenceFinderInformant::similarityThresholdCode", String.valueOf(0.75));
         config.put("DiagramElementOccurrenceFinderInformant::similarityFunction", String.valueOf(textSimilarityFunction));
@@ -209,6 +224,7 @@ class DiagramConsistencyTest extends EvaluationTestBase {
     @MethodSource("getDiagrams")
     void evaluateStage1VersionFinalJaccard(DiagramProject project) throws IOException {
         SortedMap<String, String> config = new TreeMap<>();
+        config.put("DiagramRecognition::enabledAgents", "DiagramRecognitionAgent");
         config.put("DiagramElementOccurrenceFinderInformant::similarityThresholdArchitecture", String.valueOf(0.6));
         config.put("DiagramElementOccurrenceFinderInformant::similarityThresholdCode", String.valueOf(0.8));
         config.put("DiagramElementOccurrenceFinderInformant::similarityFunction", String.valueOf(
@@ -230,6 +246,7 @@ class DiagramConsistencyTest extends EvaluationTestBase {
     @MethodSource("getDiagrams")
     void evaluateStage1VersionFinalLevenshtein(DiagramProject project) throws IOException {
         SortedMap<String, String> config = new TreeMap<>();
+        config.put("DiagramRecognition::enabledAgents", "DiagramRecognitionAgent");
         config.put("DiagramElementOccurrenceFinderInformant::similarityThresholdArchitecture", String.valueOf(0.5));
         config.put("DiagramElementOccurrenceFinderInformant::similarityThresholdCode", String.valueOf(0.8));
         config.put("DiagramElementOccurrenceFinderInformant::similarityFunction", String.valueOf(
@@ -260,6 +277,7 @@ class DiagramConsistencyTest extends EvaluationTestBase {
     @Disabled("No assertions, serves as evaluation runner only")
     void evaluateStage2Initial(DiagramProject project) throws IOException {
         SortedMap<String, String> config = new TreeMap<>();
+        config.put("DiagramRecognition::enabledAgents", "DiagramRecognitionAgent");
         config.put("DiagramModelLinkInformant::textSimilarityThreshold", String.valueOf(0.5));
         config.put("DiagramModelLinkInformant::similarityThreshold", String.valueOf(Double.NEGATIVE_INFINITY));
 
@@ -286,6 +304,7 @@ class DiagramConsistencyTest extends EvaluationTestBase {
     @Disabled("No assertions, serves as evaluation runner only")
     void evaluateStage2WithSimilarityThreshold(DiagramProject project) throws IOException {
         SortedMap<String, String> config = new TreeMap<>();
+        config.put("DiagramRecognition::enabledAgents", "DiagramRecognitionAgent");
         config.put("DiagramModelLinkInformant::textSimilarityThreshold", String.valueOf(0.5));
         config.put("DiagramModelLinkInformant::similarityThreshold", String.valueOf(0.1));
 
@@ -300,6 +319,7 @@ class DiagramConsistencyTest extends EvaluationTestBase {
     @MethodSource("getDiagrams")
     void evaluateStage2TunedParameters(DiagramProject project) throws IOException {
         SortedMap<String, String> config = new TreeMap<>();
+        config.put("DiagramRecognition::enabledAgents", "DiagramRecognitionAgent");
 
         Metrics metrics = this.runAndEvaluateStage2(project, config);
         this.writeStage2Result(project, metrics);
@@ -321,6 +341,7 @@ class DiagramConsistencyTest extends EvaluationTestBase {
     @Disabled("No assertions, serves as evaluation runner only")
     void evaluateStage2ZeroIterations(DiagramProject project) throws IOException {
         SortedMap<String, String> config = new TreeMap<>();
+        config.put("DiagramRecognition::enabledAgents", "DiagramRecognitionAgent");
         config.put("DiagramModelLinkInformant::maxIterations", String.valueOf(0));
 
         Metrics metrics = this.runAndEvaluateStage2(project, config);
@@ -335,6 +356,7 @@ class DiagramConsistencyTest extends EvaluationTestBase {
     void evaluateStage2Epsilon() throws IOException {
         List<Double> epsilons = IntStream.range(1, 50).mapToDouble(i -> 0.05 * i).boxed().toList();
         SortedMap<String, String> config = new TreeMap<>();
+        config.put("DiagramRecognition::enabledAgents", "DiagramRecognitionAgent");
         config.put("DiagramModelLinkInformant::epsilon", String.valueOf(1.0));
         config.put("DiagramModelLinkInformant::textSimilarityThreshold", String.valueOf(0.5));
         config.put("DiagramModelLinkInformant::similarityThreshold", String.valueOf(0.1));
@@ -347,6 +369,7 @@ class DiagramConsistencyTest extends EvaluationTestBase {
     void evaluateStage2Levenshtein() throws IOException {
         List<Double> thresholds = IntStream.range(0, 50).mapToDouble(i -> 0.02 * i).boxed().toList();
         SortedMap<String, String> config = new TreeMap<>();
+        config.put("DiagramRecognition::enabledAgents", "DiagramRecognitionAgent");
         config.put("DiagramModelLinkInformant::epsilon", String.valueOf(1.0));
         config.put("DiagramModelLinkInformant::textSimilarityThreshold", String.valueOf(0.5));
         config.put("DiagramModelLinkInformant::similarityThreshold", String.valueOf(0.1));
@@ -359,6 +382,7 @@ class DiagramConsistencyTest extends EvaluationTestBase {
     void evaluateStage2SimilarityThreshold() throws IOException {
         List<Double> thresholds = IntStream.range(0, 50).mapToDouble(i -> 0.02 * i).boxed().toList();
         SortedMap<String, String> config = new TreeMap<>();
+        config.put("DiagramRecognition::enabledAgents", "DiagramRecognitionAgent");
         config.put("DiagramModelLinkInformant::epsilon", String.valueOf(1.0));
         config.put("DiagramModelLinkInformant::textSimilarityThreshold", String.valueOf(0.5));
         config.put("DiagramModelLinkInformant::similarityThreshold", String.valueOf(0.1));
@@ -405,7 +429,7 @@ class DiagramConsistencyTest extends EvaluationTestBase {
     private DiagramConsistency setupAndRun(DiagramProject project, Refactoring<Box, Box> refactoring, double ratio, SortedMap<String, String> config,
             Consumer<DiagramConsistency> setup) throws IOException {
         String name = project.name().toLowerCase(Locale.ROOT);
-        File inputArchitectureModel = project.getSourceProject().getProject().getModelFile(ArchitectureModelType.UML);
+        File inputArchitectureModel = project.getSourceProject().getModelFile(ArchitectureModelType.UML);
         File inputCodeModel = new File(Objects.requireNonNull(project.getSourceProject().getCodeModelDirectory())).getAbsoluteFile();
         File inputDiagram = this.getDiagramFile(project, refactoring, ratio);
         File outputDir = new File(PIPELINE_OUTPUT);
@@ -456,7 +480,7 @@ class DiagramConsistencyTest extends EvaluationTestBase {
         int falsePositives = 0;
         int falseNegatives = 0;
 
-        ElementIdentification expectedIdentifications = JsonMapping.OBJECT_MAPPER.readValue(project.getIdentificationStage(), ElementIdentification.class);
+        ElementIdentification expectedIdentifications = createObjectMapper().readValue(project.getIdentificationStage(), ElementIdentification.class);
 
         for (var element : expectedIdentifications.elements()) {
             var actualOccurrences = selection.getOccurrences(String.valueOf(element.boxId()));
@@ -505,7 +529,7 @@ class DiagramConsistencyTest extends EvaluationTestBase {
         }
 
         File refactored = File.createTempFile("temp", ".json");
-        JsonMapping.OBJECT_MAPPER.writeValue(refactored, diagram.diagram());
+        createObjectMapper().writeValue(refactored, diagram.diagram());
 
         return refactored;
     }
@@ -517,6 +541,7 @@ class DiagramConsistencyTest extends EvaluationTestBase {
         List<Double> ratios = IntStream.range(0, 50).mapToDouble(i -> 0.02 * i).boxed().toList();
         this.evaluateImpactOnStage(ratios, 10, (project, ratio) -> {
             SortedMap<String, String> config = new TreeMap<>();
+            config.put("DiagramRecognition::enabledAgents", "DiagramRecognitionAgent");
             try {
                 return this.runAndEvaluateStage2(project, new Rename<>(), ratio, config);
             } catch (IOException e) {
@@ -532,6 +557,7 @@ class DiagramConsistencyTest extends EvaluationTestBase {
         List<Double> ratios = IntStream.range(0, 50).mapToDouble(i -> 0.02 * i).boxed().toList();
         this.evaluateImpactOnStage(ratios, 10, (project, ratio) -> {
             SortedMap<String, String> config = new TreeMap<>();
+            config.put("DiagramRecognition::enabledAgents", "DiagramRecognitionAgent");
             try {
                 return this.runAndEvaluateStage2(project, new Disconnect<>(), ratio, config);
             } catch (IOException e) {
@@ -558,7 +584,7 @@ class DiagramConsistencyTest extends EvaluationTestBase {
             return null;
         }
 
-        MutableBiMap<String, String> expectedLinks = JsonMapping.OBJECT_MAPPER.readValue(project.getLinkingStage(), ElementLinks.class).toBiMap();
+        MutableBiMap<String, String> expectedLinks = createObjectMapper().readValue(project.getLinkingStage(), ElementLinks.class).toBiMap();
         MutableBiMap<String, String> foundLinks = runner.getDataRepository()
                 .getData(DiagramModelLinkState.ID, DiagramModelLinkState.class)
                 .orElseThrow()
@@ -589,7 +615,7 @@ class DiagramConsistencyTest extends EvaluationTestBase {
 
     private Metrics runAndEvaluateStage3(DiagramProject project, Refactoring<Box, Box> refactoring, double ratio, SortedMap<String, String> config,
             boolean skipPreviousStages) throws IOException {
-        MutableBiMap<String, String> expectedLinks = JsonMapping.OBJECT_MAPPER.readValue(project.getLinkingStage(), ElementLinks.class).toBiMap();
+        MutableBiMap<String, String> expectedLinks = createObjectMapper().readValue(project.getLinkingStage(), ElementLinks.class).toBiMap();
 
         if (skipPreviousStages) {
             config.put("WeightedSimilarityInformant::skip", String.valueOf(true));
@@ -621,7 +647,7 @@ class DiagramConsistencyTest extends EvaluationTestBase {
                 .getData(DiagramModelInconsistencyState.ID, DiagramModelInconsistencyState.class)
                 .orElseThrow();
 
-        List<Inconsistency<Box, Entity>> expected = JsonMapping.OBJECT_MAPPER.readValue(project.getValidationStage(), DiagramInconsistencies.class)
+        List<Inconsistency<Box, Entity>> expected = createObjectMapper().readValue(project.getValidationStage(), DiagramInconsistencies.class)
                 .toInconsistencies(diagram, model);
 
         Map<String, Box> boxes = DiagramUtility.getBoxes(diagram);
@@ -660,6 +686,7 @@ class DiagramConsistencyTest extends EvaluationTestBase {
     void evaluateStage3Epsilon() throws IOException {
         List<Double> epsilons = IntStream.range(1, 50).mapToDouble(i -> 0.05 * i).boxed().toList();
         SortedMap<String, String> config = new TreeMap<>();
+        config.put("DiagramRecognition::enabledAgents", "DiagramRecognitionAgent");
         this.evaluateImpactOfStage2ParameterOnStage3("epsilon", epsilons, config);
     }
 
@@ -669,6 +696,7 @@ class DiagramConsistencyTest extends EvaluationTestBase {
     void evaluateStage3Levenshtein() throws IOException {
         List<Double> thresholds = IntStream.range(0, 50).mapToDouble(i -> 0.02 * i).boxed().toList();
         SortedMap<String, String> config = new TreeMap<>();
+        config.put("DiagramRecognition::enabledAgents", "DiagramRecognitionAgent");
         this.evaluateImpactOfStage2ParameterOnStage3("textSimilarityThreshold", thresholds, config);
     }
 
@@ -678,6 +706,7 @@ class DiagramConsistencyTest extends EvaluationTestBase {
     void evaluateStage3SimilarityThreshold() throws IOException {
         List<Double> thresholds = IntStream.range(0, 50).mapToDouble(i -> 0.02 * i).boxed().toList();
         SortedMap<String, String> config = new TreeMap<>();
+        config.put("DiagramRecognition::enabledAgents", "DiagramRecognitionAgent");
         this.evaluateImpactOfStage2ParameterOnStage3("similarityThreshold", thresholds, config);
     }
 
@@ -703,7 +732,7 @@ class DiagramConsistencyTest extends EvaluationTestBase {
     @Disabled("No assertions, serves as evaluation runner only")
     void countInconsistencies() throws IOException {
         for (DiagramProject project : DiagramProject.values()) {
-            DiagramInconsistencies inconsistencies = JsonMapping.OBJECT_MAPPER.readValue(project.getValidationStage(), DiagramInconsistencies.class);
+            DiagramInconsistencies inconsistencies = createObjectMapper().readValue(project.getValidationStage(), DiagramInconsistencies.class);
 
             Map<InconsistencyType, Integer> counts = new LinkedHashMap<>();
             for (var inconsistency : inconsistencies.inconsistencies()) {

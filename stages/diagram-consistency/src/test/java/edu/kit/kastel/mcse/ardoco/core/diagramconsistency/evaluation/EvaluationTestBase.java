@@ -1,4 +1,4 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -93,7 +93,7 @@ public class EvaluationTestBase {
     }
 
     protected static ArchitectureModel getArchitectureModel(DiagramProject project) {
-        File model = project.getSourceProject().getProject().getModelFile(ArchitectureModelType.UML);
+        File model = project.getSourceProject().getModelFile(ArchitectureModelType.UML);
         UmlExtractor extractor = new UmlExtractor(model.getAbsolutePath());
 
         ArchitectureModel architectureModel = extractor.extractModel();
