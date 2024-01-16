@@ -2,10 +2,13 @@
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data;
 
 import java.io.File;
+import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.function.Function;
 
 import org.eclipse.collections.api.bimap.MutableBiMap;
@@ -36,7 +39,7 @@ import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.model.DiagramImpl;
  * @param <M>
  *                        The element type of the model.
  */
-public record AnnotatedDiagram<M>(Diagram diagram, MutableBiMap<Box, M> links, Set<Inconsistency<Box, M>> inconsistencies) {
+public record AnnotatedDiagram<M>(Diagram diagram, Map<Box, M> links, Set<Inconsistency<Box, M>> inconsistencies) {
     /**
      * Create an annotated diagram from a diagram.
      *
@@ -82,7 +85,7 @@ public record AnnotatedDiagram<M>(Diagram diagram, MutableBiMap<Box, M> links, S
      */
     public static AnnotatedDiagram<CodeItem> createFrom(String source, CodeModel model) {
         Diagram diagram = new DiagramImpl(source, new File(source));
-        MutableBiMap<CodeItem, Box> links = new HashBiMap<>();
+        SortedMap<CodeItem, Box> links = new TreeMap<>();
 
         Transformations.transform(model, (item) -> {
             Box box = DiagramUtility.addBox(diagram, item.getName());
@@ -90,7 +93,12 @@ public record AnnotatedDiagram<M>(Diagram diagram, MutableBiMap<Box, M> links, S
             return box;
         }, (from, to) -> DiagramUtility.addConnector(diagram, from, to), (child, parent) -> parent.addContainedBox(child));
 
-        return new AnnotatedDiagram<>(diagram, links.inverse(), new LinkedHashSet<>());
+        Map<Box, CodeItem> identityInverse = new IdentityHashMap<>();
+        for (Map.Entry<CodeItem, Box> entry : links.entrySet()) {
+            identityInverse.put(entry.getValue(), entry.getKey());
+        }
+
+        return new AnnotatedDiagram<>(diagram, identityInverse, new LinkedHashSet<>());
     }
 
     /**

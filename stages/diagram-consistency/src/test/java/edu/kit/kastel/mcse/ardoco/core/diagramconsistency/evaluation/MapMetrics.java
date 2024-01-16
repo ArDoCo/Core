@@ -1,10 +1,11 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation;
 
+import java.util.IdentityHashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import org.eclipse.collections.api.bimap.MutableBiMap;
-import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
 
 /**
  * Metrics of the diagram-model matching process.
@@ -20,7 +21,7 @@ import org.eclipse.collections.impl.bimap.mutable.HashBiMap;
  * @param <M>
  *                       The type of the model elements.
  */
-public record MapMetrics<R, M>(MutableBiMap<R, M> truePositives, MutableBiMap<R, M> falsePositives, MutableBiMap<R, M> falseNegatives) implements Metrics {
+public record MapMetrics<R, M>(Map<R, M> truePositives, Map<R, M> falsePositives, Map<R, M> falseNegatives) implements Metrics {
     /**
      * Create a new metrics object from the expected and actual links.
      *
@@ -34,10 +35,10 @@ public record MapMetrics<R, M>(MutableBiMap<R, M> truePositives, MutableBiMap<R,
      *                 The type of the model elements.
      * @return The metrics.
      */
-    public static <R, M> MapMetrics<R, M> from(MutableBiMap<R, M> expected, MutableBiMap<R, M> actual) {
-        MutableBiMap<R, M> truePositives = new HashBiMap<>();
-        MutableBiMap<R, M> falsePositives = new HashBiMap<>();
-        MutableBiMap<R, M> falseNegatives = new HashBiMap<>();
+    public static <R, M> MapMetrics<R, M> from(Map<R, M> expected, MutableBiMap<R, M> actual) {
+        Map<R, M> truePositives = new IdentityHashMap<>();
+        Map<R, M> falsePositives = new IdentityHashMap<>();
+        Map<R, M> falseNegatives = new IdentityHashMap<>();
 
         for (var entry : actual.entrySet()) {
             if (Objects.equals(expected.get(entry.getKey()), entry.getValue())) {
