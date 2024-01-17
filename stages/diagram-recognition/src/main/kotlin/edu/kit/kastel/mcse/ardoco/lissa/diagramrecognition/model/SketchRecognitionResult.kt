@@ -11,6 +11,6 @@ data class SketchRecognitionResult(
     val edges: List<Connector>
 ) : Serializable {
     companion object {
-        private const val serialVersionUID: Long = 12
+        private const val serialVersionUID: Long = 13L
     }
 }
