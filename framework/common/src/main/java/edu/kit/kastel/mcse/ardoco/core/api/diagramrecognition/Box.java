@@ -126,6 +126,7 @@ public class Box extends DiagramElement implements Serializable {
      * @return a UUID of the box
      */
     public String getUUID() {
+        // We stored the UUID in name.
         return getName();
     }
 
