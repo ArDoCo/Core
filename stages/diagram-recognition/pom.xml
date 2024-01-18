@@ -21,7 +21,7 @@
     <dependency>
       <groupId>io.github.ardoco</groupId>
       <artifactId>docker</artifactId>
-      <version>0.22.0</version>
+      <version>0.25.0</version>
     </dependency>
     <dependency>
       <groupId>io.github.ardoco.core</groupId>

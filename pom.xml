@@ -71,7 +71,7 @@
   </distributionManagement>
 
   <properties>
-    <revision>0.38.0-SNAPSHOT</revision>
+    <revision>0.39.0-SNAPSHOT</revision>
     <ardoco.version>${revision}</ardoco.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -88,7 +88,7 @@
 
     <!-- Plugin Versions -->
     <slf4j.version>2.0.11</slf4j.version>
-    <spotless.version>2.41.1</spotless.version>
+    <spotless.version>2.42.0</spotless.version>
     <junit.version>5.10.1</junit.version>
     <eclipse-collections.version>12.0.0.M3</eclipse-collections.version>
     <jackson.version>2.16.1</jackson.version>
@@ -374,7 +374,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>flatten-maven-plugin</artifactId>
-          <version>1.5.0</version>
+          <version>1.6.0</version>
           <configuration>
             <updatePomFile>true</updatePomFile>
             <flattenMode>resolveCiFriendliesOnly</flattenMode>
@@ -548,7 +548,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>flatten-maven-plugin</artifactId>
-        <version>1.5.0</version>
+        <version>1.6.0</version>
         <configuration>
           <updatePomFile>true</updatePomFile>
           <flattenMode>resolveCiFriendliesOnly</flattenMode>
