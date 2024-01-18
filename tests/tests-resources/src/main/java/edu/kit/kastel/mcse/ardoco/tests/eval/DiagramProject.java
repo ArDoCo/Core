@@ -293,7 +293,7 @@ public enum DiagramProject implements GoldStandardDiagramsWithTLR {
             objectMapper.setInjectableValues(new InjectableValues.Std().addValue(DiagramProject.class, this));
             return new LinkedHashSet<>(List.of(objectMapper.readValue(file, DiagramsGS.class).diagrams));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 

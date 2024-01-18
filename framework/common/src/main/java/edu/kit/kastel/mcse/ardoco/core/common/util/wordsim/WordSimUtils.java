@@ -16,6 +16,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.common.util.AbbreviationDisambiguationHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.equality.EqualityMeasure;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.strategy.AverageStrategy;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.strategy.ComparisonStrategy;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.strategy.SimilarityStrategy;
 
@@ -30,7 +31,7 @@ public class WordSimUtils implements Serializable {
 
     private MutableList<WordSimMeasure> measures = Lists.mutable.withAll(WordSimLoader.loadUsingProperties());
     private ComparisonStrategy strategy = ComparisonStrategy.AT_LEAST_ONE;
-    private SimilarityStrategy similarityStrategy = SimilarityStrategy.AVERAGE;
+    private SimilarityStrategy similarityStrategy = new AverageStrategy();
     private UnicodeCharacterMatchFunctions characterMatch = UnicodeCharacterMatchFunctions.EQUAL;
     private boolean considerAbbreviations = CommonTextToolsConfig.CONSIDER_ABBREVIATIONS;
 

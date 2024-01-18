@@ -8,13 +8,6 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonContext;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
 
 public interface SimilarityStrategy extends Serializable {
-
-    SimilarityStrategy MEDIAN = new MedianStrategy();
-
-    SimilarityStrategy AVERAGE = new AverageStrategy();
-
-    SimilarityStrategy MAXIMUM = new MaximumStrategy();
-
     /**
      * Evaluates how similar the words from the given {@link ComparisonContext} are by combining the verdicts of the specified word similarity measures.
      *

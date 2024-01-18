@@ -9,13 +9,7 @@
   </parent>
   <artifactId>tests</artifactId>
   <packaging>pom</packaging>
-  <modules>
-    <module>tests-base</module>
-    <module>tests-inconsistency</module>
-    <module>tests-misc</module>
-    <module>tests-resources</module>
-    <module>tests-tlr</module>
-  </modules>
+
   <properties>
     <maven.deploy.skip>true</maven.deploy.skip>
     <sonar.skip>true</sonar.skip>

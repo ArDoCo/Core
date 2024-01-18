@@ -77,7 +77,7 @@ public class ConfusablesHelper {
                 }
             }
         } catch (IOException ex) {
-            throw new RuntimeException(ex);
+            throw new IllegalStateException(ex);
         }
     }
 

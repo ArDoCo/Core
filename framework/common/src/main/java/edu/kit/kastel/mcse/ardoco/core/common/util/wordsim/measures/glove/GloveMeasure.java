@@ -65,7 +65,7 @@ public class GloveMeasure extends VectorBasedWordSimMeasure {
         try {
             return new VectorSqliteDatabase(Path.of(CommonTextToolsConfig.GLOVE_DB_FILE_PATH));
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException(e);
         }
     }
 }

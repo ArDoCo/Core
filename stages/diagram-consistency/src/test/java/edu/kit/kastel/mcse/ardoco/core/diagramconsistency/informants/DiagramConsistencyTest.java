@@ -395,7 +395,7 @@ class DiagramConsistencyTest extends EvaluationTestBase {
             try {
                 return this.runAndEvaluateStage2(project, config);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new IllegalStateException(e);
             }
         });
     }
@@ -545,7 +545,7 @@ class DiagramConsistencyTest extends EvaluationTestBase {
             try {
                 return this.runAndEvaluateStage2(project, new Rename<>(), ratio, config);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new IllegalStateException(e);
             }
         });
     }
@@ -561,7 +561,7 @@ class DiagramConsistencyTest extends EvaluationTestBase {
             try {
                 return this.runAndEvaluateStage2(project, new Disconnect<>(), ratio, config);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new IllegalStateException(e);
             }
         });
     }
@@ -716,7 +716,7 @@ class DiagramConsistencyTest extends EvaluationTestBase {
             try {
                 return this.runAndEvaluateStage3(project, null, 0.0, config, false);
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new IllegalStateException(e);
             }
         });
     }

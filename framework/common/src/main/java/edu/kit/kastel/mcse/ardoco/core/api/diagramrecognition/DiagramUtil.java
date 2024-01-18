@@ -10,7 +10,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedIn
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.strategy.SimilarityStrategy;
+import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.strategy.MaximumStrategy;
 
 /**
  * Provides utility methods that are shared by {@link edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant informants} of diagram related stages.
@@ -58,7 +58,7 @@ public class DiagramUtil {
      */
     private static double calculateHighestSimilarity(WordSimUtils wordSimUtils, Word word, SortedSet<String> targets) {
         return targets.stream()
-                .map(name -> wordSimUtils.getSimilarity(word.getText(), name, SimilarityStrategy.MAXIMUM, true))
+                .map(name -> wordSimUtils.getSimilarity(word.getText(), name, new MaximumStrategy(), true))
                 .max(Double::compareTo)
                 .orElse(Double.MIN_VALUE);
     }

@@ -65,7 +65,7 @@ public class SEWordSimMeasure implements WordSimMeasure {
             try {
                 dataSource = new SEWordSimDataSource(Path.of(CommonTextToolsConfig.SEWORDSIM_DB_FILE_PATH));
             } catch (SQLException e) {
-                throw new RuntimeException(e);
+                throw new IllegalArgumentException(e);
             }
         }
         return dataSource;

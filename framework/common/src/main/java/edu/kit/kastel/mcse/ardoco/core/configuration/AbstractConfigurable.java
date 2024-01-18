@@ -142,7 +142,7 @@ public abstract class AbstractConfigurable implements IConfigurable, Serializabl
             loggerField.setAccessible(true);
             loggerField.set(this, LoggerFactory.getLogger(this.getClass()));
         } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
+            throw new IllegalAccessError(e.getMessage());
         }
     }
 }

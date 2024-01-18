@@ -48,8 +48,8 @@ public abstract class FileBasedCache<T> implements AutoCloseable {
                     resetFile();
                     fileState = read();
                 } catch (CacheException ex) {
-                    //If resetting doesn't solve the issue, fail entirely
-                    throw new RuntimeException(ex);
+                    // If resetting doesn't solve the issue, fail entirely
+                    throw new IllegalStateException(ex);
                 }
             }
             originalStateHash = Objects.hash(fileState);
@@ -110,7 +110,7 @@ public abstract class FileBasedCache<T> implements AutoCloseable {
             deleteFile();
             getFile();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 
@@ -125,7 +125,7 @@ public abstract class FileBasedCache<T> implements AutoCloseable {
                 file = getFileHandle();
             return Files.deleteIfExists(file.toPath());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException(e);
         }
     }
 

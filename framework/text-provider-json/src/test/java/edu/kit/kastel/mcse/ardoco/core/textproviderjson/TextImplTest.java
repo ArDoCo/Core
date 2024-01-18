@@ -1,7 +1,5 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.textproviderjson;
-
-import java.io.IOException;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -10,7 +8,6 @@ import org.junit.jupiter.api.Test;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.textproviderjson.converter.DtoToObjectConverter;
-import edu.kit.kastel.mcse.ardoco.core.textproviderjson.error.NotConvertableException;
 import edu.kit.kastel.mcse.ardoco.core.textproviderjson.textobject.TextImpl;
 
 class TextImplTest {
@@ -24,12 +21,8 @@ class TextImplTest {
     }
 
     @BeforeEach
-    void init() {
-        try {
-            textImplInstance = (TextImpl) CONVERTER.convertText(TestUtil.generateDTOWithMultipleSentences());
-        } catch (NotConvertableException | IOException e) {
-            throw new RuntimeException(e);
-        }
+    void init() throws Exception {
+        textImplInstance = (TextImpl) CONVERTER.convertText(TestUtil.generateDTOWithMultipleSentences());
     }
 
     @Test

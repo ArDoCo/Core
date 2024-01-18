@@ -1,10 +1,11 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.corenlp;
 
 import static edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities.readInputText;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -23,8 +24,8 @@ class CoreNLPProviderTest extends NlpInformantTest {
         if (coreNLPProvider == null) {
             try {
                 createCoreNlpProvider();
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new IllegalArgumentException(e);
             }
         }
         return coreNLPProvider;

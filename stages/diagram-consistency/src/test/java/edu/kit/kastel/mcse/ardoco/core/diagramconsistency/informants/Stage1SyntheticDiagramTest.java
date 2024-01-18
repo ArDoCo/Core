@@ -99,7 +99,7 @@ class Stage1SyntheticDiagramTest extends SyntheticTestBase {
                 this.writer.write(String.format("%s: r: %s, u: %s, d: %s%n", result.expected().type(), result.actual().ratio(), result.actual()
                         .percentageOfUnnecessaryLinks(), difference));
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new IllegalStateException(e);
             }
         };
 
