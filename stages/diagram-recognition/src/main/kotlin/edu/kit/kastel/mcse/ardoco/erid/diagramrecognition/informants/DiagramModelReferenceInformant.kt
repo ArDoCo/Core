@@ -28,15 +28,9 @@ import kotlin.collections.LinkedHashSet
  * the elements as best as possible with as little unnecessary information as possible. Multiples reference can be calculated for a single element. The
  * relationship between diagram elements and model elements is used to further reduce the set of references.
  */
-class DiagramModelReferenceInformant
-/**
- * Creates a new informant that acts on the specified data repository
- *
- * @param dataRepository the data repository
- */
-(dataRepository: DataRepository?) : Informant(DiagramModelReferenceInformant::class.java.getSimpleName(), dataRepository) {
+class DiagramModelReferenceInformant(dataRepository: DataRepository?) : Informant(DiagramModelReferenceInformant::class.java.getSimpleName(), dataRepository) {
     @Configurable
-    private val textBoxSimilarityThreshold = 0.5
+    private var textBoxSimilarityThreshold = 0.5
 
     /**
      * Iterates over all diagram elements and sets their reference.

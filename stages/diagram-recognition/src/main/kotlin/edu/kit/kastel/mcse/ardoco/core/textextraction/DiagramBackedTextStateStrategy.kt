@@ -2,12 +2,12 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram
+import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramUtil
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping
-import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils
@@ -21,7 +21,7 @@ import java.util.Optional
 
 /**
  * Extends the [OriginalTextStateStrategy] by further dividing similar mappings by their similarity to the available
- * [DiagramElements][edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement]. For example, consider that both a package diagram and the text
+ * [DiagramElements][DiagramElement]. For example, consider that both a package diagram and the text
  * contain "routeplanner" and "routeplannerui". If a "routeplanner" noun mapping exists and we want to add "routeplannerui", a combined mapping would be created
  * due to similarity. By additionally comparing to the diagram elements, we find that they are related to different package diagram elements, and thus probably
  * shouldn't be contained by the same mapping.
@@ -34,7 +34,7 @@ class DiagramBackedTextStateStrategy(textState: TextStateImpl) : OriginalTextSta
 
     /**
      * Tries to add a mapping to the state using the existing parameters. Searches for similar mappings using the similarity metrics. Additionally, checks the
-     * relationship between mappings and the available [DiagramElements][edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement] to further
+     * relationship between mappings and the available [DiagramElements][DiagramElement] to further
      * subdivide them.
      */
     override fun addOrExtendNounMapping(
@@ -66,7 +66,8 @@ class DiagramBackedTextStateStrategy(textState: TextStateImpl) : OriginalTextSta
         for (existingNounMapping in getTextState().nounMappings) {
             if (similarityUtils.areNounMappingsSimilar(disposableNounMapping, existingNounMapping) &&
                 isDiagramElementMostSimilar(
-                    boxes, relatedToWordUnboxed,
+                    boxes,
+                    relatedToWordUnboxed,
                     existingNounMapping
                 )
             ) {
@@ -81,7 +82,7 @@ class DiagramBackedTextStateStrategy(textState: TextStateImpl) : OriginalTextSta
                             claimant,
                             disposableNounMapping.probability
                         ),
-                        relatedToWordUnboxed!!
+                        relatedToWordUnboxed
                     )
                 getTextState().removeNounMappingFromState(existingNounMapping, mergedNounMapping)
                 getTextState().removeNounMappingFromState(disposableNounMapping, mergedNounMapping)
@@ -92,7 +93,7 @@ class DiagramBackedTextStateStrategy(textState: TextStateImpl) : OriginalTextSta
         val diagramNM =
             DiagramBackedNounMappingImpl(
                 disposableNounMapping,
-                getMostSimilar(boxes, disposableNounMapping).orElse(null)!!
+                getMostSimilar(boxes, disposableNounMapping).orElse(null)
             )
         getTextState().addNounMappingAddPhraseMapping(diagramNM)
         return diagramNM
@@ -105,8 +106,8 @@ class DiagramBackedTextStateStrategy(textState: TextStateImpl) : OriginalTextSta
      * @param candidate       candidate for the most similar diagram element we want to check
      * @param nounMapping     the noun mapping
      */
-    protected fun isDiagramElementMostSimilar(
-        diagramElements: List<Box>?,
+    private fun isDiagramElementMostSimilar(
+        diagramElements: List<Box>,
         candidate: Box?,
         nounMapping: NounMapping
     ): Boolean {
@@ -125,19 +126,14 @@ class DiagramBackedTextStateStrategy(textState: TextStateImpl) : OriginalTextSta
      * @param diagramElements the diagram elements to search
      * @param nounMapping     the mapping
      */
-    protected fun getMostSimilar(
-        diagramElements: List<Box>?,
-        nounMapping: NounMapping?
+    private fun getMostSimilar(
+        diagramElements: List<Box>,
+        nounMapping: NounMapping
     ): Optional<Box> {
         val nounMapPairs =
-            diagramElements!!
-                .map { box: Box ->
-                    Pair(
-                        DiagramUtil.calculateHighestSimilarity(wordSimUtils, nounMapping, box),
-                        box
-                    )
-                }
-                .filter { p: Pair<Double, Box> -> p.first >= CommonTextToolsConfig.DE_NM_SIMILARITY_THRESHOLD }
+            diagramElements
+                .map { box: Box -> DiagramUtil.calculateHighestSimilarity(wordSimUtils, nounMapping, box) to box }
+                .filter { p -> p.first >= CommonTextToolsConfig.DE_NM_SIMILARITY_THRESHOLD }
         return Optional.ofNullable(nounMapPairs.maxWithOrNull(diagramElementSimilarity)?.second)
     }
 
@@ -147,20 +143,13 @@ class DiagramBackedTextStateStrategy(textState: TextStateImpl) : OriginalTextSta
      * @param diagramElements the diagram elements to search
      * @param word            the word
      */
-    protected fun getMostSimilar(
-        diagramElements: List<Box>?,
-        word: Word?
+    private fun getMostSimilar(
+        diagramElements: List<Box>,
+        word: Word
     ): Optional<Box> {
         val wordPairs =
-            diagramElements!!.stream()
-                .map { box: Box ->
-                    Pair(
-                        DiagramUtil.calculateHighestSimilarity(wordSimUtils, word, box),
-                        box
-                    )
-                }
-                .filter { p: Pair<Double, Box> -> p.first >= CommonTextToolsConfig.DE_WORD_SIMILARITY_THRESHOLD }
-                .toList()
+            diagramElements.map { box -> DiagramUtil.calculateHighestSimilarity(wordSimUtils, word, box) to box }
+                .filter { p -> p.first >= CommonTextToolsConfig.DE_WORD_SIMILARITY_THRESHOLD }
         return Optional.ofNullable(wordPairs.maxWithOrNull(diagramElementSimilarity)?.second)
     }
 
@@ -179,7 +168,7 @@ class DiagramBackedTextStateStrategy(textState: TextStateImpl) : OriginalTextSta
          */
         private var diagramElementSimilarity =
             Comparator { p1: Pair<Double, Box>, p2: Pair<Double, Box> ->
-                val comp = java.lang.Double.compare(p1.first, p2.first)
+                val comp = p1.first.compareTo(p2.first)
                 if (comp == 0) {
                     // More "concise" diagram elements are preferable
                     return@Comparator p2.second.references.size.compareTo(p1.second.references.size)

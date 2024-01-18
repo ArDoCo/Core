@@ -7,7 +7,7 @@ import java.util.Optional
 /**
  * Represents a [NounMapping] where mappings are associated with a [DiagramElement].
  */
-class DiagramBackedNounMappingImpl(nounMapping: NounMappingImpl, private val diagramElement: DiagramElement) : NounMappingImpl(
+class DiagramBackedNounMappingImpl(nounMapping: NounMappingImpl, private val diagramElement: DiagramElement?) : NounMappingImpl(
     CREATION_TIME_COUNTER.incrementAndGet(),
     nounMapping.words,
     nounMapping.distribution.toSortedMap().toImmutable(),
