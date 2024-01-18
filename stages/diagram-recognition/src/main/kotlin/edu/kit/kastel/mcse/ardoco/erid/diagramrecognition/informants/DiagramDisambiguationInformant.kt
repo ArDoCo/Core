@@ -1,13 +1,10 @@
 package edu.kit.kastel.mcse.ardoco.erid.diagramrecognition.informants
 
 import edu.kit.kastel.mcse.ardoco.core.api.Disambiguation
-import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box
-import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram
 import edu.kit.kastel.mcse.ardoco.core.common.util.AbbreviationDisambiguationHelper
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant
-import org.eclipse.collections.impl.factory.Lists
 
 /**
  * Responsible for disambiguating abbreviations that are contained in
@@ -25,15 +22,9 @@ class DiagramDisambiguationInformant(dataRepository: DataRepository?) : Informan
      */
     public override fun process() {
         val diagramRecognitionState = DataRepositoryHelper.getDiagramRecognitionState(dataRepository)
-        val boxes: MutableList<Box> =
-            Lists.mutable.withAll(
-                diagramRecognitionState.getDiagrams().flatMap { d: Diagram ->
-                    d.getBoxes()
-                }
-            )
+        val boxes = diagramRecognitionState.getDiagrams().flatMap { d -> d.getBoxes() }
         for (box in boxes) {
-            val texts = box.texts
-            for (textBox in texts) {
+            for (textBox in box.texts) {
                 val text = textBox.text
                 val abbreviations = AbbreviationDisambiguationHelper.getAbbreviationCandidates(text)
                 for (abbreviation in abbreviations) {

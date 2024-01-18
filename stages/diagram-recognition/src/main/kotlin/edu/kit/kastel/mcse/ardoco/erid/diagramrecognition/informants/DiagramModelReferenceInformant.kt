@@ -5,8 +5,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.TextBox
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates
-import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair
-import edu.kit.kastel.mcse.ardoco.core.common.tuple.Triple
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper
 import edu.kit.kastel.mcse.ardoco.core.common.util.DbPediaHelper
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable
@@ -15,11 +13,6 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant
 import org.eclipse.collections.api.block.procedure.Procedure
 import org.eclipse.collections.api.list.ImmutableList
 import org.eclipse.collections.impl.factory.Lists
-import java.util.Arrays
-import java.util.Optional
-import java.util.function.Consumer
-import java.util.function.Predicate
-import java.util.stream.Collectors
 import kotlin.collections.LinkedHashMap
 import kotlin.collections.LinkedHashSet
 
@@ -81,19 +74,12 @@ class DiagramModelReferenceInformant(dataRepository: DataRepository?) : Informan
             box.setReferences(listOf())
             val references = getReferencesPerTextBox(box)
             val similar = similarModelInstance(instances, references)
-            similar.forEach(
-                Consumer { s: Triple<TextBox, Double, ModelInstance>? ->
-                    logger.debug(
-                        "{} similar to {}",
-                        box,
-                        s
-                    )
-                }
-            )
+            similar.forEach { s -> logger.debug("{} similar to {}", box, s) }
+
             val isEmpty = similar.isEmpty()
             for ((key, value) in references) {
-                if (isEmpty || similar.stream().anyMatch { t: Triple<TextBox, Double, ModelInstance> -> t.first == key }) {
-                    value.forEach(Consumer { reference: String? -> box.addReference(reference) })
+                if (isEmpty || similar.any { t: Triple<TextBox, Double, ModelInstance?> -> t.first == key }) {
+                    value.forEach { reference -> box.addReference(reference) }
                 }
             }
         }
@@ -110,12 +96,11 @@ class DiagramModelReferenceInformant(dataRepository: DataRepository?) : Informan
     private fun similarModelInstance(
         modelInstances: ImmutableList<ModelInstance>,
         references: Map<TextBox, Set<String>>
-    ): List<Triple<TextBox, Double, ModelInstance>> {
-        val list: MutableList<Triple<TextBox, Double, ModelInstance>> = Lists.mutable.of()
+    ): List<Triple<TextBox, Double, ModelInstance?>> {
+        val list: MutableList<Triple<TextBox, Double, ModelInstance?>> = Lists.mutable.of()
         for ((textBox, textBoxRefs) in references) {
-            val optPair = getMostSimilarModelInstance(modelInstances, textBox, textBoxRefs)
-            if (optPair.isPresent) {
-                val pair = optPair.orElseThrow()
+            val pair = getMostSimilarModelInstance(modelInstances, textBox, textBoxRefs)
+            if (pair != null) {
                 list.add(Triple(textBox, pair.first, pair.second))
             }
         }
@@ -135,7 +120,7 @@ class DiagramModelReferenceInformant(dataRepository: DataRepository?) : Informan
         modelInstances: ImmutableList<ModelInstance>,
         textBox: TextBox,
         references: Set<String>
-    ): Optional<Pair<Double, ModelInstance?>> {
+    ): Pair<Double, ModelInstance?>? {
         var max = Double.MIN_VALUE
         val wordSimUtils = metaData.wordSimUtils
         var mostSimilarModelInstance: ModelInstance? = null
@@ -157,9 +142,9 @@ class DiagramModelReferenceInformant(dataRepository: DataRepository?) : Informan
             }
         }
         return if (max > Double.MIN_VALUE) {
-            Optional.of(Pair(max, mostSimilarModelInstance))
+            max to mostSimilarModelInstance
         } else {
-            Optional.empty()
+            null
         }
     }
 
@@ -193,23 +178,17 @@ class DiagramModelReferenceInformant(dataRepository: DataRepository?) : Informan
         private fun getReferences(textBox: TextBox): Set<String> {
             val names = LinkedHashSet<String>()
             val text = textBox.text
-            if (!FILTER.test(text)) return names
+            if (!FILTER(text)) return names
             val splitAndDecameled = processText(text).stream().filter(FILTER).toList()
-            val noBlank =
-                splitAndDecameled.stream().map { s: String ->
-                    s.replace(
-                        "\\s+".toRegex(),
-                        ""
-                    )
-                }.filter(FILTER).toList()
+            val noBlank = splitAndDecameled.stream().map { s: String -> s.replace("\\s+".toRegex(), "") }.filter(FILTER).toList()
             names.addAll(splitAndDecameled)
             names.addAll(noBlank)
-            val atleastOneUpperCaseChar = names.stream().filter { s: String -> s != s.lowercase() }.collect(Collectors.toSet())
-            return if (!atleastOneUpperCaseChar.isEmpty()) atleastOneUpperCaseChar else names
+            val atleastOneUpperCaseChar = names.filter { s: String -> s != s.lowercase() }.toSet()
+            return atleastOneUpperCaseChar.ifEmpty { names }
         }
 
         private val FILTER =
-            Predicate { s: String? ->
+            { s: String? ->
                 !DbPediaHelper.isWordMarkupLanguage(s) && !DbPediaHelper.isWordProgrammingLanguage(s) &&
                     !DbPediaHelper
                         .isWordSoftware(s)
@@ -244,10 +223,8 @@ class DiagramModelReferenceInformant(dataRepository: DataRepository?) : Informan
          * @return a non-empty list of splits
          */
         private fun splitBracketsAndEnumerations(text: String): List<String> {
-            return Arrays.stream(
-                text.split("[,()]".toRegex()).dropLastWhile { it.isEmpty() }
-                    .toTypedArray()
-            ).map { obj: String -> obj.trim { it <= ' ' } }.toList()
+            return text.split("[,()]".toRegex()).dropLastWhile { it.isEmpty() }
+                .map { obj: String -> obj.trim { it <= ' ' } }.toList()
         }
 
         /**
@@ -258,7 +235,7 @@ class DiagramModelReferenceInformant(dataRepository: DataRepository?) : Informan
          * @return the decameled word
          */
         private fun getDeCameledText(word: String): String {
-            return java.lang.String.join(" ", *word.split("(?<!([A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray())
+            return (word.split("(?<!([A-Z]))(?=[A-Z])|(?<!^)(?=[A-Z][a-z])".toRegex()).dropLastWhile { it.isEmpty() }).joinToString(" ")
                 .replace("\\s+".toRegex(), " ")
         }
     }

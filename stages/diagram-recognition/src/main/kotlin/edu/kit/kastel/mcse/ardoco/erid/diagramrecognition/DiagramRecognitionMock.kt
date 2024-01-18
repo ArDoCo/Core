@@ -17,7 +17,7 @@ import java.util.SortedMap
  */
 class DiagramRecognitionMock(
     private val goldStandardProject: GoldStandardDiagrams?,
-    additionalConfigs: SortedMap<String?, String?>?,
+    additionalConfigs: SortedMap<String, String>,
     dataRepository: DataRepository?
 ) :
     ExecutionStage(

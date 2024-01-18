@@ -2,7 +2,6 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping
-import java.util.Optional
 
 /**
  * Represents a [NounMapping] where mappings are associated with a [DiagramElement].
@@ -18,7 +17,5 @@ class DiagramBackedNounMappingImpl(nounMapping: NounMappingImpl, private val dia
     /**
      * {@return the associated {@link DiagramElement}, {@link Optional#EMPTY} if none is associated}
      */
-    fun getDiagramElement(): Optional<DiagramElement> {
-        return Optional.ofNullable(diagramElement)
-    }
+    fun getDiagramElement(): DiagramElement? = diagramElement
 }

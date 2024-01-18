@@ -17,7 +17,6 @@ import org.eclipse.collections.api.factory.Lists
 import org.eclipse.collections.api.factory.SortedSets
 import org.eclipse.collections.api.list.ImmutableList
 import org.slf4j.LoggerFactory
-import java.util.Optional
 
 /**
  * Extends the [OriginalTextStateStrategy] by further dividing similar mappings by their similarity to the available
@@ -62,7 +61,7 @@ class DiagramBackedTextStateStrategy(textState: TextStateImpl) : OriginalTextSta
                 Lists.immutable.with(word),
                 surfaceForms
             )
-        val relatedToWordUnboxed = getMostSimilar(boxes, word).orElse(null)
+        val relatedToWordUnboxed = getMostSimilar(boxes, word)
         for (existingNounMapping in getTextState().nounMappings) {
             if (similarityUtils.areNounMappingsSimilar(disposableNounMapping, existingNounMapping) &&
                 isDiagramElementMostSimilar(
@@ -93,7 +92,7 @@ class DiagramBackedTextStateStrategy(textState: TextStateImpl) : OriginalTextSta
         val diagramNM =
             DiagramBackedNounMappingImpl(
                 disposableNounMapping,
-                getMostSimilar(boxes, disposableNounMapping).orElse(null)
+                getMostSimilar(boxes, disposableNounMapping)
             )
         getTextState().addNounMappingAddPhraseMapping(diagramNM)
         return diagramNM
@@ -111,12 +110,11 @@ class DiagramBackedTextStateStrategy(textState: TextStateImpl) : OriginalTextSta
         candidate: Box?,
         nounMapping: NounMapping
     ): Boolean {
-        val relatedToWord = Optional.ofNullable(candidate)
         return if (nounMapping is DiagramBackedNounMappingImpl) {
-            relatedToWord == nounMapping.getDiagramElement()
+            candidate == nounMapping.getDiagramElement()
         } else {
             val nounMapDE = getMostSimilar(diagramElements, nounMapping)
-            relatedToWord == nounMapDE
+            candidate == nounMapDE
         }
     }
 
@@ -129,12 +127,12 @@ class DiagramBackedTextStateStrategy(textState: TextStateImpl) : OriginalTextSta
     private fun getMostSimilar(
         diagramElements: List<Box>,
         nounMapping: NounMapping
-    ): Optional<Box> {
+    ): Box? {
         val nounMapPairs =
             diagramElements
                 .map { box: Box -> DiagramUtil.calculateHighestSimilarity(wordSimUtils, nounMapping, box) to box }
                 .filter { p -> p.first >= CommonTextToolsConfig.DE_NM_SIMILARITY_THRESHOLD }
-        return Optional.ofNullable(nounMapPairs.maxWithOrNull(diagramElementSimilarity)?.second)
+        return nounMapPairs.maxWithOrNull(diagramElementSimilarity)?.second
     }
 
     /**
@@ -146,11 +144,12 @@ class DiagramBackedTextStateStrategy(textState: TextStateImpl) : OriginalTextSta
     private fun getMostSimilar(
         diagramElements: List<Box>,
         word: Word
-    ): Optional<Box> {
+    ): Box? {
         val wordPairs =
-            diagramElements.map { box -> DiagramUtil.calculateHighestSimilarity(wordSimUtils, word, box) to box }
+            diagramElements
+                .map { box -> DiagramUtil.calculateHighestSimilarity(wordSimUtils, word, box) to box }
                 .filter { p -> p.first >= CommonTextToolsConfig.DE_WORD_SIMILARITY_THRESHOLD }
-        return Optional.ofNullable(wordPairs.maxWithOrNull(diagramElementSimilarity)?.second)
+        return wordPairs.maxWithOrNull(diagramElementSimilarity)?.second
     }
 
     init {
