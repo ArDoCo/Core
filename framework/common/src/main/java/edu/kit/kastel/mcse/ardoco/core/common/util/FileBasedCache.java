@@ -4,13 +4,11 @@ package edu.kit.kastel.mcse.ardoco.core.common.util;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import net.harawata.appdirs.AppDirs;
-import net.harawata.appdirs.AppDirsFactory;
 
 /**
  * This abstract class provides the structure for a file-based cache. Only one instance should be created for each cache file. The cache files are saved in the
@@ -20,6 +18,8 @@ import net.harawata.appdirs.AppDirsFactory;
  */
 public abstract class FileBasedCache<T> implements AutoCloseable {
     private static final Logger logger = LoggerFactory.getLogger(FileBasedCache.class);
+    private static final String TEMP_DIR = loadTempDir();
+
     private File file;
     private final String identifier;
     private final String fileExtension;
@@ -135,9 +135,8 @@ public abstract class FileBasedCache<T> implements AutoCloseable {
      * @throws IOException on a file system exception
      */
     protected File getFileHandle() throws IOException {
-        AppDirs appDirs = AppDirsFactory.getInstance();
-        var arDoCoDataDir = appDirs.getUserDataDir("ArDoCo", null, "MCSE", true);
-        file = new File(arDoCoDataDir + File.separator + subFolder + this.identifier + this.fileExtension);
+
+        file = new File(TEMP_DIR + File.separator + subFolder + this.identifier + this.fileExtension);
         if (file.getParentFile().mkdirs()) {
             logger.info("Created directory {}", file.getParentFile().getCanonicalPath());
         }
@@ -162,6 +161,27 @@ public abstract class FileBasedCache<T> implements AutoCloseable {
         }
 
         return file;
+    }
+
+    private static String loadTempDir() {
+        try {
+            Path tempDir = Files.createTempDirectory("ArDoCo");
+            logger.info("Created temporary directory {}", tempDir);
+            addDeleteHook(tempDir);
+            return tempDir.toString();
+        } catch (IOException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    private static void addDeleteHook(Path tempDir) {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                Files.walk(tempDir).map(Path::toFile).forEach(File::delete);
+            } catch (IOException e) {
+                throw new IllegalStateException(e);
+            }
+        }));
     }
 
     @Override
