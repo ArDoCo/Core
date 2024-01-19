@@ -144,6 +144,8 @@ public class ArchitectureTest {
             .doNotHaveModifier(JavaModifier.ABSTRACT)
             .and()
             .areAssignableTo(Serializable.class)
+            .and()
+            .areNotEnums()
             .should(new ArchCondition<>("beSerializable") {
                 @Override
                 public void check(JavaClass javaClass, ConditionEvents conditionEvents) {
