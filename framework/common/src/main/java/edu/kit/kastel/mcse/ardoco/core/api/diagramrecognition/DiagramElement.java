@@ -3,6 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -11,7 +12,6 @@ import org.eclipse.collections.impl.factory.SortedSets;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelElement;
-import edu.kit.kastel.mcse.ardoco.core.common.util.NullObject;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityComparable;
 import edu.kit.kastel.mcse.ardoco.core.data.MetaData;
 
@@ -21,8 +21,8 @@ import edu.kit.kastel.mcse.ardoco.core.data.MetaData;
  */
 public abstract class DiagramElement extends Entity implements SimilarityComparable<DiagramElement> {
     private final Diagram diagram;
-    private NullObject<DiagramElement> parent;
-    private NullObject<ArrayList<DiagramElement>> children;
+    private DiagramElement parent;
+    private List<DiagramElement> children;
 
     /**
      * Creates a new diagram element that is associated with the given diagram and unique identifier.
@@ -60,13 +60,12 @@ public abstract class DiagramElement extends Entity implements SimilarityCompara
     public ImmutableSortedSet<DiagramElement> getChildren() {
         if (children == null) {
             var all = getDiagram().getBoxes();
-            var alist = new ArrayList<>(all.stream()
+            this.children = new ArrayList<>(all.stream()
                     .filter(de -> !de.equals(DiagramElement.this) && de.getParent().map(p -> p == DiagramElement.this).orElse(false))
                     .map(b -> (DiagramElement) b)
                     .toList());
-            children = new NullObject<>(alist);
         }
-        return SortedSets.immutable.withAll(children.value);
+        return SortedSets.immutable.withAll(children);
     }
 
     /**
@@ -78,12 +77,12 @@ public abstract class DiagramElement extends Entity implements SimilarityCompara
     public Optional<DiagramElement> getParent() {
         if (parent == null) {
             var all = getDiagram().getBoxes();
-            parent = new NullObject<>(all.stream()
+            parent = all.stream()
                     .filter(de -> !de.equals(DiagramElement.this) && de.getBoundingBox().containsEntirely(getBoundingBox())) //Find boxes containing this element
                     .min(Comparator.comparingDouble(de -> de.getBoundingBox().area()))
-                    .orElse(null));
+                    .orElse(null);
         }
-        return Optional.ofNullable(parent.value);
+        return Optional.ofNullable(parent);
     }
 
     @Override
