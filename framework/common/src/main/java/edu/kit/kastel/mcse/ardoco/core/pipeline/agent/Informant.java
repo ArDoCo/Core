@@ -4,6 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.pipeline.agent;
 import java.util.SortedMap;
 
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
+import edu.kit.kastel.mcse.ardoco.core.data.GlobalConfiguration;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
 
 public abstract class Informant extends AbstractPipelineStep implements Claimant {
@@ -24,5 +25,9 @@ public abstract class Informant extends AbstractPipelineStep implements Claimant
     @Override
     protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration) {
         //Nothing by default
+    }
+
+    protected final GlobalConfiguration getMetaData() {
+        return getDataRepository().getGlobalConfiguration();
     }
 }

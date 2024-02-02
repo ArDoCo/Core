@@ -22,7 +22,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.data.DeepCopy;
-import edu.kit.kastel.mcse.ardoco.core.data.MetaData;
 import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
 import edu.kit.kastel.mcse.ardoco.core.data.ProjectPipelineData;
 
@@ -56,28 +55,6 @@ public final class DataRepositoryHelper {
      */
     public static ProjectPipelineData getProjectPipelineData(DataRepository dataRepository) {
         return dataRepository.getData(ProjectPipelineData.ID, ProjectPipelineData.class).orElseThrow();
-    }
-
-    /**
-     * Checks whether there is {@link MetaData} stored within the provided {@link DataRepository}
-     *
-     * @param dataRepository the DataRepository to access
-     * @return true, if there is {@link MetaData} within the {@link DataRepository}; else, false
-     */
-    public static boolean hasPipelineMetaData(DataRepository dataRepository) {
-        return dataRepository.getData(MetaData.ID, MetaData.class).isPresent();
-    }
-
-    /**
-     * Returns the {@link MetaData} stored within the provided {@link DataRepository}. This does not check if there actually is one and will fail and
-     * throw an {@link java.util.NoSuchElementException} if the data is not present. To make sure that there is data present, use
-     * {@link #hasPipelineMetaData(DataRepository)}
-     *
-     * @param dataRepository the DataRepository to access
-     * @return the data
-     */
-    public static MetaData getMetaData(DataRepository dataRepository) {
-        return dataRepository.getData(MetaData.ID, MetaData.class).orElseThrow();
     }
 
     /**

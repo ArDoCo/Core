@@ -3,7 +3,6 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramElement
-import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramUtil
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind
@@ -12,6 +11,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils
+import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant
 import org.eclipse.collections.api.factory.Lists
 import org.eclipse.collections.api.factory.SortedSets
@@ -25,10 +25,11 @@ import org.slf4j.LoggerFactory
  * due to similarity. By additionally comparing to the diagram elements, we find that they are related to different package diagram elements, and thus probably
  * shouldn't be contained by the same mapping.
  */
-class DiagramBackedTextStateStrategy(textState: TextStateImpl) : OriginalTextStateStrategy(textState) {
-    private val wordSimUtils: WordSimUtils
-    private val similarityUtils: SimilarityUtils
-    private var diagramRecognitionState: DiagramRecognitionState? = null
+class DiagramBackedTextStateStrategy(
+    private val dataRepository: DataRepository
+) : OriginalTextStateStrategy(dataRepository.globalConfiguration) {
+    private val wordSimUtils: WordSimUtils = globalConfiguration.wordSimUtils
+    private val similarityUtils: SimilarityUtils = globalConfiguration.similarityUtils
     private lateinit var boxes: List<Box>
 
     /**
@@ -43,12 +44,9 @@ class DiagramBackedTextStateStrategy(textState: TextStateImpl) : OriginalTextSta
         probability: Double,
         surfaceForms: ImmutableList<String>
     ): NounMapping {
-        if (diagramRecognitionState == null) {
-            diagramRecognitionState = DataRepositoryHelper.getDiagramRecognitionState(textState.dataRepository)
-            logger.debug("Loaded DiagramRecognitionState")
-        }
         if (!this::boxes.isInitialized) {
-            boxes = diagramRecognitionState!!.getDiagrams().flatMap { d: Diagram -> d.getBoxes() }
+            val diagramRecognitionState = DataRepositoryHelper.getDiagramRecognitionState(dataRepository)
+            boxes = diagramRecognitionState.getDiagrams().flatMap { d: Diagram -> d.getBoxes() }
             logger.debug("Loaded {} Boxes", boxes.size)
         }
         val disposableNounMapping =
@@ -150,12 +148,6 @@ class DiagramBackedTextStateStrategy(textState: TextStateImpl) : OriginalTextSta
                 .map { box -> DiagramUtil.calculateHighestSimilarity(wordSimUtils, word, box) to box }
                 .filter { p -> p.first >= CommonTextToolsConfig.DE_WORD_SIMILARITY_THRESHOLD }
         return wordPairs.maxWithOrNull(diagramElementSimilarity)?.second
-    }
-
-    init {
-        val pipelineMetaData = textState.metaData
-        wordSimUtils = pipelineMetaData.wordSimUtils
-        similarityUtils = pipelineMetaData.similarityUtils
     }
 
     companion object {

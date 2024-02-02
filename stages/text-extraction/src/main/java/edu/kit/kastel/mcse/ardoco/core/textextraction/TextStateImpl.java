@@ -3,7 +3,6 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
 import java.util.Comparator;
 import java.util.SortedMap;
-import java.util.function.Function;
 
 import org.eclipse.collections.api.block.predicate.Predicate;
 import org.eclipse.collections.api.factory.Lists;
@@ -26,7 +25,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.textextraction.WordAbbreviation;
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.core.common.util.Comparators;
 import edu.kit.kastel.mcse.ardoco.core.data.AbstractState;
-import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 /**
@@ -55,22 +53,22 @@ public class TextStateImpl extends AbstractState implements TextState {
     private MutableList<PhraseMapping> phraseMappings;
     private MutableSortedSet<WordAbbreviation> wordAbbreviations;
     private MutableSortedSet<PhraseAbbreviation> phraseAbbreviations;
-    private TextStateStrategy strategy;
+    private final TextStateStrategy strategy;
 
-    /**
-     * Creates a new name type relation state
-     */
-    public TextStateImpl(DataRepository dataRepository) {
-        this(dataRepository, OriginalTextStateStrategy::new);
+    // Configuration Test
+    private TextStateImpl() {
+        super();
+        this.strategy = null;
     }
 
-    public TextStateImpl(DataRepository dataRepository, Function<TextStateImpl, TextStateStrategy> constructor) {
-        super(dataRepository);
+    public TextStateImpl(TextStateStrategy strategy) {
+        super();
+        this.strategy = strategy;
         nounMappings = Lists.mutable.empty();
         phraseMappings = Lists.mutable.empty();
         wordAbbreviations = SortedSets.mutable.empty();
         phraseAbbreviations = SortedSets.mutable.empty();
-        strategy = constructor.apply(this);
+        this.strategy.setState(this);
     }
 
     @Override
@@ -194,7 +192,7 @@ public class TextStateImpl extends AbstractState implements TextState {
 
     @Override
     public ImmutableList<NounMapping> getNounMappingsWithSimilarReference(String reference) {
-        return getNounMappings().select(nm -> getMetaData().getSimilarityUtils().areWordsSimilar(reference, nm.getReference())).toImmutable();
+        return strategy.getNounMappingsWithSimilarReference(reference);
     }
 
     @Override

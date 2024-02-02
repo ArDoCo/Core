@@ -23,7 +23,7 @@ class DiagramRecognition(
         dataRepository
     ) {
     private lateinit var previousCharacterMatchFunction: UnicodeCharacterMatchFunctions
-    private val wordSimUtils = metaData.getWordSimUtils()
+    private val wordSimUtils = getDataRepository().globalConfiguration.wordSimUtils
 
     companion object {
         const val ID = "DiagramRecognition"

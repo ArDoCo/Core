@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityComparable;
-import edu.kit.kastel.mcse.ardoco.core.data.MetaData;
+import edu.kit.kastel.mcse.ardoco.core.data.GlobalConfiguration;
 
 /**
  * Programmatically represents an informal diagram. A diagram is uniquely identified by its (resource) name and can contain an arbitrary number of diagram
@@ -52,11 +52,11 @@ public interface Diagram extends Comparable<Diagram>, SimilarityComparable<Diagr
     List<Connector> getConnectors();
 
     @Override
-    default boolean similar(MetaData metaData, Diagram obj) {
+    default boolean similar(GlobalConfiguration globalConfiguration, Diagram obj) {
         if (equals(obj))
             return true;
         if (getResourceName().equals(obj.getResourceName())) {
-            return SimilarityComparable.similar(metaData, getBoxes(), obj.getBoxes());
+            return SimilarityComparable.similar(globalConfiguration, getBoxes(), obj.getBoxes());
         }
         return false;
     }

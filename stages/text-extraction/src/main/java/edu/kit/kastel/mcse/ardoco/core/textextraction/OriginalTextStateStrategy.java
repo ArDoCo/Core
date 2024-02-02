@@ -3,7 +3,6 @@ package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -17,14 +16,14 @@ import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextStateStrategy;
 import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
+import edu.kit.kastel.mcse.ardoco.core.data.GlobalConfiguration;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 public class OriginalTextStateStrategy extends DefaultTextStateStrategy implements Serializable {
 
-    OriginalTextStateStrategy(TextStateImpl textState) {
-        super(textState);
+    OriginalTextStateStrategy(GlobalConfiguration globalConfiguration) {
+        super(globalConfiguration);
     }
 
     @Override
@@ -34,7 +33,7 @@ public class OriginalTextStateStrategy extends DefaultTextStateStrategy implemen
                 surfaceForms);
 
         for (var existingNounMapping : super.getTextState().getNounMappings()) {
-            if (textState.getMetaData().getSimilarityUtils().areNounMappingsSimilar(disposableNounMapping, existingNounMapping)) {
+            if (globalConfiguration.getSimilarityUtils().areNounMappingsSimilar(disposableNounMapping, existingNounMapping)) {
 
                 return mergeNounMappings(existingNounMapping, disposableNounMapping, disposableNounMapping.getReferenceWords(), disposableNounMapping
                         .getReference(), disposableNounMapping.getKind(), claimant, disposableNounMapping.getProbability());
@@ -87,10 +86,5 @@ public class OriginalTextStateStrategy extends DefaultTextStateStrategy implemen
         this.getTextState().addNounMappingAddPhraseMapping(mergedNounMapping);
 
         return mergedNounMapping;
-    }
-
-    @Override
-    public Function<TextStateImpl, TextStateStrategy> creator() {
-        return OriginalTextStateStrategy::new;
     }
 }

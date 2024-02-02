@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.SortedMap;
 
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextStateStrategy;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.agents.AbbreviationAgent;
@@ -44,7 +45,8 @@ public class TextExtraction extends AbstractExecutionStage {
         var dataRepository = getDataRepository();
         var optionalTextState = dataRepository.getData(TextState.ID, TextStateImpl.class);
         if (optionalTextState.isEmpty()) {
-            var textState = new TextStateImpl(dataRepository);
+            TextStateStrategy tts = new OriginalTextStateStrategy(dataRepository.getGlobalConfiguration());
+            var textState = new TextStateImpl(tts);
             dataRepository.addData(TextState.ID, textState);
         }
     }

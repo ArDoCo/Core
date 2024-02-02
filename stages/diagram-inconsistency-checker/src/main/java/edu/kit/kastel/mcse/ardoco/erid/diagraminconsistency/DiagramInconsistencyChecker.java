@@ -27,7 +27,7 @@ public class DiagramInconsistencyChecker extends ExecutionStage {
     public DiagramInconsistencyChecker(SortedMap<String, String> additionalConfigs, DataRepository dataRepository) {
         super(List.of(new DiagramInconsistencyAgent(dataRepository), new RecommendedInstancesConfidenceAgent(dataRepository)), DiagramInconsistencyChecker.class
                 .getSimpleName(), dataRepository, additionalConfigs);
-        this.wordSimUtils = getMetaData().getWordSimUtils();
+        this.wordSimUtils = dataRepository.getGlobalConfiguration().getWordSimUtils();
     }
 
     @Override

@@ -71,7 +71,7 @@ class DiagramInconsistencyCheckerTest extends StageTest<DiagramInconsistencyChec
         return new AnonymousRunner(project.name()) {
             @Override
             public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) throws IOException {
-                DataRepositoryHelper.getMetaData(dataRepository).getWordSimUtils().setConsiderAbbreviations(true);
+                dataRepository.getGlobalConfiguration().getWordSimUtils().setConsiderAbbreviations(true);
                 var pipelineSteps = new ArrayList<AbstractPipelineStep>();
 
                 var text = CommonUtilities.readInputText(project.getTextFile());
@@ -109,7 +109,7 @@ class DiagramInconsistencyCheckerTest extends StageTest<DiagramInconsistencyChec
         return new AnonymousRunner(project.name(), preRunDataRepository) {
             @Override
             public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) {
-                DataRepositoryHelper.getMetaData(dataRepository).getWordSimUtils().setConsiderAbbreviations(true);
+                dataRepository.getGlobalConfiguration().getWordSimUtils().setConsiderAbbreviations(true);
                 var pipelineSteps = new ArrayList<AbstractPipelineStep>();
                 pipelineSteps.add(new DiagramInconsistencyChecker(combinedConfigs, dataRepository));
                 return pipelineSteps;

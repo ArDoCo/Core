@@ -13,7 +13,7 @@ import org.eclipse.collections.impl.factory.SortedSets;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelElement;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityComparable;
-import edu.kit.kastel.mcse.ardoco.core.data.MetaData;
+import edu.kit.kastel.mcse.ardoco.core.data.GlobalConfiguration;
 
 /**
  * This box represents a geometrical shape with an arbitrary amount of text from a diagram. An element can be uniquely identified by its bounding box or UID and
@@ -109,11 +109,11 @@ public abstract class DiagramElement extends Entity implements SimilarityCompara
     }
 
     @Override
-    public boolean similar(MetaData metaData, DiagramElement obj) {
+    public boolean similar(GlobalConfiguration globalConfiguration, DiagramElement obj) {
         if (equals(obj))
             return true;
         if (diagram.getResourceName().equals(obj.diagram.getResourceName()))
-            return getBoundingBox().similar(metaData, obj.getBoundingBox());
+            return getBoundingBox().similar(globalConfiguration, obj.getBoundingBox());
         return false;
     }
 }

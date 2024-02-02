@@ -3,7 +3,6 @@ package edu.kit.kastel.mcse.ardoco.tests.integration
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType
-import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.AnonymousRunner
 import edu.kit.kastel.mcse.ardoco.core.models.agents.ArCoTLModelProviderAgent
@@ -63,7 +62,7 @@ internal class DiagramRecognitionMockTest : StageTest<DiagramRecognitionMock, Go
     protected override fun runPreTestRunner(project: GoldStandardDiagrams): DataRepository {
         return object : AnonymousRunner(project.getProjectName()) {
             override fun initializePipelineSteps(dataRepository: DataRepository): List<AbstractPipelineStep> {
-                DataRepositoryHelper.getMetaData(dataRepository).wordSimUtils.considerAbbreviations = true
+                dataRepository.globalConfiguration.wordSimUtils.considerAbbreviations = true
                 val pipelineSteps = ArrayList<AbstractPipelineStep>()
                 val arCoTLModelProviderAgent =
                     ArCoTLModelProviderAgent.get(
@@ -86,7 +85,7 @@ internal class DiagramRecognitionMockTest : StageTest<DiagramRecognitionMock, Go
     ): DataRepository {
         return object : AnonymousRunner(project.getProjectName(), preRunDataRepository) {
             override fun initializePipelineSteps(dataRepository: DataRepository): List<AbstractPipelineStep> {
-                DataRepositoryHelper.getMetaData(dataRepository).wordSimUtils.considerAbbreviations = true
+                dataRepository.globalConfiguration.wordSimUtils.considerAbbreviations = true
                 val pipelineSteps = ArrayList<AbstractPipelineStep>()
                 pipelineSteps.add(DiagramRecognitionMock(project, project.additionalConfigurations, dataRepository))
                 return pipelineSteps

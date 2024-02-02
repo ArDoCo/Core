@@ -11,15 +11,14 @@ import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.Inconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.data.AbstractState;
-import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 
 public class InconsistencyStateImpl extends AbstractState implements InconsistencyState {
 
     private MutableList<RecommendedInstance> recommendedInstances;
     private MutableList<Inconsistency> inconsistencies;
 
-    public InconsistencyStateImpl(DataRepository dataRepository) {
-        super(dataRepository);
+    public InconsistencyStateImpl() {
+        super();
         inconsistencies = Lists.mutable.empty();
         recommendedInstances = Lists.mutable.empty();
     }

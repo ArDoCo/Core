@@ -43,7 +43,7 @@ public class ConnectionGenerator extends AbstractExecutionStage {
 
     @Override
     protected void initializeState() {
-        var connectionStates = ConnectionStatesImpl.build(dataRepository);
+        var connectionStates = ConnectionStatesImpl.build();
         getDataRepository().addData(ConnectionStates.ID, connectionStates);
     }
 }

@@ -26,7 +26,7 @@ class DiagramRecognitionMock(
             dataRepository,
             additionalConfigs
         ) {
-    private val wordSimUtils: WordSimUtils = metaData.wordSimUtils
+    private val wordSimUtils: WordSimUtils = getDataRepository().globalConfiguration.wordSimUtils
 
     override fun initializeState() {
         logger.info("Creating DiagramRecognitionMock State")

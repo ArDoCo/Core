@@ -6,7 +6,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramGS
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType
 import edu.kit.kastel.mcse.ardoco.core.common.util.Comparators
-import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.AnonymousRunner
 import edu.kit.kastel.mcse.ardoco.core.models.agents.ArCoTLModelProviderAgent
@@ -75,7 +74,7 @@ internal class DiagramRecognitionTest :
     protected override fun runPreTestRunner(project: GoldStandardDiagrams): DataRepository {
         return object : AnonymousRunner(project.getProjectName()) {
             override fun initializePipelineSteps(dataRepository: DataRepository): List<AbstractPipelineStep> {
-                DataRepositoryHelper.getMetaData(dataRepository).wordSimUtils.considerAbbreviations = true
+                dataRepository.globalConfiguration.wordSimUtils.considerAbbreviations = true
                 val pipelineSteps = ArrayList<AbstractPipelineStep>()
                 val arCoTLModelProviderAgent =
                     ArCoTLModelProviderAgent.get(
@@ -98,7 +97,7 @@ internal class DiagramRecognitionTest :
     ): DataRepository {
         return object : AnonymousRunner(project.getProjectName(), preRunDataRepository) {
             override fun initializePipelineSteps(dataRepository: DataRepository): List<AbstractPipelineStep> {
-                DataRepositoryHelper.getMetaData(dataRepository).wordSimUtils.considerAbbreviations = true
+                dataRepository.globalConfiguration.wordSimUtils.considerAbbreviations = true
                 val pipelineSteps = ArrayList<AbstractPipelineStep>()
                 dataRepository.addData(InputDiagramData.ID, InputDiagramData(project.getDiagramData()))
                 pipelineSteps.add(DiagramRecognition(dataRepository))

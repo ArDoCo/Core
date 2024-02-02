@@ -17,18 +17,32 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.PhraseAbbreviation;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextStateStrategy;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.WordAbbreviation;
 import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
+import edu.kit.kastel.mcse.ardoco.core.data.GlobalConfiguration;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 @Deterministic
 public abstract class DefaultTextStateStrategy implements TextStateStrategy {
-    protected final TextStateImpl textState;
+    protected final GlobalConfiguration globalConfiguration;
+    protected TextStateImpl textState;
 
-    protected DefaultTextStateStrategy(TextStateImpl textStateImpl) {
-        this.textState = textStateImpl;
+    protected DefaultTextStateStrategy(GlobalConfiguration globalConfiguration) {
+        this.globalConfiguration = globalConfiguration;
+    }
+
+    @Override
+    public void setState(TextState textState) {
+        if (this.textState != null) {
+            throw new IllegalStateException("The text state is already set");
+        } else if (textState instanceof TextStateImpl) {
+            this.textState = (TextStateImpl) textState;
+        } else {
+            throw new IllegalArgumentException("The text state must be an instance of TextStateImpl");
+        }
     }
 
     public TextStateImpl getTextState() {
@@ -52,6 +66,13 @@ public abstract class DefaultTextStateStrategy implements TextStateStrategy {
         }
 
         return new NounMappingImpl(words, distribution.toImmutable(), referenceWords, surfaceForms, reference);
+    }
+
+    @Override
+    public ImmutableList<NounMapping> getNounMappingsWithSimilarReference(String reference) {
+        return this.textState.getNounMappings()
+                .select(nm -> globalConfiguration.getSimilarityUtils().areWordsSimilar(reference, nm.getReference()))
+                .toImmutable();
     }
 
     @Override
@@ -155,4 +176,5 @@ public abstract class DefaultTextStateStrategy implements TextStateStrategy {
         phraseAbbreviation.addPhrase(phrase);
         return phraseAbbreviation;
     }
+
 }

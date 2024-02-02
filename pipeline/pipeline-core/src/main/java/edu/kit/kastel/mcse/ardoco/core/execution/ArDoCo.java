@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
-import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.common.util.FilePrinter;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.data.ProjectPipelineData;
@@ -57,7 +56,7 @@ public final class ArDoCo extends Pipeline {
     private void initDataRepository() {
         ProjectPipelineData projectPipelineData = new ProjectPipelineDataImpl(projectName);
         getDataRepository().addData(ProjectPipelineData.ID, projectPipelineData);
-        DataRepositoryHelper.getMetaData(dataRepository).setPipeline(this);
+        dataRepository.getGlobalConfiguration().setPipeline(this);
     }
 
     @Override

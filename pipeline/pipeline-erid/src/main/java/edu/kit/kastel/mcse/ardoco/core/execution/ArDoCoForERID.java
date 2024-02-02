@@ -37,7 +37,7 @@ public class ArDoCoForERID extends ParameterizedRunner<ArDoCoForERID.Parameters>
 
         ArDoCo arDoCo = getArDoCo();
         var dataRepository = arDoCo.getDataRepository();
-        DataRepositoryHelper.getMetaData(dataRepository).getWordSimUtils().setConsiderAbbreviations(true);
+        dataRepository.getGlobalConfiguration().getWordSimUtils().setConsiderAbbreviations(true);
 
         var text = CommonUtilities.readInputText(p.inputText);
         if (text.isBlank()) {

@@ -6,7 +6,7 @@ import java.util.Comparator;
 import java.util.Optional;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityComparable;
-import edu.kit.kastel.mcse.ardoco.core.data.MetaData;
+import edu.kit.kastel.mcse.ardoco.core.data.GlobalConfiguration;
 
 /**
  * This record represents a 2-dimensional bounding box spanning from the top left point (minX, minY) to (maxX, maxY) in an image where top left is (0,0).
@@ -19,7 +19,7 @@ import edu.kit.kastel.mcse.ardoco.core.data.MetaData;
 public record BoundingBox(int minX, int minY, int maxX, int maxY) implements Comparable<BoundingBox>, SimilarityComparable<BoundingBox>, Serializable {
 
     /**
-     * Threshold used by the IoU to determine whether bounding boxes are similar using {@link #similar(MetaData, BoundingBox)}.
+     * Threshold used by the IoU to determine whether bounding boxes are similar using {@link #similar(GlobalConfiguration, BoundingBox)}.
      */
     public static final double SIMILARITY_THRESHOLD = 0.7;
 
@@ -133,7 +133,7 @@ public record BoundingBox(int minX, int minY, int maxX, int maxY) implements Com
     }
 
     @Override
-    public boolean similar(MetaData metaData, BoundingBox obj) {
+    public boolean similar(GlobalConfiguration globalConfiguration, BoundingBox obj) {
         if (equals(obj))
             return true;
         return intersectionOverUnion(obj) > SIMILARITY_THRESHOLD;

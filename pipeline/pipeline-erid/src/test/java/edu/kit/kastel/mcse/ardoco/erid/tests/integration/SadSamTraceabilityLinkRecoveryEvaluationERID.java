@@ -64,7 +64,7 @@ public class SadSamTraceabilityLinkRecoveryEvaluationERID extends SadSamTraceabi
         var runner = new AnonymousRunner(name) {
             @Override
             public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) throws IOException {
-                DataRepositoryHelper.getMetaData(dataRepository).getWordSimUtils().setConsiderAbbreviations(true);
+                dataRepository.getGlobalConfiguration().getWordSimUtils().setConsiderAbbreviations(true);
                 var pipelineSteps = new ArrayList<AbstractPipelineStep>();
 
                 var text = CommonUtilities.readInputText(inputText);
@@ -85,7 +85,8 @@ public class SadSamTraceabilityLinkRecoveryEvaluationERID extends SadSamTraceabi
                     pipelineSteps.add(DiagramRecognition.get(project.getAdditionalConfigurations(), dataRepository));
                 }
 
-                var textState = new TextStateImpl(dataRepository, DiagramBackedTextStateStrategy::new);
+                var diagramBackedTextStateStrategy = new DiagramBackedTextStateStrategy(dataRepository);
+                var textState = new TextStateImpl(diagramBackedTextStateStrategy);
                 dataRepository.addData(TextState.ID, textState);
                 pipelineSteps.add(TextExtraction.get(additionalConfigs, dataRepository));
 

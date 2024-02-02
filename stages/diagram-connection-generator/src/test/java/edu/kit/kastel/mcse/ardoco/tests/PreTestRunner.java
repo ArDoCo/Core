@@ -38,7 +38,7 @@ public class PreTestRunner extends ParameterizedRunner<PreTestRunner.Parameters>
 
         ArDoCo arDoCo = getArDoCo();
         var dataRepository = arDoCo.getDataRepository();
-        DataRepositoryHelper.getMetaData(dataRepository).getWordSimUtils().setConsiderAbbreviations(true);
+        dataRepository.getGlobalConfiguration().getWordSimUtils().setConsiderAbbreviations(true);
 
         var text = CommonUtilities.readInputText(p.diagramProject.getTextFile());
         if (text.isBlank()) {
@@ -58,7 +58,8 @@ public class PreTestRunner extends ParameterizedRunner<PreTestRunner.Parameters>
             pipelineSteps.add(DiagramRecognition.get(p.diagramProject.getAdditionalConfigurations(), dataRepository));
         }
 
-        var textState = new TextStateImpl(dataRepository, DiagramBackedTextStateStrategy::new);
+        var diagramBackedTextStateStrategy = new DiagramBackedTextStateStrategy(dataRepository);
+        var textState = new TextStateImpl(diagramBackedTextStateStrategy);
         dataRepository.addData(TextState.ID, textState);
         pipelineSteps.add(TextExtraction.get(p.diagramProject.getAdditionalConfigurations(), dataRepository));
 

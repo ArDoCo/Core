@@ -28,7 +28,7 @@ public class DiagramConnectionGenerator extends ExecutionStage {
     @Override
     protected void initializeState() {
         logger.info("Creating DiagramConnectionGenerator States");
-        var diagramConnectionStates = new DiagramConnectionStatesImpl(dataRepository);
+        var diagramConnectionStates = new DiagramConnectionStatesImpl();
         getDataRepository().addData(DiagramConnectionStates.ID, diagramConnectionStates);
     }
 
@@ -40,8 +40,8 @@ public class DiagramConnectionGenerator extends ExecutionStage {
     @Override
     protected void before() {
         super.before();
-        previousCharacterMatchFunction = getMetaData().getWordSimUtils().getCharacterMatchFunction();
-        getMetaData().getWordSimUtils().setCharacterMatchFunction(UnicodeCharacterMatchFunctions.EQUAL_OR_HOMOGLYPH);
+        previousCharacterMatchFunction = dataRepository.getGlobalConfiguration().getWordSimUtils().getCharacterMatchFunction();
+        dataRepository.getGlobalConfiguration().getWordSimUtils().setCharacterMatchFunction(UnicodeCharacterMatchFunctions.EQUAL_OR_HOMOGLYPH);
     }
 
     /**
@@ -49,7 +49,7 @@ public class DiagramConnectionGenerator extends ExecutionStage {
      */
     @Override
     protected void after() {
-        getMetaData().getWordSimUtils().setCharacterMatchFunction(previousCharacterMatchFunction);
+        dataRepository.getGlobalConfiguration().getWordSimUtils().setCharacterMatchFunction(previousCharacterMatchFunction);
         super.after();
     }
 }

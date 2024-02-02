@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TraceType;
-import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.AnonymousRunner;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
@@ -67,8 +66,8 @@ class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionGenerato
         var linksBetweenDeAndRi = diagramConnectionState.getLinksBetweenDeAndRi().stream().sorted().collect(Collectors.toCollection(TreeSet::new));
         var traceLinks = new TreeSet<>(diagramConnectionState.getTraceLinks());
         var mostSpecificTraceLinks = new TreeSet<>(diagramConnectionState.getMostSpecificTraceLinks());
-        var pipelineMetaData = DataRepositoryHelper.getMetaData(dataRepository);
-        var altResult = Results.create(pipelineMetaData, project, text, mostSpecificTraceLinks, getExpectedResults(project));
+        var globalConfiguration = dataRepository.getGlobalConfiguration();
+        var altResult = Results.create(globalConfiguration, project, text, mostSpecificTraceLinks, getExpectedResults(project));
 
         var commonNoun = altResult.falsePositives().stream().filter(w -> {
             var related = w.getRelatedGSLinks();
@@ -93,11 +92,11 @@ class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionGenerato
         var prevResults = getCached(cacheID, Results.class);
 
         if (prevResults != null) {
-            var dAll = Results.difference(pipelineMetaData, altResult.all(), prevResults.all());
-            var dTP = Results.difference(pipelineMetaData, altResult.truePositives(), prevResults.truePositives());
-            var dFP = Results.difference(pipelineMetaData, altResult.falsePositives(), prevResults.falsePositives());
-            var dFN = Results.difference(pipelineMetaData, altResult.falseNegatives(), prevResults.falseNegatives());
-            var dTN = Results.difference(pipelineMetaData, prevResults.falsePositives(), altResult.falsePositives());
+            var dAll = Results.difference(globalConfiguration, altResult.all(), prevResults.all());
+            var dTP = Results.difference(globalConfiguration, altResult.truePositives(), prevResults.truePositives());
+            var dFP = Results.difference(globalConfiguration, altResult.falsePositives(), prevResults.falsePositives());
+            var dFN = Results.difference(globalConfiguration, altResult.falseNegatives(), prevResults.falseNegatives());
+            var dTN = Results.difference(globalConfiguration, prevResults.falsePositives(), altResult.falsePositives());
         }
 
         if (!altResult.equalsByConfusionMatrix(prevResults))
@@ -122,7 +121,7 @@ class DiagramConnectionGeneratorTest extends StageTest<DiagramConnectionGenerato
         return new AnonymousRunner(project.name(), preRunDataRepository) {
             @Override
             public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) {
-                DataRepositoryHelper.getMetaData(dataRepository).getWordSimUtils().setConsiderAbbreviations(true);
+                dataRepository.getGlobalConfiguration().getWordSimUtils().setConsiderAbbreviations(true);
                 var pipelineSteps = new ArrayList<AbstractPipelineStep>();
                 pipelineSteps.add(new DiagramConnectionGenerator(combinedConfigs, dataRepository));
                 return pipelineSteps;

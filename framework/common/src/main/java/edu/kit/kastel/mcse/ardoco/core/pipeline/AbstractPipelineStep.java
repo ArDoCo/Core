@@ -1,10 +1,8 @@
 /* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline;
 
-import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.configuration.AbstractConfigurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
-import edu.kit.kastel.mcse.ardoco.core.data.MetaData;
 
 /**
  * This class represents an abstract pipeline step and defines the core functionality. Together
@@ -56,13 +54,6 @@ public abstract class AbstractPipelineStep extends AbstractConfigurable {
      */
     protected DataRepository getDataRepository() {
         return this.dataRepository;
-    }
-
-    /**
-     * {@return the {@link MetaData } of the pipeline}
-     */
-    protected MetaData getMetaData() {
-        return DataRepositoryHelper.getMetaData(dataRepository);
     }
 
     /**

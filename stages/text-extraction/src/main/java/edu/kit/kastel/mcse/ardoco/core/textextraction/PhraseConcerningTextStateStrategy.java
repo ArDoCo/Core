@@ -2,7 +2,6 @@
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
 import java.util.Arrays;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -17,14 +16,14 @@ import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextStateStrategy;
 import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
+import edu.kit.kastel.mcse.ardoco.core.data.GlobalConfiguration;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy {
 
-    public PhraseConcerningTextStateStrategy(TextStateImpl textState) {
-        super(textState);
+    public PhraseConcerningTextStateStrategy(GlobalConfiguration globalConfiguration) {
+        super(globalConfiguration);
     }
 
     @Override
@@ -110,10 +109,5 @@ public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy 
         this.getTextState().addNounMappingAddPhraseMapping(mergedNounMapping);
 
         return mergedNounMapping;
-    }
-
-    @Override
-    public Function<TextStateImpl, TextStateStrategy> creator() {
-        return PhraseConcerningTextStateStrategy::new;
     }
 }

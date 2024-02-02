@@ -4,7 +4,6 @@ package edu.kit.kastel.mcse.ardoco.core.api.textextraction;
 import static edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions.AVERAGE;
 
 import java.io.Serializable;
-import java.util.function.Function;
 
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.map.sorted.ImmutableSortedMap;
@@ -25,6 +24,8 @@ public interface TextStateStrategy extends Serializable {
      * Aggregation function used to aggregate multiple confidences into a single value
      */
     AggregationFunctions DEFAULT_AGGREGATOR = AVERAGE;
+
+    void setState(TextState textState);
 
     /**
      * Tries to add a mapping to the state using the specified parameters. If a matching mapping already exists, the mapping is extended instead.
@@ -101,8 +102,6 @@ public interface TextStateStrategy extends Serializable {
     NounMapping mergeNounMappings(NounMapping firstNounMapping, NounMapping secondNounMapping, ImmutableList<Word> referenceWords, String reference,
             MappingKind mappingKind, Claimant claimant, double probability);
 
-    Function<? extends TextState, TextStateStrategy> creator();
-
     /**
      * Calculates a joined reference for a set of reference words.
      *
@@ -140,4 +139,6 @@ public interface TextStateStrategy extends Serializable {
      */
 
     PhraseAbbreviation addOrExtendPhraseAbbreviation(String abbreviation, Phrase phrase);
+
+    ImmutableList<NounMapping> getNounMappingsWithSimilarReference(String reference);
 }

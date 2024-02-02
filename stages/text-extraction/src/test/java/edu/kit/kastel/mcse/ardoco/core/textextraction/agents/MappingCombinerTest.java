@@ -60,7 +60,8 @@ class MappingCombinerTest implements Claimant {
     void setup() {
         this.data = new DataRepository();
         this.agent = new MappingCombiner(data);
-        preTextState = new TextStateImpl(data, PhraseConcerningTextStateStrategy::new);
+        PhraseConcerningTextStateStrategy strategy = new PhraseConcerningTextStateStrategy(data.getGlobalConfiguration());
+        preTextState = new TextStateImpl(strategy);
 
         Word a0 = Mockito.mock(Word.class);
         Word fast0 = Mockito.mock(Word.class);
@@ -205,7 +206,7 @@ class MappingCombinerTest implements Claimant {
         preTextState.addNounMapping(dog3, MappingKind.NAME, this, 0.5);
 
         Assertions.assertTrue(phraseMappingsAreSimilar(preTextState, dog1, dog3));
-        Assertions.assertTrue(preTextState.getMetaData()
+        Assertions.assertTrue(data.getGlobalConfiguration()
                 .getSimilarityUtils()
                 .areNounMappingsSimilar(preTextState.getNounMappingByWord(dog1), preTextState.getNounMappingByWord(dog3)));
 
@@ -398,7 +399,7 @@ class MappingCombinerTest implements Claimant {
         var pm0 = textState.getPhraseMappingByNounMapping(nm0);
         var pm1 = textState.getPhraseMappingByNounMapping(nm1);
 
-        return textState.getMetaData()
+        return data.getGlobalConfiguration()
                 .getSimilarityUtils()
                 .getPhraseMappingSimilarity(textState, pm0, pm1, PhraseMappingAggregatorStrategy.MAX_SIMILARITY) > MappingCombinerTest.MIN_COSINE_SIMILARITY;
     }
@@ -454,7 +455,8 @@ class MappingCombinerTest implements Claimant {
     }
 
     private TextStateImpl createCopy(TextStateImpl textState) {
-        TextStateImpl newTextState = new TextStateImpl(textState.getDataRepository());
+        PhraseConcerningTextStateStrategy strategy = new PhraseConcerningTextStateStrategy(data.getGlobalConfiguration());
+        TextStateImpl newTextState = new TextStateImpl(strategy);
 
         MutableList<NounMapping> nounMappings = getField(textState, "nounMappings");
         MutableList<PhraseMapping> phraseMappings = getField(textState, "phraseMappings");
