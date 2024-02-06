@@ -86,9 +86,9 @@
     <kotlin.version>1.9.22</kotlin.version>
 
     <!-- Plugin Versions -->
-    <slf4j.version>2.0.11</slf4j.version>
+    <slf4j.version>2.0.12</slf4j.version>
     <spotless.version>2.43.0</spotless.version>
-    <junit.version>5.10.1</junit.version>
+    <junit.version>5.10.2</junit.version>
     <eclipse-collections.version>12.0.0.M3</eclipse-collections.version>
     <jackson.version>2.16.1</jackson.version>
     <javaparser.version>3.25.8</javaparser.version>
@@ -163,7 +163,7 @@
       <dependency>
         <groupId>org.assertj</groupId>
         <artifactId>assertj-core</artifactId>
-        <version>3.25.1</version>
+        <version>3.25.3</version>
         <scope>test</scope>
       </dependency>
       <dependency>
