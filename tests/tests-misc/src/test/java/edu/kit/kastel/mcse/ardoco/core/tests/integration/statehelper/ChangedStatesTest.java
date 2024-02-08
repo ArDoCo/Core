@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.statehelper;
 
 import java.io.File;
@@ -34,7 +34,7 @@ public class ChangedStatesTest {
     private static final boolean OVERWRITE_PREVIOUS = false;
     private static final Logger logger = LoggerFactory.getLogger(ChangedStatesTest.class);
 
-    private static final String OUTPUT = "src/test/resources/testout";
+    private static final String OUTPUT = "target/testout";
     private static final Path OUTPUT_PATH = Path.of(OUTPUT);
     private static final Map<Project, ArDoCoResult> DATA_MAP = new LinkedHashMap<>();
     private static final String LOGGING_ARDOCO_CORE = "org.slf4j.simpleLogger.log.edu.kit.kastel.mcse.ardoco.core";

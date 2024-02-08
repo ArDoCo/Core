@@ -1,4 +1,4 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
 import static edu.kit.kastel.mcse.ardoco.core.tests.eval.ProjectHelper.ANALYZE_CODE_DIRECTLY;
@@ -57,7 +57,7 @@ class TraceLinkEvaluationIT {
 
     protected static final Logger logger = LoggerFactory.getLogger(TraceLinkEvaluationIT.class);
 
-    protected static final String OUTPUT = "src/test/resources/testout";
+    protected static final String OUTPUT = "target/testout";
 
     protected static final String LOGGING_ARDOCO_CORE = "org.slf4j.simpleLogger.log.edu.kit.kastel.mcse.ardoco.core";
     protected static AtomicBoolean analyzeCodeDirectly = ANALYZE_CODE_DIRECTLY;
