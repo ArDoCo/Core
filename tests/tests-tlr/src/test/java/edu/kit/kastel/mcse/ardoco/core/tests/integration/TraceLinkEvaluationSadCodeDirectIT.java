@@ -42,7 +42,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLSumma
 class TraceLinkEvaluationSadCodeDirectIT {
     protected static final Logger logger = LoggerFactory.getLogger(TraceLinkEvaluationIT.class);
 
-    protected static final String OUTPUT = "src/test/resources/testout";
+    protected static final String OUTPUT = "target/testout";
 
     protected static final String LOGGING_ARDOCO_CORE = "org.slf4j.simpleLogger.log.edu.kit.kastel.mcse.ardoco.core";
 

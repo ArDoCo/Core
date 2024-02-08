@@ -71,7 +71,7 @@
   </distributionManagement>
 
   <properties>
-    <revision>0.39.0-SNAPSHOT</revision>
+    <revision>0.41.0-SNAPSHOT</revision>
     <ardoco.version>${revision}</ardoco.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -87,9 +87,9 @@
     <kotlin.version>1.9.22</kotlin.version>
 
     <!-- Plugin Versions -->
-    <slf4j.version>2.0.11</slf4j.version>
-    <spotless.version>2.42.0</spotless.version>
-    <junit.version>5.10.1</junit.version>
+    <slf4j.version>2.0.12</slf4j.version>
+    <spotless.version>2.43.0</spotless.version>
+    <junit.version>5.10.2</junit.version>
     <eclipse-collections.version>12.0.0.M3</eclipse-collections.version>
     <jackson.version>2.16.1</jackson.version>
     <javaparser.version>3.25.8</javaparser.version>
@@ -160,12 +160,12 @@
       <dependency>
         <groupId>org.apache.httpcomponents.client5</groupId>
         <artifactId>httpclient5</artifactId>
-        <version>5.3</version>
+        <version>5.3.1</version>
       </dependency>
       <dependency>
         <groupId>org.assertj</groupId>
         <artifactId>assertj-core</artifactId>
-        <version>3.25.1</version>
+        <version>3.25.3</version>
         <scope>test</scope>
       </dependency>
       <dependency>

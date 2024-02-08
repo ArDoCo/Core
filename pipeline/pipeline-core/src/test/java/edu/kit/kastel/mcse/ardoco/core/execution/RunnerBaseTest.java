@@ -1,4 +1,4 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.execution;
 
 import java.io.File;
@@ -8,6 +8,7 @@ import java.util.Objects;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -21,9 +22,14 @@ public class RunnerBaseTest {
     protected static final String INPUT_TEXT = "../pipeline-core/src/test/resources/teastore.txt";
     protected static final String INPUT_MODEL_ARCHITECTURE = "../pipeline-core/src/test/resources/teastore.repository";
     protected static final String INPUT_MODEL_ARCHITECTURE_UML = "../pipeline-core/src/test/resources/teastore.uml";
-    protected static final String OUTPUT_DIR = "../pipeline-core/src/test/resources/testout";
+    protected final String OUTPUT_DIR = "../target/testout-" + this.getClass().getSimpleName();
     protected static final String ADDITIONAL_CONFIGS = "../pipeline-core/src/test/resources/additionalConfig.txt";
     protected static final String PROJECT_NAME = "teastore";
+
+    @BeforeEach
+    void setupDirectories() {
+        new File(OUTPUT_DIR).mkdirs();
+    }
 
     @AfterEach
     void cleanUp() {

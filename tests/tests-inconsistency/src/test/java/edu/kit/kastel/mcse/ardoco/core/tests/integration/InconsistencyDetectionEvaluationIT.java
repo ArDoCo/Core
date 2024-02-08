@@ -61,7 +61,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.integration.inconsistencyhelper.Hol
 public class InconsistencyDetectionEvaluationIT {
     private static final Logger logger = LoggerFactory.getLogger(InconsistencyDetectionEvaluationIT.class);
 
-    private static final String OUTPUT = "src/test/resources/testout";
+    private static final String OUTPUT = "target/testout";
     public static final String DIRECTORY_NAME = "ardoco_eval_id";
 
     /**
