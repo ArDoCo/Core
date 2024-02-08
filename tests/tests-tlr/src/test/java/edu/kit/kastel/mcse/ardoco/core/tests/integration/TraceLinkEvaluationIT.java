@@ -57,7 +57,7 @@ class TraceLinkEvaluationIT {
 
     protected static final Logger logger = LoggerFactory.getLogger(TraceLinkEvaluationIT.class);
 
-    protected static final String OUTPUT = "target/testout";
+    protected static final String OUTPUT = "target/testout-tlr-it";
 
     protected static final String LOGGING_ARDOCO_CORE = "org.slf4j.simpleLogger.log.edu.kit.kastel.mcse.ardoco.core";
     protected static AtomicBoolean analyzeCodeDirectly = ANALYZE_CODE_DIRECTLY;
