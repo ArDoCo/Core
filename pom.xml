@@ -104,7 +104,7 @@
       ${project.basedir}/../../${aggregate.report.dir}</sonar.coverage.jacoco.xmlReportPaths>
     <aggregate.report.dir>report/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.dir>
     <argLine>-Xmx4g -Xss256m</argLine>
-    <stanford.corenlp.version>4.5.5</stanford.corenlp.version>
+    <stanford.corenlp.version>4.5.6</stanford.corenlp.version>
   </properties>
 
   <dependencyManagement>
