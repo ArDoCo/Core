@@ -1,4 +1,4 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -51,8 +51,8 @@ public class EvaluationTestBase {
     protected static final double PARTIAL_SELECTION_MAX = 0.25;
     protected static final double REFACTORING_RATIO = 0.25;
 
-    protected static final String PIPELINE_OUTPUT = "src/test/resources/pipeline_out";
-    protected static final String TEST_OUTPUT = "src/test/resources/test_out";
+    protected static final String PIPELINE_OUTPUT = "target/pipeline_out";
+    protected static final String TEST_OUTPUT = "target/test_out";
     protected static final Logger logger = LoggerFactory.getLogger(EvaluationTestBase.class);
 
     protected FileWriter writer;
