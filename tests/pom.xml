@@ -93,6 +93,7 @@
       </activation>
       <modules>
         <module>tests-base</module>
+        <module>tests-resources</module>
       </modules>
     </profile>
     <profile>
@@ -103,6 +104,7 @@
       </activation>
       <modules>
         <module>tests-base</module>
+        <module>tests-resources</module>
         <module>tests-tlr</module>
       </modules>
     </profile>
@@ -115,6 +117,7 @@
       <modules>
         <module>tests-base</module>
         <module>tests-inconsistency</module>
+        <module>tests-resources</module>
       </modules>
     </profile>
   </profiles>
