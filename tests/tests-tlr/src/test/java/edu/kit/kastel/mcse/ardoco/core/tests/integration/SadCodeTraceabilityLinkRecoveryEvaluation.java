@@ -1,4 +1,4 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
 import static edu.kit.kastel.mcse.ardoco.core.tests.integration.TraceLinkEvaluationIT.OUTPUT;
@@ -21,11 +21,10 @@ import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCoForSadCodeTraceabilityLinkRecovery;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.ArDoCoRunner;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.CodeProject;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 
-class SadCodeTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryEvaluation {
+class SadCodeTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryEvaluation<CodeProject> {
 
     @Override
     protected boolean resultHasRequiredData(ArDoCoResult arDoCoResult) {
@@ -36,8 +35,7 @@ class SadCodeTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecovery
     @Override
     protected ArDoCoRunner getAndSetupRunner(CodeProject codeProject) {
         String name = codeProject.name().toLowerCase();
-        Project textProject = codeProject.getProject();
-        File textInput = textProject.getTextFile();
+        File textInput = codeProject.getTextFile();
         File inputCode = getInputCode(codeProject);
         SortedMap<String, String> additionalConfigsMap = new TreeMap<>();
         File outputDir = new File(OUTPUT);

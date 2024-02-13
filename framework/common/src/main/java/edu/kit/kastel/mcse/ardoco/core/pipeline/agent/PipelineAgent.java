@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline.agent;
 
 import java.util.ArrayList;
@@ -12,20 +12,26 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
 
 /**
- * This class represents a pipeline agent that calculates some results for an {@link AbstractExecutionStage} execution
- * stage}.
+ * This class represents a pipeline agent that calculates some results for an {@link AbstractExecutionStage} execution stage}.
  *
- * Implementing classes need to override.
- * Additionally, sub-classes are free to override {@link #initializeState()} to execute code at the beginning of the initialization before the main processing.
+ * Implementing classes need to override. Additionally, sub-classes are free to override {@link #initializeState()} to execute code at the beginning of the
+ * initialization before the main processing.
  */
 public abstract class PipelineAgent extends Pipeline implements Agent {
-
-    private final List<Informant> informants;
+    private final List<? extends Informant> informants;
 
     @Configurable
     @ChildClassConfigurable
     private List<String> enabledInformants;
 
+    /**
+     * Creates a new pipeline agent with the specified id. During execution the pipeline agent sequentially runs its informants on the provided data
+     * repository.
+     *
+     * @param informants     the informants in order of execution (all enabled by default)
+     * @param id             the id
+     * @param dataRepository the data repository
+     */
     protected PipelineAgent(List<? extends Informant> informants, String id, DataRepository dataRepository) {
         super(id, dataRepository);
         this.informants = new ArrayList<>(informants);
@@ -34,8 +40,24 @@ public abstract class PipelineAgent extends Pipeline implements Agent {
 
     @Override
     protected final void preparePipelineSteps() {
-        initialize();
         super.preparePipelineSteps();
+        initialize();
+    }
+
+    /**
+     * Called before all informants
+     */
+    @Override
+    protected void before() {
+        //Nothing by default
+    }
+
+    /**
+     * Called after all informants
+     */
+    @Override
+    protected void after() {
+        //Nothing by default
     }
 
     /**
@@ -55,6 +77,13 @@ public abstract class PipelineAgent extends Pipeline implements Agent {
      */
     protected void initializeState() {
         // do nothing here
+    }
+
+    /**
+     * {@return the informants including disabled}
+     */
+    public List<Informant> getInformants() {
+        return List.copyOf(informants);
     }
 
     @Override

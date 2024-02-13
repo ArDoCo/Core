@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files;
 
 import java.io.IOException;
@@ -9,7 +9,7 @@ import java.util.List;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TestLink;
 
 public class TLGoldStandardFile {
@@ -19,8 +19,8 @@ public class TLGoldStandardFile {
         throw new IllegalAccessError("No instantiation allowed");
     }
 
-    public static MutableList<TestLink> loadLinks(Project project) throws IOException {
-        Path path = project.getTlrGoldStandardFile().toPath();
+    public static MutableList<TestLink> loadLinks(GoldStandardProject goldStandardProject) throws IOException {
+        Path path = goldStandardProject.getTlrGoldStandardFile().toPath();
         List<String> lines = Files.readAllLines(path);
 
         return Lists.mutable.ofAll(lines.stream()

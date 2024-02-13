@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021-2023. */
+/* Licensed under MIT 2021-2024. */
 package edu.kit.kastel.mcse.ardoco.core.models.informants;
 
 import java.util.Optional;
@@ -39,7 +39,7 @@ public final class ArCoTLModelProviderInformant extends Informant {
     }
 
     @Override
-    public void run() {
+    public void process() {
         if (extractor == null) {
             return;
         }

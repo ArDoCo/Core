@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.informants;
 
 import java.util.SortedMap;
@@ -12,7 +12,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
-import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
@@ -27,7 +26,7 @@ public class ReferenceInformant extends Informant {
     }
 
     @Override
-    public void run() {
+    public void process() {
         DataRepository dataRepository = getDataRepository();
         var textState = DataRepositoryHelper.getTextState(dataRepository);
         var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
@@ -57,7 +56,7 @@ public class ReferenceInformant extends Informant {
 
     private ImmutableList<NounMapping> getSimilarNounMappings(ModelInstance instance, TextState textState) {
         return textState.getNounMappingsOfKind(MappingKind.NAME)
-                .select(nounMapping -> SimilarityUtils.isNounMappingSimilarToModelInstance(nounMapping, instance));
+                .select(nounMapping -> getMetaData().getSimilarityUtils().isNounMappingSimilarToModelInstance(nounMapping, instance));
     }
 
     @Override

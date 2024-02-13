@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021-2023. */
+/* Licensed under MIT 2021-2024. */
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator;
 
 import java.util.SortedMap;
@@ -42,7 +42,7 @@ public class RecommendationGenerator extends AbstractExecutionStage {
 
     @Override
     protected void initializeState() {
-        var recommendationStates = RecommendationStatesImpl.build();
+        var recommendationStates = RecommendationStatesImpl.build(dataRepository.getGlobalConfiguration());
         getDataRepository().addData(RecommendationStates.ID, recommendationStates);
     }
 }

@@ -1,10 +1,31 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.List;
 
-public interface Diagram {
+import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityComparable;
+import edu.kit.kastel.mcse.ardoco.core.data.GlobalConfiguration;
+
+/**
+ * Programmatically represents an informal diagram. A diagram is uniquely identified by its (resource) name and can contain an arbitrary number of diagram
+ * elements and connectors between them.
+ */
+public interface Diagram extends Comparable<Diagram>, SimilarityComparable<Diagram>, Serializable {
+    /**
+     * {@return the full (resource) name of the diagram, e.g. "some/path/to/some-diagram.jpg"}
+     */
+    String getResourceName();
+
+    /**
+     * {@return the short (resource) name of the diagram, e.g. "some-diagram.jpg"}
+     */
+    default String getShortResourceName() {
+        var split = getResourceName().split("/|(\\\\)");
+        return split[split.length - 1];
+    }
+
     File getLocation();
 
     void addBox(Box box);
@@ -19,7 +40,7 @@ public interface Diagram {
 
     /**
      * Returns the raw text boxes that are attached to this diagram. This method does not return the text boxes that are attached to the boxes of this diagram.
-     * 
+     *
      * @return the raw text boxes that are attached to this diagram
      */
     List<TextBox> getTextBoxes();
@@ -29,4 +50,21 @@ public interface Diagram {
     boolean removeConnector(Connector connector);
 
     List<Connector> getConnectors();
+
+    @Override
+    default boolean similar(GlobalConfiguration globalConfiguration, Diagram obj) {
+        if (equals(obj))
+            return true;
+        if (getResourceName().equals(obj.getResourceName())) {
+            return SimilarityComparable.similar(globalConfiguration, getBoxes(), obj.getBoxes());
+        }
+        return false;
+    }
+
+    @Override
+    default int compareTo(Diagram o) {
+        if (equals(o))
+            return 0;
+        return getResourceName().compareTo(o.getResourceName());
+    }
 }

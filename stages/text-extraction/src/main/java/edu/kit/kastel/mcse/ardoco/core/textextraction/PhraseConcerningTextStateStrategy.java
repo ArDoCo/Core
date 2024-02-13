@@ -1,8 +1,7 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
 import java.util.Arrays;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -18,12 +17,13 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
+import edu.kit.kastel.mcse.ardoco.core.data.GlobalConfiguration;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy {
 
-    public PhraseConcerningTextStateStrategy(TextStateImpl textState) {
-        super.setTextState(textState);
+    public PhraseConcerningTextStateStrategy(GlobalConfiguration globalConfiguration) {
+        super(globalConfiguration);
     }
 
     @Override
@@ -49,8 +49,8 @@ public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy 
     }
 
     @Override
-    public NounMapping mergeNounMappings(NounMapping firstNounMapping, NounMapping secondNounMapping, ImmutableList<Word> referenceWords, String reference,
-            MappingKind mappingKind, Claimant claimant, double probability) {
+    public NounMappingImpl mergeNounMappingsStateless(NounMapping firstNounMapping, NounMapping secondNounMapping, ImmutableList<Word> referenceWords,
+            String reference, MappingKind mappingKind, Claimant claimant, double probability) {
 
         MutableSortedSet<Word> mergedWords = firstNounMapping.getWords().toSortedSet();
         mergedWords.addAllIterable(secondNounMapping.getWords());
@@ -87,25 +87,27 @@ public class PhraseConcerningTextStateStrategy extends DefaultTextStateStrategy 
             if (firstNounMapping.getReference().equalsIgnoreCase(secondNounMapping.getReference())) {
                 mergedReference = firstNounMapping.getReference();
             } else {
-                mergedReference = this.getTextState().calculateNounMappingReference(mergedReferenceWords);
+                mergedReference = calculateNounMappingReference(mergedReferenceWords);
             }
         }
 
-        NounMapping mergedNounMapping = new NounMappingImpl(NounMappingImpl.earliestCreationTime(firstNounMapping, secondNounMapping), mergedWords
+        NounMappingImpl mergedNounMapping = new NounMappingImpl(NounMappingImpl.earliestCreationTime(firstNounMapping, secondNounMapping), mergedWords
                 .toImmutableSortedSet(), mergedDistribution.toImmutable(), mergedReferenceWords.toImmutable(), mergedSurfaceForms.toImmutable(),
                 mergedReference);
         mergedNounMapping.addKindWithProbability(mappingKind, claimant, probability);
-
-        this.getTextState().removeNounMappingFromState(firstNounMapping, mergedNounMapping);
-        this.getTextState().removeNounMappingFromState(secondNounMapping, mergedNounMapping);
-
-        this.getTextState().addNounMappingAddPhraseMapping(mergedNounMapping);
 
         return mergedNounMapping;
     }
 
     @Override
-    public Function<TextStateImpl, TextStateStrategy> creator() {
-        return PhraseConcerningTextStateStrategy::new;
+    public NounMappingImpl mergeNounMappings(NounMapping firstNounMapping, NounMapping secondNounMapping, ImmutableList<Word> referenceWords, String reference,
+            MappingKind mappingKind, Claimant claimant, double probability) {
+        var mergedNounMapping = mergeNounMappingsStateless(firstNounMapping, secondNounMapping, referenceWords, reference, mappingKind, claimant, probability);
+
+        this.getTextState().removeNounMappingFromState(firstNounMapping, mergedNounMapping);
+        this.getTextState().removeNounMappingFromState(secondNounMapping, mergedNounMapping);
+        this.getTextState().addNounMappingAddPhraseMapping(mergedNounMapping);
+
+        return mergedNounMapping;
     }
 }

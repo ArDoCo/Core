@@ -1,4 +1,4 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl;
 
 import java.util.ArrayList;
@@ -52,22 +52,18 @@ public final class CodeModel extends Model {
 
     @JsonGetter("content")
     protected List<String> getContentIds() {
-        if (!initialized)
-            initialize();
+        initialize();
         return content;
     }
 
     @Override
     public List<? extends CodeItem> getContent() {
-        if (!initialized)
-            initialize();
+        initialize();
         return codeItemRepository.getCodeItemsFromIds(content);
     }
 
     @Override
     public List<? extends CodeCompilationUnit> getEndpoints() {
-        if (!initialized)
-            initialize();
         List<CodeCompilationUnit> compilationUnits = new ArrayList<>();
         getContent().forEach(c -> compilationUnits.addAll(c.getAllCompilationUnits()));
         return compilationUnits;
@@ -79,11 +75,11 @@ public final class CodeModel extends Model {
      * @return all code packages of this code model
      */
     public List<? extends CodePackage> getAllPackages() {
-        if (!initialized)
-            initialize();
         List<CodePackage> codePackages = new ArrayList<>();
-        for (CodeItem c : getContent()) {
-            for (CodePackage cp : c.getAllPackages()) {
+        var lContent = getContent();
+        for (CodeItem c : lContent) {
+            var allPackages = c.getAllPackages();
+            for (CodePackage cp : allPackages) {
                 if (!codePackages.contains(cp)) {
                     codePackages.add(cp);
                 }
@@ -93,8 +89,11 @@ public final class CodeModel extends Model {
         return codePackages;
     }
 
-    private void initialize() {
+    private synchronized void initialize() {
+        if (initialized)
+            return;
         this.codeItemRepository.init();
+        initialized = true;
     }
 
     @Override

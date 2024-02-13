@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.measures.ngram;
 
 import java.util.Objects;
@@ -19,9 +19,8 @@ public class NgramMeasure implements WordSimMeasure {
      */
     public enum Variant {
         /**
-         * This variant matches the algorithm included in apache/lucene which is also positional but deviates from the
-         * original algorithm by using {@link #LUCENE_PREFIX_CHARACTER} as the prefix character and changing the weight
-         * for the dN function.
+         * This variant matches the algorithm included in apache/lucene which is also positional but deviates from the original algorithm by using
+         * {@link #LUCENE_PREFIX_CHARACTER} as the prefix character and changing the weight for the dN function.
          */
         LUCENE,
         /**
@@ -35,8 +34,7 @@ public class NgramMeasure implements WordSimMeasure {
     private final double similarityThreshold;
 
     /**
-     * Constructs a new {@link NgramMeasure} using the settings provided by
-     * {@link edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig}.
+     * Constructs a new {@link NgramMeasure} using the settings provided by {@link edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig}.
      */
     public NgramMeasure() {
         this(Variant.LUCENE, CommonTextToolsConfig.NGRAM_MEASURE_NGRAM_LENGTH, CommonTextToolsConfig.NGRAM_SIMILARITY_THRESHOLD);
@@ -67,14 +65,16 @@ public class NgramMeasure implements WordSimMeasure {
     @Override
     public boolean areWordsSimilar(ComparisonContext ctx) {
         Objects.requireNonNull(ctx);
+        return getSimilarity(ctx) >= this.similarityThreshold;
+    }
 
+    @Override
+    public double getSimilarity(ComparisonContext ctx) {
         double distance = calculateDistance(ctx.firstTerm(), ctx.secondTerm());
 
         double normalizedDistance = distance / Math.max(ctx.firstTerm().length(), ctx.secondTerm().length());
 
-        double similarity = 1.0 - normalizedDistance;
-
-        return similarity >= this.similarityThreshold;
+        return 1.0 - normalizedDistance;
     }
 
     /**

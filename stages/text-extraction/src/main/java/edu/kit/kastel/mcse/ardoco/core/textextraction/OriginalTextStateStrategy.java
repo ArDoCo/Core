@@ -1,8 +1,8 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
+import java.io.Serializable;
 import java.util.Arrays;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -16,14 +16,14 @@ import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
-import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
+import edu.kit.kastel.mcse.ardoco.core.data.GlobalConfiguration;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
-public class OriginalTextStateStrategy extends DefaultTextStateStrategy {
+public class OriginalTextStateStrategy extends DefaultTextStateStrategy implements Serializable {
 
-    OriginalTextStateStrategy(TextStateImpl textState) {
-        super.setTextState(textState);
+    OriginalTextStateStrategy(GlobalConfiguration globalConfiguration) {
+        super(globalConfiguration);
     }
 
     @Override
@@ -33,20 +33,20 @@ public class OriginalTextStateStrategy extends DefaultTextStateStrategy {
                 surfaceForms);
 
         for (var existingNounMapping : super.getTextState().getNounMappings()) {
-            if (SimilarityUtils.areNounMappingsSimilar(disposableNounMapping, existingNounMapping)) {
+            if (globalConfiguration.getSimilarityUtils().areNounMappingsSimilar(disposableNounMapping, existingNounMapping)) {
 
                 return mergeNounMappings(existingNounMapping, disposableNounMapping, disposableNounMapping.getReferenceWords(), disposableNounMapping
                         .getReference(), disposableNounMapping.getKind(), claimant, disposableNounMapping.getProbability());
             }
         }
-        super.getTextState().addNounMappingAddPhraseMapping(disposableNounMapping);
 
+        getTextState().addNounMappingAddPhraseMapping(disposableNounMapping);
         return disposableNounMapping;
     }
 
     @Override
-    public NounMapping mergeNounMappings(NounMapping firstNounMapping, NounMapping secondNounMapping, ImmutableList<Word> referenceWords, String reference,
-            MappingKind mappingKind, Claimant claimant, double probability) {
+    public NounMappingImpl mergeNounMappingsStateless(NounMapping firstNounMapping, NounMapping secondNounMapping, ImmutableList<Word> referenceWords,
+            String reference, MappingKind mappingKind, Claimant claimant, double probability) {
 
         MutableSortedSet<Word> mergedWords = firstNounMapping.getWords().toSortedSet();
         mergedWords.add(secondNounMapping.getReferenceWords().get(0));
@@ -72,19 +72,19 @@ public class OriginalTextStateStrategy extends DefaultTextStateStrategy {
 
         String mergedReference = mergedReferenceWords.collect(Word::getText).makeString(" ");
 
-        NounMapping mergedNounMapping = new NounMappingImpl(NounMappingImpl.earliestCreationTime(firstNounMapping, secondNounMapping), mergedWords.toSortedSet()
-                .toImmutable(), mergedDistribution.toImmutable(), mergedReferenceWords.toImmutable(), mergedSurfaceForms.toImmutable(), mergedReference);
-
-        this.getTextState().removeNounMappingFromState(firstNounMapping, mergedNounMapping);
-        this.getTextState().removeNounMappingFromState(secondNounMapping, mergedNounMapping);
-
-        this.getTextState().addNounMappingAddPhraseMapping(mergedNounMapping);
-
-        return mergedNounMapping;
+        return new NounMappingImpl(NounMappingImpl.earliestCreationTime(firstNounMapping, secondNounMapping), mergedWords.toSortedSet().toImmutable(),
+                mergedDistribution.toImmutable(), mergedReferenceWords.toImmutable(), mergedSurfaceForms.toImmutable(), mergedReference);
     }
 
     @Override
-    public Function<TextStateImpl, TextStateStrategy> creator() {
-        return OriginalTextStateStrategy::new;
+    public NounMappingImpl mergeNounMappings(NounMapping firstNounMapping, NounMapping secondNounMapping, ImmutableList<Word> referenceWords, String reference,
+            MappingKind mappingKind, Claimant claimant, double probability) {
+        var mergedNounMapping = mergeNounMappingsStateless(firstNounMapping, secondNounMapping, referenceWords, reference, mappingKind, claimant, probability);
+
+        this.getTextState().removeNounMappingFromState(firstNounMapping, mergedNounMapping);
+        this.getTextState().removeNounMappingFromState(secondNounMapping, mergedNounMapping);
+        this.getTextState().addNounMappingAddPhraseMapping(mergedNounMapping);
+
+        return mergedNounMapping;
     }
 }

@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction.agents;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -16,9 +16,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.PhraseMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.PhraseMappingAggregatorStrategy;
-import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp.PhraseImpl;
@@ -33,8 +31,8 @@ class MappingCombinerTest implements Claimant {
 
     private MappingCombiner agent;
 
-    private TextState preTextState;
-    private TextState textState;
+    private TextStateImpl preTextState;
+    private TextStateImpl textState;
 
     private Word fox0;
     private Word dog1;
@@ -62,7 +60,8 @@ class MappingCombinerTest implements Claimant {
     void setup() {
         this.data = new DataRepository();
         this.agent = new MappingCombiner(data);
-        preTextState = new TextStateImpl(PhraseConcerningTextStateStrategy::new);
+        PhraseConcerningTextStateStrategy strategy = new PhraseConcerningTextStateStrategy(data.getGlobalConfiguration());
+        preTextState = new TextStateImpl(strategy);
 
         Word a0 = Mockito.mock(Word.class);
         Word fast0 = Mockito.mock(Word.class);
@@ -168,7 +167,7 @@ class MappingCombinerTest implements Claimant {
         preTextState.addNounMapping(fox0, MappingKind.NAME, this, 0.5);
 
         textState = createCopy(preTextState);
-        this.data.addData(TextState.ID, textState);
+        this.data.addData(TextStateImpl.ID, textState);
         agent.run();
 
         Assertions.assertEquals(preTextState.getNounMappings(), textState.getNounMappings());
@@ -193,7 +192,7 @@ class MappingCombinerTest implements Claimant {
         Assertions.assertEquals(1, preTextState.getPhraseMappings().size());
 
         textState = createCopy(preTextState);
-        this.data.addData(TextState.ID, textState);
+        this.data.addData(TextStateImpl.ID, textState);
         agent.run();
 
         Assertions.assertEquals(preTextState.getNounMappings(), textState.getNounMappings());
@@ -207,13 +206,15 @@ class MappingCombinerTest implements Claimant {
         preTextState.addNounMapping(dog3, MappingKind.NAME, this, 0.5);
 
         Assertions.assertTrue(phraseMappingsAreSimilar(preTextState, dog1, dog3));
-        Assertions.assertTrue(SimilarityUtils.areNounMappingsSimilar(preTextState.getNounMappingByWord(dog1), preTextState.getNounMappingByWord(dog3)));
+        Assertions.assertTrue(data.getGlobalConfiguration()
+                .getSimilarityUtils()
+                .areNounMappingsSimilar(preTextState.getNounMappingByWord(dog1), preTextState.getNounMappingByWord(dog3)));
 
         Assertions.assertEquals(2, preTextState.getNounMappings().size());
         Assertions.assertEquals(2, preTextState.getPhraseMappings().size());
 
         textState = createCopy(preTextState);
-        this.data.addData(TextState.ID, textState);
+        this.data.addData(TextStateImpl.ID, textState);
         agent.run();
 
         Assertions.assertTrue(nounMappingsWereMerged(preTextState, dog1, dog3, textState));
@@ -232,7 +233,7 @@ class MappingCombinerTest implements Claimant {
         Assertions.assertEquals(2, preTextState.getPhraseMappings().size());
 
         textState = createCopy(preTextState);
-        this.data.addData(TextState.ID, textState);
+        this.data.addData(TextStateImpl.ID, textState);
         agent.run();
 
         Assertions.assertEquals(2, textState.getNounMappings().size());
@@ -249,7 +250,7 @@ class MappingCombinerTest implements Claimant {
         preTextState.addNounMapping(alternativeDog, MappingKind.NAME, this, 0.5);
 
         textState = createCopy(preTextState);
-        this.data.addData(TextState.ID, textState);
+        this.data.addData(TextStateImpl.ID, textState);
         agent.run();
 
         Assertions.assertNotEquals(null, textState.getNounMappingByWord(dog1));
@@ -277,7 +278,7 @@ class MappingCombinerTest implements Claimant {
         Assertions.assertTrue(phraseMappingsAreSimilar(preTextState, dog1, dog3));
 
         textState = createCopy(preTextState);
-        this.data.addData(TextState.ID, textState);
+        this.data.addData(TextStateImpl.ID, textState);
         agent.run();
 
         Assertions.assertTrue(nounMappingsWereMerged(preTextState, dog1, dog3, textState));
@@ -293,7 +294,7 @@ class MappingCombinerTest implements Claimant {
         Assertions.assertTrue(phraseMappingsAreSimilar(preTextState, turtle4, dog6));
 
         textState = createCopy(preTextState);
-        this.data.addData(TextState.ID, textState);
+        this.data.addData(TextStateImpl.ID, textState);
         agent.run();
 
         Assertions.assertAll(//
@@ -307,10 +308,12 @@ class MappingCombinerTest implements Claimant {
         preTextState.addNounMapping(dog1, MappingKind.NAME, this, 0.5);
         preTextState.addNounMapping(doggy5, MappingKind.TYPE, this, 0.5);
 
+        var dog = dogPhrase1.compareTo(dogPhrase3);
+
         Assertions.assertFalse(phraseMappingsAreSimilar(preTextState, dog1, doggy5));
 
         textState = createCopy(preTextState);
-        this.data.addData(TextState.ID, textState);
+        this.data.addData(TextStateImpl.ID, textState);
         agent.run();
 
         Assertions.assertAll(//
@@ -330,7 +333,7 @@ class MappingCombinerTest implements Claimant {
         Assertions.assertTrue(phraseMappingsAreSimilar(preTextState, dog1, hut3));
 
         textState = createCopy(preTextState);
-        this.data.addData(TextState.ID, textState);
+        this.data.addData(TextStateImpl.ID, textState);
         agent.run();
 
         PhraseMapping dog1PhraseMapping = textState.getPhraseMappings().select(pm -> pm.getPhrases().contains(dogPhrase1)).get(0);
@@ -364,7 +367,7 @@ class MappingCombinerTest implements Claimant {
         Assertions.assertTrue(phraseMappingsAreSimilar(preTextState, dog1, hut3));
 
         textState = createCopy(preTextState);
-        this.data.addData(TextState.ID, textState);
+        this.data.addData(TextStateImpl.ID, textState);
         agent.run();
 
         Assertions.assertAll(//
@@ -381,7 +384,7 @@ class MappingCombinerTest implements Claimant {
         Assertions.assertFalse(phraseMappingsAreSimilar(preTextState, dog1, turtle4));
 
         textState = createCopy(preTextState);
-        this.data.addData(TextState.ID, textState);
+        this.data.addData(TextStateImpl.ID, textState);
         agent.run();
 
         Assertions.assertAll(//
@@ -389,15 +392,19 @@ class MappingCombinerTest implements Claimant {
                         .getPhraseMappings(), textState.getPhraseMappings()));
     }
 
-    private boolean phraseMappingsAreSimilar(TextState textState, Word word1, Word word2) {
+    private boolean phraseMappingsAreSimilar(TextStateImpl textState, Word word1, Word word2) {
         var nm0 = textState.getNounMappingByWord(word1);
         var nm1 = textState.getNounMappingByWord(word2);
 
-        return SimilarityUtils.getPhraseMappingSimilarity(textState, textState.getPhraseMappingByNounMapping(nm0), textState.getPhraseMappingByNounMapping(nm1),
-                PhraseMappingAggregatorStrategy.MAX_SIMILARITY) > MappingCombinerTest.MIN_COSINE_SIMILARITY;
+        var pm0 = textState.getPhraseMappingByNounMapping(nm0);
+        var pm1 = textState.getPhraseMappingByNounMapping(nm1);
+
+        return data.getGlobalConfiguration()
+                .getSimilarityUtils()
+                .getPhraseMappingSimilarity(textState, pm0, pm1, PhraseMappingAggregatorStrategy.MAX_SIMILARITY) > MappingCombinerTest.MIN_COSINE_SIMILARITY;
     }
 
-    private boolean nounMappingsWereMerged(TextState preTextState, Word word1, Word word2, TextState afterTextState) {
+    private boolean nounMappingsWereMerged(TextStateImpl preTextState, Word word1, Word word2, TextStateImpl afterTextState) {
 
         Assertions.assertNotEquals(preTextState.getNounMappings().size(), afterTextState.getNounMappings().size());
         Assertions.assertNotNull(textState.getNounMappingByWord(word1));
@@ -412,7 +419,7 @@ class MappingCombinerTest implements Claimant {
         return true;
     }
 
-    private boolean phraseMappingsWereMerged(TextState preTextState, Word word1, Word word2, TextState afterTextState) {
+    private boolean phraseMappingsWereMerged(TextStateImpl preTextState, Word word1, Word word2, TextStateImpl afterTextState) {
 
         var nounMapping1 = afterTextState.getNounMappingByWord(word1);
         var nounMapping2 = afterTextState.getNounMappingByWord(word2);
@@ -435,6 +442,7 @@ class MappingCombinerTest implements Claimant {
         Mockito.when(phrase.getContainedWords()).thenReturn(containedWords);
         Mockito.when(phrase.getPhraseVector()).thenCallRealMethod();
         Mockito.when(phrase.toString()).thenCallRealMethod();
+        Mockito.when(phrase.compareTo(Mockito.any())).thenCallRealMethod();
     }
 
     private void mockWord(Word word, String text, String lemma, int sentenceNumber, Phrase phrase, int position) {
@@ -446,8 +454,9 @@ class MappingCombinerTest implements Claimant {
         Mockito.when(word.compareTo(Mockito.any())).thenCallRealMethod();
     }
 
-    private TextState createCopy(TextState textState) {
-        TextStateImpl newTextState = new TextStateImpl();
+    private TextStateImpl createCopy(TextStateImpl textState) {
+        PhraseConcerningTextStateStrategy strategy = new PhraseConcerningTextStateStrategy(data.getGlobalConfiguration());
+        TextStateImpl newTextState = new TextStateImpl(strategy);
 
         MutableList<NounMapping> nounMappings = getField(textState, "nounMappings");
         MutableList<PhraseMapping> phraseMappings = getField(textState, "phraseMappings");

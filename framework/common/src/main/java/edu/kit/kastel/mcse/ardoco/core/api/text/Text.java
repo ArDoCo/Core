@@ -1,12 +1,15 @@
-/* Licensed under MIT 2021-2023. */
+/* Licensed under MIT 2021-2024. */
 package edu.kit.kastel.mcse.ardoco.core.api.text;
 
+import java.io.Serializable;
+
+import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 
 /**
  * This interface defines the representation of a text.
  */
-public interface Text {
+public interface Text extends Serializable {
 
     /**
      * Gets the length of the text (amount of words).
@@ -23,6 +26,15 @@ public interface Text {
      * @return the words
      */
     ImmutableList<Word> words();
+
+    /**
+     * Gets all phrases of the text (ordered).
+     *
+     * @return the phrases
+     */
+    default ImmutableList<Phrase> phrases() {
+        return Lists.immutable.fromStream(getSentences().stream().flatMap(s -> s.getPhrases().stream()));
+    }
 
     /**
      * Returns the word at the given index

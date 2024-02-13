@@ -1,4 +1,4 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.configuration;
 
 import java.lang.reflect.Constructor;
@@ -20,7 +20,7 @@ public final class ConfigurationInstantiatorUtils {
 
     /**
      * Create an AbstractConfigurable by Reflection.
-     * 
+     *
      * @param clazz the class of the AbstractConfigurable
      * @return the abstract configurable
      * @throws InvocationTargetException if constructor execution does not work
@@ -46,20 +46,25 @@ public final class ConfigurationInstantiatorUtils {
             return result;
 
         result = findAndCreate(constructors, c -> c.getParameterCount() == 2 && c.getParameterTypes()[0] == String.class && c
-                .getParameterTypes()[1] == DataRepository.class, new Object[] { null, null });
+                .getParameterTypes()[1] == DataRepository.class, new Object[] { null, new DataRepository() });
         if (result != null)
             return result;
 
         result = findAndCreate(constructors, c -> c.getParameterCount() == 2 && c.getParameterTypes()[0] == DataRepository.class && c
-                .getParameterTypes()[1] == List.class, new Object[] { null, List.of() });
+                .getParameterTypes()[1] == List.class, new Object[] { new DataRepository(), List.of() });
         if (result != null)
             return result;
 
-        throw new IllegalStateException("Not reachable code reached for class " + clazz.getName());
+        var c = constructors.stream().findFirst().orElseThrow(() -> new IllegalStateException("Not reachable code reached for class " + clazz.getName()));
 
+        var arguments = new Object[c.getParameterCount()];
+        for (int i = 0; i < c.getParameterTypes().length; i++) {
+            var type = c.getParameterTypes()[i];
+            arguments[i] = type.isAssignableFrom(DataRepository.class) ? new DataRepository() : null;
+        }
+        return (AbstractConfigurable) c.newInstance(arguments);
     }
 
-    @SuppressWarnings("java:S3011")
     private static AbstractConfigurable findAndCreate(Collection<Constructor<?>> constructors, Predicate<Constructor<?>> selector, Object[] parameters)
             throws InvocationTargetException, InstantiationException, IllegalAccessException {
         if (constructors.stream().noneMatch(selector)) {

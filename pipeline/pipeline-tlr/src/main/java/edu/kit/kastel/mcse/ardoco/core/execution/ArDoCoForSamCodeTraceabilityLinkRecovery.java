@@ -1,4 +1,4 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.execution;
 
 import java.io.File;
@@ -7,7 +7,7 @@ import java.util.SortedMap;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.SamCodeTraceabilityLinkRecovery;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.ArDoCoRunner;
-import edu.kit.kastel.mcse.ardoco.core.models.ArCoTLModelProviderAgent;
+import edu.kit.kastel.mcse.ardoco.core.models.agents.ArCoTLModelProviderAgent;
 
 public class ArDoCoForSamCodeTraceabilityLinkRecovery extends ArDoCoRunner {
 

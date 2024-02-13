@@ -1,5 +1,5 @@
-/* Licensed under MIT 2023. */
-package edu.kit.kastel.mcse.ardoco.core.models;
+/* Licensed under MIT 2023-2024. */
+package edu.kit.kastel.mcse.ardoco.core.models.agents;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -1,5 +1,7 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.informants;
+
+import static edu.kit.kastel.mcse.ardoco.core.common.JsonHandling.createObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +22,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.DiagramMatchingModelSelectionState;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.JsonMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Diagram;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.CodeModelType;
@@ -98,7 +99,7 @@ class Stage1SyntheticDiagramTest extends SyntheticTestBase {
                 this.writer.write(String.format("%s: r: %s, u: %s, d: %s%n", result.expected().type(), result.actual().ratio(), result.actual()
                         .percentageOfUnnecessaryLinks(), difference));
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new IllegalStateException(e);
             }
         };
 
@@ -108,7 +109,7 @@ class Stage1SyntheticDiagramTest extends SyntheticTestBase {
 
     private Result examineStage1(DiagramProject project, GeneralModelType generalModelType) throws IOException {
         String name = project.name().toLowerCase(Locale.ROOT);
-        File inputArchitectureModel = project.getSourceProject().getProject().getModelFile(ArchitectureModelType.UML);
+        File inputArchitectureModel = project.getSourceProject().getModelFile(ArchitectureModelType.UML);
         File inputCodeModel = new File(Objects.requireNonNull(project.getSourceProject().getCodeModelDirectory())).getAbsoluteFile();
         File inputDiagram = File.createTempFile("temp", ".json");
         File outputDir = new File(PIPELINE_OUTPUT);
@@ -123,7 +124,7 @@ class Stage1SyntheticDiagramTest extends SyntheticTestBase {
 
         Decision expected = new Decision(generalModelType, (double) expectedLinks.size() / syntheticDiagram.getBoxes().size(), 0.0);
 
-        JsonMapping.OBJECT_MAPPER.writeValue(inputDiagram, syntheticDiagram);
+        createObjectMapper().writeValue(inputDiagram, syntheticDiagram);
 
         DiagramConsistency runner = new DiagramConsistency(name);
 

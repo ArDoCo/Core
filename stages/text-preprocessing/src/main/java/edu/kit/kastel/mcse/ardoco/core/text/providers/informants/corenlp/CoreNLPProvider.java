@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp;
 
 import java.util.SortedMap;
@@ -26,7 +26,7 @@ public class CoreNLPProvider extends NlpInformant {
     }
 
     @Override
-    public void run() {
+    public void process() {
         if (!DataRepositoryHelper.hasAnnotatedText(getDataRepository())) {
             var preprocessingData = new PreprocessingData(getAnnotatedText());
             DataRepositoryHelper.putPreprocessingData(getDataRepository(), preprocessingData);

@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.textproviderjson.textobject;
 
 import java.util.ArrayList;
@@ -23,19 +23,19 @@ public class PhraseImpl implements Phrase {
     private static final String PUNCTUATION_WITH_SPACE = "\\s+([.,;:?!])";
     private static final String BRACKETS_WITH_SPACE = "\\s+([()\\[\\]{}<>])";
     private final PhraseType type;
-    private final ImmutableList<Phrase> childPhrases;
-    private final ImmutableList<Word> nonPhraseWords;
-    private ImmutableList<Word> phraseWords;
-    private ImmutableList<Word> containedWords;
-    private ImmutableList<Phrase> subPhrases;
-    private ImmutableSortedMap<Word, Integer> phraseVector;
+    private MutableList<Phrase> childPhrases;
+    private MutableList<Word> nonPhraseWords;
+    private MutableList<Word> phraseWords;
+    private MutableList<Word> containedWords;
+    private MutableList<Phrase> subPhrases;
+    private MutableSortedMap<Word, Integer> phraseVector;
     private int sentenceNo = -1;
     private String text;
 
     public PhraseImpl(ImmutableList<Word> nonPhraseWords, PhraseType type, List<Phrase> childPhrases) {
-        this.nonPhraseWords = nonPhraseWords == null ? Lists.immutable.empty() : nonPhraseWords;
+        this.nonPhraseWords = nonPhraseWords == null ? Lists.mutable.empty() : nonPhraseWords.toList();
         this.type = type;
-        this.childPhrases = Lists.immutable.ofAll(childPhrases);
+        this.childPhrases = Lists.mutable.ofAll(childPhrases);
     }
 
     @Override
@@ -71,28 +71,26 @@ public class PhraseImpl implements Phrase {
                 for (Phrase subphrase : childPhrases) {
                     collectedWords.addAll(subphrase.getContainedWords().castToList());
                 }
-                this.phraseWords = Lists.immutable.ofAll(collectedWords);
+                this.phraseWords = Lists.mutable.ofAll(collectedWords);
             }
 
-            MutableList<Word> words = Lists.mutable.ofAll(nonPhraseWords);
-            words.addAllIterable(phraseWords);
-            words.sortThis(Comparator.comparingInt(Word::getPosition));
-            containedWords = words.toImmutable();
+            containedWords = Lists.mutable.ofAll(nonPhraseWords);
+            containedWords.addAllIterable(phraseWords);
+            containedWords.sortThis(Comparator.comparingInt(Word::getPosition));
         }
 
-        return containedWords;
+        return containedWords.toImmutable();
     }
 
     @Override
     public synchronized ImmutableList<Phrase> getSubPhrases() {
         if (subPhrases == null) {
-            MutableList<Phrase> tempSubPhrases = Lists.mutable.ofAll(childPhrases);
+            subPhrases = Lists.mutable.ofAll(childPhrases);
             for (Phrase childPhrase : childPhrases) {
-                tempSubPhrases.addAll(childPhrase.getSubPhrases().toList());
+                subPhrases.addAll(childPhrase.getSubPhrases().toList());
             }
-            subPhrases = tempSubPhrases.toImmutable();
         }
-        return subPhrases;
+        return subPhrases.toImmutable();
     }
 
     @Override
@@ -129,13 +127,12 @@ public class PhraseImpl implements Phrase {
 
     @Override
     public synchronized ImmutableSortedMap<Word, Integer> getPhraseVector() {
-        if (this.phraseVector == null) {
-            MutableSortedMap<Word, Integer> tempPhraseVector = SortedMaps.mutable.empty();
+        if (phraseVector == null) {
+            phraseVector = SortedMaps.mutable.empty();
             var grouped = getContainedWords().groupBy(Word::getText).toMap();
-            grouped.forEach((key, value) -> tempPhraseVector.put(value.getAny(), value.size()));
-            this.phraseVector = tempPhraseVector.toImmutable();
+            grouped.forEach((key, value) -> phraseVector.put(value.getAny(), value.size()));
         }
-        return this.phraseVector;
+        return phraseVector.toImmutable();
     }
 
     @Override
@@ -156,5 +153,14 @@ public class PhraseImpl implements Phrase {
     @Override
     public int hashCode() {
         return Objects.hash(getContainedWords(), getText(), type, childPhrases);
+    }
+
+    @Override
+    public int compareTo(Phrase o) {
+        return Comparator.comparing(Phrase::getSentenceNo)
+                .thenComparing(Phrase::getText)
+                .thenComparing(Phrase::getPhraseType)
+                .thenComparingInt(p -> p.getContainedWords().get(0).getPosition())
+                .compare(this, o);
     }
 }

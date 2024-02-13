@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files;
 
 import java.io.IOException;
@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TestLink;
@@ -40,10 +41,11 @@ public class TLPreviousFile {
      * @return the previous results
      * @throws IOException if file access fails
      */
-    public static Collection<Pair<Project, EvaluationResults<TestLink>>> load(Path sourceFile, final Map<Project, ArDoCoResult> DATA_MAP) throws IOException {
+    public static Collection<Pair<GoldStandardProject, EvaluationResults<TestLink>>> load(Path sourceFile,
+            final Map<GoldStandardProject, ArDoCoResult> DATA_MAP) throws IOException {
         List<String> lines = Files.readAllLines(sourceFile);
         Map<Project, List<TestLink>> foundLinkMap = new HashMap<>();
-        List<Pair<Project, EvaluationResults<TestLink>>> results = new ArrayList<>();
+        List<Pair<GoldStandardProject, EvaluationResults<TestLink>>> results = new ArrayList<>();
 
         for (String line : lines) {
             var parts = line.split(",", -1);
@@ -80,21 +82,22 @@ public class TLPreviousFile {
      * @param projectResults results to save
      * @throws IOException if writing to file system fails
      */
-    public static void save(Path targetFile, Collection<Pair<Project, EvaluationResults<TestLink>>> projectResults, Logger logger) throws IOException {
+    public static void save(Path targetFile, Collection<Pair<GoldStandardProject, EvaluationResults<TestLink>>> projectResults, Logger logger)
+            throws IOException {
         if (Files.exists(targetFile)) {
             logger.warn("File with the results of the previous evaluation run already exists.");
             return; // do not overwrite
         }
 
         var sortedResults = new ArrayList<>(projectResults);
-        sortedResults.sort(Comparator.comparing(x -> x.getOne().name()));
+        sortedResults.sort(Comparator.comparing(x -> x.getOne().getProjectName()));
 
         var builder = new StringBuilder();
 
-        for (Pair<Project, EvaluationResults<TestLink>> projectResult : sortedResults) {
+        for (Pair<GoldStandardProject, EvaluationResults<TestLink>> projectResult : sortedResults) {
             EvaluationResults<TestLink> result = projectResult.getTwo();
             for (TestLink foundLink : result.getFound()) {
-                builder.append(projectResult.getOne().name());
+                builder.append(projectResult.getOne().getProjectName());
                 builder.append(',');
                 builder.append(foundLink.modelId());
                 builder.append(',');

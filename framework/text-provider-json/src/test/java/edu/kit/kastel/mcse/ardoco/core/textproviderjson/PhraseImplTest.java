@@ -1,7 +1,5 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.textproviderjson;
-
-import java.io.IOException;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -10,8 +8,8 @@ import org.junit.jupiter.api.Test;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
+import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.textproviderjson.converter.DtoToObjectConverter;
-import edu.kit.kastel.mcse.ardoco.core.textproviderjson.error.NotConvertableException;
 import edu.kit.kastel.mcse.ardoco.core.textproviderjson.textobject.PhraseImpl;
 
 class PhraseImplTest {
@@ -27,13 +25,9 @@ class PhraseImplTest {
     }
 
     @BeforeEach
-    void init() {
-        try {
-            Text textImplInstance = CONVERTER.convertText(TestUtil.generateDTOWithMultipleSentences());
-            phraseImplInstance = (PhraseImpl) textImplInstance.getSentences().get(1).getPhrases().get(0);
-        } catch (NotConvertableException | IOException e) {
-            throw new RuntimeException(e);
-        }
+    void init() throws Exception {
+        Text textImplInstance = CONVERTER.convertText(TestUtil.generateDTOWithMultipleSentences());
+        phraseImplInstance = (PhraseImpl) textImplInstance.getSentences().get(1).getPhrases().get(0);
     }
 
     @Test
@@ -89,4 +83,9 @@ class PhraseImplTest {
         Assertions.assertEquals(phraseImplInstance.hashCode(), phraseImplInstance.hashCode());
     }
 
+    @Test
+    void serializationTest() {
+        var serializedCopy = DataRepositoryHelper.deepCopy(phraseImplInstance);
+        Assertions.assertNotNull(serializedCopy);
+    }
 }

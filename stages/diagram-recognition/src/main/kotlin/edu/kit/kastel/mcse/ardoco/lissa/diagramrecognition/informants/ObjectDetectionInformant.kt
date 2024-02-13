@@ -13,14 +13,16 @@ import java.io.ByteArrayInputStream
 import java.io.InputStream
 import java.util.SortedMap
 
-class ObjectDetectionInformant(dataRepository: DataRepository) : ImageProcessingDockerInformant(
-    DOCKER_SKETCH_RECOGNITION,
-    DEFAULT_PORT,
-    DOCKER_SKETCH_RECOGNITION_VIA_DOCKER,
-    ID,
-    dataRepository,
-    "sketches"
-) {
+class ObjectDetectionInformant(
+    dataRepository: DataRepository
+) : ImageProcessingDockerInformant(
+        DOCKER_SKETCH_RECOGNITION,
+        DEFAULT_PORT,
+        DOCKER_SKETCH_RECOGNITION_VIA_DOCKER,
+        ID,
+        dataRepository,
+        "sketches"
+    ) {
     companion object {
         const val DOCKER_SKETCH_RECOGNITION = "ghcr.io/lissa-approach/detectron2-sr:latest"
         const val DEFAULT_PORT = 5005
@@ -37,11 +39,14 @@ class ObjectDetectionInformant(dataRepository: DataRepository) : ImageProcessing
         diagram: Diagram,
         imageData: ByteArray
     ) {
-        val boxes = detectEntities(ByteArrayInputStream(imageData))
+        val boxes = detectEntities(diagram, ByteArrayInputStream(imageData))
         boxes.forEach { diagram.addBox(it) }
     }
 
-    fun detectEntities(image: InputStream): List<Box> {
+    fun detectEntities(
+        diagram: Diagram,
+        image: InputStream
+    ): List<Box> {
         val sketchRecognition = sendSketchRecognitionRequest(image)
         logger.debug("Processed DiagramRecognition request")
         return oom.readValue(sketchRecognition)
@@ -51,7 +56,7 @@ class ObjectDetectionInformant(dataRepository: DataRepository) : ImageProcessing
         // Create Request
         val builder = MultipartEntityBuilder.create()
         builder.addBinaryBody("file", image, ContentType.APPLICATION_OCTET_STREAM, "image")
-        val uploadFile = HttpPost("http://${hostIP()}:${container.apiPort}/sketches/")
+        val uploadFile = HttpPost(getUri())
         val multipart: HttpEntity = builder.build()
         uploadFile.entity = multipart
         return executeRequest(uploadFile, true)

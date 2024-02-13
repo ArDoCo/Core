@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.tests.eval.baseline;
 
 import java.util.SortedMap;
@@ -26,7 +26,7 @@ public class InconsistencyBaselineInformant extends Informant {
     }
 
     @Override
-    public void run() {
+    public void process() {
         var inconsistencyStates = InconsistencyStatesImpl.build();
         DataRepository dataRepository = getDataRepository();
         dataRepository.addData(InconsistencyStates.ID, inconsistencyStates);
@@ -45,7 +45,7 @@ public class InconsistencyBaselineInformant extends Informant {
 
             InconsistencyState inconsistencyState = inconsistencyStates.getInconsistencyState(metamodel);
             for (var sentence : sentencesWithoutTraceLinks) {
-                inconsistencyState.addInconsistency(new MissingModelInstanceInconsistency("", sentence + 1, 0.69));
+                inconsistencyState.addInconsistency(new MissingModelInstanceInconsistency("", sentence + 1, 0.69, null));
             }
         }
     }

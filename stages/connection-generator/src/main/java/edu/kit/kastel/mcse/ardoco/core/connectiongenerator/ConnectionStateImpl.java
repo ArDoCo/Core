@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021-2023. */
+/* Licensed under MIT 2021-2024. */
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -18,12 +18,13 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
  */
 public class ConnectionStateImpl extends AbstractState implements ConnectionState {
 
-    private transient MutableList<InstanceLink> instanceLinks;
+    private MutableList<InstanceLink> instanceLinks;
 
     /**
      * Creates a new connection state.
      */
     public ConnectionStateImpl() {
+        super();
         instanceLinks = Lists.mutable.empty();
     }
 

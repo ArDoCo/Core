@@ -13,17 +13,25 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.awt.BasicStroke
 import java.awt.Color
+import java.awt.Graphics
 import java.awt.Graphics2D
+import java.awt.RenderingHints
+import java.awt.Shape
+import java.awt.font.GlyphVector
+import java.awt.geom.AffineTransform
+import java.awt.image.AffineTransformOp
+import java.awt.image.BufferedImage
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
-import java.lang.Double.max
-import java.lang.Double.min
-import java.util.UUID
 import java.util.concurrent.TimeUnit
 import javax.imageio.ImageIO
+import kotlin.math.max
+import kotlin.math.min
 
-private val colors = listOf(Color.RED, Color.GREEN, Color.YELLOW, Color.BLUE, Color.BLACK, Color.ORANGE)
+private var upscaleFactor = 1.0
+private val maxSize = 4096
+private val colors = listOf(Color.RED, Color.GREEN, Color(5, 93, 209), Color.YELLOW, Color.BLACK, Color.ORANGE)
 private val logger: Logger = LoggerFactory.getLogger("${DiagramRecognition::class.java.packageName}.Helpers")
 
 fun executeRequest(
@@ -34,7 +42,8 @@ fun executeRequest(
         try {
             if (modifyTimeout) {
                 val basicConfig = postRequest.config ?: RequestConfig.custom().build()
-                val newConfig = RequestConfig.copy(basicConfig).setResponseTimeout(5, TimeUnit.MINUTES).build()
+                val newConfig =
+                    RequestConfig.copy(basicConfig).setResponseTimeout(5, TimeUnit.MINUTES).build()
                 postRequest.config = newConfig
             }
             val content = it.execute(postRequest, BasicHttpClientResponseHandler())
@@ -49,38 +58,70 @@ fun executeRequest(
 fun visualize(
     imageStream: InputStream,
     diagram: Diagram,
-    destination: OutputStream
+    destination: OutputStream,
+    overlayScale: Float = 1F
 ) {
-    val image = ImageIO.read(imageStream)
+    val imageUnscaled = ImageIO.read(imageStream)
+    upscaleFactor = determineUpscaleFactor(imageUnscaled)
+
+    var image = BufferedImage((imageUnscaled.width * upscaleFactor).toInt(), (imageUnscaled.height * upscaleFactor).toInt(), BufferedImage.TYPE_INT_ARGB)
+    val at = AffineTransform()
+    at.scale(upscaleFactor, upscaleFactor)
+    val scaleOp = AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR)
+    image = scaleOp.filter(imageUnscaled, image)
+
     val g2d: Graphics2D = image.createGraphics()
-    g2d.stroke = BasicStroke(2F)
+    g2d.stroke = BasicStroke((3F * overlayScale))
+    g2d.font = g2d.font.deriveFont((g2d.font.size * 4 * overlayScale))
 
     val colorMap = mutableMapOf<Classification, Color>()
     var currentColor = 0
 
-    for (box in diagram.boxes + diagram.textBoxes.map { it.toBox(true) } + diagram.boxes.flatMap { it.texts.map { tb -> tb.toBox(false) } }) {
+    // Draw Box
+    for (box in diagram.boxes + diagram.textBoxes.map { it.toBox(diagram, true) } + diagram.boxes.flatMap { it.texts.map { tb -> tb.toBox(diagram, false) } }) {
         if (!colorMap.containsKey(box.classification)) {
             colorMap[box.classification] = colors[currentColor]!!
             currentColor++
         }
+        val col = colorMap[box.classification]!!
+        g2d.color = Color(col.red, col.green, col.blue, 255)
+        val coordinates = box.box
+        g2d.drawRect(toPixels(coordinates[0]), toPixels(coordinates[1]), toPixels(coordinates[2] - coordinates[0]), toPixels(coordinates[3] - coordinates[1]))
+    }
+
+    // Draw Text
+    for (box in diagram.boxes + diagram.textBoxes.map { it.toBox(diagram, true) } + diagram.boxes.flatMap { it.texts.map { tb -> tb.toBox(diagram, false) } }) {
         g2d.color = colorMap[box.classification]
         val coordinates = box.box
-        g2d.drawRect(coordinates[0], coordinates[1], coordinates[2] - coordinates[0], coordinates[3] - coordinates[1])
         if (box.classification == Classification.TEXT || box.classification == Classification.RAWTEXT) {
-            g2d.drawString(
+            paintTextWithOutline(
+                g2d,
                 box.texts.joinToString { it.text },
-                coordinates[0],
-                coordinates[1]
+                toPixels(coordinates[0]),
+                toPixels(coordinates[1] - 2),
+                colorMap[box.classification]
+            )
+        } else {
+            paintTextWithOutline(
+                g2d,
+                Box.getBoundingBoxConcat(box.boundingBox.toCoordinates()),
+                toPixels(coordinates[0]),
+                toPixels(coordinates[1] - 2),
+                colorMap[box.classification]
             )
         }
     }
+
     g2d.dispose()
     ImageIO.write(image, "png", destination)
 }
 
-private fun TextBox.toBox(rawBox: Boolean): Box =
+private fun TextBox.toBox(
+    diagram: Diagram,
+    rawBox: Boolean
+): Box =
     Box(
-        UUID.randomUUID().toString(),
+        diagram,
         this.absoluteBox().map { value -> value }.toIntArray(),
         1.0,
         if (rawBox) "RAWTEXT" else "TEXT",
@@ -149,5 +190,71 @@ fun IntArray.boundingBox(relative: Boolean = false): BoundingBox {
             this[3].toDouble() - this[1].toDouble()
         )
     }
-    return BoundingBox(this[0].toDouble(), this[1].toDouble(), this[2].toDouble(), this[3].toDouble())
+    return BoundingBox(
+        this[0].toDouble(),
+        this[1].toDouble(),
+        this[2].toDouble(),
+        this[3].toDouble()
+    )
+}
+
+private fun paintTextWithOutline(
+    g: Graphics?,
+    text: String?,
+    x: Int,
+    y: Int,
+    fillColor: Color?
+) {
+    val outlineColor = Color.black
+    val outlineStroke = BasicStroke(3.0f)
+    if (g is Graphics2D) {
+        val g2 = g
+
+        // remember original settings
+        val originalColor = g2.color
+        val originalStroke = g2.stroke
+        val originalHints = g2.renderingHints
+
+        // create a glyph vector from your text
+        val glyphVector: GlyphVector = g2.font.createGlyphVector(g2.fontRenderContext, text)
+        // get the shape object
+        val textShape: Shape = glyphVector.outline
+
+        // activate anti aliasing for text rendering (if you want it to look nice)
+        g2.setRenderingHint(
+            RenderingHints.KEY_ANTIALIASING,
+            RenderingHints.VALUE_ANTIALIAS_ON
+        )
+        g2.setRenderingHint(
+            RenderingHints.KEY_RENDERING,
+            RenderingHints.VALUE_RENDER_QUALITY
+        )
+
+        // Position
+        g2.translate(x, y)
+
+        g2.color = outlineColor
+        g2.stroke = outlineStroke
+        g2.draw(textShape) // draw outline
+        g2.color = fillColor
+        g2.fill(textShape) // fill the shape
+
+        // reset to original settings after painting
+        g2.color = originalColor
+        g2.stroke = originalStroke
+        g2.setRenderingHints(originalHints)
+
+        // Reset Position
+        g2.translate(-x, -y)
+    }
+}
+
+private fun toPixels(value: Int): Int {
+    return (value * upscaleFactor).toInt()
+}
+
+private fun determineUpscaleFactor(image: BufferedImage): Double {
+    val maxDim = max(image.width, image.height)
+    if (maxSize <= maxDim) return 1.0
+    return maxSize.toDouble() / maxDim
 }

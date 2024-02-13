@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021-2023. */
+/* Licensed under MIT 2021-2024. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
 import org.eclipse.collections.api.list.ImmutableList;
@@ -24,6 +24,11 @@ public final class CommonTextToolsConfig {
     public static final ImmutableList<String> SEPARATORS_TO_SPLIT = CONFIG.getPropertyAsList("separators_ToSplit");
 
     /**
+     * Decides whether abbrevations should be considered during similarity calculations.
+     */
+    public static final boolean CONSIDER_ABBREVIATIONS = CONFIG.isPropertyEnabled("considerAbbreviations");
+
+    /**
      * Decides whether the levenshtein similarity measure should be used.
      */
     public static final boolean LEVENSHTEIN_ENABLED = CONFIG.isPropertyEnabled("levenshtein_Enabled");
@@ -36,8 +41,7 @@ public final class CommonTextToolsConfig {
      */
     public static final int LEVENSHTEIN_MAX_DISTANCE = CONFIG.getPropertyAsInt("levenshtein_MaxDistance");
     /**
-     * The levenshtein distance threshold which, multiplied with the length of the shortest word of a comparison, acts
-     * as a dynamic distance limit.
+     * The levenshtein distance threshold which, multiplied with the length of the shortest word of a comparison, acts as a dynamic distance limit.
      */
     public static final double LEVENSHTEIN_THRESHOLD = CONFIG.getPropertyAsDouble("levenshtein_Threshold");
 
@@ -97,6 +101,14 @@ public final class CommonTextToolsConfig {
      * The path to the sqlite database file used by the GloVe word similarity measure.
      */
     public static final String GLOVE_DB_FILE_PATH = CONFIG.getProperty("glove_DatabaseFilePath");
+    /**
+     * The threshold for a diagram element to be considered similar to a noun mapping.
+     */
+    public static final double DE_NM_SIMILARITY_THRESHOLD = CONFIG.getPropertyAsDouble("de_NM_SimilarityThreshold");
+    /**
+     * The threshold for a diagram element to be considered similar to a word.
+     */
+    public static final double DE_WORD_SIMILARITY_THRESHOLD = CONFIG.getPropertyAsDouble("de_Word_SimilarityThreshold");
 
     private static ResourceAccessor loadParameters(String filePath) {
         return new ResourceAccessor(filePath, true);

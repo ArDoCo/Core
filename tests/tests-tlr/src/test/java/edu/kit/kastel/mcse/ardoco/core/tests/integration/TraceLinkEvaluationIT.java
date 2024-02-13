@@ -9,7 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -18,14 +18,7 @@ import java.util.function.Predicate;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.tuple.Pair;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
@@ -41,6 +34,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.CodeProject;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.calculator.ResultCalculatorUtil;
@@ -53,7 +47,7 @@ import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLSente
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLSummaryFile;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class TraceLinkEvaluationIT {
+public class TraceLinkEvaluationIT<T extends GoldStandardProject> {
 
     protected static final Logger logger = LoggerFactory.getLogger(TraceLinkEvaluationIT.class);
 
@@ -62,9 +56,9 @@ class TraceLinkEvaluationIT {
     protected static final String LOGGING_ARDOCO_CORE = "org.slf4j.simpleLogger.log.edu.kit.kastel.mcse.ardoco.core";
     protected static AtomicBoolean analyzeCodeDirectly = ANALYZE_CODE_DIRECTLY;
 
-    protected static final List<Pair<Project, EvaluationResults<TestLink>>> RESULTS = new ArrayList<>();
+    protected static final List<Pair<GoldStandardProject, EvaluationResults<TestLink>>> RESULTS = new ArrayList<>();
     protected static final MutableList<EvaluationResults<String>> PROJECT_RESULTS = Lists.mutable.empty();
-    protected static final Map<Project, ArDoCoResult> DATA_MAP = new EnumMap<>(Project.class);
+    protected static final Map<GoldStandardProject, ArDoCoResult> DATA_MAP = new HashMap<>();
 
     @BeforeAll
     static void beforeAll() {
@@ -142,7 +136,7 @@ class TraceLinkEvaluationIT {
     @ParameterizedTest(name = "{0}")
     @MethodSource("getNonHistoricalCodeProjects")
     @Order(1)
-    void evaluateSadSamCodeTlrFullIT(CodeProject project) {
+    protected void evaluateSadSamCodeTlrFullIT(CodeProject project) {
         analyzeCodeDirectly.set(true);
         if (analyzeCodeDirectly.get())
             cleanUpCodeRepository(project);
@@ -157,7 +151,7 @@ class TraceLinkEvaluationIT {
     @ParameterizedTest(name = "{0}")
     @EnumSource(value = CodeProject.class, mode = EnumSource.Mode.MATCH_NONE, names = "^.*HISTORICAL$")
     @Order(2)
-    void evaluateSamCodeTlrFullIT(CodeProject project) {
+    protected void evaluateSamCodeTlrFullIT(CodeProject project) {
         analyzeCodeDirectly.set(true);
         if (analyzeCodeDirectly.get())
             cleanUpCodeRepository(project);
@@ -171,23 +165,23 @@ class TraceLinkEvaluationIT {
     @ParameterizedTest(name = "{0}")
     @MethodSource("getNonHistoricalCodeProjects")
     @Order(9)
-    void evaluateSadSamCodeTlrIT(CodeProject project) {
+    protected void evaluateSadSamCodeTlrIT(CodeProject codeProject) {
         analyzeCodeDirectly.set(false);
         if (analyzeCodeDirectly.get())
-            cleanUpCodeRepository(project);
+            cleanUpCodeRepository(codeProject);
 
         var evaluation = new SadSamCodeTraceabilityLinkRecoveryEvaluation();
-        var results = evaluation.runTraceLinkEvaluation(project);
+        var results = evaluation.runTraceLinkEvaluation(codeProject);
         Assertions.assertNotNull(results);
 
-        TraceabilityLinkRecoveryEvaluation.resultMap.put(project.getProject(), results);
+        TraceabilityLinkRecoveryEvaluation.resultMap.put(codeProject, results);
     }
 
     @DisplayName("Evaluate SAM-Code TLR")
     @ParameterizedTest(name = "{0}")
     @MethodSource("getNonHistoricalCodeProjects")
     @Order(10)
-    void evaluateSamCodeTlrIT(CodeProject project) {
+    protected void evaluateSamCodeTlrIT(CodeProject project) {
         analyzeCodeDirectly.set(false);
         if (analyzeCodeDirectly.get())
             cleanUpCodeRepository(project);
@@ -201,12 +195,8 @@ class TraceLinkEvaluationIT {
     @ParameterizedTest(name = "{0}")
     @MethodSource("getNonHistoricalCodeProjects")
     @Order(20)
-    void evaluateSadSamTlrIT(CodeProject project) {
-        analyzeCodeDirectly.set(false);
-        if (analyzeCodeDirectly.get())
-            cleanUpCodeRepository(project);
-
-        var evaluation = new SadSamTraceabilityLinkRecoveryEvaluation();
+    protected void evaluateSadSamTlrIT(T project) {
+        var evaluation = new SadSamTraceabilityLinkRecoveryEvaluation<>();
         var results = evaluation.runTraceLinkEvaluation(project);
         Assertions.assertNotNull(results);
     }
@@ -216,10 +206,8 @@ class TraceLinkEvaluationIT {
     @ParameterizedTest(name = "{0}")
     @MethodSource("getHistoricalProjects")
     @Order(21)
-    void evaluateSadSamTlrHistoricalIT(Project project) {
-        analyzeCodeDirectly.set(false);
-
-        var evaluation = new SadSamTraceabilityLinkRecoveryEvaluation();
+    protected void evaluateSadSamTlrHistoricalIT(T project) {
+        var evaluation = new SadSamTraceabilityLinkRecoveryEvaluation<>();
         ArDoCoResult arDoCoResult = evaluation.getArDoCoResult(project);
         Assertions.assertNotNull(arDoCoResult);
 
@@ -237,11 +225,11 @@ class TraceLinkEvaluationIT {
     @ParameterizedTest(name = "{0}")
     @EnumSource(value = Project.class)
     @Order(29)
-    void compareSadSamTlRForPcmAndUmlIT(Project project) {
+    protected void compareSadSamTlRForPcmAndUmlIT(Project project) {
         String name = project.name();
         var inputText = project.getTextFile();
 
-        var evaluation = new SadSamTraceabilityLinkRecoveryEvaluation();
+        var evaluation = new SadSamTraceabilityLinkRecoveryEvaluation<>();
 
         var ardocoRunForPCM = evaluation.getArDoCoResult(project);
         Assertions.assertNotNull(ardocoRunForPCM);

@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files;
 
 import java.io.IOException;
@@ -13,7 +13,7 @@ import java.util.List;
 import org.eclipse.collections.api.tuple.Pair;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TestLink;
 
@@ -35,7 +35,7 @@ public class TLLogFile {
      * @param projectResults the results to write out
      * @throws IOException if writing to file system fails
      */
-    public static void append(Path targetFile, List<Pair<Project, EvaluationResults<TestLink>>> projectResults) throws IOException {
+    public static void append(Path targetFile, List<Pair<GoldStandardProject, EvaluationResults<TestLink>>> projectResults) throws IOException {
         List<EvaluationResults<TestLink>> results = projectResults.stream().map(Pair::getTwo).toList();
         var builder = new StringBuilder();
 
@@ -49,19 +49,9 @@ public class TLLogFile {
         builder.append(String.format("[`Ø`  %s  %s  %s]", NUMBER_FORMAT.format(avgPrecision), NUMBER_FORMAT.format(avgRecall), NUMBER_FORMAT.format(avgF1)));
 
         var sortedResults = new ArrayList<>(projectResults);
-        sortedResults.sort(Comparator.comparing(x -> x.getOne().name()));
-        for (Pair<Project, EvaluationResults<TestLink>> projectResult : sortedResults) {
-            String alias = switch (projectResult.getOne()) {
-            case MEDIASTORE -> "MS";
-            case BIGBLUEBUTTON -> "BBB";
-            case BIGBLUEBUTTON_HISTORICAL -> "BBB-H";
-            case TEAMMATES -> "TM";
-            case TEAMMATES_HISTORICAL -> "TM-H";
-            case TEASTORE -> "TS";
-            case TEASTORE_HISTORICAL -> "TS-H";
-            case JABREF -> "JR";
-            case JABREF_HISTORICAL -> "JR-H";
-            };
+        sortedResults.sort(Comparator.comparing(x -> x.getOne().getProjectName()));
+        for (Pair<GoldStandardProject, EvaluationResults<TestLink>> projectResult : sortedResults) {
+            String alias = projectResult.getOne().getAlias();
             EvaluationResults<TestLink> result = projectResult.getTwo();
             String precision = NUMBER_FORMAT.format(result.precision());
             String recall = NUMBER_FORMAT.format(result.recall());

@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.informants;
 
 import java.util.SortedMap;
@@ -34,7 +34,7 @@ public class NameTypeInformant extends Informant {
     }
 
     @Override
-    public void run() {
+    public void process() {
         DataRepository dataRepository = getDataRepository();
         var text = DataRepositoryHelper.getAnnotatedText(dataRepository);
         var textState = DataRepositoryHelper.getTextState(dataRepository);
@@ -71,7 +71,7 @@ public class NameTypeInformant extends Informant {
             return;
         }
 
-        var similarTypes = CommonUtilities.getSimilarTypes(word, modelState);
+        var similarTypes = CommonUtilities.getSimilarTypes(getMetaData().getSimilarityUtils(), word, modelState);
 
         if (!similarTypes.isEmpty()) {
             textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
@@ -96,7 +96,7 @@ public class NameTypeInformant extends Informant {
             return;
         }
 
-        var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
+        var sameLemmaTypes = CommonUtilities.getSimilarTypes(getMetaData().getSimilarityUtils(), word, modelState);
         if (!sameLemmaTypes.isEmpty()) {
             textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
 
@@ -120,7 +120,7 @@ public class NameTypeInformant extends Informant {
             return;
         }
 
-        var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
+        var sameLemmaTypes = CommonUtilities.getSimilarTypes(getMetaData().getSimilarityUtils(), word, modelState);
 
         if (!sameLemmaTypes.isEmpty()) {
             textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
@@ -145,7 +145,7 @@ public class NameTypeInformant extends Informant {
             return;
         }
 
-        var sameLemmaTypes = CommonUtilities.getSimilarTypes(word, modelState);
+        var sameLemmaTypes = CommonUtilities.getSimilarTypes(getMetaData().getSimilarityUtils(), word, modelState);
         if (!sameLemmaTypes.isEmpty()) {
             textExtractionState.addNounMapping(word, MappingKind.TYPE, this, probability);
 

@@ -1,12 +1,14 @@
-/* Licensed under MIT 2021-2023. */
+/* Licensed under MIT 2021-2024. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
 import java.util.List;
 import java.util.SortedMap;
 
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
+import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextStateStrategy;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage;
+import edu.kit.kastel.mcse.ardoco.core.textextraction.agents.AbbreviationAgent;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.agents.InitialTextAgent;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.agents.PhraseAgent;
 
@@ -19,8 +21,10 @@ public class TextExtraction extends AbstractExecutionStage {
      * Instantiates a new text extractor.
      */
     public TextExtraction(DataRepository dataRepository) {
-        super(List.of(new InitialTextAgent(dataRepository), new PhraseAgent(dataRepository)), TextExtraction.class.getSimpleName(), dataRepository);
-
+        super(List.of(//
+                new InitialTextAgent(dataRepository),//
+                new PhraseAgent(dataRepository),//
+                new AbbreviationAgent(dataRepository)), "TextExtraction", dataRepository);
     }
 
     /**
@@ -41,7 +45,8 @@ public class TextExtraction extends AbstractExecutionStage {
         var dataRepository = getDataRepository();
         var optionalTextState = dataRepository.getData(TextState.ID, TextStateImpl.class);
         if (optionalTextState.isEmpty()) {
-            var textState = new TextStateImpl();
+            TextStateStrategy tts = new OriginalTextStateStrategy(dataRepository.getGlobalConfiguration());
+            var textState = new TextStateImpl(tts);
             dataRepository.addData(TextState.ID, textState);
         }
     }

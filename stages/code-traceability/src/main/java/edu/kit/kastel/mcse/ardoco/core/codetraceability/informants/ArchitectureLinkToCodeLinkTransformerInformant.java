@@ -1,4 +1,4 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public class ArchitectureLinkToCodeLinkTransformerInformant extends Informant {
     }
 
     @Override
-    public void run() {
+    public void process() {
         MutableSet<SadCodeTraceLink> sadCodeTracelinks = Sets.mutable.empty();
 
         ModelStates modelStatesData = DataRepositoryHelper.getModelStatesData(getDataRepository());

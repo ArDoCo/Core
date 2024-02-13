@@ -1,14 +1,20 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.textproviderjson.converter;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.api.text.*;
+import edu.kit.kastel.mcse.ardoco.core.api.text.POSTag;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
+import edu.kit.kastel.mcse.ardoco.core.api.text.PhraseType;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
+import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.textproviderjson.dto.IncomingDependencyDto;
 import edu.kit.kastel.mcse.ardoco.core.textproviderjson.dto.OutgoingDependencyDto;
 import edu.kit.kastel.mcse.ardoco.core.textproviderjson.dto.SentenceDto;
@@ -60,7 +66,7 @@ public class DtoToObjectConverter {
         String constituencyTree = sentenceDTO.getConstituencyTree();
         SentenceImpl sentence = new SentenceImpl((int) sentenceDTO.getSentenceNo() - 1, sentenceDTO.getText(), Lists.immutable.ofAll(words));
         Phrase phrases = parseConstituencyTree(constituencyTree, new ArrayList<>(words));
-        sentence.setPhrases(Lists.immutable.of(phrases));
+        sentence.setPhrases(Lists.mutable.of(phrases));
         return sentence;
     }
 
@@ -92,11 +98,20 @@ public class DtoToObjectConverter {
     }
 
     private boolean isValidConstituencyTree(String constituencyTree) {
-        return constituencyTree.length() >= 2 && constituencyTree.charAt(0) == CONSTITUENCY_TREE_OPEN_BRACKET && constituencyTree.charAt(constituencyTree
-                .length() - 1) == CONSTITUENCY_TREE_CLOSE_BRACKET && constituencyTree.chars()
-                        .filter(ch -> ch == CONSTITUENCY_TREE_OPEN_BRACKET)
-                        .count() == constituencyTree.chars().filter(ch -> ch == CONSTITUENCY_TREE_CLOSE_BRACKET).count() && constituencyTree.split(
-                                CONSTITUENCY_TREE_SEPARATOR, 2).length > 1;
+        var condLength = constituencyTree.length() >= 2;
+        if (!condLength)
+            return false;
+        var condStartWithOpenBracket = constituencyTree.charAt(0) == CONSTITUENCY_TREE_OPEN_BRACKET;
+        if (!condStartWithOpenBracket)
+            return false;
+        var condEndWithClosedBracket = constituencyTree.charAt(constituencyTree.length() - 1) == CONSTITUENCY_TREE_CLOSE_BRACKET;
+        if (!condEndWithClosedBracket)
+            return false;
+
+        var condBalancedBrackets = getTreeOpenBrackets(constituencyTree) == getTreeCloseBrackets(constituencyTree);
+        if (!condBalancedBrackets)
+            return false;
+        return constituencyTree.split(CONSTITUENCY_TREE_SEPARATOR, 2).length > 1;
     }
 
     private List<String> getSubtrees(String treeWithoutType) {
@@ -105,10 +120,8 @@ public class DtoToObjectConverter {
         while (!treeWithoutType.isEmpty()) {
             // find next subtree
             int index = 1;
-            while (treeWithoutType.substring(0, index).chars().filter(ch -> ch == CONSTITUENCY_TREE_OPEN_BRACKET).count() != treeWithoutType.substring(0, index)
-                    .chars()
-                    .filter(ch -> ch == CONSTITUENCY_TREE_CLOSE_BRACKET)
-                    .count()) {
+            while (!treeWithoutType.substring(0, index).endsWith(String.valueOf(CONSTITUENCY_TREE_CLOSE_BRACKET)) || getTreeOpenBrackets(treeWithoutType
+                    .substring(0, index)) != getTreeCloseBrackets(treeWithoutType.substring(0, index))) {
                 index++;
             }
             // number of '(' and ')' is equal -> new subphrase tree found
@@ -122,8 +135,16 @@ public class DtoToObjectConverter {
         return subTrees;
     }
 
+    private long getTreeOpenBrackets(String tree) {
+        return tree.chars().filter(ch -> ch == CONSTITUENCY_TREE_OPEN_BRACKET).count() - StringUtils.countMatches(tree, POSTag.LEFT_PAREN.getTag());
+    }
+
+    private long getTreeCloseBrackets(String tree) {
+        return tree.chars().filter(ch -> ch == CONSTITUENCY_TREE_CLOSE_BRACKET).count() - StringUtils.countMatches(tree, POSTag.RIGHT_PAREN.getTag());
+    }
+
     private boolean isWord(String tree) {
-        return tree.chars().filter(character -> character == CONSTITUENCY_TREE_OPEN_BRACKET).count() == 1;
+        return getTreeOpenBrackets(tree) == 1;
     }
 
     private Word convertToWord(WordDto wordDTO, Text parent) {

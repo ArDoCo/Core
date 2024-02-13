@@ -1,9 +1,10 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -34,7 +35,7 @@ import org.sqlite.SQLiteOpenMode;
  * {@link #filterWord(String)} methods. Both methods are called for each word and allow filtering/modifying words before
  * they are inserted into the databse.
  */
-public class WordVectorSqliteImporter {
+public class WordVectorSqliteImporter implements Serializable {
 
     private static final int DEFAULT_MAX_WORD_LENGTH = 300;
     private static final Logger LOGGER = LoggerFactory.getLogger(WordVectorSqliteImporter.class);
@@ -49,7 +50,7 @@ public class WordVectorSqliteImporter {
      * @throws SQLException if a database related error occurs
      */
     public static void main(String[] args) throws SQLException, IOException {
-        ImportResult result = new WordVectorSqliteImporter(Path.of(args[0]), Path.of(args[1]), Integer.parseInt(args[2])).beginImport();
+        ImportResult result = new WordVectorSqliteImporter(args[0], args[1], Integer.parseInt(args[2])).beginImport();
 
         LOGGER.info("Inserted: {}\n", result.inserted);
         LOGGER.info("Skipped: ({})", result.skippedWords.size());
@@ -59,8 +60,8 @@ public class WordVectorSqliteImporter {
     record ImportResult(long inserted, ImmutableList<String> skippedWords) {
     }
 
-    private final Path vectorFile;
-    private final Path dbFile;
+    private final String vectorFile;
+    private final String dbFile;
     private final int dimension;
 
     private final long startLine;
@@ -75,7 +76,7 @@ public class WordVectorSqliteImporter {
      * @param dbFile     the path to the sqlite database into which the vector representations will be inserted
      * @param dimension  the dimension of the vectors
      */
-    public WordVectorSqliteImporter(Path vectorFile, Path dbFile, int dimension) {
+    public WordVectorSqliteImporter(String vectorFile, String dbFile, int dimension) {
         this(vectorFile, dbFile, dimension, DEFAULT_MAX_WORD_LENGTH, 0, -1L, false);
     }
 
@@ -92,7 +93,7 @@ public class WordVectorSqliteImporter {
      * @param dryRun        whether this importer should actually insert. Use {@code false} to run this importer without
      *                      actually inserting anything
      */
-    public WordVectorSqliteImporter(Path vectorFile, Path dbFile, int dimension, int maxWordLength, long startLine, long endLine, boolean dryRun) {
+    public WordVectorSqliteImporter(String vectorFile, String dbFile, int dimension, int maxWordLength, long startLine, long endLine, boolean dryRun) {
         this.vectorFile = vectorFile;
         this.dbFile = dbFile;
         this.dimension = dimension;
@@ -101,11 +102,11 @@ public class WordVectorSqliteImporter {
         this.endLine = endLine;
         this.dryRun = dryRun;
 
-        if (!Files.exists(vectorFile)) {
+        if (!Files.exists(Path.of(vectorFile))) {
             throw new IllegalStateException("vectorFile does not exist: " + vectorFile);
         }
 
-        if (!Files.exists(dbFile)) {
+        if (!Files.exists(Path.of(dbFile))) {
             throw new IllegalStateException("dbFile does not exist: " + dbFile);
         }
 
@@ -130,7 +131,7 @@ public class WordVectorSqliteImporter {
 
         try (Connection connection = connect();
                 PreparedStatement statement = prepareSelect(connection);
-                var in = Files.newInputStream(vectorFile, StandardOpenOption.READ);
+                var in = Files.newInputStream(Path.of(vectorFile), StandardOpenOption.READ);
                 var bufferedReader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
 
             ByteBuffer buffer = ByteBuffer.allocate(dimension * 4);
@@ -187,7 +188,7 @@ public class WordVectorSqliteImporter {
         cfg.setSynchronous(SQLiteConfig.SynchronousMode.OFF);
         cfg.setOpenMode(SQLiteOpenMode.NOMUTEX);
 
-        return cfg.createConnection("jdbc:sqlite:" + this.dbFile.toAbsolutePath());
+        return cfg.createConnection("jdbc:sqlite:" + Path.of(dbFile).toAbsolutePath());
     }
 
     private PreparedStatement prepareSelect(Connection conn) throws SQLException {

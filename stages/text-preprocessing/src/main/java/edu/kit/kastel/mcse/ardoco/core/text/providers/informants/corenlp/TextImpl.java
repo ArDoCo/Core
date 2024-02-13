@@ -1,6 +1,10 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serial;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -15,7 +19,7 @@ import edu.stanford.nlp.pipeline.CoreDocument;
 
 public class TextImpl implements Text {
 
-    final CoreDocument coreDocument;
+    private transient CoreDocument coreDocument;
     private ImmutableList<Sentence> sentences = Lists.immutable.empty();
     private ImmutableList<Word> words = Lists.immutable.empty();
     private final SortedMap<Integer, Word> wordsIndex = new TreeMap<>();
@@ -75,4 +79,25 @@ public class TextImpl implements Text {
         }
     }
 
+    @Serial
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        words(); //Initialize words
+        getSentences(); //Initialize sentences
+        out.defaultWriteObject();
+        /* It is a lot cheaper to serialize the phrases (up to 70x less storage space and much
+        faster), if the coreDocument is ever made accessible, this should be uncommented
+        ProtobufAnnotationSerializer serializer = new ProtobufAnnotationSerializer();
+        serializer.writeCoreDocument(coreDocument, out);
+         */
+    }
+
+    @Serial
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        /* It is a lot cheaper to serialize the phrases (up to 70x less storage space and much
+        faster), if the coreDocument is ever made accessible, this should be uncommented
+        ProtobufAnnotationSerializer serializer = new ProtobufAnnotationSerializer();
+        coreDocument = serializer.readCoreDocument(in).first;
+         */
+    }
 }

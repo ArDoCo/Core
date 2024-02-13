@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.vector;
 
 import java.util.LinkedHashMap;
@@ -17,18 +17,9 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
 public abstract class VectorBasedWordSimMeasure implements WordSimMeasure {
 
     private static final float[] ZERO_VECTOR = new float[0];
-
-    private final WordVectorDataSource vectorDataSource;
     private final Map<String, float[]> vectorCache = new LinkedHashMap<>();
 
-    /**
-     * Constructs a new {@link VectorBasedWordSimMeasure} instance
-     * 
-     * @param vectorDataSource the vector database used to get vector representations for words
-     */
-    protected VectorBasedWordSimMeasure(WordVectorDataSource vectorDataSource) {
-        this.vectorDataSource = Objects.requireNonNull(vectorDataSource);
-    }
+    protected abstract WordVectorDataSource getVectorDataSource();
 
     /**
      * Compares the two given words by computing the cosine similarity between their respective vector representations.
@@ -67,7 +58,7 @@ public abstract class VectorBasedWordSimMeasure implements WordSimMeasure {
         float[] vector = this.vectorCache.getOrDefault(word, null);
 
         if (vector == null) {
-            vector = this.vectorDataSource.getWordVector(word).orElse(ZERO_VECTOR);
+            vector = getVectorDataSource().getWordVector(word).orElse(ZERO_VECTOR);
             this.vectorCache.put(word, vector);
         }
 

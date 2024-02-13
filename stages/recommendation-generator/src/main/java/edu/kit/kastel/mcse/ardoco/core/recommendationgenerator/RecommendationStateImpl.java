@@ -1,31 +1,34 @@
-/* Licensed under MIT 2021-2023. */
+/* Licensed under MIT 2021-2024. */
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator;
 
 import org.eclipse.collections.api.factory.Lists;
+import org.eclipse.collections.api.factory.SortedSets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
+import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationStateStrategy;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
-import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.data.AbstractState;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 /**
- * The recommendation state encapsulates all recommended instances and relations. These recommendations should be
- * contained by the model by their probability.
- *
+ * The recommendation state encapsulates all recommended instances and relations. These recommendations should be contained by the model by their probability.
  */
 public class RecommendationStateImpl extends AbstractState implements RecommendationState {
 
-    private transient MutableList<RecommendedInstance> recommendedInstances;
+    private final RecommendationStateStrategy recommendationStateStrategy;
+    private MutableSortedSet<RecommendedInstance> recommendedInstances;
 
     /**
      * Creates a new recommendation state.
      */
-    public RecommendationStateImpl() {
-        recommendedInstances = Lists.mutable.empty();
+    public RecommendationStateImpl(RecommendationStateStrategy recommendationStateStrategy) {
+        super();
+        this.recommendationStateStrategy = recommendationStateStrategy;
+        recommendedInstances = SortedSets.mutable.empty();
     }
 
     /**
@@ -70,16 +73,15 @@ public class RecommendationStateImpl extends AbstractState implements Recommenda
     }
 
     /**
-     * Adds a recommended instance to the state. If the in the stored instance an instance with the same name and type
-     * is contained it is extended. If an recommendedInstance with the same name can be found it is extended. Elsewhere
-     * a new recommended instance is created.
+     * Adds a recommended instance to the state. If the in the stored instance an instance with the same name and type is contained it is extended. If an
+     * recommendedInstance with the same name can be found it is extended. Elsewhere a new recommended instance is created.
      */
     private void addRecommendedInstance(RecommendedInstance ri) {
         if (recommendedInstances.contains(ri)) {
             return;
         }
 
-        var risWithExactName = recommendedInstances.select(r -> r.getName().equalsIgnoreCase(ri.getName())).toImmutable();
+        var risWithExactName = recommendedInstances.select(r -> r.getName().equalsIgnoreCase(ri.getName())).toImmutable().toImmutableList();
         var risWithExactNameAndType = risWithExactName.select(r -> r.getType().equalsIgnoreCase(ri.getType()));
 
         if (risWithExactNameAndType.isEmpty()) {
@@ -96,7 +98,7 @@ public class RecommendationStateImpl extends AbstractState implements Recommenda
             var added = false;
 
             for (RecommendedInstance riWithExactName : risWithExactName) {
-                var areWordsSimilar = SimilarityUtils.areWordsSimilar(riWithExactName.getType(), ri.getType());
+                var areWordsSimilar = recommendationStateStrategy.areRITypesSimilar(riWithExactName.getType(), ri.getType());
                 if (areWordsSimilar || recommendedInstancesHasEmptyType(ri, riWithExactName)) {
                     riWithExactName.addMappings(ri.getNameMappings(), ri.getTypeMappings());
                     added = true;
@@ -122,7 +124,7 @@ public class RecommendationStateImpl extends AbstractState implements Recommenda
      */
     @Override
     public ImmutableList<RecommendedInstance> getRecommendedInstancesByTypeMapping(NounMapping mapping) {
-        return recommendedInstances.select(sinstance -> sinstance.getTypeMappings().contains(mapping)).toImmutable();
+        return recommendedInstances.select(sinstance -> sinstance.getTypeMappings().contains(mapping)).toImmutableList();
     }
 
     /**
@@ -135,7 +137,7 @@ public class RecommendationStateImpl extends AbstractState implements Recommenda
     public ImmutableList<RecommendedInstance> getAnyRecommendedInstancesByMapping(NounMapping mapping) {
         return recommendedInstances //
                 .select(sinstance -> sinstance.getTypeMappings().contains(mapping) || sinstance.getNameMappings().contains(mapping))
-                .toImmutable();
+                .toImmutableList();
     }
 
     /**
@@ -146,7 +148,7 @@ public class RecommendationStateImpl extends AbstractState implements Recommenda
      */
     @Override
     public ImmutableList<RecommendedInstance> getRecommendedInstancesByName(String name) {
-        return recommendedInstances.select(ri -> ri.getName().toLowerCase().contentEquals(name.toLowerCase())).toImmutable();
+        return recommendedInstances.select(ri -> ri.getName().toLowerCase().contentEquals(name.toLowerCase())).toImmutableList();
     }
 
     /**
@@ -159,7 +161,7 @@ public class RecommendationStateImpl extends AbstractState implements Recommenda
     public ImmutableList<RecommendedInstance> getRecommendedInstancesBySimilarName(String name) {
         MutableList<RecommendedInstance> ris = Lists.mutable.empty();
         for (RecommendedInstance ri : recommendedInstances) {
-            if (SimilarityUtils.areWordsSimilar(ri.getName(), name)) {
+            if (recommendationStateStrategy.areRINamesSimilar(ri.getName(), name)) {
                 ris.add(ri);
             }
         }
@@ -175,7 +177,7 @@ public class RecommendationStateImpl extends AbstractState implements Recommenda
      */
     @Override
     public ImmutableList<RecommendedInstance> getRecommendedInstancesByType(String type) {
-        return recommendedInstances.select(ri -> ri.getType().toLowerCase().contentEquals(type.toLowerCase())).toImmutable();
+        return recommendedInstances.select(ri -> ri.getType().toLowerCase().contentEquals(type.toLowerCase())).toImmutableList();
     }
 
     /**
@@ -186,6 +188,6 @@ public class RecommendationStateImpl extends AbstractState implements Recommenda
      */
     @Override
     public ImmutableList<RecommendedInstance> getRecommendedInstancesBySimilarType(String type) {
-        return recommendedInstances.select(ri -> SimilarityUtils.areWordsSimilar(ri.getType(), type)).toImmutable();
+        return recommendedInstances.select(ri -> recommendationStateStrategy.areRITypesSimilar(ri.getType(), type)).toImmutableList();
     }
 }

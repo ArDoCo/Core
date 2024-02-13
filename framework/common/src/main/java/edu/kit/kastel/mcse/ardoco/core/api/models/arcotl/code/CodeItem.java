@@ -1,4 +1,4 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code;
 
 import java.util.ArrayList;
@@ -43,7 +43,6 @@ public abstract sealed class CodeItem extends Entity permits CodeModule, Computa
     }
 
     void registerCurrentCodeItemRepository(CodeItemRepository codeItemRepository) {
-        codeItemRepository.addCodeItem(this);
         this.codeItemRepository = codeItemRepository;
     }
 

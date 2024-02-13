@@ -1,15 +1,17 @@
-/* Licensed under MIT 2021-2023. */
+/* Licensed under MIT 2021-2024. */
 package edu.kit.kastel.mcse.ardoco.core.api.text;
+
+import java.io.Serializable;
 
 import org.eclipse.collections.api.list.ImmutableList;
 
 /**
  * The Interface IWord defines a word in a text.
  */
-public interface Word extends Comparable<Word> {
+public interface Word extends Comparable<Word>, Serializable {
 
     /**
-     * Gets the sentence number.
+     * Gets the sentence number starting at 0.
      *
      * @return the sentence number
      */
@@ -51,6 +53,7 @@ public interface Word extends Comparable<Word> {
     Word getNextWord();
 
     /**
+     * FIXME This description is confusing. Is this relative to the sentence or relative to the entire text?
      * Gets the position in the sentence / text.
      *
      * @return the position

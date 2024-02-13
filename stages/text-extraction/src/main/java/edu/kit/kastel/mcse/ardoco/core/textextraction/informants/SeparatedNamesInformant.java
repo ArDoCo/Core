@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021-2023. */
+/* Licensed under MIT 2021-2024. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction.informants;
 
 import java.util.SortedMap;
@@ -33,7 +33,7 @@ public class SeparatedNamesInformant extends Informant {
     }
 
     @Override
-    public void run() {
+    public void process() {
         var textState = DataRepositoryHelper.getTextState(getDataRepository());
         for (var word : DataRepositoryHelper.getAnnotatedText(getDataRepository()).words()) {
             exec(textState, word);

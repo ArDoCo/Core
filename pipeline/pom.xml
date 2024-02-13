@@ -46,6 +46,7 @@
       </activation>
       <modules>
         <module>pipeline-core</module>
+        <module>pipeline-erid</module>
         <module>pipeline-id</module>
         <module>pipeline-lissa</module>
         <module>pipeline-tlr</module>
@@ -94,6 +95,17 @@
       <modules>
         <module>pipeline-core</module>
         <module>pipeline-lissa</module>
+      </modules>
+    </profile>
+    <profile>
+      <!-- Entity Recognition Informal Diagrams -->
+      <id>erid</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <modules>
+        <module>pipeline-core</module>
+        <module>pipeline-erid</module>
       </modules>
     </profile>
   </profiles>

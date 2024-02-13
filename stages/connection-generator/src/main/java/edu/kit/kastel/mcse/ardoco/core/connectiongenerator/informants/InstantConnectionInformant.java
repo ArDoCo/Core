@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.informants;
 
 import java.util.SortedMap;
@@ -9,7 +9,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
-import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
@@ -25,7 +24,7 @@ public class InstantConnectionInformant extends Informant {
     }
 
     @Override
-    public void run() {
+    public void process() {
         DataRepository dataRepository = getDataRepository();
         var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
         var recommendationStates = DataRepositoryHelper.getRecommendationStates(dataRepository);
@@ -48,8 +47,9 @@ public class InstantConnectionInformant extends Informant {
     private void findNamesOfModelInstancesInSupposedMappings(LegacyModelExtractionState modelState, RecommendationState recommendationState,
             ConnectionState connectionState) {
         var recommendedInstances = recommendationState.getRecommendedInstances();
+        var similarityUtils = getMetaData().getSimilarityUtils();
         for (ModelInstance instance : modelState.getInstances()) {
-            var mostLikelyRi = SimilarityUtils.getMostRecommendedInstancesToInstanceByReferences(instance, recommendedInstances);
+            var mostLikelyRi = similarityUtils.getMostRecommendedInstancesToInstanceByReferences(instance, recommendedInstances);
 
             for (var recommendedInstance : mostLikelyRi) {
                 var riProbability = recommendedInstance.getTypeMappings().isEmpty() ? probabilityWithoutType : probability;
@@ -62,7 +62,7 @@ public class InstantConnectionInformant extends Informant {
             ConnectionState connectionState) {
         for (var recommendedInstance : recommendationState.getRecommendedInstances()) {
             var sameInstances = modelState.getInstances()
-                    .select(instance -> SimilarityUtils.isRecommendedInstanceSimilarToModelInstance(recommendedInstance, instance));
+                    .select(instance -> getMetaData().getSimilarityUtils().isRecommendedInstanceSimilarToModelInstance(recommendedInstance, instance));
             sameInstances.forEach(instance -> connectionState.addToLinks(recommendedInstance, instance, this, probability));
         }
     }

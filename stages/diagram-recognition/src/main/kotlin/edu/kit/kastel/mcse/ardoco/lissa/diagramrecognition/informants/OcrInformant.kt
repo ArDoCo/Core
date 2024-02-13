@@ -19,14 +19,16 @@ import java.io.InputStream
 import java.net.URI
 import java.util.SortedMap
 
-class OcrInformant(dataRepository: DataRepository) : ImageProcessingDockerInformant(
-    DOCKER_OCR,
-    DEFAULT_PORT,
-    DOCKER_OCR_VIA_DOCKER,
-    ID,
-    dataRepository,
-    "ocr"
-) {
+class OcrInformant(
+    dataRepository: DataRepository
+) : ImageProcessingDockerInformant(
+        DOCKER_OCR,
+        DEFAULT_PORT,
+        DOCKER_OCR_VIA_DOCKER,
+        ID,
+        dataRepository,
+        "ocr"
+    ) {
     companion object {
         const val ID = "OCRInformant"
         const val DOCKER_OCR = "ghcr.io/lissa-approach/diagram-ocr:latest"
@@ -54,7 +56,11 @@ class OcrInformant(dataRepository: DataRepository) : ImageProcessingDockerInform
         diagram: Diagram,
         imageData: ByteArray
     ) {
-        val textsWithHints = detectTextBoxes(ByteArrayInputStream(imageData), diagram.boxes.filter { it.classification == Classification.LABEL })
+        val textsWithHints =
+            detectTextBoxes(
+                ByteArrayInputStream(imageData),
+                diagram.boxes.filter { it.classification == Classification.LABEL }
+            )
         val textsWithoutHints = detectTextBoxes(ByteArrayInputStream(imageData), listOf())
         val texts = mergeTexts(textsWithHints, textsWithoutHints)
         texts.forEach { diagram.addTextBox(it) }
@@ -88,7 +94,6 @@ class OcrInformant(dataRepository: DataRepository) : ImageProcessingDockerInform
         val textRecognition =
             sendOCRRequest(
                 image,
-                container.apiPort,
                 detectedBoxesOfObjectDetection.filter { it.classification == Classification.LABEL }
             )
         logger.debug("Processed OCRService Request")
@@ -97,7 +102,6 @@ class OcrInformant(dataRepository: DataRepository) : ImageProcessingDockerInform
 
     private fun sendOCRRequest(
         image: InputStream,
-        port: Int,
         labels: List<Box>
     ): String {
         val boxCoordinates = enhanceLabels(labels).flatMap { it.box.toList() }.joinToString(",")
@@ -105,9 +109,10 @@ class OcrInformant(dataRepository: DataRepository) : ImageProcessingDockerInform
         val builder = MultipartEntityBuilder.create()
         builder.addBinaryBody("file", image, ContentType.APPLICATION_OCTET_STREAM, "image")
         val multipart: HttpEntity = builder.build()
-        val uploadFile = HttpPost("http://${hostIP()}:$port/ocr/")
+        val uploadFile = HttpPost(getUri())
         if (labels.isNotEmpty()) {
-            val uri: URI = URIBuilder(uploadFile.uri).addParameter("regions", boxCoordinates).build()
+            val uri: URI =
+                URIBuilder(uploadFile.uri).addParameter("regions", boxCoordinates).build()
             uploadFile.uri = uri
         }
         uploadFile.entity = multipart
@@ -134,6 +139,14 @@ class OcrInformant(dataRepository: DataRepository) : ImageProcessingDockerInform
                 box.box[3] + EXPANSION_IN_PX
             )
         // Copy References here. No Copies!
-        return Box(box.uuid, newPositions.toIntArray(), box.confidence, box.classification.classificationString, box.texts, null)
+        return Box(
+            box.diagram,
+            newPositions.toIntArray(),
+            box.confidence,
+            box.classification
+                .classificationString,
+            box.texts,
+            null
+        )
     }
 }

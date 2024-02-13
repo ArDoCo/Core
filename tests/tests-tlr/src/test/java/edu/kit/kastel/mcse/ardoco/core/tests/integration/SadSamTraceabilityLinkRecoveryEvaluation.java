@@ -1,10 +1,7 @@
-/* Licensed under MIT 2021-2023. */
+/* Licensed under MIT 2021-2024. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
-import static edu.kit.kastel.mcse.ardoco.core.tests.integration.TraceLinkEvaluationIT.DATA_MAP;
-import static edu.kit.kastel.mcse.ardoco.core.tests.integration.TraceLinkEvaluationIT.OUTPUT;
-import static edu.kit.kastel.mcse.ardoco.core.tests.integration.TraceLinkEvaluationIT.PROJECT_RESULTS;
-import static edu.kit.kastel.mcse.ardoco.core.tests.integration.TraceLinkEvaluationIT.RESULTS;
+import static edu.kit.kastel.mcse.ardoco.core.tests.integration.TraceLinkEvaluationIT.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,19 +31,17 @@ import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCoForSadSamTraceabilityLink
 import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.ArDoCoRunner;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.CodeProject;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TLRUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files.TLGoldStandardFile;
 
 /**
- * Integration test that evaluates the traceability link recovery capabilities of ArDoCo. Runs on the projects that are defined in the enum {@link Project}.
+ * Integration test that evaluates the traceability link recovery capabilities of ArDoCo.
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-class SadSamTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryEvaluation {
-
+public class SadSamTraceabilityLinkRecoveryEvaluation<T extends GoldStandardProject> extends TraceabilityLinkRecoveryEvaluation<T> {
     @Override
     protected boolean resultHasRequiredData(ArDoCoResult arDoCoResult) {
         var traceLinks = arDoCoResult.getAllTraceLinks();
@@ -54,18 +49,17 @@ class SadSamTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryE
     }
 
     @Override
-    protected ArDoCoResult runTraceLinkEvaluation(CodeProject codeProject) {
-        var result = super.runTraceLinkEvaluation(codeProject);
-        DATA_MAP.put(codeProject.getProject(), result);
+    protected ArDoCoResult runTraceLinkEvaluation(T project) {
+        var result = super.runTraceLinkEvaluation(project);
+        DATA_MAP.put(project, result);
         return result;
     }
 
     @Override
-    protected ArDoCoRunner getAndSetupRunner(CodeProject codeProject) {
-        var project = codeProject.getProject();
+    protected ArDoCoRunner getAndSetupRunner(T project) {
         var additionalConfigsMap = ConfigurationHelper.loadAdditionalConfigs(project.getAdditionalConfigurationsFile());
 
-        String name = project.name().toLowerCase();
+        String name = project.getProjectName();
         File inputModel = project.getModelFile();
         File inputText = project.getTextFile();
         File outputDir = new File(OUTPUT);
@@ -76,14 +70,12 @@ class SadSamTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryE
     }
 
     @Override
-    protected ExpectedResults getExpectedResults(CodeProject codeProject) {
-        var project = codeProject.getProject();
+    protected ExpectedResults getExpectedResults(T project) {
         return project.getExpectedTraceLinkResults();
     }
 
     @Override
-    protected ImmutableList<String> getGoldStandard(CodeProject codeProject) {
-        var project = codeProject.getProject();
+    protected ImmutableList<String> getGoldStandard(T project) {
         return project.getTlrGoldStandard();
     }
 
@@ -116,8 +108,8 @@ class SadSamTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryE
         return results;
     }
 
-    protected ArDoCoResult getArDoCoResult(Project project) {
-        String name = project.name().toLowerCase();
+    public ArDoCoResult getArDoCoResult(T project) {
+        String name = project.getProjectName();
         var inputModel = project.getModelFile();
         var inputText = project.getTextFile();
 
@@ -146,7 +138,7 @@ class SadSamTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryE
      * @param project      the result's project
      * @param arDoCoResult the result
      */
-    protected static void checkResults(Project project, ArDoCoResult arDoCoResult) {
+    public static void checkResults(GoldStandardProject project, ArDoCoResult arDoCoResult) {
 
         var modelIds = arDoCoResult.getModelIds();
         var modelId = modelIds.stream().findFirst().orElseThrow();
@@ -162,11 +154,11 @@ class SadSamTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryE
 
     }
 
-    private static void logAndSaveProjectResult(Project project, ArDoCoResult arDoCoResult, EvaluationResults<String> results,
+    private static void logAndSaveProjectResult(GoldStandardProject project, ArDoCoResult arDoCoResult, EvaluationResults<String> results,
             ExpectedResults expectedResults) {
         if (logger.isInfoEnabled()) {
-            String projectName = project.name().toLowerCase();
-            TestUtil.logResultsWithExpected(logger, projectName, results, expectedResults);
+            String projectName = project.getProjectName();
+            TestUtil.logExtendedResultsWithExpected(logger, SadSamTraceabilityLinkRecoveryEvaluation.class, projectName, results, expectedResults);
 
             var data = arDoCoResult.dataRepository();
             printDetailedDebug(results, data);
@@ -197,8 +189,8 @@ class SadSamTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryE
                         .phiCoefficient() + " is below the expected minimum value " + expectedResults.phiCoefficient()));
     }
 
-    static void writeDetailedOutput(Project project, ArDoCoResult arDoCoResult) {
-        String name = project.name().toLowerCase();
+    public static void writeDetailedOutput(GoldStandardProject project, ArDoCoResult arDoCoResult) {
+        String name = project.getProjectName();
         var path = Path.of(OUTPUT).resolve(name);
         try {
             Files.createDirectories(path);

@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021-2023. */
+/* Licensed under MIT 2021-2024. */
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator;
 
 import java.util.List;
@@ -13,9 +13,8 @@ import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage;
 
 /**
- * The ModelConnectionAgent runs different analyzers and solvers. This agent creates recommendations as well as
- * matchings between text and model. The order is important: All connections should run after the recommendations have
- * been made.
+ * The ModelConnectionAgent runs different analyzers and solvers. This agent creates recommendations as well as matchings between text and model. The order is
+ * important: All connections should run after the recommendations have been made.
  */
 public class ConnectionGenerator extends AbstractExecutionStage {
 

@@ -81,6 +81,7 @@
         <module>tests-base</module>
         <module>tests-inconsistency</module>
         <module>tests-misc</module>
+        <module>tests-resources</module>
         <module>tests-tlr</module>
       </modules>
     </profile>

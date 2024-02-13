@@ -1,7 +1,5 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.tests.eval;
-
-import static edu.kit.kastel.mcse.ardoco.core.tests.eval.ProjectHelper.ANALYZE_CODE_DIRECTLY;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -10,6 +8,8 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.function.Predicate;
 
 import org.eclipse.collections.api.factory.Lists;
@@ -21,7 +21,13 @@ import org.slf4j.LoggerFactory;
 import edu.kit.kastel.mcse.ardoco.core.common.util.TraceLinkUtilities;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 
-public enum CodeProject {
+/**
+ * This enum captures the different case studies that are used for evaluation in the integration tests.
+ */
+public enum CodeProject implements GoldStandardProject {
+    /**
+     * @see Project#MEDIASTORE
+     */
     MEDIASTORE(//
             Project.MEDIASTORE, //
             "https://github.com/ArDoCo/MediaStore3.git", //
@@ -33,6 +39,9 @@ public enum CodeProject {
             new ExpectedResults(.995, .515, .675, .990, .715, .999) //
     ),
 
+    /**
+     * @see Project#TEASTORE
+     */
     TEASTORE(Project.TEASTORE, //
             "https://github.com/ArDoCo/TeaStore.git", //
             "bdc49020a55cfa97eaabbb25744fefbc2697defa", //
@@ -43,6 +52,9 @@ public enum CodeProject {
             new ExpectedResults(.999, .708, .829, .976, .831, .999) //
     ),
 
+    /**
+     * @see Project#TEAMMATES
+     */
     TEAMMATES(Project.TEAMMATES, //
             "https://github.com/ArDoCo/teammates.git",//
             "b24519a2af9e17b2bc9c025e87e4cf60009c425d",//
@@ -53,6 +65,9 @@ public enum CodeProject {
             new ExpectedResults(.705, .909, .795, .975, .785, .975) //
     ),
 
+    /**
+     * @see Project#BIGBLUEBUTTON
+     */
     BIGBLUEBUTTON(Project.BIGBLUEBUTTON,//
             "https://github.com/ArDoCo/bigbluebutton.git",//
             "8fa2507d6c3865a9850004fd6fefd09738e68406",//
@@ -63,6 +78,9 @@ public enum CodeProject {
             new ExpectedResults(.765, .905, .835, .985, .825, .985) //
     ),
 
+    /**
+     * @see Project#JABREF
+     */
     JABREF(Project.JABREF, //
             "https://github.com/ArDoCo/jabref.git",//
             "6269698cae437610ec79c38e6dd611eef7e88afe",//
@@ -83,6 +101,7 @@ public enum CodeProject {
     private final Project project;
     private final ExpectedResults expectedResultsForSamCode;
     private final ExpectedResults expectedResultsForSadSamCode;
+    private final SortedSet<String> resourceNames;
 
     CodeProject(Project project, String codeRepository, String commitHash, String codeModelLocationInResources, String samCodeGoldStandardLocation,
             String sadCodeGoldStandardLocation, ExpectedResults expectedResultsForSamCode, ExpectedResults expectedResultsForSadSamCode) {
@@ -94,24 +113,47 @@ public enum CodeProject {
         this.sadCodeGoldStandardLocation = sadCodeGoldStandardLocation;
         this.expectedResultsForSamCode = expectedResultsForSamCode;
         this.expectedResultsForSadSamCode = expectedResultsForSadSamCode;
+        SortedSet<String> set = new TreeSet<>(project.getResourceNames());
+        set.add(codeModelLocationInResources);
+        set.add(samCodeGoldStandardLocation);
+        set.add(sadCodeGoldStandardLocation);
+        resourceNames = set;
     }
 
-    public Project getProject() {
-        return project;
+    @Override
+    public String getProjectName() {
+        return this.name();
     }
 
+    @Override
+    public SortedSet<String> getResourceNames() {
+        return new TreeSet<>(resourceNames);
+    }
+
+    /**
+     * {@return the link to the code repository of this project}
+     */
     public String getCodeRepository() {
         return codeRepository;
     }
 
+    /**
+     * {@return the commit hash the project is based on}
+     */
     public String getCommitHash() {
         return commitHash;
     }
 
+    /**
+     * {@return path of the code directory}
+     */
     public String getCodeLocation() {
         return getTemporaryCodeLocation().getAbsolutePath();
     }
 
+    /**
+     * {@return the directory of the code model}
+     */
     public String getCodeModelDirectory() {
         try {
             loadCodeModelFromResourcesIfNeeded();
@@ -122,8 +164,13 @@ public enum CodeProject {
         }
     }
 
+    /**
+     * Loads the code from resources or from the code directoy cache
+     *
+     * @throws IOException Can occur during file operations
+     */
     public void loadCodeModelFromResourcesIfNeeded() throws IOException {
-        if (ANALYZE_CODE_DIRECTLY.get())
+        if (ProjectHelper.ANALYZE_CODE_DIRECTLY.get())
             return;
 
         File temporaryCodeLocation = getTemporaryCodeLocation();
@@ -135,14 +182,25 @@ public enum CodeProject {
         }
     }
 
+    /**
+     * {@return the expected results using the software architecture model code}
+     */
     public ExpectedResults getExpectedResultsForSamCode() {
         return expectedResultsForSamCode;
     }
 
+    /**
+     * {@return the expected results using the software architecture model code}
+     */
     public ExpectedResults getExpectedResultsForSadSamCode() {
         return expectedResultsForSadSamCode;
     }
 
+    /**
+     * {@return all trace link strings from the gold standard}
+     *
+     * @see TraceLinkUtilities#createTraceLinkString(String, String)
+     */
     public ImmutableList<String> getSamCodeGoldStandard() {
         File samCodeGoldStandardFile = ProjectHelper.loadFileFromResources(samCodeGoldStandardLocation);
         List<String> lines = getLinesFromGoldStandardFile(samCodeGoldStandardFile);
@@ -160,6 +218,9 @@ public enum CodeProject {
         return goldStandard.toImmutable();
     }
 
+    /**
+     * {@return all lines from the gold standard in csv format}
+     */
     public ImmutableList<String> getSadCodeGoldStandard() {
         File sadCodeGoldStandardFile = ProjectHelper.loadFileFromResources(sadCodeGoldStandardLocation);
         List<String> lines = getLinesFromGoldStandardFile(sadCodeGoldStandardFile);

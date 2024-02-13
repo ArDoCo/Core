@@ -1,4 +1,4 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.informants;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public class InconsistencyGroupingInformant extends Informant {
     }
 
     @Override
-    public void run() {
+    public void process() {
         DataRepository data = this.getDataRepository();
 
         DiagramMatchingModelSelectionState selection = data.getData(DiagramMatchingModelSelectionState.ID, DiagramMatchingModelSelectionStateImpl.class)

@@ -1,18 +1,21 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.api.textextraction;
+
+import java.io.Serializable;
 
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.map.sorted.ImmutableSortedMap;
+import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.PhraseType;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 
-public interface PhraseMapping {
+public interface PhraseMapping extends Serializable {
 
     ImmutableList<NounMapping> getNounMappings(TextState textState);
 
-    ImmutableList<Phrase> getPhrases();
+    ImmutableSortedSet<Phrase> getPhrases();
 
     PhraseType getPhraseType();
 

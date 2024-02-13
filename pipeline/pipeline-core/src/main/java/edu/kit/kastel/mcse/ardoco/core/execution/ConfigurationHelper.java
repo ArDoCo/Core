@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.execution;
 
 import java.io.File;
@@ -96,7 +96,6 @@ public class ConfigurationHelper {
         fillConfigs(object, fields, configs);
     }
 
-    @SuppressWarnings("java:S3011")
     private static void fillConfigs(AbstractConfigurable object, List<Field> fields, Map<String, String> configs) throws IllegalAccessException {
         for (Field f : fields) {
             f.setAccessible(true);

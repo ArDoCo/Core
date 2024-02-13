@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp;
 
 import java.util.List;
@@ -186,5 +186,10 @@ class WordImpl implements Word {
             return compareSentences;
         }
         return Integer.compare(this.getPosition(), o.getPosition());
+    }
+
+    @Override
+    public String toString() {
+        return token.toString();
     }
 }

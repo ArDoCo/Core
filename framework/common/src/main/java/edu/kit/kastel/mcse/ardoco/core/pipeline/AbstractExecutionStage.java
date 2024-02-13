@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline;
 
 import java.util.List;
@@ -19,7 +19,6 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
  * Implementing classes need to implement {@link #initializeState()} that cares for setting up the state for processing.
  */
 public abstract class AbstractExecutionStage extends Pipeline {
-
     private final MutableList<PipelineAgent> agents;
 
     @Configurable
@@ -28,7 +27,7 @@ public abstract class AbstractExecutionStage extends Pipeline {
 
     /**
      * Constructor for ExecutionStages
-     * 
+     *
      * @param agents         the agents that could be executed by this pipeline
      * @param id             the id of the stage
      * @param dataRepository the {@link DataRepository} that should be used
@@ -41,14 +40,7 @@ public abstract class AbstractExecutionStage extends Pipeline {
 
     @Override
     protected final void preparePipelineSteps() {
-        initialize();
         super.preparePipelineSteps();
-    }
-
-    /**
-     * Initialize the {@link AbstractExecutionStage}. Within this method, cares about all agents that should be executed by this pipeline
-     */
-    protected final void initialize() {
         initializeState();
 
         for (var agent : agents) {
@@ -62,6 +54,29 @@ public abstract class AbstractExecutionStage extends Pipeline {
      * Prepare processing and set up the (internal) state
      */
     protected abstract void initializeState();
+
+    /**
+     * Called before all agents
+     */
+    @Override
+    protected void before() {
+        //Nothing by default
+    }
+
+    /**
+     * Called after all agents
+     */
+    @Override
+    protected void after() {
+        //Nothing by default
+    }
+
+    /**
+     * {@return the {@link PipelineAgent agents}}
+     */
+    public List<PipelineAgent> getAgents() {
+        return List.copyOf(agents);
+    }
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration) {

@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021-2023. */
+/* Licensed under MIT 2021-2024. */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency;
 
 import java.util.List;
@@ -14,10 +14,11 @@ import edu.kit.kastel.mcse.ardoco.core.data.AbstractState;
 
 public class InconsistencyStateImpl extends AbstractState implements InconsistencyState {
 
-    private transient MutableList<RecommendedInstance> recommendedInstances;
-    private transient MutableList<Inconsistency> inconsistencies;
+    private MutableList<RecommendedInstance> recommendedInstances;
+    private MutableList<Inconsistency> inconsistencies;
 
     public InconsistencyStateImpl() {
+        super();
         inconsistencies = Lists.mutable.empty();
         recommendedInstances = Lists.mutable.empty();
     }
