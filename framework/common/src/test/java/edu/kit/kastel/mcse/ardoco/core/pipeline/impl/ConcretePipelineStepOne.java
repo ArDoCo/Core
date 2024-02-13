@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline.impl;
 
 import java.util.Arrays;
@@ -31,13 +31,23 @@ public class ConcretePipelineStepOne extends AbstractPipelineStep {
     }
 
     @Override
-    public void run() {
+    public void process() {
         fetchData();
         logger.info("Greetings from {} with id {}", this.getClass().getSimpleName(), getId());
         var text = textData.getText();
         var tokens = Arrays.stream(text.split(" ")).toList();
         tokens = tokens.stream().filter(Predicate.not(stopwords::contains)).toList();
         textData.setTokens(tokens);
+    }
+
+    @Override
+    protected void before() {
+        //Nothing
+    }
+
+    @Override
+    protected void after() {
+        //Nothing
     }
 
     @Override

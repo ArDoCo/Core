@@ -73,7 +73,8 @@
   <properties>
     <revision>0.41.0-SNAPSHOT</revision>
     <ardoco.version>${revision}</ardoco.version>
-
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <project.source.encoding>UTF-8</project.source.encoding>
     <java.version>21</java.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
@@ -94,6 +95,7 @@
     <javaparser.version>3.25.8</javaparser.version>
     <error-prone.version>2.24.1</error-prone.version>
     <mockito.version>5.2.0</mockito.version>
+    <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
     <jgrapht.version>1.5.2</jgrapht.version>
 
     <sonar.projectKey>ArDoCo_Core</sonar.projectKey>
@@ -105,6 +107,7 @@
     <aggregate.report.dir>report/target/site/jacoco-aggregate/jacoco.xml</aggregate.report.dir>
     <argLine>-Xmx4g -Xss256m</argLine>
     <stanford.corenlp.version>4.5.6</stanford.corenlp.version>
+    <doclint.options>all,-missing</doclint.options>
   </properties>
 
   <dependencyManagement>
@@ -114,7 +117,6 @@
         <artifactId>jackson-annotations</artifactId>
         <version>${jackson.version}</version>
       </dependency>
-
       <dependency>
         <groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-core</artifactId>
@@ -252,6 +254,11 @@
   </dependencyManagement>
 
   <dependencies>
+    <dependency>
+      <groupId>com.google.errorprone</groupId>
+      <artifactId>error_prone_core</artifactId>
+      <version>${error-prone.version}</version>
+    </dependency>
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
       <artifactId>kotlin-reflect</artifactId>
@@ -479,6 +486,11 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>3.6.3</version>
+        <configuration>
+          <!-- Neither of these locale options works for me, but a solution should be figured out, because locale is important for javadoc generation -->
+          <locale>en_US</locale>
+          <doclint>${doclint.options}</doclint>
+        </configuration>
         <executions>
           <execution>
             <id>attach-javadocs</id>

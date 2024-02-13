@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files;
 
 import java.io.IOException;
@@ -18,7 +18,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.calculator.ResultCalculatorUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TestLink;
@@ -42,8 +42,8 @@ public class TLSummaryFile {
      * @param dataMap    the outcomes (data) of the runs
      * @throws IOException if writing to file system fails
      */
-    public static void save(Path targetFile, Collection<Pair<Project, EvaluationResults<TestLink>>> results, Map<Project, ArDoCoResult> dataMap)
-            throws IOException {
+    public static void save(Path targetFile, Collection<Pair<GoldStandardProject, EvaluationResults<TestLink>>> results,
+            Map<GoldStandardProject, ArDoCoResult> dataMap) throws IOException {
         var sortedResults = results.stream().sorted().toList();
         var builder = new StringBuilder();
 
@@ -60,8 +60,8 @@ public class TLSummaryFile {
         Files.writeString(targetFile, builder.toString(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
-    private static void appendProjectResultSummary(Map<Project, ArDoCoResult> dataMap, StringBuilder builder,
-            Pair<Project, EvaluationResults<TestLink>> projectResult) {
+    private static void appendProjectResultSummary(Map<GoldStandardProject, ArDoCoResult> dataMap, StringBuilder builder,
+            Pair<GoldStandardProject, EvaluationResults<TestLink>> projectResult) {
         var data = dataMap.get(projectResult.getOne());
         var text = data.getText();
 
@@ -76,7 +76,7 @@ public class TLSummaryFile {
         var falseNegatives = result.falseNegatives();
         var falseNegCount = falseNegatives.size();
 
-        builder.append("# ").append(projectResult.getOne().name());
+        builder.append("# ").append(projectResult.getOne().getProjectName());
         builder.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
         builder.append("Summary:").append(LINE_SEPARATOR);
@@ -96,7 +96,7 @@ public class TLSummaryFile {
         }
     }
 
-    private static <T> void appendOverallResults(List<Pair<Project, EvaluationResults<T>>> projectResults, StringBuilder builder) {
+    private static <T> void appendOverallResults(List<Pair<GoldStandardProject, EvaluationResults<T>>> projectResults, StringBuilder builder) {
         var results = Lists.mutable.ofAll(projectResults.stream().map(Pair::getTwo).toList());
         var weightedResults = ResultCalculatorUtil.calculateWeightedAverageResults(results.toImmutable());
         var macroResults = ResultCalculatorUtil.calculateAverageResults(results.toImmutable());

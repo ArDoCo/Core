@@ -1,4 +1,4 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.tests.eval.results;
 
 import java.util.Locale;
@@ -13,29 +13,68 @@ public record EvaluationResults<T>(double precision, double recall, double f1, I
                                    ImmutableList<T> falseNegatives, ImmutableList<T> falsePositives, double accuracy, double phiCoefficient, double specificity,
                                    double phiCoefficientMax, double phiOverPhiMax) {
 
+    public String toRow() {
+        return String.format(Locale.ENGLISH, """
+                %4s & %4s & %4s & %4s & %4s & %4s & %4s
+                %4.2f & %4.2f & %4.2f & %4.2f & %4.2f & %4.2f & %4.2f""", "P", "R", "F1", "Acc", "Spec", "Phi", "PhiN", precision, recall, f1, accuracy,
+                specificity, phiCoefficient, phiOverPhiMax);
+    }
+
+    public String toRow(String headerKey, String headerVal) {
+        return String.format(Locale.ENGLISH, """
+                %10s & %4s & %4s & %4s & %4s & %4s & %4s & %4s
+                %10s & %4.2f & %4.2f & %4.2f & %4.2f & %4.2f & %4.2f & %4.2f""", headerKey, "P", "R", "F1", "Acc", "Spec", "Phi", "PhiN", headerVal, precision,
+                recall, f1, accuracy, specificity, phiCoefficient, phiOverPhiMax);
+    }
+
     @Override
     public String toString() {
-        String output = String.format(Locale.ENGLISH, "\tPrecision:%8.2f%n\tRecall:%11.2f%n\tF1:%15.2f", precision, recall, f1);
-        output += String.format(Locale.ENGLISH, "%n\tAccuracy:%9.2f%n\tSpecificity:%6.2f", accuracy, specificity);
-        output += String.format(Locale.ENGLISH, "%n\tPhi Coef.:%8.2f%n\tPhi/PhiMax:%7.2f (Phi Max: %.2f)", phiCoefficient, phiOverPhiMax, phiCoefficientMax);
-        return output;
+        return String.format(Locale.ENGLISH, """
+                \tPrecision:%8.2f
+                \tRecall:%11.2f
+                \tF1:%15.2f
+                \tAccuracy:%9.2f
+                \tSpecificity:%6.2f
+                \tPhi Coef.:%8.2f
+                \tPhi/PhiMax:%7.2f (Phi Max: %.2f)
+                %s""", precision, recall, f1, accuracy, specificity, phiCoefficient, phiOverPhiMax, phiCoefficientMax, toRow());
     }
 
     public String getResultStringWithExpected(ExpectedResults expectedResults) {
-        return String.format(Locale.ENGLISH,
-                "\tPrecision:%8.2f (min. expected: %.2f)%n\tRecall:%11.2f (min. expected: %.2f)%n\tF1:%15.2f (min. expected: %.2f)", precision, expectedResults
-                        .precision(), recall, expectedResults.recall(), f1, expectedResults.f1());
+        return String.format(Locale.ENGLISH, """
+                \tPrecision:%8.2f (min. expected: %.2f)
+                \tRecall:%11.2f (min. expected: %.2f)
+                \tF1:%15.2f (min. expected: %.2f)
+                %s""", precision, expectedResults.precision(), recall, expectedResults.recall(), f1, expectedResults.f1(), toRow());
     }
 
     public String getExtendedResultStringWithExpected(ExpectedResults expectedResults) {
         StringBuilder outputBuilder = new StringBuilder();
-        outputBuilder.append(String.format(Locale.ENGLISH,
-                "\tPrecision:%8.2f (min. expected: %.2f)%n\tRecall:%11.2f (min. expected: %.2f)%n\tF1:%15.2f (min. expected: %.2f)", precision, expectedResults
-                        .precision(), recall, expectedResults.recall(), f1, expectedResults.f1()));
-        outputBuilder.append(String.format(Locale.ENGLISH, "%n\tAccuracy:%9.2f (min. expected: %.2f)%n\tSpecificity:%6.2f (min. expected: %.2f)", accuracy,
-                expectedResults.accuracy(), specificity, expectedResults.specificity()));
-        outputBuilder.append(String.format(Locale.ENGLISH, "%n\tPhi Coef.:%8.2f (min. expected: %.2f)", phiCoefficient, expectedResults.phiCoefficient()));
+        outputBuilder.append(String.format(Locale.ENGLISH, """
+                \tPrecision:%8.2f (min. expected: %.2f)
+                \tRecall:%11.2f (min. expected: %.2f)
+                \tF1:%15.2f (min. expected: %.2f)""", precision, expectedResults.precision(), recall, expectedResults.recall(), f1, expectedResults.f1()));
+        outputBuilder.append(String.format(Locale.ENGLISH, """
+
+                \tAccuracy:%9.2f (min. expected: %.2f)
+                \tSpecificity:%6.2f (min. expected: %.2f)""", accuracy, expectedResults.accuracy(), specificity, expectedResults.specificity()));
+        outputBuilder.append(String.format(Locale.ENGLISH, """
+
+                \tPhi Coef.:%8.2f (min. expected: %.2f)
+                \tPhi/PhiMax:%7.2f (Phi Max: %.2f)
+                %s""", phiCoefficient, expectedResults.phiCoefficient(), phiOverPhiMax, phiCoefficientMax, toRow()));
         return outputBuilder.toString();
+    }
+
+    public String getExplicitResultString() {
+        return String.format(Locale.ENGLISH, """
+                \tTP:%15d
+                \tFP:%15d
+                \tTN:%15d
+                \tFN:%15d
+                \tP:%16d
+                \tN:%16d""", truePositives.size(), falsePositives.size(), trueNegatives, falseNegatives.size(), truePositives.size() + falseNegatives.size(),
+                trueNegatives + falsePositives.size());
     }
 
     /**

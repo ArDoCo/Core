@@ -1,9 +1,10 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation;
 
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.io.IOException;
+import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -129,7 +130,7 @@ class SyntheticDiagramMatchingEvaluationTest extends EvaluationTestBase {
             MutableBiMap<Vertex<Box>, Vertex<M>> expectedLinks = new HashBiMap<>();
 
             for (Map.Entry<M, Vertex<M>> link : refactoredModel.links().inverse().entrySet()) {
-                Box box = diagram.links().inverse().get(link.getKey());
+                Box box = inverse(diagram.links()).get(link.getKey());
                 Vertex<Box> vertex = boxToVertex.get(box);
                 expectedLinks.put(vertex, link.getValue());
             }
@@ -139,6 +140,16 @@ class SyntheticDiagramMatchingEvaluationTest extends EvaluationTestBase {
             Metrics metrics = MapMetrics.from(expectedLinks, actualLinks);
             modelStats.add(metrics, 1.0);
         }
+    }
+
+    private static <A, B> Map<B, A> inverse(Map<A, B> map) {
+        Map<B, A> result = new IdentityHashMap<>();
+        for (Map.Entry<A, B> entry : map.entrySet()) {
+            if (result.put(entry.getValue(), entry.getKey()) != null) {
+                throw new IllegalStateException("Duplicate value: " + entry.getValue());
+            }
+        }
+        return result;
     }
 
     private <M> MutableBiMap<Vertex<Box>, Vertex<M>> match(DirectedMultigraph<Vertex<Box>, Edge> a, DirectedMultigraph<Vertex<M>, Edge> b) {

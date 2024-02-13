@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.informants;
 
 import java.util.SortedMap;
@@ -16,9 +16,8 @@ import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 
 /**
- * Filters {@link RecommendedInstance}s that have low probabilities of being an entity. This can either be because the
- * probability of being a {@link RecommendedInstance} is low or because the probability of having a mapping for a name
- * and/or type is low.
+ * Filters {@link RecommendedInstance}s that have low probabilities of being an entity. This can either be because the probability of being a
+ * {@link RecommendedInstance} is low or because the probability of having a mapping for a name and/or type is low.
  */
 public class RecommendedInstanceProbabilityFilter extends Filter {
     @Configurable
@@ -78,7 +77,8 @@ public class RecommendedInstanceProbabilityFilter extends Filter {
         }
 
         if (logger.isDebugEnabled()) {
-            for (var prob : probabilities.toMapOfItemToCount().keyValuesView()) {
+            var view = probabilities.toMapOfItemToCount().keyValuesView();
+            for (var prob : view) {
                 logger.debug("{}: {}", prob.getOne(), prob.getOne());
             }
             logger.debug("Highest probability: {}", highestProbability);
@@ -98,9 +98,8 @@ public class RecommendedInstanceProbabilityFilter extends Filter {
     }
 
     /**
-     * Check for probabilities of the {@link NounMapping}s that are contained by the {@link RecommendedInstance}. If
-     * they exceed a threshold, then the check is positive. The {@link RecommendedInstance} needs to either be certain
-     * for name or type or decently certain for name and type.
+     * Check for probabilities of the {@link NounMapping}s that are contained by the {@link RecommendedInstance}. If they exceed a threshold, then the check is
+     * positive. The {@link RecommendedInstance} needs to either be certain for name or type or decently certain for name and type.
      *
      * @param recommendedInstance the {@link RecommendedInstance} to check
      * @return true if the probabilities of the types exceed a threshold

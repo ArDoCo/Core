@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline;
 
 import java.time.Duration;
@@ -10,12 +10,15 @@ import java.util.SortedMap;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 
 /**
- * Class that represents a pipeline that can consist of multiple {@link AbstractPipelineStep AbstractPipelineSteps}.
- * Steps are executed consecutively one after another in the order they were added to the pipeline. Execution calls the
- * {@link #run()} method of the different {@link AbstractPipelineStep AbstractPipelineSteps}.
+ * Class that represents a pipeline that can consist of multiple {@link AbstractPipelineStep
+ * AbstractPipelineSteps}.
+ * Steps are executed consecutively one after another in the order they were added to the
+ * pipeline. Execution calls the
+ * {@link #process()} method of the different {@link AbstractPipelineStep AbstractPipelineSteps}.
  */
 public class Pipeline extends AbstractPipelineStep {
     private final List<AbstractPipelineStep> pipelineSteps;
+    private boolean executed = false;
 
     /**
      * Constructs a Pipeline with the given id and {@link DataRepository}.
@@ -33,7 +36,8 @@ public class Pipeline extends AbstractPipelineStep {
      *
      * @param id             id for the pipeline
      * @param dataRepository {@link DataRepository} that should be used for fetching and saving data
-     * @param pipelineSteps  List of {@link AbstractPipelineStep} that should be added to the constructed pipeline
+     * @param pipelineSteps  List of {@link AbstractPipelineStep} that should be added to the
+     *                       constructed pipeline
      */
     public Pipeline(String id, DataRepository dataRepository, List<AbstractPipelineStep> pipelineSteps) {
         super(id, dataRepository);
@@ -59,8 +63,15 @@ public class Pipeline extends AbstractPipelineStep {
         return this.pipelineSteps.add(pipelineStep);
     }
 
+    /**
+     * {@return whether the pipeline has finished execution}
+     */
+    public boolean wasExecuted() {
+        return this.executed;
+    }
+
     @Override
-    public final void run() {
+    public void process() {
         preparePipelineSteps();
         for (var pipelineStep : this.pipelineSteps) {
             logger.info("Starting {} - {}", this.getId(), pipelineStep.getId());
@@ -86,8 +97,19 @@ public class Pipeline extends AbstractPipelineStep {
         }
     }
 
+    @Override
+    protected void before() {
+        //Nothing by default
+    }
+
+    @Override
+    protected void after() {
+        executed = true;
+    }
+
     /**
-     * This method is called at the start of running the pipeline. Within this method, the added PipelineSteps are prepared.
+     * This method is called at the start of running the pipeline. Within this method, the added
+     * PipelineSteps are prepared.
      * Sub-classes of Pipeline can override it with special cases.
      * It is recommended that you apply the Map from {@link #getLastAppliedConfiguration()} via {@link #applyConfiguration(SortedMap)} to each pipeline step.
      * You can do that on your own if you need special treatment or by default call {@link #delegateApplyConfigurationToInternalObjects(SortedMap)}.

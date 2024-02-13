@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction.informants;
 
 import java.util.SortedMap;
@@ -30,7 +30,7 @@ public class CompoundAgentInformant extends Informant {
     }
 
     @Override
-    public void run() {
+    public void process() {
         var text = DataRepositoryHelper.getAnnotatedText(getDataRepository());
         var textState = getDataRepository().getData(TextState.ID, TextStateImpl.class).orElseThrow();
         for (var word : text.words()) {

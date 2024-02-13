@@ -1,13 +1,14 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.common;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.function.ToDoubleFunction;
 
 /**
  * A set of various aggregation functions for collections of numbers.
  */
-public enum AggregationFunctions implements ToDoubleFunction<Collection<? extends Number>> {
+public enum AggregationFunctions implements ToDoubleFunction<Collection<? extends Number>>, Serializable {
     /**
      * Use the median of the scores as final score.
      */

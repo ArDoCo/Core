@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.informants;
 
 import java.util.Objects;
@@ -15,13 +15,13 @@ import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedIn
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
-import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
 
 /**
- * This informant looks for (parts of) the project's name within RecommendedInstances and if it finds the project's name, influences the probability of the
+ * This informant looks for (parts of) the project's name within RecommendedInstances and if it finds the project's name, influences the
+ * probability of the
  * RecommendedInstance negatively because it then should not be a recommended instance.
  */
 public class ProjectNameInformant extends Informant {
@@ -32,7 +32,7 @@ public class ProjectNameInformant extends Informant {
 
     /**
      * Constructs a new instance of the {@link ProjectNameInformant} with the given data repository.
-     * 
+     *
      * @param dataRepository the data repository
      */
     public ProjectNameInformant(DataRepository dataRepository) {
@@ -40,7 +40,7 @@ public class ProjectNameInformant extends Informant {
     }
 
     @Override
-    public void run() {
+    public void process() {
         DataRepository dataRepository = getDataRepository();
         var projectName = DataRepositoryHelper.getProjectPipelineData(dataRepository).getProjectName();
         var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
@@ -51,6 +51,7 @@ public class ProjectNameInformant extends Informant {
             var recommendationState = recommendationStates.getRecommendationState(metamodel);
 
             checkForProjectNameInRecommendedInstances(projectName, recommendationState);
+            checkForProjectNameInRecommendedInstances(projectName.toLowerCase(), recommendationState);
         }
     }
 
@@ -72,7 +73,7 @@ public class ProjectNameInformant extends Informant {
             if (projectName.contains(wordText)) {
                 var words = expandWordForName(projectName, word);
                 var expandedWord = concatenateWords(words);
-                if (SimilarityUtils.areWordsSimilar(projectName, expandedWord)) {
+                if (getMetaData().getSimilarityUtils().areWordsSimilar(projectName, expandedWord)) {
                     recommendedInstance.addProbability(this, penalty);
                 }
             }

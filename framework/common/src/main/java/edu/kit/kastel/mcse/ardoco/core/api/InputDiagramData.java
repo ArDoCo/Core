@@ -1,4 +1,4 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.api;
 
 import java.io.File;
@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
+import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
 
 /**
@@ -16,7 +17,9 @@ public class InputDiagramData implements PipelineStepData {
     public static final String ID = "InputDiagramData";
     private static final List<String> ALLOWED_FILE_TYPES = List.of("jpg", "png", "jpeg");
 
-    private final transient String pathToDiagrams;
+    private String pathToDiagrams;
+
+    private List<Pair<String, File>> diagramFiles;
 
     /**
      * Create the data by a directory of image files.
@@ -37,11 +40,23 @@ public class InputDiagramData implements PipelineStepData {
     }
 
     /**
+     * Create the data by a list of image files.
+     *
+     * @param diagramFiles the diagram files
+     */
+    public InputDiagramData(List<Pair<String, File>> diagramFiles) {
+        Objects.requireNonNull(diagramFiles);
+        this.diagramFiles = diagramFiles;
+    }
+
+    /**
      * Get all image files of the given directory (not recursive).
      *
      * @return a list of image files ordered by name
      */
-    public List<File> getFiles() {
+    public List<Pair<String, File>> getDiagramData() {
+        if (diagramFiles != null)
+            return diagramFiles;
         if (pathToDiagrams == null)
             return List.of();
         File directoryOfDiagrams = new File(pathToDiagrams);
@@ -51,10 +66,11 @@ public class InputDiagramData implements PipelineStepData {
         File[] allFiles = directoryOfDiagrams.listFiles();
         if (allFiles == null)
             return List.of();
-        List<File> diagrams = Arrays.stream(allFiles)
+        List<Pair<String, File>> diagrams = Arrays.stream(allFiles)
                 .filter(File::isFile)
                 .filter(f -> ALLOWED_FILE_TYPES.stream().anyMatch(t -> f.getName().toLowerCase().endsWith("." + t)))
                 .sorted(Comparator.comparing(File::getName))
+                .map(f -> new Pair<>(f.getName(), f))
                 .toList();
         logger.info("Found {} diagrams to consider.", diagrams.size());
         return diagrams;

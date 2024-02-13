@@ -1,4 +1,4 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants;
 
 import java.util.Arrays;
@@ -20,7 +20,7 @@ public class ArCoTLInformant extends Informant {
     }
 
     @Override
-    public void run() {
+    public void process() {
         var dataRepository = getDataRepository();
         var modelStates = DataRepositoryHelper.getModelStatesData(dataRepository);
         var samCodeTraceabilityState = DataRepositoryHelper.getCodeTraceabilityState(dataRepository);

@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files;
 
 import java.io.IOException;
@@ -9,11 +9,10 @@ import java.util.Map;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
 
 /**
- * This helper-class offers functionality to write out information about the models as seen by ArDoCo after evaluation
- * of TLR.
+ * This helper-class offers functionality to write out information about the models as seen by ArDoCo after evaluation of TLR.
  */
 public class TLModelFile {
 
@@ -25,19 +24,19 @@ public class TLModelFile {
 
     /**
      * Writes out information about models to the target file.
-     * 
+     *
      * @param targetFile the file to write to
      * @param dataMap    the data map to extract model information for each project
      * @throws IOException if writing to file system fails
      */
-    public static void save(Path targetFile, Map<Project, ArDoCoResult> dataMap) throws IOException {
+    public static void save(Path targetFile, Map<GoldStandardProject, ArDoCoResult> dataMap) throws IOException {
         var projects = dataMap.keySet().stream().sorted().toList();
         var builder = new StringBuilder();
 
-        for (Project project : projects) {
+        for (GoldStandardProject project : projects) {
             var projectData = dataMap.get(project);
 
-            builder.append("# ").append(project.name());
+            builder.append("# ").append(project.getProjectName());
             builder.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
             for (var modelId : projectData.getModelIds()) {

@@ -1,7 +1,13 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 import edu.kit.kastel.mcse.ardoco.core.api.InputDiagramData;
 import edu.kit.kastel.mcse.ardoco.core.api.InputTextData;
@@ -15,12 +21,13 @@ import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.Recommendatio
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
+import edu.kit.kastel.mcse.ardoco.core.data.DeepCopy;
 import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
 import edu.kit.kastel.mcse.ardoco.core.data.ProjectPipelineData;
 
 /**
- * This class helps to access {@link DataRepository DataRepositories}. It provides methods to access the different
- * {@link PipelineStepData} that is stored within the repository that are used within ArDoCo.
+ * This class helps to access {@link DataRepository DataRepositories}. It provides methods to access the different {@link PipelineStepData} that is stored
+ * within the repository that are used within ArDoCo.
  */
 public final class DataRepositoryHelper {
 
@@ -39,9 +46,9 @@ public final class DataRepositoryHelper {
     }
 
     /**
-     * Returns the {@link ProjectPipelineData} stored within the provided {@link DataRepository}.
-     * This does not check if there actually is one and will fail and throw an {@link java.util.NoSuchElementException} if the data is not present.
-     * To make sure that there is data present, use {@link #hasProjectPipelineData(DataRepository)}
+     * Returns the {@link ProjectPipelineData} stored within the provided {@link DataRepository}. This does not check if there actually is one and will fail and
+     * throw an {@link java.util.NoSuchElementException} if the data is not present. To make sure that there is data present, use
+     * {@link #hasProjectPipelineData(DataRepository)}
      *
      * @param dataRepository the DataRepository to access
      * @return the data
@@ -51,8 +58,8 @@ public final class DataRepositoryHelper {
     }
 
     /**
-     * Returns the input text as String stored within the provided {@link DataRepository}.
-     * This does not check if there actually is one and will fail and throw an {@link java.util.NoSuchElementException} if the data is not present.
+     * Returns the input text as String stored within the provided {@link DataRepository}. This does not check if there actually is one and will fail and throw
+     * an {@link java.util.NoSuchElementException} if the data is not present.
      *
      * @param dataRepository the DataRepository to access
      * @return the text
@@ -82,9 +89,9 @@ public final class DataRepositoryHelper {
     }
 
     /**
-     * Returns the {@link Text} stored within the provided {@link DataRepository}.
-     * This does not check if there actually is one and will fail and throw an {@link java.util.NoSuchElementException} if the data is not present.
-     * To make sure that there is data present, use {@link #hasAnnotatedText(DataRepository)}
+     * Returns the {@link Text} stored within the provided {@link DataRepository}. This does not check if there actually is one and will fail and throw an
+     * {@link java.util.NoSuchElementException} if the data is not present. To make sure that there is data present, use
+     * {@link #hasAnnotatedText(DataRepository)}
      *
      * @param dataRepository the DataRepository to access
      * @return the text
@@ -104,9 +111,8 @@ public final class DataRepositoryHelper {
     }
 
     /**
-     * Returns the {@link TextState} stored within the provided {@link DataRepository}.
-     * This does not check if there actually is one and will fail and throw an {@link java.util.NoSuchElementException} if the state is not present.
-     * To make sure that there is data present, use {@link #hasTextState(DataRepository)}
+     * Returns the {@link TextState} stored within the provided {@link DataRepository}. This does not check if there actually is one and will fail and throw an
+     * {@link java.util.NoSuchElementException} if the state is not present. To make sure that there is data present, use {@link #hasTextState(DataRepository)}
      *
      * @param dataRepository the DataRepository to access
      * @return the state
@@ -126,9 +132,9 @@ public final class DataRepositoryHelper {
     }
 
     /**
-     * Returns the {@link ModelStates} stored within the provided {@link DataRepository}.
-     * This does not check if there actually is one and will fail and throw an {@link java.util.NoSuchElementException} if the state is not present.
-     * To make sure that there is data present, use {@link #hasModelStatesData(DataRepository)}
+     * Returns the {@link ModelStates} stored within the provided {@link DataRepository}. This does not check if there actually is one and will fail and throw
+     * an {@link java.util.NoSuchElementException} if the state is not present. To make sure that there is data present, use
+     * {@link #hasModelStatesData(DataRepository)}
      *
      * @param dataRepository the DataRepository to access
      * @return the state
@@ -148,9 +154,9 @@ public final class DataRepositoryHelper {
     }
 
     /**
-     * Returns the {@link RecommendationStates} stored within the provided {@link DataRepository}.
-     * This does not check if there actually is one and will fail and throw an {@link java.util.NoSuchElementException} if the state is not present.
-     * To make sure that there is data present, use {@link #hasRecommendationStates(DataRepository)}
+     * Returns the {@link RecommendationStates} stored within the provided {@link DataRepository}. This does not check if there actually is one and will fail
+     * and throw an {@link java.util.NoSuchElementException} if the state is not present. To make sure that there is data present, use
+     * {@link #hasRecommendationStates(DataRepository)}
      *
      * @param dataRepository the DataRepository to access
      * @return the state
@@ -170,9 +176,9 @@ public final class DataRepositoryHelper {
     }
 
     /**
-     * Returns the {@link ConnectionStates} stored within the provided {@link DataRepository}.
-     * This does not check if there actually is one and will fail and throw an {@link java.util.NoSuchElementException} if the state is not present.
-     * To make sure that there is data present, use {@link #hasConnectionStates(DataRepository)}
+     * Returns the {@link ConnectionStates} stored within the provided {@link DataRepository}. This does not check if there actually is one and will fail and
+     * throw an {@link java.util.NoSuchElementException} if the state is not present. To make sure that there is data present, use
+     * {@link #hasConnectionStates(DataRepository)}
      *
      * @param dataRepository the DataRepository to access
      * @return the state
@@ -192,9 +198,9 @@ public final class DataRepositoryHelper {
     }
 
     /**
-     * Returns the {@link InconsistencyStates} stored within the provided {@link DataRepository}.
-     * This does not check if there actually is one and will fail and throw an {@link java.util.NoSuchElementException} if the state is not present.
-     * To make sure that there is data present, use {@link #hasInconsistencyStates(DataRepository)}
+     * Returns the {@link InconsistencyStates} stored within the provided {@link DataRepository}. This does not check if there actually is one and will fail and
+     * throw an {@link java.util.NoSuchElementException} if the state is not present. To make sure that there is data present, use
+     * {@link #hasInconsistencyStates(DataRepository)}
      *
      * @param dataRepository the DataRepository to access
      * @return the state
@@ -217,9 +223,9 @@ public final class DataRepositoryHelper {
     }
 
     /**
-     * Returns the {@link CodeTraceabilityState} stored within the provided {@link DataRepository}.
-     * This does not check if there actually is one and will fail and throw an {@link java.util.NoSuchElementException} if the state is not present.
-     * To make sure that there is data present, use {@link #hasInconsistencyStates(DataRepository)}
+     * Returns the {@link CodeTraceabilityState} stored within the provided {@link DataRepository}. This does not check if there actually is one and will fail
+     * and throw an {@link java.util.NoSuchElementException} if the state is not present. To make sure that there is data present, use
+     * {@link #hasInconsistencyStates(DataRepository)}
      *
      * @param dataRepository the DataRepository to access
      * @return the state
@@ -252,9 +258,9 @@ public final class DataRepositoryHelper {
     }
 
     /**
-     * Returns the {@link DiagramRecognitionState} stored within the provided {@link DataRepository}.
-     * This does not check if there actually is one and will fail and throw an {@link java.util.NoSuchElementException} if the state is not present.
-     * To make sure that there is data present, use {@link #hasConnectionStates(DataRepository)}
+     * Returns the {@link DiagramRecognitionState} stored within the provided {@link DataRepository}. This does not check if there actually is one and will fail
+     * and throw an {@link java.util.NoSuchElementException} if the state is not present. To make sure that there is data present, use
+     * {@link #hasConnectionStates(DataRepository)}
      *
      * @param dataRepository the DataRepository to access
      * @return the state
@@ -273,5 +279,22 @@ public final class DataRepositoryHelper {
         InputDiagramData data = new InputDiagramData(diagramDirectory);
         dataRepository.addData(InputDiagramData.ID, data);
 
+    }
+
+    /**
+     * {@return a deep copy of a serializable object using serialization}
+     *
+     * @param object the object to copy
+     */
+    @DeepCopy
+    public static <T extends Serializable> T deepCopy(T object) {
+        try {
+            var byteArrayOutputStream = new ByteArrayOutputStream();
+            new ObjectOutputStream(byteArrayOutputStream).writeObject(object);
+            var byteArrayInputStream = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+            return (T) new ObjectInputStream(byteArrayInputStream).readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 }

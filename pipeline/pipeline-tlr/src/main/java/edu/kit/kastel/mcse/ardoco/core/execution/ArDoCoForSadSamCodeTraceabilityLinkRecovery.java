@@ -1,11 +1,8 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.execution;
 
 import java.io.File;
 import java.util.SortedMap;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.codetraceability.SadSamCodeTraceabilityLinkRecovery;
@@ -14,13 +11,12 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.ArDoCoRunner;
-import edu.kit.kastel.mcse.ardoco.core.models.ArCoTLModelProviderAgent;
+import edu.kit.kastel.mcse.ardoco.core.models.agents.ArCoTLModelProviderAgent;
 import edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.RecommendationGenerator;
 import edu.kit.kastel.mcse.ardoco.core.text.providers.TextPreprocessingAgent;
 import edu.kit.kastel.mcse.ardoco.core.textextraction.TextExtraction;
 
 public class ArDoCoForSadSamCodeTraceabilityLinkRecovery extends ArDoCoRunner {
-    private static final Logger logger = LoggerFactory.getLogger(ArDoCoForSadSamCodeTraceabilityLinkRecovery.class);
 
     public ArDoCoForSadSamCodeTraceabilityLinkRecovery(String projectName) {
         super(projectName);

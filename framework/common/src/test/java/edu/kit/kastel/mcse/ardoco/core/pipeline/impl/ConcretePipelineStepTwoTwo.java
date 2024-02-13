@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline.impl;
 
 import java.util.SortedMap;
@@ -34,13 +34,23 @@ public class ConcretePipelineStepTwoTwo extends AbstractPipelineStep {
     }
 
     @Override
-    public void run() {
+    public void process() {
         fetchAndInitializeData();
         logger.info("Greetings from {} with id {}", this.getClass().getSimpleName(), getId());
         var tokens = processedTextData.getImportantTokens();
         var tokenWithLength = tokens.stream().collect(Collectors.toMap(e -> e, String::length, (o1, o2) -> o1, TreeMap::new));
         var firstEntry = tokenWithLength.firstKey();
         resultData.setResult(firstEntry);
+    }
+
+    @Override
+    protected void before() {
+        //Nothing
+    }
+
+    @Override
+    protected void after() {
+        //Nothing
     }
 
     @Override

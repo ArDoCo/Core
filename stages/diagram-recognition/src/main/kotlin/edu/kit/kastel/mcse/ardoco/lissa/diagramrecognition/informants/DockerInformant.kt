@@ -1,11 +1,9 @@
 package edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.informants
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant
 import edu.kit.kastel.mcse.ardoco.docker.ContainerResponse
 import edu.kit.kastel.mcse.ardoco.docker.DockerManager
-import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.createObjectMapper
 import org.apache.hc.client5.http.classic.methods.HttpGet
 import org.apache.hc.client5.http.impl.classic.BasicHttpClientResponseHandler
 import org.apache.hc.client5.http.impl.classic.HttpClients
@@ -19,6 +17,11 @@ abstract class DockerInformant : Informant {
 
         // E.g., 2375
         private val REMOTE_DOCKER_PORT: Int? = System.getenv("REMOTE_DOCKER_PORT")?.toIntOrNull()
+
+        /**
+         * URI of a docker host, which hosts the endpoints used by this informant. E.g., https://some-domain.com
+         */
+        private val REMOTE_DOCKER_URI: String? = System.getenv("REMOTE_DOCKER_URI")
 
         private val REMOTE = REMOTE_DOCKER_IP != null && REMOTE_DOCKER_PORT != null
         private val dockerManagerCache: MutableMap<String, DockerManager> = mutableMapOf()
@@ -44,13 +47,10 @@ abstract class DockerInformant : Informant {
         }
     }
 
-    /**
-     * A configured object mapper for serialization / deserialization of objects.
-     */
-    protected val oom: ObjectMapper = createObjectMapper()
     private val image: String
     private val defaultPort: Int
-    private val useDocker: Boolean
+    private var useDocker: Boolean
+    private val endpoint: String
 
     private var dockerManager: DockerManager? = null
 
@@ -61,17 +61,20 @@ abstract class DockerInformant : Informant {
      * @param[useDocker] whether or not to use the docker image (just for debugging)
      * @param[id] the id of the informant
      * @param[dataRepository] the data repository of the informant
+     * @param[endpoint] the endpoint of the informant (e.g., "ocr" to access "http://IP:Port/ocr").
      */
     protected constructor(
         image: String,
         defaultPort: Int,
         useDocker: Boolean,
         id: String,
-        dataRepository: DataRepository
+        dataRepository: DataRepository,
+        endpoint: String
     ) : super(id, dataRepository) {
         this.image = image
         this.defaultPort = defaultPort
         this.useDocker = useDocker
+        this.endpoint = endpoint
     }
 
     /**
@@ -83,12 +86,15 @@ abstract class DockerInformant : Informant {
     /**
      * The information about the spawned container (e.g., the information about the port mapping)
      */
+    @Transient
     protected lateinit var container: ContainerResponse
 
     /**
      * Start the container.
      */
     protected fun start() {
+        useDocker = useDocker && REMOTE_DOCKER_URI == null
+
         if (useDocker) {
             this.container = docker().createContainerByImage(image, true, false)
         } else {
@@ -105,6 +111,14 @@ abstract class DockerInformant : Informant {
         }
     }
 
+    /**
+     * @return the URI to the docker service. [REMOTE_DOCKER_URI] takes precedence over [REMOTE_DOCKER_IP] if set.
+     */
+    protected fun getUri(): String {
+        if (REMOTE_DOCKER_URI != null) return "$REMOTE_DOCKER_URI/$endpoint/"
+        return "http://${hostIP()}:${container.apiPort}/$endpoint/"
+    }
+
     private fun docker(): DockerManager {
         if (!useDocker) {
             error("Try to get docker while docker is disabled")
@@ -117,17 +131,17 @@ abstract class DockerInformant : Informant {
     }
 
     /**
-     * Ensure the readiness of the container or service by its entrypoint (e.g., "ocr" to access "http://IP:Port/ocr").
+     * Ensure the readiness of the container or service by its entrypoint
      * @throws[IllegalStateException] if failed after multiple retries
      */
-    protected fun ensureReadiness(entryPoint: String) {
+    protected fun ensureReadiness() {
         val tries = 15
         val waiting = 10000L
 
         HttpClients.createDefault().use { client ->
             for (currentTry in IntStream.range(0, tries)) {
                 try {
-                    val get = HttpGet("http://${hostIP()}:${container.apiPort}/$entryPoint/")
+                    val get = HttpGet(getUri())
                     val data = client.execute(get, BasicHttpClientResponseHandler())
                     if (data.startsWith("Hello from ")) return
                 } catch (e: IOException) {

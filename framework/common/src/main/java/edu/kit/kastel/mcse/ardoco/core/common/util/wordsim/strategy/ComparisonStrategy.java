@@ -1,6 +1,7 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.strategy;
 
+import java.io.Serializable;
 import java.util.List;
 
 import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.ComparisonContext;
@@ -9,7 +10,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimMeasure;
 /**
  * A comparison strategy determines how the verdicts of multiple WSMs regarding a specific comparison are combined.
  */
-public interface ComparisonStrategy {
+public interface ComparisonStrategy extends Serializable {
 
     ComparisonStrategy AT_LEAST_ONE = new AtLeastOneStrategy();
 

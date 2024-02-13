@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021-2023. */
+/* Licensed under MIT 2021-2024. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction;
 
 import static edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions.AVERAGE;
@@ -12,11 +12,13 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.factory.SortedMaps;
+import org.eclipse.collections.api.factory.SortedSets;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.map.sorted.ImmutableSortedMap;
 import org.eclipse.collections.api.map.sorted.MutableSortedMap;
 import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
+import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
@@ -34,15 +36,16 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
  */
 @Deterministic
 @NoHashCodeEquals
-public final class NounMappingImpl implements NounMapping {
+public class NounMappingImpl implements NounMapping {
 
-    private static final AtomicLong CREATION_TIME_COUNTER = new AtomicLong(0);
+    protected static final AtomicLong CREATION_TIME_COUNTER = new AtomicLong(0);
     private static final AggregationFunctions DEFAULT_AGGREGATOR = AVERAGE;
     private final Long earliestCreationTime;
-    private final ImmutableSortedSet<Word> words;
+    private final MutableSortedSet<Word> words;
+    private MutableSortedSet<Phrase> phrases;
     private final MutableSortedMap<MappingKind, Confidence> distribution;
-    private final ImmutableList<Word> referenceWords;
-    private final ImmutableList<String> surfaceForms;
+    private final MutableList<Word> referenceWords;
+    private final MutableList<String> surfaceForms;
     private final String reference;
     private boolean isDefinedAsCompound;
     private final Set<NounMappingChangeListener> changeListeners;
@@ -91,10 +94,10 @@ public final class NounMappingImpl implements NounMapping {
     public NounMappingImpl(Long earliestCreationTime, ImmutableSortedSet<Word> words, ImmutableSortedMap<MappingKind, Confidence> distribution,
             ImmutableList<Word> referenceWords, ImmutableList<String> surfaceForms, String reference) {
         this.earliestCreationTime = earliestCreationTime;
-        this.words = words;
+        this.words = words.toSortedSet();
         this.distribution = distribution.toSortedMap();
-        this.referenceWords = referenceWords;
-        this.surfaceForms = surfaceForms;
+        this.referenceWords = referenceWords.toList();
+        this.surfaceForms = surfaceForms.toList();
         this.reference = reference;
         this.isDefinedAsCompound = false;
         this.changeListeners = Collections.newSetFromMap(new IdentityHashMap<>());
@@ -134,7 +137,7 @@ public final class NounMappingImpl implements NounMapping {
 
     @Override
     public final ImmutableSortedSet<Word> getWords() {
-        return words;
+        return words.toImmutable();
     }
 
     @Override
@@ -148,7 +151,7 @@ public final class NounMappingImpl implements NounMapping {
 
     @Override
     public final ImmutableList<Word> getReferenceWords() {
-        return referenceWords;
+        return referenceWords.toImmutable();
     }
 
     @Override
@@ -161,14 +164,16 @@ public final class NounMappingImpl implements NounMapping {
     }
 
     @Override
-    public ImmutableList<Phrase> getPhrases() {
-        MutableList<Phrase> phrases = Lists.mutable.empty();
-        for (Word word : this.words) {
-            if (phrases.contains(word.getPhrase()))
-                continue;
-            phrases.add(word.getPhrase());
+    public ImmutableSortedSet<Phrase> getPhrases() {
+        if (phrases == null) {
+            this.phrases = SortedSets.mutable.empty();
+            for (Word word : words) {
+                if (phrases.contains(word.getPhrase()))
+                    continue;
+                phrases.add(word.getPhrase());
+            }
         }
-        return phrases.toImmutable();
+        return this.phrases.toImmutable();
     }
 
     @Override
@@ -219,7 +224,7 @@ public final class NounMappingImpl implements NounMapping {
 
     @Override
     public ImmutableList<String> getSurfaceForms() {
-        return this.surfaceForms;
+        return this.surfaceForms.toImmutable();
     }
 
     @Override
@@ -244,7 +249,7 @@ public final class NounMappingImpl implements NounMapping {
     }
 
     public ImmutableSortedSet<Word> words() {
-        return words;
+        return words.toImmutable();
     }
 
     public MutableSortedMap<MappingKind, Confidence> distribution() {
@@ -252,11 +257,11 @@ public final class NounMappingImpl implements NounMapping {
     }
 
     public ImmutableList<Word> referenceWords() {
-        return referenceWords;
+        return referenceWords.toImmutable();
     }
 
     public ImmutableList<String> surfaceForms() {
-        return surfaceForms;
+        return surfaceForms.toImmutable();
     }
 
     public String reference() {

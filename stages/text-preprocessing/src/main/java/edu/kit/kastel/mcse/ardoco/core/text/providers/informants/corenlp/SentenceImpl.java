@@ -1,6 +1,10 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.text.providers.informants.corenlp;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serial;
 import java.util.List;
 import java.util.Objects;
 
@@ -21,17 +25,21 @@ import edu.stanford.nlp.trees.Tree;
 class SentenceImpl implements Sentence {
     private static final Logger logger = LoggerFactory.getLogger(SentenceImpl.class);
 
-    private ImmutableList<Word> words = Lists.immutable.empty();
-    private ImmutableList<Phrase> phrases = Lists.immutable.empty();
+    private MutableList<Word> words = Lists.mutable.empty();
+    private MutableList<Phrase> phrases = Lists.mutable.empty();
 
-    private final TextImpl parent;
-    private final CoreSentence coreSentence;
-    private final int sentenceNumber;
+    private TextImpl parent;
+    private transient CoreSentence coreSentence;
+    private SemanticGraph semanticGraph;
+    private int sentenceNumber;
+
+    private final String text;
 
     public SentenceImpl(CoreSentence coreSentence, int sentenceNumber, TextImpl parent) {
         this.coreSentence = coreSentence;
         this.sentenceNumber = sentenceNumber;
         this.parent = parent;
+        this.text = coreSentence.text();
     }
 
     @Override
@@ -42,14 +50,14 @@ class SentenceImpl implements Sentence {
     @Override
     public ImmutableList<Word> getWords() {
         if (words.isEmpty()) {
-            this.words = parent.words().select(w -> w.getSentenceNo() == sentenceNumber).toImmutable();
+            this.words = Lists.mutable.ofAll(parent.words().select(w -> w.getSentenceNo() == sentenceNumber));
         }
-        return words;
+        return words.toImmutable();
     }
 
     @Override
     public String getText() {
-        return coreSentence.text();
+        return text;
     }
 
     @Override
@@ -64,10 +72,15 @@ class SentenceImpl implements Sentence {
                     newPhrases.add(currPhrase);
                 }
             }
-            phrases = newPhrases.toImmutable();
+            phrases = newPhrases;
         }
 
-        return phrases;
+        return phrases.toImmutable();
+    }
+
+    @Override
+    public void addPhrase(Phrase phrase) {
+        phrases.add(phrase);
     }
 
     protected List<Word> getWordsForPhrase(Tree phrase) {
@@ -111,6 +124,33 @@ class SentenceImpl implements Sentence {
     }
 
     public SemanticGraph dependencyParse() {
-        return this.coreSentence.dependencyParse();
+        if (semanticGraph == null)
+            semanticGraph = this.coreSentence.dependencyParse();
+        return semanticGraph;
+    }
+
+    @Serial
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        getPhrases(); //Initialize before write
+        dependencyParse(); //Initialize before write
+        out.defaultWriteObject();
+        /* It is a lot cheaper to serialize the phrases (up to 70x less storage space and much
+        faster), if the coreSentence is ever made accessible, this should be uncommented
+        out.writeObject(coreSentence.coreMap());
+        ProtobufAnnotationSerializer serializer = new ProtobufAnnotationSerializer();
+        serializer.writeCoreDocument(coreSentence.document(), out);
+         */
+    }
+
+    @Serial
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        /* It is a lot cheaper to serialize the phrases (up to 70x less storage space and much
+        faster), if the coreSentence is ever made accessible, this should be uncommented
+        var coreMap = (CoreMap) in.readObject();
+        ProtobufAnnotationSerializer serializer = new ProtobufAnnotationSerializer();
+        var coreDocument = serializer.readCoreDocument(in).first;
+        coreSentence = new CoreSentence(coreDocument, coreMap);
+         */
     }
 }

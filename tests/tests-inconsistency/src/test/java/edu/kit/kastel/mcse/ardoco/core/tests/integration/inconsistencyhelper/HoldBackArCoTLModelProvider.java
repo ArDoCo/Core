@@ -1,4 +1,4 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.inconsistencyhelper;
 
 import java.io.File;
@@ -16,7 +16,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.ArchitectureModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureComponent;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
-import edu.kit.kastel.mcse.ardoco.core.models.ArCoTLModelProviderAgent;
+import edu.kit.kastel.mcse.ardoco.core.models.agents.ArCoTLModelProviderAgent;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.Extractor;
 import edu.kit.kastel.mcse.ardoco.core.models.connectors.generators.architecture.pcm.PcmExtractor;
 

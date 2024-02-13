@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021-2023. */
+/* Licensed under MIT 2021-2024. */
 package edu.kit.kastel.mcse.ardoco.core.tests;
 
 import java.util.Locale;
@@ -145,9 +145,13 @@ public class TestUtil {
         return String.format(Locale.ENGLISH, "%n%s:%n%s", name, results);
     }
 
+    public static void logExtendedResultsAsRow(Logger logger, String headerVal, String headerKey, EvaluationResults<?> results) {
+        var txt = String.format("%n%s", results.toRow(headerVal, headerKey));
+        logger.info(txt);
+    }
+
     /**
-     * Log the provided {@link EvaluationResults} using the provided logger and name. The log contains Precision and Recall printed with explicit numbers for
-     * the calculation. See the following example output: <br> Precision: 4/4 = 1.000<br> Recall: 4/6 = 0.667
+     * Log the provided {@link EvaluationResults} using the provided logger and name. Additionally, logs TP, FP, TN and FN used to calculate the metrics.
      *
      * @param logger  Logger to use
      * @param name    Name to show in the output
@@ -179,8 +183,10 @@ public class TestUtil {
 
     public static void logExtendedResultsWithExpected(Logger logger, Object testClass, String name, EvaluationResults<?> results,
             ExpectedResults expectedResults) {
-        var infoString = String.format(Locale.ENGLISH, "%n%s (%s):%n%s", name, testClass.getClass().getSimpleName(), results
-                .getExtendedResultStringWithExpected(expectedResults));
+        var infoString = String.format(Locale.ENGLISH, """
+
+                %s (%s):
+                %s""", name, testClass.getClass().getSimpleName(), results.getExtendedResultStringWithExpected(expectedResults));
         logger.info(infoString);
     }
 

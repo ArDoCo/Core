@@ -1,10 +1,12 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.models.connectors.generators;
+
+import java.io.Serializable;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
 
-public abstract class Extractor {
+public abstract class Extractor implements Serializable {
     protected String path;
 
     protected Extractor(String path) {

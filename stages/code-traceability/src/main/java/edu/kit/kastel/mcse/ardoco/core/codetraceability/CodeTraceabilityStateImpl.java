@@ -1,4 +1,4 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.codetraceability;
 
 import java.util.Collection;
@@ -18,8 +18,12 @@ import edu.kit.kastel.mcse.ardoco.core.data.AbstractState;
 @Deterministic
 public class CodeTraceabilityStateImpl extends AbstractState implements CodeTraceabilityState {
 
-    private transient MutableList<SamCodeTraceLink> samCodeTraceLinks = Lists.mutable.empty();
-    private transient MutableList<SadCodeTraceLink> transitiveTraceLinks = Lists.mutable.empty();
+    private MutableList<SamCodeTraceLink> samCodeTraceLinks = Lists.mutable.empty();
+    private MutableList<SadCodeTraceLink> transitiveTraceLinks = Lists.mutable.empty();
+
+    public CodeTraceabilityStateImpl() {
+        super();
+    }
 
     @Override
     public boolean addSamCodeTraceLink(SamCodeTraceLink traceLink) {

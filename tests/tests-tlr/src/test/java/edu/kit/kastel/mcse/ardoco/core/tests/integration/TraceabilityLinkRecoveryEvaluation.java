@@ -1,8 +1,8 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration;
 
 import java.io.File;
-import java.util.EnumMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -28,35 +28,34 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.TraceLinkUtilities;
 import edu.kit.kastel.mcse.ardoco.core.execution.runner.ArDoCoRunner;
 import edu.kit.kastel.mcse.ardoco.core.tests.TestUtil;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.CodeProject;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ResultMatrix;
 
-public abstract class TraceabilityLinkRecoveryEvaluation {
+public abstract class TraceabilityLinkRecoveryEvaluation<T extends GoldStandardProject> {
     protected static final Logger logger = LoggerFactory.getLogger(TraceabilityLinkRecoveryEvaluation.class);
     private static final String WARNING_NO_CODE_MODEL = "Could not get code model to enroll gold standard. Using not enrolled gold standard!";
     // The path separator is to show that a code entry is not a class but rather a directory that ends with, currently, a "/" (unix style)
     // If the path separator in the gold standards are changed, this needs to update
     public static final String GOLD_STANDARD_PATH_SEPARATOR = "/";
 
-    protected static Map<Project, ArDoCoResult> resultMap = new EnumMap<>(Project.class);
+    protected static Map<GoldStandardProject, ArDoCoResult> resultMap = new LinkedHashMap<>();
 
-    protected ArDoCoResult runTraceLinkEvaluation(CodeProject codeProject) {
-        var project = codeProject.getProject();
+    protected ArDoCoResult runTraceLinkEvaluation(T project) {
         ArDoCoResult result = resultMap.get(project);
         if (result == null || !resultHasRequiredData(result)) {
-            ArDoCoRunner runner = getAndSetupRunner(codeProject);
+            ArDoCoRunner runner = getAndSetupRunner(project);
             result = runner.run();
         }
         Assertions.assertNotNull(result);
 
-        var goldStandard = getGoldStandard(codeProject);
+        var goldStandard = getGoldStandard(project);
         goldStandard = enrollGoldStandard(goldStandard, result);
         var evaluationResults = calculateEvaluationResults(result, goldStandard);
 
-        ExpectedResults expectedResults = getExpectedResults(codeProject);
-        TestUtil.logExtendedResultsWithExpected(logger, this, codeProject.name(), evaluationResults, expectedResults);
+        ExpectedResults expectedResults = getExpectedResults(project);
+        TestUtil.logExtendedResultsWithExpected(logger, this, project.getProjectName(), evaluationResults, expectedResults);
         compareResults(evaluationResults, expectedResults);
         return result;
     }
@@ -74,7 +73,7 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
         return inputCode;
     }
 
-    protected abstract ArDoCoRunner getAndSetupRunner(CodeProject codeProject);
+    protected abstract ArDoCoRunner getAndSetupRunner(T project);
 
     private void prepareCode(CodeProject codeProject) {
         File codeLocation = new File(codeProject.getCodeLocation());
@@ -84,9 +83,9 @@ public abstract class TraceabilityLinkRecoveryEvaluation {
         }
     }
 
-    protected abstract ExpectedResults getExpectedResults(CodeProject codeProject);
+    protected abstract ExpectedResults getExpectedResults(T project);
 
-    protected abstract ImmutableList<String> getGoldStandard(CodeProject codeProject);
+    protected abstract ImmutableList<String> getGoldStandard(T project);
 
     protected abstract ImmutableList<String> enrollGoldStandard(ImmutableList<String> goldStandard, ArDoCoResult result);
 

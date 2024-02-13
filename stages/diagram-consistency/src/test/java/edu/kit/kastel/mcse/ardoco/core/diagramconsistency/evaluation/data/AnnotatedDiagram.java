@@ -1,11 +1,14 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data;
 
 import java.io.File;
+import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.function.Function;
 
 import org.eclipse.collections.api.bimap.MutableBiMap;
@@ -36,7 +39,7 @@ import edu.kit.kastel.mcse.ardoco.lissa.diagramrecognition.model.DiagramImpl;
  * @param <M>
  *                        The element type of the model.
  */
-public record AnnotatedDiagram<M>(Diagram diagram, MutableBiMap<Box, M> links, Set<Inconsistency<Box, M>> inconsistencies) {
+public record AnnotatedDiagram<M>(Diagram diagram, Map<Box, M> links, Set<Inconsistency<Box, M>> inconsistencies) {
     /**
      * Create an annotated diagram from a diagram.
      *
@@ -61,7 +64,7 @@ public record AnnotatedDiagram<M>(Diagram diagram, MutableBiMap<Box, M> links, S
      * @return The diagram.
      */
     public static AnnotatedDiagram<ArchitectureItem> createFrom(String source, ArchitectureModel model) {
-        Diagram diagram = new DiagramImpl(new File(source));
+        Diagram diagram = new DiagramImpl(source, new File(source));
         MutableBiMap<ArchitectureItem, Box> links = new HashBiMap<>();
 
         Transformations.transform(model, (item) -> {
@@ -81,8 +84,8 @@ public record AnnotatedDiagram<M>(Diagram diagram, MutableBiMap<Box, M> links, S
      * @return The diagram.
      */
     public static AnnotatedDiagram<CodeItem> createFrom(String source, CodeModel model) {
-        Diagram diagram = new DiagramImpl(new File(source));
-        MutableBiMap<CodeItem, Box> links = new HashBiMap<>();
+        Diagram diagram = new DiagramImpl(source, new File(source));
+        SortedMap<CodeItem, Box> links = new TreeMap<>();
 
         Transformations.transform(model, (item) -> {
             Box box = DiagramUtility.addBox(diagram, item.getName());
@@ -90,7 +93,12 @@ public record AnnotatedDiagram<M>(Diagram diagram, MutableBiMap<Box, M> links, S
             return box;
         }, (from, to) -> DiagramUtility.addConnector(diagram, from, to), (child, parent) -> parent.addContainedBox(child));
 
-        return new AnnotatedDiagram<>(diagram, links.inverse(), new LinkedHashSet<>());
+        Map<Box, CodeItem> identityInverse = new IdentityHashMap<>();
+        for (Map.Entry<CodeItem, Box> entry : links.entrySet()) {
+            identityInverse.put(entry.getValue(), entry.getKey());
+        }
+
+        return new AnnotatedDiagram<>(diagram, identityInverse, new LinkedHashSet<>());
     }
 
     /**
@@ -102,7 +110,7 @@ public record AnnotatedDiagram<M>(Diagram diagram, MutableBiMap<Box, M> links, S
      * @return The diagram.
      */
     public static <T> AnnotatedDiagram<T> createFrom(String source, AnnotatedGraph<Box, T> graph) {
-        Diagram diagram = new DiagramImpl(new File(source));
+        Diagram diagram = new DiagramImpl(source, new File(source));
         Map<Vertex<Box>, Box> vertexToBox = new LinkedHashMap<>();
 
         for (Vertex<Box> vertex : graph.graph().vertexSet()) {

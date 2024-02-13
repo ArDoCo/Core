@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.textproviderjson.textobject;
 
 import java.util.Objects;
@@ -14,20 +14,20 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 
 public class TextImpl implements Text {
-    private ImmutableList<Sentence> sentences;
+    private MutableList<Sentence> sentences;
 
-    private ImmutableList<Word> words;
+    private MutableList<Word> words;
     private final SortedMap<Integer, Word> wordsIndex = new TreeMap<>();
 
     private int length = -1;
 
     public TextImpl() {
-        sentences = Lists.immutable.empty();
-        words = Lists.immutable.empty();
+        sentences = Lists.mutable.empty();
+        words = Lists.mutable.empty();
     }
 
     public void setSentences(ImmutableList<Sentence> sentences) {
-        this.sentences = sentences;
+        this.sentences = sentences.toList();
     }
 
     @Override
@@ -45,14 +45,14 @@ public class TextImpl implements Text {
     @Override
     public ImmutableList<Word> words() {
         if (words.isEmpty()) {
-            words = collectWords();
+            words = collectWords().toList();
             int index = 0;
             for (Word word : words) {
                 wordsIndex.put(index, word);
                 index++;
             }
         }
-        return words;
+        return words.toImmutable();
     }
 
     @Override
@@ -65,7 +65,7 @@ public class TextImpl implements Text {
 
     @Override
     public ImmutableList<Sentence> getSentences() {
-        return sentences;
+        return sentences.toImmutable();
     }
 
     private ImmutableList<Word> collectWords() {

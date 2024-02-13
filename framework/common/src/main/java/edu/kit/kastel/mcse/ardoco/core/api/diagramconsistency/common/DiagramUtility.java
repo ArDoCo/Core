@@ -1,4 +1,4 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common;
 
 import java.util.List;
@@ -108,7 +108,7 @@ public class DiagramUtility {
      */
     public static Box addBox(Diagram diagram, String text) {
         TextBox textBox = new TextBox(0, 0, 0, 0, 1.0, text, null);
-        Box box = new Box(String.valueOf(diagram.getBoxes().size()), new int[] { 0, 0, 0, 0 }, 1.0, null, List.of(textBox), null);
+        Box box = new Box(diagram, String.valueOf(diagram.getBoxes().size()), new int[] { 0, 0, 0, 0 }, 1.0, null, List.of(textBox), null);
 
         diagram.addBox(box);
         return box;

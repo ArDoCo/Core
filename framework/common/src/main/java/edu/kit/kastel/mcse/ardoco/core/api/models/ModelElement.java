@@ -1,6 +1,7 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.api.models;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import edu.kit.kastel.mcse.ardoco.core.common.IdentifierProvider;
@@ -8,7 +9,8 @@ import edu.kit.kastel.mcse.ardoco.core.common.IdentifierProvider;
 /**
  * A model element. Has an identifier. Two model elements are equal if and only if they have the same identifier.
  */
-public abstract class ModelElement implements Comparable<ModelElement> {
+public abstract class ModelElement implements Comparable<ModelElement>, Serializable {
+
     private final String id;
 
     protected ModelElement() {

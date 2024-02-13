@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021-2023. */
+/* Licensed under MIT 2021-2024. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
 import java.io.File;
@@ -218,13 +218,14 @@ public final class CommonUtilities {
     /**
      * Retrieves a list of similar types in the given model state given the word.
      *
-     * @param word       the word that might have type names in the model state
-     * @param modelState the model state containing information about types
+     * @param similarityUtils the similarity utility instance
+     * @param word            the word that might have type names in the model state
+     * @param modelState      the model state containing information about types
      * @return List of type names in the model state that are similar to the given word
      */
-    public static ImmutableList<String> getSimilarTypes(Word word, LegacyModelExtractionState modelState) {
+    public static ImmutableList<String> getSimilarTypes(SimilarityUtils similarityUtils, Word word, LegacyModelExtractionState modelState) {
         var identifiers = getTypeIdentifiers(modelState);
-        return Lists.immutable.fromStream(identifiers.stream().filter(typeId -> SimilarityUtils.areWordsSimilar(typeId, word.getText())));
+        return Lists.immutable.fromStream(identifiers.stream().filter(typeId -> similarityUtils.areWordsSimilar(typeId, word.getText())));
     }
 
     /**

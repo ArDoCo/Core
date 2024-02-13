@@ -1,6 +1,7 @@
-/* Licensed under MIT 2021-2023. */
+/* Licensed under MIT 2021-2024. */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import org.eclipse.collections.api.factory.SortedSets;
@@ -8,7 +9,7 @@ import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 
-public class MissingElementInconsistencyCandidate {
+public class MissingElementInconsistencyCandidate implements Serializable {
 
     private final RecommendedInstance recommendedInstance;
     private final MutableSortedSet<MissingElementSupport> supports = SortedSets.mutable.empty();

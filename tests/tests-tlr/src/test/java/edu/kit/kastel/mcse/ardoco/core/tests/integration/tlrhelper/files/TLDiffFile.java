@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.files;
 
 import java.io.IOException;
@@ -15,7 +15,7 @@ import org.eclipse.collections.api.tuple.Pair;
 
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
+import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.integration.tlrhelper.TestLink;
 
@@ -33,19 +33,20 @@ public class TLDiffFile {
 
     /**
      * Writes out the differences of new and old results.
-     * 
+     *
      * @param targetFile        file to write into
      * @param newProjectResults new results
      * @param oldProjectResults old results
      * @param dataMap           the mapping of Project to ArDoCoResult of the new run
      * @throws IOException if writing fails
      */
-    public static void save(Path targetFile, Collection<Pair<Project, EvaluationResults<TestLink>>> newProjectResults,
-            Collection<Pair<Project, EvaluationResults<TestLink>>> oldProjectResults, Map<Project, ArDoCoResult> dataMap) throws IOException {
+    public static void save(Path targetFile, Collection<Pair<GoldStandardProject, EvaluationResults<TestLink>>> newProjectResults,
+            Collection<Pair<GoldStandardProject, EvaluationResults<TestLink>>> oldProjectResults, Map<GoldStandardProject, ArDoCoResult> dataMap)
+            throws IOException {
         // Assumption: Both collections contain the same projects
 
-        newProjectResults = newProjectResults.stream().sorted(Comparator.comparing(x -> x.getOne().name())).toList();
-        oldProjectResults = oldProjectResults.stream().sorted(Comparator.comparing(x -> x.getOne().name())).toList();
+        newProjectResults = newProjectResults.stream().sorted(Comparator.comparing(x -> x.getOne().getProjectName())).toList();
+        oldProjectResults = oldProjectResults.stream().sorted(Comparator.comparing(x -> x.getOne().getProjectName())).toList();
 
         var builder = new StringBuilder();
 
@@ -70,7 +71,7 @@ public class TLDiffFile {
         builder.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
         // Append project specific details
-        for (Pair<Project, EvaluationResults<TestLink>> oldProjectResult : oldProjectResults) {
+        for (Pair<GoldStandardProject, EvaluationResults<TestLink>> oldProjectResult : oldProjectResults) {
             var project = oldProjectResult.getOne();
             var newResultOptional = newProjectResults.stream().filter(r -> r.getOne().equals(project)).findAny();
             if (newResultOptional.isEmpty()) {
@@ -79,7 +80,7 @@ public class TLDiffFile {
             var newResult = newResultOptional.get().getTwo();
             var data = dataMap.get(project);
 
-            builder.append("# ").append(project.name());
+            builder.append("# ").append(project.getProjectName());
             builder.append(LINE_SEPARATOR).append(LINE_SEPARATOR);
 
             var oldResult = oldProjectResult.getTwo();

@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.api.models;
 
 import java.util.SortedMap;
@@ -14,8 +14,8 @@ import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
 public class ModelStates implements PipelineStepData {
     public static final String ID = "ModelStatesData";
 
-    private transient SortedMap<String, Model> models = new TreeMap<>();
-    private transient SortedMap<String, LegacyModelExtractionState> legacyModels = new TreeMap<>();
+    private SortedMap<String, Model> models = new TreeMap<>();
+    private SortedMap<String, LegacyModelExtractionState> legacyModels = new TreeMap<>();
 
     /**
      * Constructor to create a {@link ModelStates} object that holds all {@link LegacyModelExtractionState}s

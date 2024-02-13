@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021-2023. */
+/* Licensed under MIT 2021-2024. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
 import static edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper.getConnectionStates;
@@ -392,6 +392,7 @@ public final class FilePrinter {
      * @param text the text to write
      */
     public static void writeToFile(Path file, String text) {
+        file.getParent().toFile().mkdirs();
         try (BufferedWriter writer = Files.newBufferedWriter(file, UTF_8)) {
             writer.write(text);
         } catch (IOException e) {

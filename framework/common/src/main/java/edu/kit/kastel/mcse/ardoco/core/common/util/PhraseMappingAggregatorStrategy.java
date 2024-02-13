@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.common.util;
 
 import static edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils.cosineSimilarity;
@@ -11,17 +11,17 @@ import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 
 @Deterministic
 public enum PhraseMappingAggregatorStrategy implements ToDoubleBiFunction<PhraseMapping, PhraseMapping> {
-    MAX_SIMILARITY((a, b) -> uniqueDot(a.getPhrases(), b.getPhrases()).stream()
+    MAX_SIMILARITY((a, b) -> uniqueDot(a.getPhrases().toImmutableList(), b.getPhrases().toImmutableList()).stream()
             .mapToDouble(p -> cosineSimilarity(p.first().getPhraseVector().toSortedMap(), p.second().getPhraseVector().toSortedMap()))
             .max()
             .orElse(Double.NaN)), //
 
-    MIN_SIMILARITY((a, b) -> uniqueDot(a.getPhrases(), b.getPhrases()).stream()
+    MIN_SIMILARITY((a, b) -> uniqueDot(a.getPhrases().toImmutableList(), b.getPhrases().toImmutableList()).stream()
             .mapToDouble(p -> cosineSimilarity(p.first().getPhraseVector().toSortedMap(), p.second().getPhraseVector().toSortedMap()))
             .min()
             .orElse(Double.NaN)), //
 
-    AVG_SIMILARITY((a, b) -> uniqueDot(a.getPhrases(), b.getPhrases()).stream()
+    AVG_SIMILARITY((a, b) -> uniqueDot(a.getPhrases().toImmutableList(), b.getPhrases().toImmutableList()).stream()
             .mapToDouble(p -> cosineSimilarity(p.first().getPhraseVector().toSortedMap(), p.second().getPhraseVector().toSortedMap()))
             .average()
             .orElse(Double.NaN));

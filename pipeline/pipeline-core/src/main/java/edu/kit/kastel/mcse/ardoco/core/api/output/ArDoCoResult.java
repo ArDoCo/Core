@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.api.output;
 
 import java.util.Comparator;
@@ -305,7 +305,7 @@ public record ArDoCoResult(DataRepository dataRepository) {
      * Returns the internal {@link LegacyModelExtractionState} for the modelId with the given ID.
      *
      * @param modelId the ID of the model
-     * @return the ModelExtractionState
+     * @return the LegacyModelExtractionState
      */
     public LegacyModelExtractionState getModelState(String modelId) {
         ModelStates modelStates = getModelStates();

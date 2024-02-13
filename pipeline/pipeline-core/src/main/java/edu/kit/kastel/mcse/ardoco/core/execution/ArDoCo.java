@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021-2023. */
+/* Licensed under MIT 2021-2024. */
 package edu.kit.kastel.mcse.ardoco.core.execution;
 
 import java.io.File;
@@ -56,6 +56,7 @@ public final class ArDoCo extends Pipeline {
     private void initDataRepository() {
         ProjectPipelineData projectPipelineData = new ProjectPipelineDataImpl(projectName);
         getDataRepository().addData(ProjectPipelineData.ID, projectPipelineData);
+        dataRepository.getGlobalConfiguration().setPipeline(this);
     }
 
     @Override

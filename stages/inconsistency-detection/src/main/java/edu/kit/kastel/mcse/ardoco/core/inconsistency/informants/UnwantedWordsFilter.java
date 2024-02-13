@@ -1,5 +1,7 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.informants;
+
+import static edu.kit.kastel.mcse.ardoco.core.common.JsonHandling.createObjectMapper;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -11,7 +13,6 @@ import java.util.regex.Pattern;
 import org.eclipse.collections.api.factory.Lists;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
@@ -117,7 +118,7 @@ public class UnwantedWordsFilter extends Filter {
 
     private List<String> loadCommonBlacklist() {
         try {
-            return Collections.unmodifiableList(new ObjectMapper().readValue(this.getClass().getResourceAsStream("/unwanted_words_filter_common.json"),
+            return Collections.unmodifiableList(createObjectMapper().readValue(this.getClass().getResourceAsStream("/unwanted_words_filter_common.json"),
                     new TypeReference<List<String>>() {
                     }));
         } catch (IOException e) {

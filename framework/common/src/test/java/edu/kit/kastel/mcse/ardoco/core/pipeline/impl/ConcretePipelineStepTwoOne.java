@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline.impl;
 
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ public class ConcretePipelineStepTwoOne extends AbstractPipelineStep {
     }
 
     @Override
-    public void run() {
+    public void process() {
         fetchAndInitializeData();
         logger.info("Greetings from {} with id {}", this.getClass().getSimpleName(), getId());
         List<String> tokens = getTokens();
@@ -56,6 +56,16 @@ public class ConcretePipelineStepTwoOne extends AbstractPipelineStep {
         logger.info("{}", filteredTokens.size());
         processedTextData.setImportantTokens(filteredTokens);
 
+    }
+
+    @Override
+    protected void before() {
+        //Nothing
+    }
+
+    @Override
+    protected void after() {
+        //Nothing
     }
 
     private List<String> getTokens() {

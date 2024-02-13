@@ -1,4 +1,4 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.tests.eval;
 
 import java.io.File;
@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Helper class for {@link Project} and {@link CodeProject}.
+ * Helper class for {@link GoldStandardProject} implementations.
  */
 public class ProjectHelper {
     /**

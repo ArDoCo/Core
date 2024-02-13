@@ -1,5 +1,7 @@
-/* Licensed under MIT 2021-2023. */
+/* Licensed under MIT 2021-2024. */
 package edu.kit.kastel.mcse.ardoco.core.api.textextraction;
+
+import java.io.Serializable;
 
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.map.sorted.ImmutableSortedMap;
@@ -13,7 +15,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 /**
  * The Interface INounMapping defines the mapping .
  */
-public interface NounMapping {
+public interface NounMapping extends Serializable {
 
     /**
      * Returns the surface forms (previously called occurrences) of this mapping.
@@ -64,7 +66,7 @@ public interface NounMapping {
      */
     ImmutableList<Integer> getMappingSentenceNo();
 
-    ImmutableList<Phrase> getPhrases();
+    ImmutableSortedSet<Phrase> getPhrases();
 
     /**
      * Gets the probability for name.
@@ -103,8 +105,8 @@ public interface NounMapping {
     void registerChangeListener(NounMappingChangeListener listener);
 
     /**
-     * Will be invoked during the deletion from a state.
-     * Note: This can be invoked multiple times if the replacement is not available during deletion of the noun mapping
+     * Will be invoked during the deletion from a state. Note: This can be invoked multiple times if the replacement is not available during deletion of the
+     * noun mapping
      *
      * @param replacement the replacing new noun mapping (or null if none exist)
      */

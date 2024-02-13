@@ -1,5 +1,7 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.textextraction.agents;
+
+import static edu.kit.kastel.mcse.ardoco.core.common.JsonHandling.createObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,8 +15,6 @@ import org.eclipse.collections.api.factory.SortedSets;
 import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 
@@ -101,6 +101,6 @@ class PDFExtractorTestCase {
          * pts.setEndPage(i); var text = pts.getText(pdf); processor.accept(text, foundWords); }
          */
 
-        new ObjectMapper().writeValue(new File(out), foundWords.stream().toList());
+        createObjectMapper().writeValue(new File(out), foundWords.stream().toList());
     }
 }

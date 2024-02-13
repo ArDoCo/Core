@@ -1,8 +1,9 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.informants;
 
+import static edu.kit.kastel.mcse.ardoco.core.common.JsonHandling.createObjectMapper;
 import static org.apache.commons.lang3.ClassUtils.getSimpleName;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,7 +14,6 @@ import java.util.Optional;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import edu.kit.kastel.mcse.ardoco.core.api.diagramconsistency.common.JsonMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.Box;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureModelType;
 import edu.kit.kastel.mcse.ardoco.core.api.models.CodeModelType;
@@ -27,7 +27,14 @@ import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.Metrics;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.MetricsStats;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.AnnotatedDiagram;
 import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data.DiagramProject;
-import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactoring.*;
+import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactoring.Connect;
+import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactoring.Create;
+import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactoring.Delete;
+import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactoring.Disconnect;
+import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactoring.Move;
+import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactoring.Refactoring;
+import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactoring.RefactoringBundle;
+import edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.refactoring.Rename;
 
 class SyntheticTestBase extends EvaluationTestBase {
     protected static final int REFACTORING_TYPE_COUNT = 6;
@@ -127,7 +134,7 @@ class SyntheticTestBase extends EvaluationTestBase {
 
     private Metrics examineOnSyntheticDiagram(ExaminationDescription description) throws IOException {
         String name = description.project().name().toLowerCase(Locale.ROOT);
-        File inputArchitectureModel = description.project().getSourceProject().getProject().getModelFile(ArchitectureModelType.UML);
+        File inputArchitectureModel = description.project().getSourceProject().getModelFile(ArchitectureModelType.UML);
         File inputCodeModel = new File(Objects.requireNonNull(description.project().getSourceProject().getCodeModelDirectory())).getAbsoluteFile();
         File inputDiagram = File.createTempFile("temp", ".json");
         File outputDir = new File(PIPELINE_OUTPUT);
@@ -156,7 +163,7 @@ class SyntheticTestBase extends EvaluationTestBase {
         default -> throw new IllegalArgumentException("Unexpected value: " + description.generalModelType());
         }
 
-        JsonMapping.OBJECT_MAPPER.writeValue(inputDiagram, syntheticDiagram.diagram());
+        createObjectMapper().writeValue(inputDiagram, syntheticDiagram.diagram());
 
         DiagramConsistency runner = new DiagramConsistency(name);
         this.setupExamination(modelType, runner.getDataRepository());

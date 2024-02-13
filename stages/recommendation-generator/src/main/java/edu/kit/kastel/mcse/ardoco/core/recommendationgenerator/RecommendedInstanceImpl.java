@@ -1,7 +1,8 @@
-/* Licensed under MIT 2021-2023. */
+/* Licensed under MIT 2021-2024. */
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -12,6 +13,7 @@ import org.eclipse.collections.api.list.MutableList;
 import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelElement;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
@@ -23,18 +25,15 @@ import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 /**
- * This class represents recommended instances. These instances should be contained by the model. The likelihood is
- * measured by the probability. Every recommended instance has a unique name.
+ * This class represents recommended instances. These instances should be contained by the model. The likelihood is measured by the probability. Every
+ * recommended instance has a unique name.
  */
 public final class RecommendedInstanceImpl extends RecommendedInstance implements Claimant, NounMappingChangeListener {
 
     private static final AggregationFunctions GLOBAL_AGGREGATOR = AggregationFunctions.AVERAGE;
     /**
-     * Meaning (Weights): <br/>
-     * 0,-1,1 => Balanced <br/>
-     * 2 => InternalConfidence: 2 / mappingConfidence: 1<br/>
-     * -2 => InternalConfidence: 1 / mappingConfidence: 2<br/>
-     * ...
+     * Meaning (Weights): <br/> 0,-1,1 => Balanced <br/> 2 => InternalConfidence: 2 / mappingConfidence: 1<br/> -2 => InternalConfidence: 1 / mappingConfidence:
+     * 2<br/> ...
      */
     private int weightInternalConfidence = 0;
 
@@ -257,11 +256,13 @@ public final class RecommendedInstanceImpl extends RecommendedInstance implement
                 ", mappings:]= " + separator + String.join(separator, nameNodeVals) + separator + String.join(separator, typeNodeVals) + "\n";
     }
 
+    //FIXME Uses mutable properties
     @Override
     public int hashCode() {
         return Objects.hash(name, type);
     }
 
+    //FIXME Uses mutable properties
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -271,6 +272,16 @@ public final class RecommendedInstanceImpl extends RecommendedInstance implement
             return false;
         }
         return Objects.equals(name, other.name) && Objects.equals(type, other.type);
+    }
+
+    @Override
+    public int compareTo(ModelElement o) {
+        if (this == o)
+            return 0;
+        if (o instanceof RecommendedInstance ri) {
+            return Comparator.comparing(RecommendedInstance::getName).thenComparing(RecommendedInstance::getType).compare(this, ri);
+        }
+        return super.compareTo(o);
     }
 
     @Override

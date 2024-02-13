@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.agents;
 
 import java.util.List;
@@ -9,9 +9,8 @@ import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
 
 /**
- * This agent should look for {@link RecommendedInstance RecommendedInstances} that contain the
- * project's name and "filters" them by adding a heavy negative probability, thus making the
- * {@link RecommendedInstance} extremely improbable.
+ * This agent should look for {@link RecommendedInstance RecommendedInstances} that contain the project's name and "filters" them by adding a heavy negative
+ * probability, thus making the {@link RecommendedInstance} extremely improbable.
  */
 public class ProjectNameFilterAgent extends PipelineAgent {
 

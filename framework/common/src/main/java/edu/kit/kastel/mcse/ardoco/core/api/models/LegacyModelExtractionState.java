@@ -1,5 +1,7 @@
-/* Licensed under MIT 2021-2023. */
+/* Licensed under MIT 2021-2024. */
 package edu.kit.kastel.mcse.ardoco.core.api.models;
+
+import java.io.Serializable;
 
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
@@ -12,7 +14,7 @@ import edu.kit.kastel.mcse.ardoco.core.configuration.IConfigurable;
  * @deprecated use {@link ModelStates#getModel(String)}
  */
 @Deprecated(since = "0.32.0")
-public interface LegacyModelExtractionState extends IConfigurable {
+public interface LegacyModelExtractionState extends IConfigurable, Serializable {
     /**
      * Returns the unique id of the model
      *

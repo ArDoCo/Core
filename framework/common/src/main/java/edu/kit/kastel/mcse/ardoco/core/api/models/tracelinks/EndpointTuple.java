@@ -1,25 +1,22 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 
 /**
- * A tuple of one architecture endpoint and one code endpoint. Every endpoint
- * tuple is a possible candidate for the endpoints of a trace link that connects
- * corresponding elements of an architecture model and a code model. An endpoint
- * tuple cannot consist of two architecture endpoints or of two code endpoints.
+ * A tuple of one architecture endpoint and one code endpoint. Every endpoint tuple is a possible candidate for the endpoints of a trace link that connects
+ * corresponding elements of an architecture model and a code model. An endpoint tuple cannot consist of two architecture endpoints or of two code endpoints.
  */
-public class EndpointTuple {
+public class EndpointTuple implements Serializable {
     private final Entity firstEndpoint;
     private final Entity secondEndpoint;
 
     /**
-     * @param firstEndpoint  the architecture endpoint of the endpoint tuple
-     *                       to be created
-     * @param secondEndpoint the code endpoint of the endpoint tuple to be
-     *                       created
+     * @param firstEndpoint  the architecture endpoint of the endpoint tuple to be created
+     * @param secondEndpoint the code endpoint of the endpoint tuple to be created
      */
     public EndpointTuple(Entity firstEndpoint, Entity secondEndpoint) {
         this.firstEndpoint = firstEndpoint;

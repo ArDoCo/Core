@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021-2023. */
+/* Licensed under MIT 2021-2024. */
 package edu.kit.kastel.mcse.ardoco.core.connectiongenerator.informants;
 
 import java.util.SortedMap;
@@ -9,7 +9,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
-import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
@@ -28,7 +27,7 @@ public class ExtractionDependentOccurrenceInformant extends Informant {
     }
 
     @Override
-    public void run() {
+    public void process() {
         DataRepository dataRepository = getDataRepository();
         var text = DataRepositoryHelper.getAnnotatedText(dataRepository);
         var textState = DataRepositoryHelper.getTextState(dataRepository);
@@ -55,7 +54,7 @@ public class ExtractionDependentOccurrenceInformant extends Informant {
         if (posTagIsUndesired(word) && !wordStartsWithCapitalLetter(word)) {
             return;
         }
-        var instanceNameIsSimilar = modelState.getInstances().anySatisfy(i -> SimilarityUtils.isWordSimilarToModelInstance(word, i));
+        var instanceNameIsSimilar = modelState.getInstances().anySatisfy(i -> getMetaData().getSimilarityUtils().isWordSimilarToModelInstance(word, i));
         if (instanceNameIsSimilar) {
             textState.addNounMapping(word, MappingKind.NAME, this, probability);
         }
@@ -75,7 +74,8 @@ public class ExtractionDependentOccurrenceInformant extends Informant {
      * value is taken as reference.
      */
     private void searchForType(LegacyModelExtractionState modelState, TextState textState, Word word) {
-        var instanceTypeIsSimilar = modelState.getInstances().anySatisfy(i -> SimilarityUtils.isWordSimilarToModelInstanceType(word, i));
+        var similarityUtils = getMetaData().getSimilarityUtils();
+        var instanceTypeIsSimilar = modelState.getInstances().anySatisfy(i -> similarityUtils.isWordSimilarToModelInstanceType(word, i));
         if (instanceTypeIsSimilar) {
             textState.addNounMapping(word, MappingKind.TYPE, this, probability);
         }

@@ -1,4 +1,4 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.diagramconsistency.evaluation.data;
 
 import java.io.File;
@@ -83,7 +83,7 @@ public enum DiagramProject {
         URL resource = this.getDeclaringClass().getResource(this.getPath(DIAGRAM_FILE_NAME));
 
         if (resource == null) {
-            throw new RuntimeException("Could not find diagram file for " + this.name());
+            throw new IllegalArgumentException("Could not find diagram file for " + this.name());
         }
 
         return new File(resource.getFile());

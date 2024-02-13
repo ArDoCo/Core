@@ -5,6 +5,7 @@
     <groupId>io.github.ardoco.core</groupId>
     <artifactId>parent</artifactId>
     <version>${revision}</version>
+    <relativePath>../pom.xml</relativePath>
   </parent>
 
   <artifactId>report</artifactId>
@@ -36,7 +37,19 @@
     </dependency>
     <dependency>
       <groupId>io.github.ardoco.core</groupId>
+      <artifactId>diagram-connection-generator</artifactId>
+      <version>${revision}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.github.ardoco.core</groupId>
       <artifactId>diagram-consistency</artifactId>
+      <version>${revision}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.github.ardoco.core</groupId>
+      <artifactId>diagram-inconsistency-checker</artifactId>
       <version>${revision}</version>
       <scope>compile</scope>
     </dependency>
@@ -61,6 +74,12 @@
     <dependency>
       <groupId>io.github.ardoco.core</groupId>
       <artifactId>pipeline-core</artifactId>
+      <version>${revision}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.github.ardoco.core</groupId>
+      <artifactId>pipeline-erid</artifactId>
       <version>${revision}</version>
       <scope>compile</scope>
     </dependency>

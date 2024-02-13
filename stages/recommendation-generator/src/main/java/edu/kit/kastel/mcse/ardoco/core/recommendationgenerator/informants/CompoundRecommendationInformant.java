@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.recommendationgenerator.informants;
 
 import java.util.SortedMap;
@@ -17,7 +17,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
-import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
@@ -32,7 +31,7 @@ public class CompoundRecommendationInformant extends Informant {
     }
 
     @Override
-    public void run() {
+    public void process() {
         DataRepository dataRepository = getDataRepository();
         var modelStatesData = DataRepositoryHelper.getModelStatesData(dataRepository);
         var textState = DataRepositoryHelper.getTextState(dataRepository);
@@ -49,8 +48,7 @@ public class CompoundRecommendationInformant extends Informant {
     }
 
     /**
-     * Look at NounMappings and add RecommendedInstances, if a NounMapping was created because of a compound (in
-     * text-extraction)
+     * Look at NounMappings and add RecommendedInstances, if a NounMapping was created because of a compound (in text-extraction)
      */
     private void createRecommendationInstancesFromCompoundNounMappings(TextState textState, RecommendationState recommendationState,
             LegacyModelExtractionState modelState) {
@@ -63,8 +61,8 @@ public class CompoundRecommendationInformant extends Informant {
     }
 
     /**
-     * Find additional compounds and create RecommendedInstances for them. Additional compounds are when a word in a
-     * NounMapping has another word in front or afterwards and that compounds is a TypeMapping
+     * Find additional compounds and create RecommendedInstances for them. Additional compounds are when a word in a NounMapping has another word in front or
+     * afterwards and that compounds is a TypeMapping
      */
     private void findMoreCompoundsForRecommendationInstances(TextState textState, RecommendationState recommendationState,
             LegacyModelExtractionState modelState) {
@@ -116,11 +114,11 @@ public class CompoundRecommendationInformant extends Informant {
         var typeIdentifiers = CommonUtilities.getTypeIdentifiers(modelState);
         for (var typeMapping : typeMappings) {
             var currSimilarTypes = Lists.immutable.fromStream(typeIdentifiers.stream()
-                    .filter(typeId -> SimilarityUtils.areWordsSimilar(typeId, typeMapping.getReference())));
+                    .filter(typeId -> getMetaData().getSimilarityUtils().areWordsSimilar(typeId, typeMapping.getReference())));
             similarModelTypes.addAll(currSimilarTypes.toList());
             for (var word : typeMapping.getWords()) {
                 currSimilarTypes = Lists.immutable.fromStream(typeIdentifiers.stream()
-                        .filter(typeId -> SimilarityUtils.areWordsSimilar(typeId, word.getLemma())));
+                        .filter(typeId -> getMetaData().getSimilarityUtils().areWordsSimilar(typeId, word.getLemma())));
                 similarModelTypes.addAll(currSimilarTypes.toList());
             }
         }

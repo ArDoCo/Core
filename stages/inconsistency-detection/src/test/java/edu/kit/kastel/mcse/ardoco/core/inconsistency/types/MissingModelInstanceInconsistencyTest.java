@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.inconsistency.types;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -8,7 +8,6 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 /**
  * This class tests the record MissingModelInconsistency.
- * 
  */
 public class MissingModelInstanceInconsistencyTest extends AbstractInconsistencyTypeTest implements Claimant {
 
@@ -16,7 +15,7 @@ public class MissingModelInstanceInconsistencyTest extends AbstractInconsistency
 
     @BeforeEach
     void beforeEach() {
-        missingModelInstanceInconsistency = new MissingModelInstanceInconsistency("inconsistency", 1, 1.0);
+        missingModelInstanceInconsistency = new MissingModelInstanceInconsistency("inconsistency", 1, 1.0, null);
     }
 
     @Override
@@ -37,12 +36,12 @@ public class MissingModelInstanceInconsistencyTest extends AbstractInconsistency
 
     @Override
     protected Inconsistency getUnequalInconsistency() {
-        return new MissingModelInstanceInconsistency("otherInconsistency", 1, 1.0);
+        return new MissingModelInstanceInconsistency("otherInconsistency", 1, 1.0, null);
     }
 
     @Override
     protected Inconsistency getEqualInconsistency() {
-        return new MissingModelInstanceInconsistency("inconsistency", 1, 1.0);
+        return new MissingModelInstanceInconsistency("inconsistency", 1, 1.0, null);
     }
 
     @Override

@@ -1,4 +1,4 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.codetraceability.informants.arcotl.computation;
 
 import java.util.NoSuchElementException;
@@ -91,7 +91,7 @@ public class Confidence implements Comparable<Confidence> {
         if (this == obj) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass()) {
+        if (!(obj instanceof Confidence)) {
             return false;
         }
         Confidence other = (Confidence) obj;
