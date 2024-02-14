@@ -6,7 +6,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -81,8 +80,8 @@ public class InconsistencyDetectionEvaluationIT {
 
     private static final String LINE_SEPARATOR = System.lineSeparator();
     private static boolean ranBaseline = false;
-    private static final Map<GoldStandardProject, ImmutableList<InconsistentSentence>> inconsistentSentencesPerProject = new HashMap<>();
-    private static final Map<GoldStandardProject, ArDoCoResult> arDoCoResults = new HashMap<>();
+    private static final Map<GoldStandardProject, ImmutableList<InconsistentSentence>> inconsistentSentencesPerProject = new LinkedHashMap<>();
+    private static final Map<GoldStandardProject, ArDoCoResult> arDoCoResults = new LinkedHashMap<>();
 
     /**
      * Tests the inconsistency detection for missing model elements on all {@link Project projects}.
