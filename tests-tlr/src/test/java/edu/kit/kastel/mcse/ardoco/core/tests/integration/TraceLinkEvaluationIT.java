@@ -9,7 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -58,7 +58,7 @@ public class TraceLinkEvaluationIT<T extends GoldStandardProject> {
 
     protected static final List<Pair<GoldStandardProject, EvaluationResults<TestLink>>> RESULTS = new ArrayList<>();
     protected static final MutableList<EvaluationResults<String>> PROJECT_RESULTS = Lists.mutable.empty();
-    protected static final Map<GoldStandardProject, ArDoCoResult> DATA_MAP = new HashMap<>();
+    protected static final Map<GoldStandardProject, ArDoCoResult> DATA_MAP = new LinkedHashMap<>();
 
     @BeforeAll
     static void beforeAll() {

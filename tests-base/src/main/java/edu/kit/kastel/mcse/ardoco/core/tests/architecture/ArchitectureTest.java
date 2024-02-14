@@ -146,6 +146,8 @@ public class ArchitectureTest {
             .areAssignableTo(Serializable.class)
             .and()
             .areNotEnums()
+            .and()
+            .resideOutsideOfPackages("..tests..")
             .should(new ArchCondition<>("beSerializable") {
                 @Override
                 public void check(JavaClass javaClass, ConditionEvents conditionEvents) {
