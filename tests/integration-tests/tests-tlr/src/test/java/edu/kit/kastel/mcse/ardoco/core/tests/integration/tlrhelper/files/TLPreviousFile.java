@@ -8,7 +8,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,7 +44,7 @@ public class TLPreviousFile {
     public static Collection<Pair<GoldStandardProject, EvaluationResults<TestLink>>> load(Path sourceFile,
             final Map<GoldStandardProject, ArDoCoResult> DATA_MAP) throws IOException {
         List<String> lines = Files.readAllLines(sourceFile);
-        Map<Project, List<TestLink>> foundLinkMap = new HashMap<>();
+        Map<Project, List<TestLink>> foundLinkMap = new LinkedHashMap<>();
         List<Pair<GoldStandardProject, EvaluationResults<TestLink>>> results = new ArrayList<>();
 
         for (String line : lines) {
