@@ -1,15 +1,13 @@
 wiki
 .flattened-pom.xml
 
-tests/src/test/resources/testout/*
-tests/tests-base/src/test/resources/testout/*
-tests/tests-misc/src/test/resources/testout/*
-tests/tests-tlr/src/test/resources/testout/*
-tests/tests-inconsistency/src/test/resources/testout/*
+src/test/resources/testout/*
+tests-base/src/test/resources/testout/*
+tests-misc/src/test/resources/testout/*
+tests-tlr/src/test/resources/testout/*
+tests-inconsistency/src/test/resources/testout/*
 
-tests/src/test/resources/config.properties
-
-/pipeline/src/test/resources/testout/
+src/test/resources/config.properties
 
 tmp*
 temp*
