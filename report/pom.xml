@@ -19,40 +19,34 @@
   <dependencies>
     <dependency>
       <groupId>io.github.ardoco.core</groupId>
+      <artifactId>inconsistency-detection</artifactId>
+      <version>${revision}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.github.ardoco.core</groupId>
       <artifactId>pipeline-id</artifactId>
       <version>${revision}</version>
       <scope>compile</scope>
     </dependency>
-      <dependency>
-          <groupId>io.github.ardoco.core</groupId>
-          <artifactId>inconsistency-detection</artifactId>
-          <version>${revision}</version>
-          <scope>compile</scope>
-      </dependency>
-      <dependency>
-          <groupId>io.github.ardoco.core</groupId>
-          <artifactId>tests-tlr</artifactId>
-          <version>${revision}</version>
-          <scope>test</scope>
-      </dependency>
-      <dependency>
-          <groupId>io.github.ardoco.core</groupId>
-          <artifactId>tests-inconsistency</artifactId>
-          <version>${revision}</version>
-          <scope>test</scope>
-      </dependency>
-      <dependency>
-          <groupId>io.github.ardoco.core</groupId>
-          <artifactId>tests-base</artifactId>
-          <version>${revision}</version>
-          <scope>test</scope>
-      </dependency>
-      <dependency>
-          <groupId>io.github.ardoco.core</groupId>
-          <artifactId>tests-resources</artifactId>
-          <version>${revision}</version>
-          <scope>test</scope>
-      </dependency>
+    <dependency>
+      <groupId>io.github.ardoco.core</groupId>
+      <artifactId>tests-base</artifactId>
+      <version>${revision}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.github.ardoco.core</groupId>
+      <artifactId>tests-inconsistency</artifactId>
+      <version>${revision}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.github.ardoco.core</groupId>
+      <artifactId>tests-resources</artifactId>
+      <version>${revision}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
