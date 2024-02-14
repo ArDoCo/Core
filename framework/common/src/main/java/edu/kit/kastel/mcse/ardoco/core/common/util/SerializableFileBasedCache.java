@@ -4,7 +4,6 @@ package edu.kit.kastel.mcse.ardoco.core.common.util;
 import java.io.*;
 import java.lang.reflect.ParameterizedType;
 
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,7 +64,7 @@ public class SerializableFileBasedCache<T extends Serializable> extends FileBase
     }
 
     @Override
-    protected @Nullable T read() throws CacheException {
+    protected T read() throws CacheException {
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(getFile()))) {
             logger.info("Reading {} file", getIdentifier());
             var dObj = in.readObject();

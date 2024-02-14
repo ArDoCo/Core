@@ -1,2 +1,0 @@
-UnwantedWordsFilter::enableCommonBlacklist=false
-UnwantedWordsFilter::customBlacklist=

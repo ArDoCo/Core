@@ -1,2 +1,0 @@
-UnwantedWordsFilter::enableCommonBlacklist=true
-UnwantedWordsFilter::customBlacklist=instance,item,name,product,rankings,rating,size
