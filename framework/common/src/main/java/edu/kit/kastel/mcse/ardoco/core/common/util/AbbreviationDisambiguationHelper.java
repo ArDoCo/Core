@@ -54,7 +54,7 @@ public final class AbbreviationDisambiguationHelper extends FileBasedCache<Sorte
     }
 
     private AbbreviationDisambiguationHelper() {
-        super("abbreviations", ".json", "");
+        super("abbreviations", ".json", "", true);
     }
 
     /**

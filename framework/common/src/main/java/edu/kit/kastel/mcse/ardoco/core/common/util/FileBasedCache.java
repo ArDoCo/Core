@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class FileBasedCache<T> implements AutoCloseable {
     private static final Logger logger = LoggerFactory.getLogger(FileBasedCache.class);
-    private static final String TEMP_DIR = loadTempDir();
+    private final String baseDir;
 
     private File file;
     private final String identifier;
@@ -74,8 +74,11 @@ public abstract class FileBasedCache<T> implements AutoCloseable {
      * @param identifier    name of the cache file
      * @param fileExtension extension of the cache file
      * @param subFolder     sub-folder in the user directory, must end with {@link File#separator}
+     * @param persistent    whether the cache should be persistent
      */
-    protected FileBasedCache(String identifier, String fileExtension, String subFolder) {
+    protected FileBasedCache(String identifier, String fileExtension, String subFolder, boolean persistent) {
+        this.baseDir = persistent ? (System.getProperty("user.home") + "/.ardoco/cache") : loadTempDir();
+        new File(baseDir).mkdirs();
         this.identifier = identifier;
         this.fileExtension = fileExtension;
         if (!subFolder.isEmpty() && !subFolder.endsWith(File.separator))
@@ -136,7 +139,7 @@ public abstract class FileBasedCache<T> implements AutoCloseable {
      */
     protected File getFileHandle() throws IOException {
 
-        file = new File(TEMP_DIR + File.separator + subFolder + this.identifier + this.fileExtension);
+        file = new File(baseDir + File.separator + subFolder + this.identifier + this.fileExtension);
         if (file.getParentFile().mkdirs()) {
             logger.info("Created directory {}", file.getParentFile().getCanonicalPath());
         }

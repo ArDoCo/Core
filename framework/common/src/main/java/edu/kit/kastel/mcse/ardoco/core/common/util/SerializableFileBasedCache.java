@@ -27,12 +27,12 @@ public class SerializableFileBasedCache<T extends Serializable> extends FileBase
      * @param subFolder    the sub-folder of the cache
      */
     public SerializableFileBasedCache(Class<? extends T> contentClass, String identifier, String subFolder) {
-        super(identifier, ".ser", subFolder + contentClass.getSimpleName() + File.separator);
+        super(identifier, ".ser", subFolder + contentClass.getSimpleName() + File.separator, false);
         this.contentClass = contentClass;
     }
 
     public SerializableFileBasedCache(TypeReference<? extends T> typeReference, String identifier, String subFolder) {
-        super(identifier, ".ser", subFolder + sanitizeFileName(processTypeReference(typeReference).getSimpleName()) + File.separator);
+        super(identifier, ".ser", subFolder + sanitizeFileName(processTypeReference(typeReference).getSimpleName()) + File.separator, false);
         this.contentClass = (Class<? extends T>) processTypeReference(typeReference);
     }
 
