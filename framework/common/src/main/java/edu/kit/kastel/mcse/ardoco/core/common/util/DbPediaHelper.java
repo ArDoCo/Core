@@ -35,7 +35,7 @@ public class DbPediaHelper extends FileBasedCache<DbPediaHelper.DbPediaData> {
     }
 
     private DbPediaHelper() {
-        super("dbpedia", ".json", "");
+        super("dbpedia", ".json", "", true);
     }
 
     /**
