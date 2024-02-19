@@ -10,6 +10,11 @@
   <artifactId>tests</artifactId>
   <packaging>pom</packaging>
 
+  <modules>
+    <module>integration-tests/tests-base</module>
+    <module>integration-tests/tests-inconsistency</module>
+  </modules>
+
   <properties>
     <maven.deploy.skip>true</maven.deploy.skip>
     <sonar.skip>true</sonar.skip>
@@ -63,10 +68,4 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-    <modules>
-        <module>integration-tests/tests-base</module>
-        <module>integration-tests/tests-resources</module>
-        <module>integration-tests/tests-inconsistency</module>
-    </modules>
 </project>
