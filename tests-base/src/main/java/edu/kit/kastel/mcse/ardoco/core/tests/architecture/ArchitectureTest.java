@@ -102,40 +102,48 @@ public class ArchitectureTest {
                     "Execution");
 
     @ArchTest
-    public static final ArchRule transientRule = fields().that().haveModifier(JavaModifier.TRANSIENT).should(new ArchCondition<>("beAccessedIndirectly") {
-        @Override
-        public void check(JavaField javaField, ConditionEvents conditionEvents) {
-            javaField.getAccessesToSelf().forEach(fieldAccess -> {
-                var origin = fieldAccess.getOrigin();
-                if (fieldAccess.getAccessType().equals(JavaFieldAccess.AccessType.GET)) {
-                    if (origin.isMethod()) {
-                        if (origin.getName().equalsIgnoreCase("get" + fieldAccess.getName())) {
-                            satisfied(conditionEvents, javaField, null);
+    public static final ArchRule transientRule = fields().that()
+            .areDeclaredInClassesThat()
+            .resideOutsideOfPackages("..tests..")
+            .and()
+            .haveModifier(JavaModifier.TRANSIENT)
+            .should(new ArchCondition<>("beAccessedIndirectly") {
+                @Override
+                public void check(JavaField javaField, ConditionEvents conditionEvents) {
+                    javaField.getAccessesToSelf().forEach(fieldAccess -> {
+                        var origin = fieldAccess.getOrigin();
+                        if (fieldAccess.getAccessType().equals(JavaFieldAccess.AccessType.GET)) {
+                            if (origin.isMethod()) {
+                                if (origin.getName().equalsIgnoreCase("get" + fieldAccess.getName())) {
+                                    satisfied(conditionEvents, javaField, null);
+                                } else {
+                                    violated(conditionEvents, javaField, "Method accesses " + origin.getFullName() + " accesses transient field " + javaField
+                                            .getFullName() + ", but is not a getter or does not match the name pattern for getters 'get{$FieldName}'");
+                                }
+                            } else {
+                                violated(conditionEvents, javaField, "Transient field " + javaField
+                                        .getFullName() + " has to be accessed by a getter with name 'get{$fieldName}'");
+                            }
                         } else {
-                            violated(conditionEvents, javaField, "Method accesses " + origin.getFullName() + " accesses transient field " + javaField
-                                    .getFullName() + ", but is not a getter or does not match the name pattern for getters 'get{$FieldName}'");
+                            if (origin.isConstructor()) {
+                                violated(conditionEvents, javaField, "Transient field " + javaField
+                                        .getFullName() + " has to be set outside of the constructor");
+                            } else {
+                                satisfied(conditionEvents, javaField, null);
+                            }
                         }
-                    } else {
+                    });
+                }
+            })
+            .orShould(new ArchCondition<>("belongToClassWithCustomSerialization") {
+                @Override
+                public void check(JavaField javaField, ConditionEvents conditionEvents) {
+                    if (javaField.getOwner().getMethods().stream().noneMatch(method -> method.getName().equalsIgnoreCase("writeObject"))) {
                         violated(conditionEvents, javaField, "Transient field " + javaField
-                                .getFullName() + " has to be accessed by a getter with name 'get{$fieldName}'");
-                    }
-                } else {
-                    if (origin.isConstructor()) {
-                        violated(conditionEvents, javaField, "Transient field " + javaField.getFullName() + " has to be set outside of the constructor");
-                    } else {
-                        satisfied(conditionEvents, javaField, null);
+                                .getFullName() + " doesn't belong to a class with a custom serialization");
                     }
                 }
             });
-        }
-    }).orShould(new ArchCondition<>("belongToClassWithCustomSerialization") {
-        @Override
-        public void check(JavaField javaField, ConditionEvents conditionEvents) {
-            if (javaField.getOwner().getMethods().stream().noneMatch(method -> method.getName().equalsIgnoreCase("writeObject"))) {
-                violated(conditionEvents, javaField, "Transient field " + javaField.getFullName() + " doesn't belong to a class with a custom serialization");
-            }
-        }
-    });
 
     @ArchTest
     private static final ArchRule serializableRule = classes().that()
