@@ -85,7 +85,7 @@
     <eclipse-collections.version>12.0.0.M3</eclipse-collections.version>
     <jackson.version>2.16.1</jackson.version>
     <javaparser.version>3.25.8</javaparser.version>
-    <error-prone.version>2.24.1</error-prone.version>
+    <error-prone.version>2.25.0</error-prone.version>
     <mockito.version>5.2.0</mockito.version>
     <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
     <jgrapht.version>1.5.2</jgrapht.version>
