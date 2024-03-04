@@ -15,7 +15,7 @@ To get to know the project, please read the following pages:
 
 * [Core Pipeline Definition](pipeline)
 * [Intermediate Artifacts](intermediateartifacts)
-* [Text Preprocessing](Text-Preprocessing)
+* [Text Preprocessing Microservice](Text-Preprocessing-Microservice)
 * [Traceability Link Recovery (TLR)](tlr)
 * [Inconsistency Detection (ID)](inconsistencydetection)
 * [Linking Sketches and Software Architecture (LiSSA)](LiSSA)
