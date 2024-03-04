@@ -1,3 +1,7 @@
+<p align="center">
+ <img alt="ArDoCo" src="https://github.com/ArDoCo/.github/raw/main/profile/logo.png" height="210"/>
+</p>
+
 # ArDoCo
 
 ArDoCo (Architecture Documentation Consistency) is a framework to connect architecture documentation and models while
