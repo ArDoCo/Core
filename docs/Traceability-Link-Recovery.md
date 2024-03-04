@@ -1,10 +1,9 @@
-# Traceability Link Recovery
 
 There are currently three kinds of TLR approaches that we describe in their corresponding sections:
 
 * [Software Architecture Documentation (SAD) to Model (SAM)](#sad-sam)
 * [Software Architecture Model (SAM) to Code](#sam-code)
-* [SAD to Code via SAM](SAD-SAM-Code-TLR)
+* [SAD to Code via SAM](#sad-sam-code)
 
 
 ## SAD-SAM
