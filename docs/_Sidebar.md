@@ -1,0 +1,15 @@
+# Table of Contents
+
+1. [Home](home)
+2. [Quickstart](quickstart)
+3. [Pipeline](pipeline)
+4. [Intermediate Artifacts](intermediateartifacts)
+    1. [SAM](IntermediateArtifacts#software-architecture-models)
+    1. [Code](IntermediateArtifacts#code)
+5. [Text Preprocessing Microservice](Text-Preprocessing-Microservice)
+6. [Traceability Link Recovery (TLR)](tlr)
+    1. [SAD-SAM](tlr#sad-sam)
+    1. [SAM-Code](tlr#sam-code)
+    1. [SAD-SAM-Code](tlr#sad-sam-code)
+7. [Inconsistency Detection (ID)](InconsistencyDetection)
+8. [LiSSA](lissa)
