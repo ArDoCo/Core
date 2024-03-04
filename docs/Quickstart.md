@@ -1,7 +1,4 @@
-The ArDoCo-Core is a maven project and can be embedded by using its specs (from
-the [pom](https://github.com/ArDoCo/Core/blob/main/pom.xml)).
-
-You can run and configure the execution with the CLI.
+The ArDoCo is a maven project and can be embedded by using its specs (from the [pom](https://github.com/ArDoCo/Core/blob/main/pom.xml)).
 
 Please acknowledge the [code of conduct](https://github.com/ArDoCo/Core/blob/main/CODE_OF_CONDUCT.md).
 
@@ -29,32 +26,10 @@ Follow the following steps to do so:
 
 Please use the provided [formatter](https://github.com/ArDoCo/Core/blob/main/formatter.xml) when contributing.
 
-Additionally, make use of the spotless-plugin for maven to format your code. You can run it via mvn spotless:
-apply ([more info](https://github.com/diffplug/spotless/tree/main/plugin-maven)).
+Additionally, please make use of the spotless-plugin for maven to format your code. You can run it via `mvn spotless:apply` ([more info about spotless](https://github.com/diffplug/spotless/tree/main/plugin-maven)).
 
-### Documentation
 
-⚠️ WIP
-
-## Command Line Interface (CLI)
-
-[ArDoCo CLI](https://github.com/ArDoCo/CLI) contains a CLI that supports the execution of ArDoCo.
-
-It is necessary to specify an input model as well as a textual documentation. Usually, our model is an architectural
-model. However, the model can also contain a (Java) code model that you can insert using
-the [CodeModelExtractors](https://github.com/ArDoCo/Core/tree/main/framework/java-model-extractor).
-
-All results (trace links, inconsistencies, etc. between the input model and documentation) are written to the specified
-output location.
-
-The [CLI](https://github.com/ArDoCo/CLI/blob/main/src/main/java/edu/kit/kastel/mcse/ardoco/core/pipeline/ArDoCoCLI.java)
-is part of the [CLI project](https://github.com/ArDoCo/CLI) of ArDoCo.
-
-## Standard Configuration
-
-⚠️ WIP
-
-## Save Actions (Eclipse)
+### Save Actions (Eclipse)
 
 Go to your Eclipse Workspace folder and open the
 file `.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.jdt.ui.prefs`.
