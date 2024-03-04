@@ -1,4 +1,3 @@
-# Pipeline
 
 ```mermaid
 classDiagram

@@ -1,3 +1,4 @@
+
 The ArDoCo is a maven project and can be embedded by using its specs (from the [pom](https://github.com/ArDoCo/Core/blob/main/pom.xml)).
 
 Please acknowledge the [code of conduct](https://github.com/ArDoCo/Core/blob/main/CODE_OF_CONDUCT.md).

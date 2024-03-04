@@ -1,15 +1,14 @@
+
 <p align="center">
  <img alt="ArDoCo" src="https://github.com/ArDoCo/.github/raw/main/profile/logo.png" height="210"/>
 </p>
-
-# ArDoCo
 
 ArDoCo (Architecture Documentation Consistency) is a framework to connect architecture documentation and models while
 identifying missing or deviating elements (inconsistencies). An element can be any representable item of the model, like
 a component or a relation. To do so, ArDoCo first creates trace links and then makes use of them and other information
 to identify inconsistencies.
 
-You can find ArDoCo on the [website](ardoco.de) and [on GitHub](https://github.com/ArDoCo).
+You can find ArDoCo on the [website](https://ardoco.de) and [on GitHub](https://github.com/ArDoCo).
 
 Before contributing, please read the [Quickstart Guide](quickstart).
 
@@ -18,10 +17,10 @@ Before contributing, please read the [Quickstart Guide](quickstart).
 To get to know the project, please read the following pages:
 
 * [Core Pipeline Definition](pipeline)
-* [Intermediate Artifacts](intermediateartifacts)
+* [Intermediate Artifacts](intermediate-artifacts)
 * [Text Preprocessing Microservice](Text-Preprocessing-Microservice)
-* [Traceability Link Recovery (TLR)](tlr)
-* [Inconsistency Detection (ID)](inconsistencydetection)
+* [Traceability Link Recovery (TLR)](traceability-link-recovery)
+* [Inconsistency Detection (ID)](inconsistency-detection)
 * [Linking Sketches and Software Architecture (LiSSA)](LiSSA)
 
 ## Project Structure

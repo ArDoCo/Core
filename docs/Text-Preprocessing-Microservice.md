@@ -1,4 +1,3 @@
-# Text Preprocessing Microservice
 
 Text preprocessing works locally, but there is also the option to host a **microservice** for this.
 The benefit is that the models do not need to be loaded each time, saving some runtime (and local memory).
