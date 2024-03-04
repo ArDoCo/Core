@@ -1,1 +1,1 @@
-[ArDoCo](https://ardoco.de): Architecture Documentation Consistency - Providin TLR and inconsistency analyses between formal models and informal documentation
+[ArDoCo](https://ardoco.de): **Ar**chitecture **Do**cumentation **Co**nsistency - Providing TLR and Inconsistency Detection between formal models and informal documentation
