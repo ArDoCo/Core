@@ -1,7 +1,8 @@
+# Linking Sketches and Software Architecture (LiSSA)
+
 The LiSSA approach aims to connect sketches and informal diagrams (such as class diagrams, component diagrams, ...) with
 formal models like component models.
 
-## Linking Sketches and Software Architecture (LiSSA)
 The following diagram shows the pipeline that is planned for the LiSSA approach.
 
 ```mermaid
@@ -14,7 +15,7 @@ stateDiagram-v2
     RecommendationGeneration
     ConnectionGeneration
     InconsistencyDetection
-    
+
     DiagramDetection --> RecommendationGeneration
     TextPreprocessing --> TextExtraction
     ArchitectureModel --> RecommendationGeneration
