@@ -1,5 +1,5 @@
 /* Licensed under MIT 2024. */
-package edu.kit.kastel.mcse.ardoco.id.tests;
+package edu.kit.kastel.mcse.ardoco.tlr.tests;
 
 import com.tngtech.archunit.junit.AnalyzeClasses;
 

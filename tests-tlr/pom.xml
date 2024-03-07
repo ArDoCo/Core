@@ -11,6 +11,18 @@
 
   <dependencies>
     <dependency>
+      <groupId>io.github.ardoco.core</groupId>
+      <artifactId>pipeline-core</artifactId>
+      <version>${revision}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.github.ardoco.core</groupId>
+      <artifactId>tests-base</artifactId>
+      <version>${revision}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>io.github.ardoco.tlr</groupId>
       <artifactId>connection-generator</artifactId>
       <version>${revision}</version>
@@ -20,12 +32,6 @@
       <groupId>io.github.ardoco.tlr</groupId>
       <artifactId>model-provider</artifactId>
       <version>${revision}</version>
-    </dependency>
-    <dependency>
-      <groupId>io.github.ardoco.core</groupId>
-      <artifactId>pipeline-core</artifactId>
-      <version>${revision}</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>io.github.ardoco.tlr</groupId>
@@ -41,12 +47,6 @@
     <dependency>
       <groupId>io.github.ardoco.tlr</groupId>
       <artifactId>recommendation-generator</artifactId>
-      <version>${revision}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.github.ardoco.core</groupId>
-      <artifactId>tests-base</artifactId>
       <version>${revision}</version>
       <scope>test</scope>
     </dependency>

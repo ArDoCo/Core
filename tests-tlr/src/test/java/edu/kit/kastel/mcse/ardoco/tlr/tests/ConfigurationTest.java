@@ -1,5 +1,5 @@
 /* Licensed under MIT 2022-2024. */
-package edu.kit.kastel.mcse.ardoco.id.tests;
+package edu.kit.kastel.mcse.ardoco.tlr.tests;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
