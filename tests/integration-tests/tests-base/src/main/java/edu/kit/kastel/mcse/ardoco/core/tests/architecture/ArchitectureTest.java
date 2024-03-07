@@ -73,7 +73,7 @@ public class ArchitectureTest {
             .layer("TextExtractor")
             .definedBy("..textextraction..")
             .layer("ModelExtractor")
-            .definedBy("..core.models..")
+            .definedBy("..models..")
             .layer("RecommendationGenerator")
             .definedBy("..recommendationgenerator..")
             .layer("ConnectionGenerator")
