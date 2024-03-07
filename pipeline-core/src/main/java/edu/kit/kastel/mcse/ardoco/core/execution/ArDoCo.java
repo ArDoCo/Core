@@ -27,6 +27,7 @@ public final class ArDoCo extends Pipeline {
     /**
      * Default constructor to adhere simplify tests that do not care about the project's name. Additionally, it is needed for testing the configurations
      */
+    @SuppressWarnings("unused")
     private ArDoCo() {
         this("");
     }

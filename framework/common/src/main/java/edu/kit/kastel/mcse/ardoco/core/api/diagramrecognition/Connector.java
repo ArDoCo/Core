@@ -11,6 +11,7 @@ public final class Connector implements Serializable {
     private List<String> connectedBoxes;
     private List<TextBox> texts = new ArrayList<>();
 
+    @SuppressWarnings("unused")
     private Connector() {
         // Jackson JSON
     }

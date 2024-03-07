@@ -31,6 +31,7 @@ public final class CodeModel extends Model {
     @JsonIgnore
     private boolean initialized;
 
+    @SuppressWarnings("unused")
     private CodeModel() {
         // Jackson
         this.initialized = false;
