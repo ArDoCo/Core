@@ -1,4 +1,4 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code;
 
 import java.util.ArrayList;
@@ -15,6 +15,7 @@ public final class ClassUnit extends Datatype {
     @JsonProperty
     private final List<String> content;
 
+    @SuppressWarnings("unused")
     private ClassUnit() {
         // Jackson
         content = new ArrayList<>();

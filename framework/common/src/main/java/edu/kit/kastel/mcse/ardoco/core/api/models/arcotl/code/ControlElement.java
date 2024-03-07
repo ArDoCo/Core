@@ -1,4 +1,4 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 @JsonTypeName("ControlElement")
 public final class ControlElement extends ComputationalObject {
 
+    @SuppressWarnings("unused")
     private ControlElement() {
         // Jackson
     }

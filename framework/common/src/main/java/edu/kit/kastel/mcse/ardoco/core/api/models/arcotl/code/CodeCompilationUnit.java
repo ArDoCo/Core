@@ -1,4 +1,4 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code;
 
 import java.util.ArrayList;
@@ -24,6 +24,7 @@ public final class CodeCompilationUnit extends CodeModule {
     @JsonProperty
     private ProgrammingLanguage language;
 
+    @SuppressWarnings("unused")
     private CodeCompilationUnit() {
         // Jackson
     }

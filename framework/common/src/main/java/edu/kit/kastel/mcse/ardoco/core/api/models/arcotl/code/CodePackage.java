@@ -1,4 +1,4 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code;
 
 import java.util.SortedSet;
@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 @JsonTypeName("CodePackage")
 public final class CodePackage extends CodeModule {
 
+    @SuppressWarnings("unused")
     private CodePackage() {
         // Jackson
     }
