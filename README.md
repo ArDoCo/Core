@@ -53,7 +53,3 @@ For snapshot releases, make sure to add the following repository
 ## Attribution
 
 The initial version of this project is based on the master thesis [Linking Software Architecture Documentation and Models](https://doi.org/10.5445/IR/1000126194).
-
-## Acknowledgements
-
-This work was supported by funding from the topic Engineering Secure Systems of the Helmholtz Association (HGF) and by KASTEL Security Research Labs (46.23.01).
