@@ -7,15 +7,12 @@
   <version>${revision}</version>
   <packaging>pom</packaging>
 
-  <name>ArDoCo (Core) - The Consistency Analyzer</name>
+  <name>ArDoCo - The Consistency Analyzer: Core Framework</name>
   <description>The goal of this project is to connect architecture documentation and models while identifying missing
         or deviating elements (inconsistencies). An element can be any representable item of the model, like a component
         or a relation. To do so, we first create trace links and then make use of them and other information to identify
         inconsistencies. ArDoCo is actively developed by researchers of the Modelling for Continuous Software
-        Engineering (MCSE) group of KASTEL - Institute of Information Security and Dependability at the KIT.
-        This work was supported by funding from the topic Engineering Secure Systems of the Helmholtz Association (HGF)
-        and by KASTEL Security Research Labs
-        (46.23.01).</description>
+        Engineering (MCSE) group of KASTEL - Institute of Information Security and Dependability at the KIT.</description>
   <url>https://github.com/ArDoCo/Core</url>
   <licenses>
     <license>
@@ -71,7 +68,7 @@
   </distributionManagement>
 
   <properties>
-    <revision>0.42.0-SNAPSHOT</revision>
+    <revision>1.0.0-SNAPSHOT</revision>
     <ardoco.version>${revision}</ardoco.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -145,7 +142,6 @@
         <version>2.15.1</version>
       </dependency>
 
-      <!-- Commons -->
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
@@ -173,8 +169,6 @@
         <artifactId>eclipse-collections</artifactId>
         <version>${eclipse-collections.version}</version>
       </dependency>
-
-      <!-- Eclipse collections -->
       <dependency>
         <groupId>org.eclipse.collections</groupId>
         <artifactId>eclipse-collections-api</artifactId>
@@ -184,30 +178,6 @@
         <groupId>org.eclipse.jgit</groupId>
         <artifactId>org.eclipse.jgit</artifactId>
         <version>6.8.0.202311291450-r</version>
-      </dependency>
-      <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-api</artifactId>
-        <version>${junit.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-engine</artifactId>
-        <version>${junit.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-params</artifactId>
-        <version>${junit.version}</version>
-        <scope>test</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.junit.vintage</groupId>
-        <artifactId>junit-vintage-engine</artifactId>
-        <version>${junit.version}</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.mockito</groupId>
@@ -252,6 +222,30 @@
       <groupId>com.google.errorprone</groupId>
       <artifactId>error_prone_core</artifactId>
       <version>${error-prone.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
