@@ -10,6 +10,8 @@
 
   <artifactId>report</artifactId>
   <packaging>jar</packaging>
+  <name>Report</name>
+  <description>This module is used to create reports for SonarCloud and similar.</description>
 
   <properties>
     <maven.deploy.skip>true</maven.deploy.skip>
@@ -33,11 +35,6 @@
       <groupId>io.github.ardoco.core</groupId>
       <artifactId>text-provider-json</artifactId>
       <version>${revision}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
-      <scope>test</scope>
     </dependency>
   </dependencies>
 
