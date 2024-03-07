@@ -11,13 +11,13 @@
 
   <dependencies>
     <dependency>
-      <groupId>io.github.ardoco.core</groupId>
+      <groupId>io.github.ardoco.tlr</groupId>
       <artifactId>connection-generator</artifactId>
       <version>${revision}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>io.github.ardoco.core</groupId>
+      <groupId>io.github.ardoco.tlr</groupId>
       <artifactId>model-provider</artifactId>
       <version>${revision}</version>
     </dependency>
@@ -28,7 +28,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>io.github.ardoco.core</groupId>
+      <groupId>io.github.ardoco.tlr</groupId>
       <artifactId>pipeline-tlr</artifactId>
       <version>${revision}</version>
       <exclusions>
@@ -39,7 +39,7 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>io.github.ardoco.core</groupId>
+      <groupId>io.github.ardoco.tlr</groupId>
       <artifactId>recommendation-generator</artifactId>
       <version>${revision}</version>
       <scope>test</scope>
@@ -51,13 +51,13 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>io.github.ardoco.core</groupId>
+      <groupId>io.github.ardoco.tlr</groupId>
       <artifactId>text-extraction</artifactId>
       <version>${revision}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>io.github.ardoco.core</groupId>
+      <groupId>io.github.ardoco.tlr</groupId>
       <artifactId>text-preprocessing</artifactId>
       <version>${revision}</version>
       <scope>test</scope>

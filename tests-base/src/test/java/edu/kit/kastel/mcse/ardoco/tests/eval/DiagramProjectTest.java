@@ -11,13 +11,13 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.DiagramProject;
+import edu.kit.kastel.mcse.ardoco.id.tests.eval.DiagramProject;
 
 class DiagramProjectTest {
 
     @DisplayName("Test Diagram Project")
     @ParameterizedTest(name = "{0}")
-    @MethodSource("edu.kit.kastel.mcse.ardoco.core.tests.eval.DiagramProject#getNonHistoricalProjects")
+    @MethodSource("edu.kit.kastel.mcse.ardoco.id.tests.eval.DiagramProject#getNonHistoricalProjects")
     @Order(1)
     void getDiagramsFromGoldstandard(DiagramProject diagramProject) throws IOException {
         assertEquals(-1L, Files.mismatch(diagramProject.getDiagramsGoldStandardFile().toPath(), diagramProject.getDiagramsGoldStandardFile().toPath()));
