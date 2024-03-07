@@ -11,22 +11,22 @@
   <artifactId>text-provider-json</artifactId>
   <packaging>jar</packaging>
   <name>TextProvider JSON</name>
+  <description>Definition of the JSON schema for the TextProvider</description>
 
   <dependencies>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+    </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
       <version>${jackson.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.fasterxml.jackson.datatype</groupId>
-      <artifactId>jackson-datatype-jsr310</artifactId>
-      <version>${jackson.version}</version>
-    </dependency>
-    <dependency>
       <groupId>com.networknt</groupId>
       <artifactId>json-schema-validator</artifactId>
-      <version>1.3.2</version>
+      <version>1.3.3</version>
     </dependency>
     <dependency>
       <groupId>io.github.ardoco.core</groupId>
@@ -34,19 +34,12 @@
       <version>${ardoco.version}</version>
     </dependency>
     <dependency>
-      <groupId>io.vertx</groupId>
-      <artifactId>vertx-json-schema</artifactId>
-      <version>4.5.3</version>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
-      <scope>test</scope>
+      <groupId>org.eclipse.collections</groupId>
+      <artifactId>eclipse-collections-api</artifactId>
     </dependency>
   </dependencies>
 </project>
