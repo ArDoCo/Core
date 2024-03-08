@@ -42,15 +42,16 @@ public class ArchitectureTest {
             .haveSimpleName("Model")
             .should()
             .onlyHaveDependentClassesThat()
-            .resideInAnyPackage("..models..", "..connectiongenerator..", "..inconsistency..", "..pipeline..", "..common..", "..output..", "..tests..");
+            .resideInAnyPackage("..models..", "..connectiongenerator..", "..inconsistency..", "..id..", "..pipeline..", "..common..", "..output..",
+                    "..tests..");
 
     @ArchTest
     public static final ArchRule linksOnlyAfterConnectionGenerator = classes().that()
             .haveSimpleNameEndingWith("Link")
             .should()
             .onlyHaveDependentClassesThat()
-            .resideInAnyPackage("..connectiongenerator..", "..codetraceability..", "..tracelinks..", "..inconsistency..", "..pipeline..", "..common..",
-                    "..api..", "..tests..");
+            .resideInAnyPackage("..connectiongenerator..", "..codetraceability..", "..tracelinks..", "..inconsistency..", "..id..", "..pipeline..",
+                    "..common..", "..api..", "..tests..");
 
     @ArchTest
     public static final ArchRule usingLinkAsNamingOnlyInConnectionGenerator = classes().that()
@@ -63,7 +64,7 @@ public class ArchitectureTest {
             .haveSimpleNameContaining("Inconsistency")
             .should()
             .onlyHaveDependentClassesThat()
-            .resideInAnyPackage("..inconsistency..", "..execution..", "..api..", "..common..", "..tests..");
+            .resideInAnyPackage("..inconsistency..", "..id..", "..execution..", "..api..", "..common..", "..tests..");
 
     @ArchTest
     public static final ArchRule layerRule = layeredArchitecture().consideringAllDependencies()
@@ -79,7 +80,7 @@ public class ArchitectureTest {
             .layer("ConnectionGenerator")
             .definedBy("..connectiongenerator..")
             .layer("InconsistencyDetection")
-            .definedBy("..inconsistency..")
+            .definedBy("..inconsistency..", "..id..")
             .layer("CodeTraceability")
             .definedBy("..codetraceability..")
             .layer("Pipeline")
