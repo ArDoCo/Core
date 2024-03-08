@@ -4,7 +4,7 @@
   <parent>
     <groupId>io.github.ardoco.core</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0-SNAPSHOT</version>
   </parent>
   <groupId>io.github.ardoco.id</groupId>
   <artifactId>parent-id</artifactId>
@@ -68,7 +68,7 @@
   </distributionManagement>
 
   <properties>
-    <revision>1.0.0</revision>
+    <revision>1.1.0-SNAPSHOT</revision>
     <ardoco.version>${revision}</ardoco.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
