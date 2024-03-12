@@ -17,6 +17,8 @@ jobs:
     with:
       with-submodules: true
       runs-on: self-hosted
+      install-self: false
+      dependencies: "https://github.com/ArDoCo/TLR.git"
     secrets:
       SONAR_TOKEN: ${{secrets.SONAR_TOKEN}}
 
