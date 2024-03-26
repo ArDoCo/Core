@@ -1,14 +1,14 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureEntity;
 
 /**
  * An architecture item of an architecture model. A possible candidate for the
  * architecture endpoint of a trace link that connects corresponding elements of
  * an architecture model and a code model.
  */
-public abstract sealed class ArchitectureItem extends Entity permits ArchitectureComponent, ArchitectureInterface, ArchitectureMethod {
+public abstract sealed class ArchitectureItem extends ArchitectureEntity permits ArchitectureComponent, ArchitectureInterface, ArchitectureMethod {
 
     /**
      * Creates a new architecture item with the specified name.

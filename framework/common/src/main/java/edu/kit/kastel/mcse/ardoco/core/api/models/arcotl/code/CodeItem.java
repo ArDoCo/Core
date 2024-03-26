@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
+import edu.kit.kastel.mcse.ardoco.core.api.models.CodeEntity;
 
 /**
  * A code item of a code model.
@@ -22,13 +22,14 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
         @JsonSubTypes.Type(value = ComputationalObject.class, name = "ComputationalObject"), //
         @JsonSubTypes.Type(value = Datatype.class, name = "Datatype") //
 })
-public abstract sealed class CodeItem extends Entity permits CodeModule, ComputationalObject, Datatype {
+public abstract sealed class CodeItem extends CodeEntity permits CodeModule, ComputationalObject, Datatype {
 
     @JsonIgnore
     protected CodeItemRepository codeItemRepository;
 
     CodeItem() {
         // Jackson
+        super(null);
     }
 
     /**

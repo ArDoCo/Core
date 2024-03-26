@@ -24,15 +24,19 @@ import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistentSentence;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.ModelInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.TextInconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureEntity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.LegacyModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadCodeTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadSamTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SamCodeTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TransitiveTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
+import edu.kit.kastel.mcse.ardoco.core.api.text.SentenceEntity;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
@@ -62,7 +66,7 @@ public record ArDoCoResult(DataRepository dataRepository) {
      * @param modelId the ID of the model that should be traced
      * @return Trace links for the model with the given id
      */
-    public ImmutableSet<SadSamTraceLink> getTraceLinksForModel(String modelId) {
+    public ImmutableSet<TraceLink<SentenceEntity, ArchitectureEntity>> getTraceLinksForModel(String modelId) {
         ConnectionState connectionState = getConnectionState(modelId);
         if (connectionState != null) {
             return connectionState.getTraceLinks();
@@ -78,8 +82,9 @@ public record ArDoCoResult(DataRepository dataRepository) {
      */
     public ImmutableSortedSet<String> getTraceLinksForModelAsStrings(String modelId) {
         var formatString = "%s,%d";
-        return getTraceLinksForModel(modelId).collect(tl -> String.format(formatString, tl.getModelElementUid(), tl.getSentenceNumber() + 1))
-                .toImmutableSortedSet();
+        return getTraceLinksForModel(modelId).collect(tl -> String.format(formatString, tl.getSecondEndpoint().getId(), tl.getFirstEndpoint()
+                .getSentence()
+                .getSentenceNumber() + 1)).toImmutableSortedSet();
     }
 
     /**
@@ -87,8 +92,8 @@ public record ArDoCoResult(DataRepository dataRepository) {
      *
      * @return set of Trace links
      */
-    public ImmutableList<SadSamTraceLink> getAllTraceLinks() {
-        MutableSet<SadSamTraceLink> traceLinks = Sets.mutable.empty();
+    public ImmutableList<TraceLink<SentenceEntity, ArchitectureEntity>> getAllTraceLinks() {
+        MutableSet<TraceLink<SentenceEntity, ArchitectureEntity>> traceLinks = Sets.mutable.empty();
 
         for (var modelId : getModelIds()) {
             if (getModelState(modelId).getMetamodel() == Metamodel.ARCHITECTURE)
@@ -103,16 +108,16 @@ public record ArDoCoResult(DataRepository dataRepository) {
      * @return Trace links as Strings
      */
     public List<String> getAllTraceLinksAsBeautifiedStrings() {
-        return getAllTraceLinks().toSortedList(Comparator.comparingInt(SadSamTraceLink::getSentenceNumber))
+        return getAllTraceLinks().toSortedList(Comparator.comparingInt(tl -> tl.getFirstEndpoint().getSentence().getSentenceNumber()))
                 .collect(ArDoCoResult::formatTraceLinksHumanReadable);
     }
 
-    private static String formatTraceLinksHumanReadable(SadSamTraceLink traceLink) {
-        String modelElementName = traceLink.getInstanceLink().getModelInstance().getFullName();
-        String modelElementUid = traceLink.getModelElementUid();
+    private static String formatTraceLinksHumanReadable(TraceLink<SentenceEntity, ArchitectureEntity> traceLink) {
+        String modelElementName = ((ModelInstance) traceLink.getSecondEndpoint()).getFullName();
+        String modelElementUid = traceLink.getSecondEndpoint().getId();
         String modelInfo = String.format("%s (%s)", modelElementName, modelElementUid);
 
-        var sentence = traceLink.getSentence();
+        var sentence = traceLink.getFirstEndpoint().getSentence();
         int sentenceNumber = sentence.getSentenceNumberForOutput();
         String sentenceInfo = String.format("S%3d: \"%s\"", sentenceNumber, sentence.getText());
 
@@ -124,7 +129,7 @@ public record ArDoCoResult(DataRepository dataRepository) {
      *
      * @return the list of {@link SamCodeTraceLink SamCodeTraceLinks}.
      */
-    public List<SamCodeTraceLink> getSamCodeTraceLinks() {
+    public List<TraceLink<ArchitectureEntity, CodeCompilationUnit>> getSamCodeTraceLinks() {
         var samCodeTraceabilityState = getCodeTraceabilityState();
         if (samCodeTraceabilityState != null)
             return samCodeTraceabilityState.getSamCodeTraceLinks().toList();
@@ -136,7 +141,7 @@ public record ArDoCoResult(DataRepository dataRepository) {
      *
      * @return the list of {@link TransitiveTraceLink TransitiveTraceLinks}.
      */
-    public List<SadCodeTraceLink> getSadCodeTraceLinks() {
+    public List<TraceLink<SentenceEntity, CodeCompilationUnit>> getSadCodeTraceLinks() {
         var samCodeTraceabilityState = getCodeTraceabilityState();
         if (samCodeTraceabilityState != null)
             return samCodeTraceabilityState.getSadCodeTraceLinks().toList();

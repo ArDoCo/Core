@@ -1,14 +1,12 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks;
 
-public class SadCodeTraceLink extends TraceLink {
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
+import edu.kit.kastel.mcse.ardoco.core.api.text.SentenceEntity;
 
-    public SadCodeTraceLink(EndpointTuple endpointTuple) {
-        super(endpointTuple);
-    }
+public class SadCodeTraceLink extends TraceLink<SentenceEntity, CodeCompilationUnit> {
 
-    @Override
-    public String toString() {
-        return getEndpointTuple().toString();
+    public SadCodeTraceLink(SentenceEntity e1, CodeCompilationUnit e2) {
+        super(e1, e2);
     }
 }

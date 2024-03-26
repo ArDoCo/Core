@@ -1,31 +1,30 @@
-/* Licensed under MIT 2021-2023. */
+/* Licensed under MIT 2021-2024. */
 package edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks;
 
 import java.util.Objects;
 
+import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureEntity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
+import edu.kit.kastel.mcse.ardoco.core.api.text.SentenceEntity;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 
 /**
  * Represents a trace link. This is a convenience data class that takes the necessary info from {@link InstanceLink} and
  * the specific {@link ModelInstance} and {@link Word} that are used in this trace link.
  */
-public class SadSamTraceLink extends TraceLink {
-    private final InstanceLink instanceLink;
-    private final Word word;
+public class SadSamTraceLink extends TraceLink<SentenceEntity, ArchitectureEntity> {
+
+    private final Sentence sentence;
+    private final ModelInstance modelInstance;
 
     /**
-     * Create a trace link based on a {@link InstanceLink} and a concrete {@link ModelInstance} along with a concrete
-     * {@link Word}.
-     *
-     * @param instanceLink InstanceLink of this trace link
-     * @param word         word that the trace link points to
+     * Create a trace link based on a {@link Sentence} and a concrete {@link ModelInstance} .
      */
-    public SadSamTraceLink(InstanceLink instanceLink, Word word) {
-        super(new EndpointTuple(instanceLink.getTextualInstance(), instanceLink.getModelInstance()));
-        this.instanceLink = instanceLink;
-        this.word = word;
+    public SadSamTraceLink(Sentence sentence, ModelInstance modelInstance) {
+        super(new SentenceEntity(sentence), modelInstance);
+        this.sentence = sentence;
+        this.modelInstance = modelInstance;
     }
 
     /**
@@ -34,7 +33,7 @@ public class SadSamTraceLink extends TraceLink {
      * @return sentence number of the word that the trace link is based on.
      */
     public int getSentenceNumber() {
-        return word.getSentenceNo();
+        return sentence.getSentenceNumber();
     }
 
     /**
@@ -43,7 +42,7 @@ public class SadSamTraceLink extends TraceLink {
      * @return the sentence of the word that the trace link is based on.
      */
     public Sentence getSentence() {
-        return word.getSentence();
+        return sentence;
     }
 
     /**
@@ -52,25 +51,7 @@ public class SadSamTraceLink extends TraceLink {
      * @return Uid of the model element that the trace link is based on.
      */
     public String getModelElementUid() {
-        return instanceLink.getModelInstance().getUid();
-    }
-
-    /**
-     * Get the {@link InstanceLink} that the trace link is based on.
-     *
-     * @return {@link InstanceLink} that the trace link is based on.
-     */
-    public InstanceLink getInstanceLink() {
-        return instanceLink;
-    }
-
-    /**
-     * Get the probability/confidence of this trace link
-     *
-     * @return probability/confidence of this trace link
-     */
-    public double getConfidence() {
-        return instanceLink.getConfidence();
+        return modelInstance.getUid();
     }
 
     /**

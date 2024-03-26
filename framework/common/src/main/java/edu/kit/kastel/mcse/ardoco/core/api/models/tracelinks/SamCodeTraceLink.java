@@ -1,8 +1,9 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks;
 
 import java.util.Objects;
 
+import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureEntity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
 
@@ -11,7 +12,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUni
  * endpoint. Trace links are created to connect corresponding elements of an
  * architecture and a code model.
  */
-public class SamCodeTraceLink extends TraceLink {
+public class SamCodeTraceLink extends TraceLink<ArchitectureEntity, CodeCompilationUnit> {
 
     /**
      * Creates a new trace link between an architecture endpoint and a code endpoint
@@ -21,7 +22,7 @@ public class SamCodeTraceLink extends TraceLink {
      * @param codeEndpoint         the code endpoint
      */
     public SamCodeTraceLink(ArchitectureItem architectureEndpoint, CodeCompilationUnit codeEndpoint) {
-        super(new EndpointTuple(architectureEndpoint, codeEndpoint));
+        super(architectureEndpoint, codeEndpoint);
     }
 
     @Override
