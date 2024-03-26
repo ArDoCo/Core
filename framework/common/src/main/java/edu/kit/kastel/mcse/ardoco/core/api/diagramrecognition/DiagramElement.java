@@ -10,7 +10,7 @@ import java.util.Optional;
 import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 import org.eclipse.collections.impl.factory.SortedSets;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureEntity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelElement;
 import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityComparable;
 import edu.kit.kastel.mcse.ardoco.core.data.GlobalConfiguration;
@@ -19,7 +19,7 @@ import edu.kit.kastel.mcse.ardoco.core.data.GlobalConfiguration;
  * This box represents a geometrical shape with an arbitrary amount of text from a diagram. An element can be uniquely identified by its bounding box or UID and
  * the diagram it belongs to.
  */
-public abstract class DiagramElement extends Entity implements SimilarityComparable<DiagramElement> {
+public abstract class DiagramElement extends ArchitectureEntity implements SimilarityComparable<DiagramElement> {
     private final Diagram diagram;
     private DiagramElement parent;
     private List<DiagramElement> children;

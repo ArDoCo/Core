@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021-2023. */
+/* Licensed under MIT 2021-2024. */
 package edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks;
 
 import java.util.Arrays;
@@ -21,11 +21,11 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
  * An InstanceLink defines a link between an {@link RecommendedInstance} and an {@link ModelInstance}.
  */
 @Deterministic
-public class InstanceLink extends EndpointTuple {
+public class InstanceLink extends EndpointTuple<RecommendedInstance, ModelInstance> {
 
     private final RecommendedInstance textualInstance;
     private final ModelInstance modelInstance;
-    private Confidence confidence;
+    private final Confidence confidence;
 
     /**
      * Create a new instance link
