@@ -3,18 +3,15 @@ package edu.kit.kastel.mcse.ardoco.core.common.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import edu.kit.kastel.mcse.ardoco.core.api.InputDiagramData;
 import edu.kit.kastel.mcse.ardoco.core.api.InputTextData;
 import edu.kit.kastel.mcse.ardoco.core.api.PreprocessingData;
 import edu.kit.kastel.mcse.ardoco.core.api.codetraceability.CodeTraceabilityState;
 import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionStates;
-import edu.kit.kastel.mcse.ardoco.core.api.diagramrecognition.DiagramRecognitionState;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistencyStates;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationStates;
@@ -245,40 +242,6 @@ public final class DataRepositoryHelper {
      */
     public static void putPreprocessingData(DataRepository dataRepository, PreprocessingData preprocessingData) {
         dataRepository.addData(PreprocessingData.ID, preprocessingData);
-    }
-
-    /**
-     * Checks whether there is {@link DiagramRecognitionState} stored within the provided {@link DataRepository}
-     *
-     * @param dataRepository the DataRepository to access
-     * @return true, if there is {@link DiagramRecognitionState} within the {@link DataRepository}; else, false
-     */
-    public static boolean hasDiagramRecognitionState(DataRepository dataRepository) {
-        return dataRepository.getData(DiagramRecognitionState.ID, DiagramRecognitionState.class).isPresent();
-    }
-
-    /**
-     * Returns the {@link DiagramRecognitionState} stored within the provided {@link DataRepository}. This does not check if there actually is one and will fail
-     * and throw an {@link java.util.NoSuchElementException} if the state is not present. To make sure that there is data present, use
-     * {@link #hasConnectionStates(DataRepository)}
-     *
-     * @param dataRepository the DataRepository to access
-     * @return the state
-     */
-    public static DiagramRecognitionState getDiagramRecognitionState(DataRepository dataRepository) {
-        return dataRepository.getData(DiagramRecognitionState.ID, DiagramRecognitionState.class).orElseThrow();
-    }
-
-    /**
-     * Save diagram directory as {@link InputDiagramData}.
-     *
-     * @param dataRepository   the data repository
-     * @param diagramDirectory the diagram directory
-     */
-    public static void putDiagramDirectory(DataRepository dataRepository, File diagramDirectory) {
-        InputDiagramData data = new InputDiagramData(diagramDirectory);
-        dataRepository.addData(InputDiagramData.ID, data);
-
     }
 
     /**
