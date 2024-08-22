@@ -12,6 +12,7 @@ import edu.kit.kastel.mcse.ardoco.core.execution.runner.ArDoCoRunner;
 import edu.kit.kastel.mcse.ardoco.id.InconsistencyChecker;
 import edu.kit.kastel.mcse.ardoco.tlr.connectiongenerator.ConnectionGenerator;
 import edu.kit.kastel.mcse.ardoco.tlr.models.agents.ArCoTLModelProviderAgent;
+import edu.kit.kastel.mcse.ardoco.tlr.models.agents.ArchitectureConfiguration;
 import edu.kit.kastel.mcse.ardoco.tlr.recommendationgenerator.RecommendationGenerator;
 import edu.kit.kastel.mcse.ardoco.tlr.text.providers.TextPreprocessingAgent;
 import edu.kit.kastel.mcse.ardoco.tlr.textextraction.TextExtraction;
@@ -52,8 +53,9 @@ public class ArDoCoForInconsistencyDetection extends ArDoCoRunner {
         DataRepositoryHelper.putInputText(dataRepository, text);
 
         arDoCo.addPipelineStep(TextPreprocessingAgent.get(additionalConfigs, dataRepository));
-        ArCoTLModelProviderAgent arCoTLModelProviderAgent = ArCoTLModelProviderAgent.get(inputArchitectureModel, architectureModelType, null, additionalConfigs,
-                dataRepository);
+        var architectureConfiguration = new ArchitectureConfiguration(inputArchitectureModel, architectureModelType);
+        ArCoTLModelProviderAgent arCoTLModelProviderAgent = ArCoTLModelProviderAgent.getArCoTLModelProviderAgent(dataRepository, additionalConfigs,
+                architectureConfiguration, null);
         arDoCo.addPipelineStep(arCoTLModelProviderAgent);
         arDoCo.addPipelineStep(TextExtraction.get(additionalConfigs, dataRepository));
         arDoCo.addPipelineStep(RecommendationGenerator.get(additionalConfigs, dataRepository));
