@@ -51,8 +51,7 @@ class SamCodeTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecovery
 
     @Override
     protected ImmutableList<String> getGoldStandard(CodeProject codeProject) {
-        ImmutableList<String> samCodeGoldStandard = codeProject.getSamCodeGoldStandard();
-        return samCodeGoldStandard;
+        return codeProject.getSamCodeGoldStandard();
     }
 
     @Override

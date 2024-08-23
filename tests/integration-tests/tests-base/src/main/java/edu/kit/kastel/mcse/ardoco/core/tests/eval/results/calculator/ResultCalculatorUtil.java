@@ -1,95 +1,73 @@
 /* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.tests.eval.results.calculator;
 
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
+import java.util.List;
 
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.EvaluationMetrics;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResultVector;
+import org.eclipse.collections.api.factory.Sets;
+import org.eclipse.collections.api.list.ImmutableList;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
+import edu.kit.kastel.mcse.ardoco.metrics.ClassificationMetricsCalculator;
+import edu.kit.kastel.mcse.ardoco.metrics.result.AggregatedClassificationResult;
+import edu.kit.kastel.mcse.ardoco.metrics.result.AggregationType;
+import edu.kit.kastel.mcse.ardoco.metrics.result.SingleClassificationResult;
 
 /**
  * This utility class provides methods to form the average of several {@link EvaluationResults}
  */
 public final class ResultCalculatorUtil {
+    private static final Logger logger = LoggerFactory.getLogger(ResultCalculatorUtil.class);
 
     private ResultCalculatorUtil() {
         throw new IllegalAccessError();
     }
 
-    public static <T> EvaluationResults<T> calculateAverageResults(ImmutableList<EvaluationResults<T>> results) {
-        int norm = results.size();
-        EvaluationResultVector<T> vector = new EvaluationResultVector<>();
+    public static <T> EvaluationResults<T> calculateMacroAverageResults(ImmutableList<EvaluationResults<T>> results) {
+        var averages = getAverages(results);
+        if (averages == null)
+            return null;
 
-        for (var result : results) {
-            var weight = result.getWeight();
-            if (weight <= 0) {
-                norm--;
-                continue;
-            }
-            vector.add(result);
-        }
-
-        vector.scale(norm);
-        return vector.toEvaluationResults();
+        var macroAverage = averages.stream().filter(it -> it.getType() == AggregationType.MACRO_AVERAGE).findFirst().orElseThrow();
+        return evaluationResults(macroAverage);
     }
 
     public static <T> EvaluationResults<T> calculateWeightedAverageResults(ImmutableList<EvaluationResults<T>> results) {
-        double weight = 0.0;
-        double precision = .0;
-        double recall = 0.0;
-        double f1 = 0.0;
-        double accuracy = 0.0;
-        double specificity = 0.0;
-        double phi = 0.0;
-        double phiMax = 0.0;
-        double phiOverPhiMax = 0.0;
-        int truePositives = 0;
-        int trueNegatives = 0;
-        int falsePositives = 0;
-        int falseNegatives = 0;
+        var averages = getAverages(results);
+        if (averages == null)
+            return null;
 
-        for (var result : results) {
-            double localWeight = result.getWeight();
-            weight += localWeight;
-
-            precision += localWeight * result.precision();
-            recall += localWeight * result.recall();
-            f1 += localWeight * result.f1();
-
-            accuracy += localWeight * result.accuracy();
-            specificity += localWeight * result.specificity();
-            phi += localWeight * result.phiCoefficient();
-            phiMax += localWeight * result.phiCoefficientMax();
-            phiOverPhiMax += localWeight * result.phiOverPhiMax();
-
-            truePositives += result.truePositives().size();
-            falseNegatives += result.falseNegatives().size();
-            falsePositives += result.falsePositives().size();
-            trueNegatives += result.trueNegatives();
-
-        }
-
-        precision = precision / weight;
-        recall = recall / weight;
-        f1 = f1 / weight;
-        accuracy = accuracy / weight;
-        specificity = specificity / weight;
-
-        if (truePositives > 0) {
-            phi = EvaluationMetrics.calculatePhiCoefficient(truePositives, falsePositives, falseNegatives, trueNegatives);
-            phiMax = EvaluationMetrics.calculatePhiCoefficientMax(truePositives, falsePositives, falseNegatives, trueNegatives);
-            phiOverPhiMax = EvaluationMetrics.calculatePhiOverPhiMax(truePositives, falsePositives, falseNegatives, trueNegatives);
-
-            return new EvaluationResults<>(precision, recall, f1, Lists.immutable.empty(), 0, Lists.immutable.empty(), Lists.immutable.empty(), accuracy, phi,
-                    specificity, phiMax, phiOverPhiMax);
-        }
-
-        phi = phi / weight;
-        phiMax /= weight;
-        phiOverPhiMax /= weight;
-        return new EvaluationResults<>(precision, recall, f1, Lists.immutable.empty(), 0, Lists.immutable.empty(), Lists.immutable.empty(), accuracy, phi,
-                specificity, phiMax, phiOverPhiMax);
-
+        var macroAverage = averages.stream().filter(it -> it.getType() == AggregationType.WEIGHTED_AVERAGE).findFirst().orElseThrow();
+        return evaluationResults(macroAverage);
     }
+
+    public static EvaluationResults<String> calculateMicroAverageResults(ImmutableList<EvaluationResults<String>> results) {
+        var averages = getAverages(results);
+        if (averages == null)
+            return null;
+
+        var microAverage = averages.stream().filter(it -> it.getType() == AggregationType.MICRO_AVERAGE).findFirst().orElseThrow();
+        return evaluationResults(microAverage);
+    }
+
+    private static <T> EvaluationResults<T> evaluationResults(AggregatedClassificationResult average) {
+        var weightedAverageAsSingle = new SingleClassificationResult<T>(Sets.mutable.empty(), Sets.mutable.empty(), Sets.mutable.empty(), null, average
+                .getPrecision(), average.getRecall(), average.getF1(), average.getAccuracy(), average.getSpecificity(), average.getPhiCoefficient(), average
+                        .getPhiCoefficientMax(), average.getPhiOverPhiMax());
+
+        return new EvaluationResults<>(weightedAverageAsSingle);
+    }
+
+    private static <T> List<AggregatedClassificationResult> getAverages(ImmutableList<EvaluationResults<T>> results) {
+        if (results.isEmpty()) {
+            throw new IllegalArgumentException("No results to calculate average from");
+        }
+
+        var calculator = ClassificationMetricsCalculator.getInstance();
+        var classifications = results.stream().map(EvaluationResults::classificationResult).toList();
+
+        return calculator.calculateAverages(classifications, null);
+    }
+
 }
