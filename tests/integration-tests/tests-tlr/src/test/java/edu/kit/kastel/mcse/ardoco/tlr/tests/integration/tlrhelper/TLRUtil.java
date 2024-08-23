@@ -28,8 +28,8 @@ public final class TLRUtil {
      * @param data the {@link EvaluationResults}
      * @return the trace links
      */
-    public static ImmutableList<TestLink> getTraceLinks(DataRepository data) {
-        var traceLinks = Lists.mutable.<TestLink>empty();
+    public static ImmutableList<ModelElementSentenceLink> getTraceLinks(DataRepository data) {
+        var traceLinks = Lists.mutable.<ModelElementSentenceLink>empty();
         var connectionStates = data.getData(ConnectionStates.ID, ConnectionStates.class).orElseThrow();
         var modelStates = data.getData(ModelStates.ID, ModelStates.class).orElseThrow();
 
@@ -40,7 +40,7 @@ public final class TLRUtil {
                 .map(connectionStates::getConnectionState)
                 .toList();
         for (var connectionState : connectionStatesList) {
-            traceLinks.addAll(connectionState.getTraceLinks().stream().map(TestLink::new).toList());
+            traceLinks.addAll(connectionState.getTraceLinks().stream().map(ModelElementSentenceLink::new).toList());
         }
         return traceLinks.toImmutable();
     }

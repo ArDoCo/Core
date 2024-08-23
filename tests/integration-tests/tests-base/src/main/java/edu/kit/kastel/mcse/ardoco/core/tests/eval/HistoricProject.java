@@ -22,59 +22,50 @@ import edu.kit.kastel.mcse.ardoco.core.execution.ConfigurationHelper;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 
 /**
- * This enum captures the different case studies that are used for evaluation in the integration tests.
+ * This enum captures the different case studies that are used for evaluation in the integration tests (only historic versions).
  */
-public enum Project implements GoldStandardProject {
-    MEDIASTORE(//
-            "MS", //
-            "/benchmark/mediastore/model_2016/pcm/ms.repository", //
-            "/benchmark/mediastore/text_2016/mediastore.txt", //
-            "/benchmark/mediastore/goldstandards/goldstandard_sad_2016-sam_2016.csv", //
-            "/configurations/ms/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "/benchmark/mediastore/goldstandards/goldstandard_sad_2016-sam_2016_UME.csv", //
-            new ExpectedResults(.999, .620, .765, .978, .778, .999), //
-            new ExpectedResults(.127, .793, .220, .685, .227, .679) //
-    ), //
-    TEASTORE( //
-            "TS", //
+public enum HistoricProject implements GoldStandardProject {
+    TEASTORE_HISTORICAL( //
+            "TS-H", //
             "/benchmark/teastore/model_2020/pcm/teastore.repository", //
-            "/benchmark/teastore/text_2020/teastore.txt", //
-            "/benchmark/teastore/goldstandards/goldstandard_sad_2020-sam_2020.csv", //
+            "/benchmark/teastore/text_2018/teastore_2018_AB.txt", //
+            "/benchmark/teastore/goldstandards/goldstandard_sad_2018-sam_2020_AB.csv", //
             "/configurations/ts/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "/benchmark/teastore/goldstandards/goldstandard_sad_2020-sam_2020_UME.csv", //
+            "/benchmark/teastore/goldstandards/goldstandard_sad_2018-sam_2020_AB_UME.csv", //
             new ExpectedResults(.999, .740, .850, .984, .853, .999), //
-            new ExpectedResults(.950, .703, .808, .980, .808, .998) //
+            new ExpectedResults(.082, .983, .153, .332, .147, .291) //
     ), //
-    TEAMMATES( //
-            "TM", //
+    TEAMMATES_HISTORICAL( //
+            "TM-H", //
             "/benchmark/teammates/model_2021/pcm/teammates.repository", //
-            "/benchmark/teammates/text_2021/teammates.txt", //
-            "/benchmark/teammates/goldstandards/goldstandard_sad_2021-sam_2021.csv", //
+            "/benchmark/teammates/text_2015/teammates_2015.txt", //
+            "/benchmark/teammates/goldstandards/goldstandard_sad_2015-sam_2021.csv", //
             "/configurations/tm/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "/benchmark/teammates/goldstandards/goldstandard_sad_2021-sam_2021_UME.csv", //
-            new ExpectedResults(.555, .882, .681, .965, .688, .975), //
-            new ExpectedResults(.147, .745, .245, .852, .287, .856) //
+            "/benchmark/teammates/goldstandards/goldstandard_sad_2015-sam_2021_UME.csv", //
+            new ExpectedResults(.524, .695, .597, .970, .589, .979), //
+            new ExpectedResults(.161, .695, .262, .878, .295, .884) //
     ), //
-    BIGBLUEBUTTON( //
-            "BBB", "/benchmark/bigbluebutton/model_2021/pcm/bbb.repository", //
-            "/benchmark/bigbluebutton/text_2021/bigbluebutton.txt", //
-            "/benchmark/bigbluebutton/goldstandards/goldstandard_sad_2021-sam_2021.csv", //
+    BIGBLUEBUTTON_HISTORICAL( //
+            "BBB-H", "/benchmark/bigbluebutton/model_2021/pcm/bbb.repository", //
+            "/benchmark/bigbluebutton/text_2015/bigbluebutton_2015.txt", //
+            "/benchmark/bigbluebutton/goldstandards/goldstandard_sad_2015-sam_2021.csv", //
             "/configurations/bbb/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "/benchmark/bigbluebutton/goldstandards/goldstandard_sad_2021-sam_2021_UME.csv", //
-            new ExpectedResults(.875, .826, .850, .985, .835, .985), //
-            new ExpectedResults(.666, .461, .545, .960, .535, .988) //
+            "/benchmark/bigbluebutton/goldstandards/goldstandard_sad_2015-sam_2021_UME.csv", //
+            new ExpectedResults(.807, .617, .699, .978, .695, .993), //
+            new ExpectedResults(.048, .176, .076, .829, .018, .857) //
     ), //
-    JABREF( //
-            "JR", "/benchmark/jabref/model_2021/pcm/jabref.repository", //
-            "/benchmark/jabref/text_2021/jabref.txt", //
-            "/benchmark/jabref/goldstandards/goldstandard_sad_2021-sam_2021.csv", //
+
+    JABREF_HISTORICAL( //
+            "JR-H", "/benchmark/jabref/model_2021/pcm/jabref.repository", //
+            "/benchmark/jabref/text_2016/jabref_2016.txt", //
+            "/benchmark/jabref/goldstandards/goldstandard_sad_2016-sam_2021.csv", //
             "/configurations/jabref/filterlists_all.txt", // options: filterlists_none.txt, filterlists_onlyCommon.txt, filterlists_all.txt
-            "/benchmark/jabref/goldstandards/goldstandard_sad_2021-sam_2021_UME.csv", //
-            new ExpectedResults(.899, .999, .946, .973, .932, .966), //
-            new ExpectedResults(1.0, .444, .615, .871, .617, 1.0) //
+            "/benchmark/jabref/goldstandards/goldstandard_sad_2016-sam_2021_UME.csv", //
+            new ExpectedResults(.817, .999, .899, .966, .886, .960), //
+            new ExpectedResults(.083, .111, .095, .683, -0.094, .784) //
     );
 
-    private static final Logger logger = LoggerFactory.getLogger(Project.class);
+    private static final Logger logger = LoggerFactory.getLogger(HistoricProject.class);
 
     private final String alias;
     private final String model;
@@ -86,7 +77,7 @@ public enum Project implements GoldStandardProject {
     private final ExpectedResults expectedInconsistencyResults;
     private final SortedSet<String> resourceNames;
 
-    Project(String alias, String model, String textFile, String goldStandardTraceabilityLinkRecovery, String configurationsFile,
+    HistoricProject(String alias, String model, String textFile, String goldStandardTraceabilityLinkRecovery, String configurationsFile,
             String goldStandardMissingTextForModelElement, ExpectedResults expectedTraceLinkResults, ExpectedResults expectedInconsistencyResults) {
         this.alias = alias;
         this.model = model;

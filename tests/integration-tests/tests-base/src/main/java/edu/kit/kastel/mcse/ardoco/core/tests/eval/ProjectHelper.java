@@ -5,10 +5,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Helper class for {@link GoldStandardProject} implementations.
@@ -18,7 +16,6 @@ public class ProjectHelper {
      * If set to false. The CodeProject will place the codeModel.acm file from the benchmark to the project directory.
      */
     public static final AtomicBoolean ANALYZE_CODE_DIRECTLY = new AtomicBoolean(false);
-    private static final Logger logger = LoggerFactory.getLogger(ProjectHelper.class);
 
     private ProjectHelper() {
         throw new IllegalAccessError();
@@ -33,7 +30,7 @@ public class ProjectHelper {
     public static File loadFileFromResources(String resource) {
         InputStream is = ProjectHelper.class.getResourceAsStream(resource);
         if (is == null)
-            return null;
+            throw new IllegalArgumentException("Resource not found: " + resource);
         try {
             File temporaryFile = File.createTempFile("ArDoCo", ".tmp");
             temporaryFile.deleteOnExit();
@@ -44,8 +41,7 @@ public class ProjectHelper {
             }
             return temporaryFile;
         } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-            return null;
+            throw new UncheckedIOException(e);
         }
     }
 }

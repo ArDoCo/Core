@@ -2,10 +2,8 @@
 package edu.kit.kastel.mcse.ardoco.id.tests.integration;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -23,7 +21,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -31,7 +28,6 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistentSentence;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.ModelInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelElement;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.ArchitectureModel;
@@ -43,7 +39,6 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.GoldStandardProject;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.Project;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ResultMatrix;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.calculator.ResultCalculatorUtil;
 import edu.kit.kastel.mcse.ardoco.id.tests.integration.inconsistencyhelper.HoldBackRunResultsProducer;
 import edu.kit.kastel.mcse.ardoco.id.types.MissingModelInstanceInconsistency;
@@ -57,30 +52,13 @@ import edu.kit.kastel.mcse.ardoco.tlr.models.connectors.generators.architecture.
  * are the spots of inconsistency then. We run this multiple times so each element was held back once.
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class InconsistencyDetectionEvaluationIT {
+class InconsistencyDetectionEvaluationIT {
     private static final Logger logger = LoggerFactory.getLogger(InconsistencyDetectionEvaluationIT.class);
 
     private static final String OUTPUT = "target/testout";
     public static final String DIRECTORY_NAME = "ardoco_eval_id";
 
-    /**
-     * missing models in model
-     */
-    private static final MutableList<EvaluationResults<String>> OVERALL_MME_RESULTS = Lists.mutable.empty(); //
-    private static final MutableList<EvaluationResults<String>> OVERALL_MME_RESULTS_BASELINE = Lists.mutable.empty();
-
-    /**
-     * undocumented models
-     */
-    private static final MutableList<EvaluationResults<String>> OVERALL_UME_RESULTS = Lists.mutable.empty();
-
-    private static final Map<GoldStandardProject, Pair<EvaluationResults<String>, ExpectedResults>> MME_RESULTS = new LinkedHashMap<>();
-    private static final Map<GoldStandardProject, EvaluationResults<String>> MME_RESULTS_BASELINE = new LinkedHashMap<>();
-    private static final Map<GoldStandardProject, EvaluationResults<String>> UME_RESULTS = new LinkedHashMap<>();
-
     private static final String LINE_SEPARATOR = System.lineSeparator();
-    private static boolean ranBaseline = false;
-    private static final Map<GoldStandardProject, ImmutableList<InconsistentSentence>> inconsistentSentencesPerProject = new LinkedHashMap<>();
     private static final Map<GoldStandardProject, ArDoCoResult> arDoCoResults = new LinkedHashMap<>();
 
     /**
@@ -94,18 +72,9 @@ public class InconsistencyDetectionEvaluationIT {
      */
     @DisplayName("Evaluating MME-Inconsistency Detection")
     @ParameterizedTest(name = "Evaluating MME-Inconsistency for {0}")
-    @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_NONE, names = "^.*HISTORICAL$")
+    @EnumSource(Project.class)
     @Order(1)
-    protected void missingModelElementInconsistencyIT(GoldStandardProject goldStandardProject) {
-        runMissingModelElementInconsistencyEval(goldStandardProject, goldStandardProject.getExpectedInconsistencyResults());
-    }
-
-    @EnabledIfEnvironmentVariable(named = "testHistoric", matches = ".*")
-    @DisplayName("Evaluating MME-Inconsistency Detection (Historic)")
-    @ParameterizedTest(name = "Evaluating MME-Inconsistency for {0}")
-    @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_ALL, names = "^.*HISTORICAL$")
-    @Order(2)
-    protected void missingModelElementInconsistencyHistoricIT(GoldStandardProject goldStandardProject) {
+    void missingModelElementInconsistencyIT(GoldStandardProject goldStandardProject) {
         runMissingModelElementInconsistencyEval(goldStandardProject, goldStandardProject.getExpectedInconsistencyResults());
     }
 
@@ -115,11 +84,8 @@ public class InconsistencyDetectionEvaluationIT {
 
         var results = calculateEvaluationResults(goldStandardProject, runs);
 
-        OVERALL_MME_RESULTS.addAll(results);
+        EvaluationResults<String> weightedResults = ResultCalculatorUtil.calculateMicroAverageResults(results.toImmutable());
 
-        EvaluationResults<String> weightedResults = ResultCalculatorUtil.calculateWeightedAverageResults(results.toImmutable());
-
-        MME_RESULTS.put(goldStandardProject, Tuples.pair(weightedResults, expectedInconsistencyResults));
         logResultsMissingModelInconsistency(goldStandardProject, weightedResults, expectedInconsistencyResults);
         checkResults(weightedResults, expectedInconsistencyResults);
 
@@ -135,24 +101,14 @@ public class InconsistencyDetectionEvaluationIT {
     @EnabledIfEnvironmentVariable(named = "testBaseline", matches = ".*")
     @DisplayName("Evaluating MME-Inconsistency Detection Baseline")
     @ParameterizedTest(name = "Evaluating Baseline for {0}")
-    @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_NONE, names = "^.*HISTORICAL$")
+    @EnumSource(Project.class)
     @Order(5)
-    protected void missingModelElementInconsistencyBaselineIT(GoldStandardProject goldStandardProject) {
-        runMissingModelElementInconsistencyBaselineEval(goldStandardProject);
-    }
-
-    @EnabledIfEnvironmentVariable(named = "testBaseline", matches = ".*")
-    @DisplayName("Evaluating MME-Inconsistency Detection Baseline (Historical)")
-    @ParameterizedTest(name = "Evaluating Baseline for {0}")
-    @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_ALL, names = "^.*HISTORICAL$")
-    @Order(6)
-    protected void missingModelElementInconsistencyBaselineHistoricIT(GoldStandardProject goldStandardProject) {
+    void missingModelElementInconsistencyBaselineIT(GoldStandardProject goldStandardProject) {
         runMissingModelElementInconsistencyBaselineEval(goldStandardProject);
     }
 
     protected void runMissingModelElementInconsistencyBaselineEval(GoldStandardProject goldStandardProject) {
         logger.info("Start evaluation of MME-inconsistency baseline for {}", goldStandardProject.getProjectName());
-        ranBaseline = true;
 
         HoldBackRunResultsProducer holdBackRunResultsProducer = new HoldBackRunResultsProducer();
         Map<ModelElement, ArDoCoResult> runs = holdBackRunResultsProducer.produceHoldBackRunResults(goldStandardProject, true);
@@ -160,10 +116,8 @@ public class InconsistencyDetectionEvaluationIT {
         Assertions.assertTrue(runs != null && !runs.isEmpty());
 
         var results = calculateEvaluationResults(goldStandardProject, runs);
-        OVERALL_MME_RESULTS_BASELINE.addAll(results);
 
         var weightedResults = ResultCalculatorUtil.calculateWeightedAverageResults(results.toImmutable());
-        MME_RESULTS_BASELINE.put(goldStandardProject, weightedResults);
 
         if (logger.isInfoEnabled()) {
             String name = goldStandardProject.getProjectName() + " missing model inconsistency";
@@ -178,18 +132,9 @@ public class InconsistencyDetectionEvaluationIT {
      */
     @DisplayName("Evaluate Inconsistency Analyses For MissingTextForModelElementInconsistencies")
     @ParameterizedTest(name = "Evaluating UME-inconsistency for {0}")
-    @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_NONE, names = "^.*HISTORICAL$")
+    @EnumSource(Project.class)
     @Order(10)
-    protected void missingTextInconsistencyIT(GoldStandardProject goldStandardProject) {
-        runMissingTextInconsistencyEval(goldStandardProject);
-    }
-
-    @EnabledIfEnvironmentVariable(named = "testHistoric", matches = ".*")
-    @DisplayName("Evaluate Inconsistency Analyses For MissingTextForModelElementInconsistencies " + "(Historical)")
-    @ParameterizedTest(name = "Evaluating UME-inconsistency for {0}")
-    @EnumSource(value = Project.class, mode = EnumSource.Mode.MATCH_ALL, names = "^.*HISTORICAL$")
-    @Order(11)
-    protected void missingTextInconsistencyHistoricIT(GoldStandardProject goldStandardProject) {
+    void missingTextInconsistencyIT(GoldStandardProject goldStandardProject) {
         runMissingTextInconsistencyEval(goldStandardProject);
     }
 
@@ -204,9 +149,6 @@ public class InconsistencyDetectionEvaluationIT {
         MutableList<String> expectedInconsistentModelElements = goldStandardProject.getMissingTextForModelElementGoldStandard();
         var inconsistentModelElements = projectResults.getAllModelInconsistencies().collect(ModelInconsistency::getModelInstanceUid).toList();
         var results = TestUtil.compareInconsistencies(projectResults, inconsistentModelElements.toImmutable(), expectedInconsistentModelElements.toImmutable());
-
-        OVERALL_UME_RESULTS.add(results);
-        UME_RESULTS.put(goldStandardProject, results);
 
         String name = goldStandardProject.getProjectName() + " missing text inconsistency";
         TestUtil.logExplicitResults(logger, name, results);
@@ -228,77 +170,6 @@ public class InconsistencyDetectionEvaluationIT {
         return new HoldBackRunResultsProducer();
     }
 
-    @EnabledIfEnvironmentVariable(named = "overallResults", matches = ".*")
-    @Test
-    @Order(999)
-    void overAllResultsIT() {
-        var weightedResults = ResultCalculatorUtil.calculateWeightedAverageResults(OVERALL_MME_RESULTS.toImmutable());
-        var macroResults = ResultCalculatorUtil.calculateAverageResults(OVERALL_MME_RESULTS.toImmutable());
-
-        Assertions.assertNotNull(weightedResults);
-        Assertions.assertNotNull(macroResults);
-
-        var weightedUMEResults = ResultCalculatorUtil.calculateWeightedAverageResults(OVERALL_UME_RESULTS.toImmutable());
-        var macroUMEResults = ResultCalculatorUtil.calculateAverageResults(OVERALL_UME_RESULTS.toImmutable());
-
-        Assertions.assertNotNull(weightedUMEResults);
-        Assertions.assertNotNull(macroUMEResults);
-
-        if (logger.isInfoEnabled()) {
-            var mmeBaselineMacro = ResultCalculatorUtil.calculateAverageResults(OVERALL_MME_RESULTS_BASELINE.toImmutable());
-            var mmeBaselineWeighted = ResultCalculatorUtil.calculateWeightedAverageResults(OVERALL_MME_RESULTS_BASELINE.toImmutable());
-            ;
-
-            var mmeOverallWeightedName = "MME Overall Weighted";
-            TestUtil.logResults(logger, mmeOverallWeightedName, weightedResults);
-
-            var mmeOverallMacroName = "MME Overall Macro";
-            TestUtil.logResults(logger, mmeOverallMacroName, macroResults);
-
-            var mmeBaselineOverallWeightedName = "MME BASELINE Overall Weighted";
-            var mmeBaselineOverallMacroName = "MME BASELINE Overall Macro";
-            if (ranBaseline) {
-                TestUtil.logResults(logger, mmeBaselineOverallWeightedName, mmeBaselineWeighted);
-                TestUtil.logResults(logger, mmeBaselineOverallMacroName, mmeBaselineMacro);
-            }
-
-            var umeOverallWeightedName = "Undoc. Model Element Overall Weighted";
-            TestUtil.logResults(logger, umeOverallWeightedName, weightedUMEResults);
-            var umeOverallMacroName = "Undoc. Model Element Overall Macro";
-            TestUtil.logResults(logger, umeOverallMacroName, macroUMEResults);
-
-            logger.info("MME");
-            for (var entry : MME_RESULTS.entrySet()) {
-                TestUtil.logExtendedResultsAsRow(logger, "Proj", entry.getKey().getAlias(), entry.getValue().getOne());
-            }
-            TestUtil.logExtendedResultsAsRow(logger, "-", "Macro", macroResults);
-            TestUtil.logExtendedResultsAsRow(logger, "-", "Weighted", weightedResults);
-
-            if (ranBaseline) {
-                logger.info("MME Baseline");
-                for (var entry : MME_RESULTS_BASELINE.entrySet()) {
-                    TestUtil.logExtendedResultsAsRow(logger, "Proj", entry.getKey().getAlias(), entry.getValue());
-                }
-                TestUtil.logExtendedResultsAsRow(logger, "-", "Macro", mmeBaselineMacro);
-                TestUtil.logExtendedResultsAsRow(logger, "-", "Weighted", mmeBaselineWeighted);
-            }
-
-            logger.info("UME");
-            for (var entry : UME_RESULTS.entrySet()) {
-                TestUtil.logExtendedResultsAsRow(logger, "Proj", entry.getKey().getAlias(), entry.getValue());
-            }
-            TestUtil.logExtendedResultsAsRow(logger, "-", "Macro", macroUMEResults);
-            TestUtil.logExtendedResultsAsRow(logger, "-", "Weighted", weightedUMEResults);
-        }
-
-        try {
-            writeOutput(weightedResults, macroResults);
-            writeOverallOutputMissingTextInconsistency(weightedUMEResults, macroUMEResults);
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e.getCause());
-        }
-    }
-
     private MutableList<EvaluationResults<String>> calculateEvaluationResults(GoldStandardProject goldStandardProject, Map<ModelElement, ArDoCoResult> runs) {
 
         Map<ModelElement, EvaluationResults<String>> results = Maps.mutable.empty();
@@ -310,15 +181,14 @@ public class InconsistencyDetectionEvaluationIT {
             if (runEvalResults != null) {
                 results.put(modelInstance, runEvalResults);
             } else {
-                // for the base case, instead of calculating results, save the found inconsistencies.
-                inconsistentSentencesPerProject.put(goldStandardProject, arDoCoResult.getInconsistentSentences());
+                logger.error("Evaluation results for {} are null.", modelInstance);
             }
         }
         return Lists.mutable.ofAll(results.values());
     }
 
     private EvaluationResults<String> evaluateRun(GoldStandardProject goldStandardProject, ModelElement removedElement, ArDoCoResult arDoCoResult) {
-        var modelId = arDoCoResult.getModelIds().get(0);
+        var modelId = arDoCoResult.getModelIds().getFirst();
 
         ImmutableList<MissingModelInstanceInconsistency> inconsistencies = arDoCoResult.getInconsistenciesOfTypeForModel(modelId,
                 MissingModelInstanceInconsistency.class);
@@ -436,49 +306,6 @@ public class InconsistencyDetectionEvaluationIT {
         return Tuples.pair(outputBuilder, detailedOutputBuilder);
     }
 
-    private static void writeOutput(EvaluationResults<String> weightedResults, EvaluationResults<String> macroResults) throws IOException {
-        var evalDir = Path.of(OUTPUT).resolve(DIRECTORY_NAME);
-        Files.createDirectories(evalDir);
-        var outputFile = evalDir.resolve("base_results.md");
-
-        var outputBuilder = new StringBuilder("# Inconsistency Detection").append(LINE_SEPARATOR);
-
-        var resultString = TestUtil.createResultLogString("Overall Weighted", weightedResults);
-        outputBuilder.append(resultString).append(LINE_SEPARATOR);
-        resultString = TestUtil.createResultLogString("Overall Macro", macroResults);
-        outputBuilder.append(resultString).append(LINE_SEPARATOR);
-        outputBuilder.append(LINE_SEPARATOR);
-
-        for (var entry : inconsistentSentencesPerProject.entrySet()) {
-            var goldStandardProject = entry.getKey();
-            outputBuilder.append("## ").append(goldStandardProject.getProjectName());
-            outputBuilder.append(LINE_SEPARATOR);
-            var inconsistentSentences = entry.getValue();
-            for (var inconsistentSentence : inconsistentSentences) {
-                outputBuilder.append(inconsistentSentence.getInfoString());
-                outputBuilder.append(LINE_SEPARATOR);
-            }
-        }
-
-        Files.writeString(outputFile, outputBuilder.toString(), StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-    }
-
-    //FIXME Something is wrong with this.
-    private static void writeOverallOutputMissingTextInconsistency(EvaluationResults<String> weightedResults, EvaluationResults<String> macroResults)
-            throws IOException {
-        var evalDir = Path.of(OUTPUT).resolve(DIRECTORY_NAME);
-        Files.createDirectories(evalDir);
-        var outputFile = evalDir.resolve("_MissingTextInconsistency_Overall_Results.md");
-
-        var outputBuilder = new StringBuilder("# Inconsistency Detection - Missing Text For Model " + "Element").append(LINE_SEPARATOR);
-
-        var resultString = TestUtil.createResultLogString("Overall Weighted", weightedResults);
-        outputBuilder.append(resultString).append(LINE_SEPARATOR);
-        resultString = TestUtil.createResultLogString("Overall Macro", macroResults);
-        outputBuilder.append(resultString).append(LINE_SEPARATOR);
-        outputBuilder.append(LINE_SEPARATOR);
-    }
-
     private static String getOverallResultsString(MutableList<EvaluationResults<String>> results) {
         StringBuilder outputBuilder = new StringBuilder();
         outputBuilder.append("###").append(LINE_SEPARATOR);
@@ -529,18 +356,15 @@ public class InconsistencyDetectionEvaluationIT {
 
     private static void inspectRun(StringBuilder outputBuilder, StringBuilder detailedOutputBuilder, MutableList<EvaluationResults<String>> allResults,
             ArDoCoResult arDoCoResult, EvaluationResults<String> result) {
-        var truePositives = result.truePositives().toList();
+        var truePositives = result.truePositives();
         appendResults(truePositives, detailedOutputBuilder, "True Positives", arDoCoResult, outputBuilder);
 
-        var falsePositives = result.falsePositives().toList();
+        var falsePositives = result.falsePositives();
         appendResults(falsePositives, detailedOutputBuilder, "False Positives", arDoCoResult, outputBuilder);
 
-        var falseNegatives = result.falseNegatives().toList();
+        var falseNegatives = result.falseNegatives();
         appendResults(falseNegatives, detailedOutputBuilder, "False Negatives", arDoCoResult, outputBuilder);
-
-        var results = EvaluationResults.createEvaluationResults(new ResultMatrix<>(truePositives.toImmutable(), 0, falsePositives.toImmutable(), falseNegatives
-                .toImmutable()));
-        allResults.add(results);
+        allResults.add(result);
     }
 
     private static void appendResults(List<String> resultList, StringBuilder detailedOutputBuilder, String type, ArDoCoResult arDoCoResult,
@@ -588,7 +412,7 @@ public class InconsistencyDetectionEvaluationIT {
     }
 
     private static ImmutableList<MissingModelInstanceInconsistency> getInitialInconsistencies(ArDoCoResult arDoCoResult) {
-        var id = arDoCoResult.getModelIds().get(0);
+        var id = arDoCoResult.getModelIds().getFirst();
         return arDoCoResult.getInconsistenciesOfTypeForModel(id, MissingModelInstanceInconsistency.class);
     }
 }
