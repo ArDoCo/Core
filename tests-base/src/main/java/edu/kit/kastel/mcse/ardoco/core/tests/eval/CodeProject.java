@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -159,8 +160,7 @@ public enum CodeProject implements GoldStandardProject {
             loadCodeModelFromResourcesIfNeeded();
             return getTemporaryCodeLocation().getAbsolutePath();
         } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-            return null;
+            throw new UncheckedIOException(e);
         }
     }
 

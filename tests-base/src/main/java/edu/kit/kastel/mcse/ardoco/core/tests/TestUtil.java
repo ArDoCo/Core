@@ -3,17 +3,14 @@ package edu.kit.kastel.mcse.ardoco.core.tests;
 
 import java.util.Locale;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.eclipse.collections.api.collection.ImmutableCollection;
-import org.eclipse.collections.api.factory.Lists;
-import org.eclipse.collections.api.list.ImmutableList;
 import org.slf4j.Logger;
 
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.EvaluationResults;
 import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
-import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ResultMatrix;
+import edu.kit.kastel.mcse.ardoco.metrics.ClassificationMetricsCalculator;
 
 /**
  * This utility class provides methods for running the tests, especially regarding the evaluations.
@@ -37,20 +34,18 @@ public class TestUtil {
         Set<T> distinctTraceLinks = new java.util.LinkedHashSet<>(results.castToCollection());
         Set<T> distinctGoldStandard = new java.util.LinkedHashSet<>(goldStandard.castToCollection());
 
-        // True Positives are the trace links that are contained on both lists
-        Set<T> truePositives = distinctTraceLinks.stream().filter(distinctGoldStandard::contains).collect(Collectors.toSet());
-        ImmutableList<T> truePositivesList = Lists.immutable.ofAll(truePositives);
+        int sentences = arDoCoResult.getText().getSentences().size();
+        int modelElements = 0;
+        for (var model : arDoCoResult.getModelIds()) {
+            modelElements += arDoCoResult.getModelState(model).getInstances().size();
+        }
 
-        // False Positives are the trace links that are only contained in the result set
-        Set<T> falsePositives = distinctTraceLinks.stream().filter(tl -> !distinctGoldStandard.contains(tl)).collect(Collectors.toSet());
-        ImmutableList<T> falsePositivesList = Lists.immutable.ofAll(falsePositives);
+        int confusionMatrixSum = sentences * modelElements;
 
-        // False Negatives are the trace links that are only contained in the gold standard
-        Set<T> falseNegatives = distinctGoldStandard.stream().filter(tl -> !distinctTraceLinks.contains(tl)).collect(Collectors.toSet());
-        ImmutableList<T> falseNegativesList = Lists.immutable.ofAll(falseNegatives);
+        var calculator = ClassificationMetricsCalculator.getInstance();
 
-        int trueNegatives = TestUtil.calculateTrueNegativesForTLR(arDoCoResult, truePositives.size(), falsePositives.size(), falseNegatives.size());
-        return EvaluationResults.createEvaluationResults(new ResultMatrix<>(truePositivesList, trueNegatives, falsePositivesList, falseNegativesList));
+        var classification = calculator.calculateMetrics(distinctTraceLinks, distinctGoldStandard, confusionMatrixSum);
+        return new EvaluationResults<>(classification);
     }
 
     /**
@@ -67,57 +62,11 @@ public class TestUtil {
         Set<T> distinctTraceLinks = new java.util.LinkedHashSet<>(results.castToCollection());
         Set<T> distinctGoldStandard = new java.util.LinkedHashSet<>(goldStandard.castToCollection());
 
-        // True Positives are the trace links that are contained on both lists
-        Set<T> truePositives = distinctTraceLinks.stream().filter(distinctGoldStandard::contains).collect(Collectors.toSet());
-        ImmutableList<T> truePositivesList = Lists.immutable.ofAll(truePositives);
+        int confusionMatrixSum = arDoCoResult.getText().getSentences().size();
 
-        // False Positives are the trace links that are only contained in the result set
-        Set<T> falsePositives = distinctTraceLinks.stream().filter(tl -> !distinctGoldStandard.contains(tl)).collect(Collectors.toSet());
-        ImmutableList<T> falsePositivesList = Lists.immutable.ofAll(falsePositives);
-
-        // False Negatives are the trace links that are only contained in the gold standard
-        Set<T> falseNegatives = distinctGoldStandard.stream().filter(tl -> !distinctTraceLinks.contains(tl)).collect(Collectors.toSet());
-        ImmutableList<T> falseNegativesList = Lists.immutable.ofAll(falseNegatives);
-
-        int trueNegatives = TestUtil.calculateTrueNegativesForInconsistencies(arDoCoResult, truePositives.size(), falsePositives.size(), falseNegatives.size());
-        return EvaluationResults.createEvaluationResults(new ResultMatrix<>(truePositivesList, trueNegatives, falsePositivesList, falseNegativesList));
-    }
-
-    /**
-     * Calculates the number of true negatives based on the given {@link ArDoCoResult} and the calculated {@link EvaluationResults evaluation results}. Uses the
-     * total sum of all entries in the confusion matrix and then substracts the true positives, false positives, and false negatives.
-     *
-     * @param arDoCoResult   the output of ArDoCo
-     * @param truePositives  nr of true positives
-     * @param falsePositives nr of false positives
-     * @param falseNegatives nr of false negatives
-     * @return the number of true negatives
-     */
-    public static int calculateTrueNegativesForTLR(ArDoCoResult arDoCoResult, int truePositives, int falsePositives, int falseNegatives) {
-        int sentences = arDoCoResult.getText().getSentences().size();
-        int modelElements = 0;
-        for (var model : arDoCoResult.getModelIds()) {
-            modelElements += arDoCoResult.getModelState(model).getInstances().size();
-        }
-
-        int confusionMatrixSum = sentences * modelElements;
-        return confusionMatrixSum - (truePositives + falsePositives + falseNegatives);
-    }
-
-    /**
-     * Calculates the number of true negatives based on the given {@link ArDoCoResult} and the calculated {@link EvaluationResults evaluation results}. Uses the
-     * total sum of all sentences in the {@link ArDoCoResult} and then substracts the true positives, false positives, and false negatives.
-     *
-     * @param arDoCoResult   the output of ArDoCo
-     * @param truePositives  nr of true positives
-     * @param falsePositives nr of false positives
-     * @param falseNegatives nr of false negatives
-     * @return the number of true negatives
-     */
-    public static int calculateTrueNegativesForInconsistencies(ArDoCoResult arDoCoResult, int truePositives, int falsePositives, int falseNegatives) {
-        int numberOfSentences = arDoCoResult.getText().getSentences().size();
-        return numberOfSentences - (truePositives + falsePositives + falseNegatives);
-
+        var calculator = ClassificationMetricsCalculator.getInstance();
+        var classification = calculator.calculateMetrics(distinctTraceLinks, distinctGoldStandard, confusionMatrixSum);
+        return new EvaluationResults<>(classification);
     }
 
     /**
@@ -166,19 +115,6 @@ public class TestUtil {
         var logString = String.format(Locale.ENGLISH, "%n%s:%n\tPrecision:%7d/%d = %.3f%n\tRecall:%10d/%d = %.3f", name, tp, precisionDenominator, results
                 .precision(), tp, recallDenominator, results.recall());
         logger.info(logString);
-    }
-
-    /**
-     * Log the provided {@link EvaluationResults} using the provided logger and name. Additionally, provided the expected results.
-     *
-     * @param logger          Logger to use
-     * @param name            Name to show in the output
-     * @param results         the results
-     * @param expectedResults the expected results
-     */
-    public static void logResultsWithExpected(Logger logger, String name, EvaluationResults<?> results, ExpectedResults expectedResults) {
-        var infoString = String.format(Locale.ENGLISH, "%n%s:%n%s", name, results.getResultStringWithExpected(expectedResults));
-        logger.info(infoString);
     }
 
     public static void logExtendedResultsWithExpected(Logger logger, Object testClass, String name, EvaluationResults<?> results,
