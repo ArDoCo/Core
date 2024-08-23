@@ -1,11 +1,8 @@
 /* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.tlr.tests.integration;
 
-import static edu.kit.kastel.mcse.ardoco.core.tests.eval.ProjectHelper.ANALYZE_CODE_DIRECTLY;
-
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
@@ -25,7 +22,6 @@ class TraceLinkEvaluationIT<T extends GoldStandardProject> {
     protected static final String OUTPUT = "target/testout-tlr-it";
 
     protected static final String LOGGING_ARDOCO_CORE = "org.slf4j.simpleLogger.log.edu.kit.kastel.mcse.ardoco.core";
-    protected static AtomicBoolean analyzeCodeDirectly = ANALYZE_CODE_DIRECTLY;
 
     @BeforeAll
     static void beforeAll() {
@@ -38,7 +34,7 @@ class TraceLinkEvaluationIT<T extends GoldStandardProject> {
     }
 
     private static void cleanUpCodeRepository(CodeProject codeProject) {
-        RepositoryHandler.removeRepository(codeProject.getCodeLocation());
+        RepositoryHandler.removeRepository(codeProject.getCodeLocation(false).getAbsolutePath());
     }
 
     @EnabledIfEnvironmentVariable(named = "testCodeFull", matches = ".*")
@@ -47,11 +43,9 @@ class TraceLinkEvaluationIT<T extends GoldStandardProject> {
     @EnumSource(CodeProject.class)
     @Order(1)
     void evaluateSadSamCodeTlrFullIT(CodeProject project) {
-        analyzeCodeDirectly.set(true);
-        if (analyzeCodeDirectly.get())
-            cleanUpCodeRepository(project);
+        cleanUpCodeRepository(project);
 
-        var evaluation = new SadSamCodeTraceabilityLinkRecoveryEvaluation();
+        var evaluation = new SadSamCodeTraceabilityLinkRecoveryEvaluation(false);
         ArDoCoResult results = evaluation.runTraceLinkEvaluation(project);
         Assertions.assertNotNull(results);
     }
@@ -62,11 +56,9 @@ class TraceLinkEvaluationIT<T extends GoldStandardProject> {
     @EnumSource(value = CodeProject.class)
     @Order(2)
     void evaluateSamCodeTlrFullIT(CodeProject project) {
-        analyzeCodeDirectly.set(true);
-        if (analyzeCodeDirectly.get())
-            cleanUpCodeRepository(project);
+        cleanUpCodeRepository(project);
 
-        var evaluation = new SamCodeTraceabilityLinkRecoveryEvaluation();
+        var evaluation = new SamCodeTraceabilityLinkRecoveryEvaluation(false);
         var results = evaluation.runTraceLinkEvaluation(project);
         Assertions.assertNotNull(results);
     }
@@ -76,11 +68,7 @@ class TraceLinkEvaluationIT<T extends GoldStandardProject> {
     @EnumSource(CodeProject.class)
     @Order(9)
     void evaluateSadSamCodeTlrIT(CodeProject codeProject) {
-        analyzeCodeDirectly.set(false);
-        if (analyzeCodeDirectly.get())
-            cleanUpCodeRepository(codeProject);
-
-        var evaluation = new SadSamCodeTraceabilityLinkRecoveryEvaluation();
+        var evaluation = new SadSamCodeTraceabilityLinkRecoveryEvaluation(true);
         var results = evaluation.runTraceLinkEvaluation(codeProject);
         Assertions.assertNotNull(results);
 
@@ -92,11 +80,7 @@ class TraceLinkEvaluationIT<T extends GoldStandardProject> {
     @EnumSource(CodeProject.class)
     @Order(10)
     void evaluateSamCodeTlrIT(CodeProject project) {
-        analyzeCodeDirectly.set(false);
-        if (analyzeCodeDirectly.get())
-            cleanUpCodeRepository(project);
-
-        var evaluation = new SamCodeTraceabilityLinkRecoveryEvaluation();
+        var evaluation = new SamCodeTraceabilityLinkRecoveryEvaluation(true);
         ArDoCoResult results = evaluation.runTraceLinkEvaluation(project);
         Assertions.assertNotNull(results);
     }

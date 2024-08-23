@@ -23,6 +23,13 @@ import edu.kit.kastel.mcse.ardoco.tlr.execution.ArDoCoForSamCodeTraceabilityLink
 
 class SamCodeTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryEvaluation<CodeProject> {
 
+    private final boolean acmFile;
+
+    public SamCodeTraceabilityLinkRecoveryEvaluation(boolean acmFile) {
+        super();
+        this.acmFile = acmFile;
+    }
+
     @Override
     protected boolean resultHasRequiredData(ArDoCoResult arDoCoResult) {
         var traceLinks = arDoCoResult.getSamCodeTraceLinks();
@@ -32,7 +39,7 @@ class SamCodeTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecovery
     @Override
     protected ArDoCoForSamCodeTraceabilityLinkRecovery getAndSetupRunner(CodeProject codeProject) {
         String name = codeProject.name().toLowerCase();
-        File inputCode = getInputCode(codeProject);
+        File inputCode = getInputCode(codeProject, acmFile);
         File inputArchitectureModel = codeProject.getModelFile();
         SortedMap<String, String> additionalConfigsMap = new TreeMap<>();
         File outputDir = new File(OUTPUT);

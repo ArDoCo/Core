@@ -25,6 +25,12 @@ import edu.kit.kastel.mcse.ardoco.core.tests.eval.results.ExpectedResults;
 import edu.kit.kastel.mcse.ardoco.tlr.execution.ArDoCoForSadSamCodeTraceabilityLinkRecovery;
 
 class SadSamCodeTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecoveryEvaluation<CodeProject> {
+    private final boolean acmFile;
+
+    public SadSamCodeTraceabilityLinkRecoveryEvaluation(boolean acmFile) {
+        super();
+        this.acmFile = acmFile;
+    }
 
     @Override
     protected boolean resultHasRequiredData(ArDoCoResult arDoCoResult) {
@@ -37,7 +43,7 @@ class SadSamCodeTraceabilityLinkRecoveryEvaluation extends TraceabilityLinkRecov
         String name = codeProject.name().toLowerCase();
         File textInput = codeProject.getTextFile();
         File inputArchitectureModel = codeProject.getModelFile();
-        File inputCode = getInputCode(codeProject);
+        File inputCode = getInputCode(codeProject, acmFile);
         SortedMap<String, String> additionalConfigsMap = new TreeMap<>();
         File outputDir = new File(OUTPUT);
 

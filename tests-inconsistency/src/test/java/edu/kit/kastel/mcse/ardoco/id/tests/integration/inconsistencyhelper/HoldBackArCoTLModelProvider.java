@@ -16,9 +16,11 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.ArchitectureModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.Model;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureComponent;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
+import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.PipelineAgent;
 import edu.kit.kastel.mcse.ardoco.tlr.models.agents.ArCoTLModelProviderAgent;
 import edu.kit.kastel.mcse.ardoco.tlr.models.connectors.generators.Extractor;
 import edu.kit.kastel.mcse.ardoco.tlr.models.connectors.generators.architecture.pcm.PcmExtractor;
+import edu.kit.kastel.mcse.ardoco.tlr.models.informants.ArCoTLModelProviderInformant;
 
 public class HoldBackArCoTLModelProvider {
 
@@ -72,8 +74,8 @@ public class HoldBackArCoTLModelProvider {
         return components.get(currentHoldBackIndex);
     }
 
-    public ArCoTLModelProviderAgent get(SortedMap<String, String> additionalConfigs, DataRepository dataRepository) {
-        ArCoTLModelProviderAgent agent = new ArCoTLModelProviderAgent(dataRepository, List.of(new Extractor("") {
+    public PipelineAgent get(SortedMap<String, String> additionalConfigs, DataRepository dataRepository) {
+        PipelineAgent agent = new PipelineAgent(List.of(new ArCoTLModelProviderInformant(dataRepository, new Extractor("") {
             @Override
             public Model extractModel() {
                 var elements = new ArrayList<>(initialModel.getContent());
@@ -86,7 +88,12 @@ public class HoldBackArCoTLModelProvider {
             public ModelType getModelType() {
                 return ArchitectureModelType.PCM;
             }
-        }));
+        })), ArCoTLModelProviderAgent.class.getSimpleName(), dataRepository) {
+            @Override
+            protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration) {
+                // empty
+            }
+        };
         agent.applyConfiguration(additionalConfigs);
         return agent;
     }
