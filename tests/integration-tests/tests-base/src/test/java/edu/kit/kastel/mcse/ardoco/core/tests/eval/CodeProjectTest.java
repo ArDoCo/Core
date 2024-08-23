@@ -12,8 +12,7 @@ class CodeProjectTest {
         Assertions.assertNotNull(project);
         Assertions.assertNotNull(project.getCodeRepository());
         Assertions.assertNotNull(project.getCommitHash());
-        Assertions.assertNotNull(project.getCodeLocation());
-        Assertions.assertNotNull(project.getCodeModelDirectory());
+        Assertions.assertNotNull(project.getCodeLocation(true));
         Assertions.assertNotNull(project.getExpectedResultsForSamCode());
         Assertions.assertNotNull(project.getExpectedResultsForSadSamCode());
         Assertions.assertNotNull(project.getSamCodeGoldStandard());

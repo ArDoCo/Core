@@ -1,8 +1,6 @@
 /* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.tlr.tests.integration;
 
-import static edu.kit.kastel.mcse.ardoco.core.tests.eval.ProjectHelper.ANALYZE_CODE_DIRECTLY;
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -42,8 +40,7 @@ class TraceLinkEvaluationSadCodeDirectIT {
     @ParameterizedTest(name = "{0}")
     @EnumSource(CodeProject.class)
     void evaluateSadCodeTlrIT(CodeProject project) {
-        ANALYZE_CODE_DIRECTLY.set(false);
-        var evaluation = new SadCodeTraceabilityLinkRecoveryEvaluation();
+        var evaluation = new SadCodeTraceabilityLinkRecoveryEvaluation(true);
         ArDoCoResult results = evaluation.runTraceLinkEvaluation(project);
         Assertions.assertNotNull(results);
     }
