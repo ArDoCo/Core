@@ -1,11 +1,10 @@
 /* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.tests.eval;
 
+import static edu.kit.kastel.mcse.ardoco.core.tests.eval.ProjectHelper.loadFileFromResources;
+
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -146,40 +145,18 @@ public enum CodeProject implements GoldStandardProject {
     }
 
     /**
-     * {@return path of the code directory}
-     */
-    public String getCodeLocation() {
-        return getTemporaryCodeLocation().getAbsolutePath();
-    }
-
-    /**
-     * {@return the directory of the code model}
-     */
-    public String getCodeModelDirectory() {
-        try {
-            loadCodeModelFromResourcesIfNeeded();
-            return getTemporaryCodeLocation().getAbsolutePath();
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-
-    /**
-     * Loads the code from resources or from the code directoy cache
+     * Get Code Location (ACM File or Temporary Directory)
+     * 
+     * @param acmFile If true, the ACM file is loaded from resources
      *
-     * @throws IOException Can occur during file operations
      */
-    public void loadCodeModelFromResourcesIfNeeded() throws IOException {
-        if (ProjectHelper.ANALYZE_CODE_DIRECTLY.get())
-            return;
-
-        File temporaryCodeLocation = getTemporaryCodeLocation();
-        File codeModelFile = new File(temporaryCodeLocation + "/codeModel.acm");
-        try (InputStream is = getClass().getResourceAsStream(this.codeModelLocationInResources)) {
-            try (FileOutputStream fos = new FileOutputStream(codeModelFile)) {
-                is.transferTo(fos);
-            }
+    public File getCodeLocation(boolean acmFile) {
+        if (acmFile) {
+            // If ACM load file from resources
+            return loadFileFromResources(this.codeModelLocationInResources);
         }
+
+        return getTemporaryCodeLocation();
     }
 
     /**
@@ -202,7 +179,7 @@ public enum CodeProject implements GoldStandardProject {
      * @see TraceLinkUtilities#createTraceLinkString(String, String)
      */
     public ImmutableList<String> getSamCodeGoldStandard() {
-        File samCodeGoldStandardFile = ProjectHelper.loadFileFromResources(samCodeGoldStandardLocation);
+        File samCodeGoldStandardFile = loadFileFromResources(samCodeGoldStandardLocation);
         List<String> lines = getLinesFromGoldStandardFile(samCodeGoldStandardFile);
 
         MutableList<String> goldStandard = Lists.mutable.empty();
@@ -222,7 +199,7 @@ public enum CodeProject implements GoldStandardProject {
      * {@return all lines from the gold standard in csv format}
      */
     public ImmutableList<String> getSadCodeGoldStandard() {
-        File sadCodeGoldStandardFile = ProjectHelper.loadFileFromResources(sadCodeGoldStandardLocation);
+        File sadCodeGoldStandardFile = loadFileFromResources(sadCodeGoldStandardLocation);
         List<String> lines = getLinesFromGoldStandardFile(sadCodeGoldStandardFile);
         return Lists.immutable.ofAll(lines);
     }

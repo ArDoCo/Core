@@ -6,16 +6,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Helper class for {@link GoldStandardProject} implementations.
  */
 public class ProjectHelper {
-    /**
-     * If set to false. The CodeProject will place the codeModel.acm file from the benchmark to the project directory.
-     */
-    public static final AtomicBoolean ANALYZE_CODE_DIRECTLY = new AtomicBoolean(false);
 
     private ProjectHelper() {
         throw new IllegalAccessError();

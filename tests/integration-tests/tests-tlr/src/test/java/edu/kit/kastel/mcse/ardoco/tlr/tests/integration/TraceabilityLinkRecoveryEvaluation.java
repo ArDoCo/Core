@@ -63,13 +63,13 @@ public abstract class TraceabilityLinkRecoveryEvaluation<T extends GoldStandardP
 
     protected abstract boolean resultHasRequiredData(ArDoCoResult potentialResults);
 
-    protected File getInputCode(CodeProject codeProject) {
+    protected File getInputCode(CodeProject codeProject, boolean acmFile) {
         File inputCode;
-        if (TraceLinkEvaluationIT.analyzeCodeDirectly.get()) {
+        if (!acmFile) {
             prepareCode(codeProject);
-            inputCode = new File(codeProject.getCodeLocation());
+            inputCode = codeProject.getCodeLocation(false);
         } else {
-            inputCode = new File(codeProject.getCodeModelDirectory());
+            inputCode = codeProject.getCodeLocation(true);
         }
         return inputCode;
     }
@@ -77,10 +77,10 @@ public abstract class TraceabilityLinkRecoveryEvaluation<T extends GoldStandardP
     protected abstract ArDoCoRunner getAndSetupRunner(T project);
 
     private void prepareCode(CodeProject codeProject) {
-        File codeLocation = new File(codeProject.getCodeLocation());
+        File codeLocation = codeProject.getCodeLocation(false);
 
         if (!codeLocation.exists() || Objects.requireNonNull(codeLocation.listFiles()).length == 0) {
-            RepositoryHandler.shallowCloneRepository(codeProject.getCodeRepository(), codeProject.getCodeLocation(), codeProject.getCommitHash());
+            RepositoryHandler.shallowCloneRepository(codeProject.getCodeRepository(), codeLocation.getAbsolutePath(), codeProject.getCommitHash());
         }
     }
 
