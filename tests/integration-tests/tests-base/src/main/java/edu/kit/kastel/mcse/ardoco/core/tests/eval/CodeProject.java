@@ -1,8 +1,6 @@
 /* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.tests.eval;
 
-import static edu.kit.kastel.mcse.ardoco.core.tests.eval.ProjectHelper.loadFileFromResources;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -152,8 +150,7 @@ public enum CodeProject implements GoldStandardProject {
      */
     public File getCodeLocation(boolean acmFile) {
         if (acmFile) {
-            // If ACM load file from resources
-            return loadFileFromResources(this.codeModelLocationInResources);
+            return ProjectHelper.loadFileFromResources(this.codeModelLocationInResources);
         }
 
         return getTemporaryCodeLocation();
@@ -179,7 +176,7 @@ public enum CodeProject implements GoldStandardProject {
      * @see TraceLinkUtilities#createTraceLinkString(String, String)
      */
     public ImmutableList<String> getSamCodeGoldStandard() {
-        File samCodeGoldStandardFile = loadFileFromResources(samCodeGoldStandardLocation);
+        File samCodeGoldStandardFile = ProjectHelper.loadFileFromResources(samCodeGoldStandardLocation);
         List<String> lines = getLinesFromGoldStandardFile(samCodeGoldStandardFile);
 
         MutableList<String> goldStandard = Lists.mutable.empty();
@@ -199,7 +196,7 @@ public enum CodeProject implements GoldStandardProject {
      * {@return all lines from the gold standard in csv format}
      */
     public ImmutableList<String> getSadCodeGoldStandard() {
-        File sadCodeGoldStandardFile = loadFileFromResources(sadCodeGoldStandardLocation);
+        File sadCodeGoldStandardFile = ProjectHelper.loadFileFromResources(sadCodeGoldStandardLocation);
         List<String> lines = getLinesFromGoldStandardFile(sadCodeGoldStandardFile);
         return Lists.immutable.ofAll(lines);
     }
@@ -212,7 +209,7 @@ public enum CodeProject implements GoldStandardProject {
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
         }
-        lines.remove(0);
+        lines.removeFirst();
         lines = lines.stream().filter(Predicate.not(String::isBlank)).toList();
         return lines;
     }
