@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022-2023. */
+/* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.api.models;
 
 /**
@@ -12,7 +12,11 @@ public enum ArchitectureModelType implements ModelType {
     /**
      * Unified Modeling Language (UML)
      */
-    UML;
+    UML,
+    /**
+     * RAW Model. E.g., text-based models.
+     */
+    RAW;
 
     @Override
     public String getModelId() {
