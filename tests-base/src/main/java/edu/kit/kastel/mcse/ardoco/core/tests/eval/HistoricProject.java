@@ -111,6 +111,7 @@ public enum HistoricProject implements GoldStandardProject {
         return switch (modelType) {
         case PCM -> getModelFile();
         case UML -> ProjectHelper.loadFileFromResources(model.replace("/pcm/", "/uml/").replace(".repository", ".uml"));
+        case RAW -> throw new IllegalArgumentException("Raw model is not supported for this project.");
         };
     }
 
@@ -119,6 +120,7 @@ public enum HistoricProject implements GoldStandardProject {
         return switch (modelType) {
         case PCM -> model;
         case UML -> model.replace("/pcm/", "/uml/").replace(".repository", ".uml");
+        case RAW -> throw new IllegalArgumentException("Raw model is not supported for this project.");
         };
     }
 

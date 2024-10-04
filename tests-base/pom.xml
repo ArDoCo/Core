@@ -20,7 +20,7 @@
     <dependency>
       <groupId>io.github.ardoco</groupId>
       <artifactId>metrics</artifactId>
-      <version>0.1.1-SNAPSHOT</version>
+      <version>0.1.1</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
