@@ -1,39 +1,41 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks;
 
 import java.util.Objects;
 import java.util.Optional;
 
-public class TransitiveTraceLink extends SadCodeTraceLink {
+import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 
-    private final TraceLink firstTraceLink;
-    private final TraceLink secondTraceLink;
+public final class TransitiveTraceLink<A extends Entity, M extends Entity, B extends Entity> extends TraceLink<A, B> {
 
-    private TransitiveTraceLink(TraceLink firstTraceLink, TraceLink secondTraceLink) {
-        super(new EndpointTuple(firstTraceLink.getEndpointTuple().firstEndpoint(), secondTraceLink.getEndpointTuple().secondEndpoint()));
+    private final TraceLink<A, M> firstTraceLink;
+    private final TraceLink<M, B> secondTraceLink;
+
+    private TransitiveTraceLink(TraceLink<A, M> firstTraceLink, TraceLink<M, B> secondTraceLink) {
+        super(firstTraceLink.getFirstEndpoint(), secondTraceLink.getSecondEndpoint());
         this.firstTraceLink = firstTraceLink;
         this.secondTraceLink = secondTraceLink;
     }
 
-    public static Optional<TransitiveTraceLink> createTransitiveTraceLink(TraceLink firstTraceLink, TraceLink secondTraceLink) {
+    public static <A extends Entity, M extends Entity, B extends Entity> Optional<TransitiveTraceLink<A, M, B>> createTransitiveTraceLink(
+            TraceLink<A, M> firstTraceLink, TraceLink<M, B> secondTraceLink) {
         if (isValidTransitiveTraceLink(firstTraceLink, secondTraceLink)) {
-            return Optional.of(new TransitiveTraceLink(firstTraceLink, secondTraceLink));
+            return Optional.of(new TransitiveTraceLink<>(firstTraceLink, secondTraceLink));
         }
         return Optional.empty();
     }
 
-    public static boolean isValidTransitiveTraceLink(TraceLink firstTraceLink, TraceLink secondTraceLink) {
+    public static boolean isValidTransitiveTraceLink(TraceLink<?, ?> firstTraceLink, TraceLink<?, ?> secondTraceLink) {
         var secondEndpointOfFirstTl = firstTraceLink.getEndpointTuple().secondEndpoint().getId();
         var firstEndpointOfSecondTl = secondTraceLink.getEndpointTuple().firstEndpoint().getId();
-
         return secondEndpointOfFirstTl.equals(firstEndpointOfSecondTl);
     }
 
-    public TraceLink getFirstTraceLink() {
+    public TraceLink<A, M> getFirstTraceLink() {
         return firstTraceLink;
     }
 
-    public TraceLink getSecondTraceLink() {
+    public TraceLink<M, B> getSecondTraceLink() {
         return secondTraceLink;
     }
 
@@ -47,16 +49,11 @@ public class TransitiveTraceLink extends SadCodeTraceLink {
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof TransitiveTraceLink other)) {
+        if (!(obj instanceof TransitiveTraceLink<?, ?, ?> other)) {
             return false;
         }
         return Objects.equals(getFirstTraceLink(), other.getFirstTraceLink()) && //
                 Objects.equals(getSecondTraceLink(), other.getSecondTraceLink()) && //
                 Objects.equals(getEndpointTuple(), other.getEndpointTuple());
-    }
-
-    @Override
-    public String toString() {
-        return getEndpointTuple().toString();
     }
 }

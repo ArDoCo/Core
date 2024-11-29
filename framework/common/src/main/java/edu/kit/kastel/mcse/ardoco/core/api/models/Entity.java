@@ -1,12 +1,14 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.api.models;
+
+import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * An entity with a name. Is a model element.
  */
-public abstract class Entity extends ModelElement {
+public abstract sealed class Entity extends ModelElement implements Serializable permits ArchitectureEntity, TextEntity, CodeEntity {
 
     @JsonProperty
     private String name;

@@ -10,15 +10,15 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
  * A tuple of one architecture endpoint and one code endpoint. Every endpoint tuple is a possible candidate for the endpoints of a trace link that connects
  * corresponding elements of an architecture model and a code model. An endpoint tuple cannot consist of two architecture endpoints or of two code endpoints.
  */
-public class EndpointTuple implements Serializable {
-    private final Entity firstEndpoint;
-    private final Entity secondEndpoint;
+public class EndpointTuple<E1 extends Entity, E2 extends Entity> implements Serializable {
+    private final E1 firstEndpoint;
+    private final E2 secondEndpoint;
 
     /**
      * @param firstEndpoint  the architecture endpoint of the endpoint tuple to be created
      * @param secondEndpoint the code endpoint of the endpoint tuple to be created
      */
-    public EndpointTuple(Entity firstEndpoint, Entity secondEndpoint) {
+    public EndpointTuple(E1 firstEndpoint, E2 secondEndpoint) {
         this.firstEndpoint = firstEndpoint;
         this.secondEndpoint = secondEndpoint;
     }
@@ -37,7 +37,7 @@ public class EndpointTuple implements Serializable {
         return firstEndpoint.equals(endpoint) || secondEndpoint.equals(endpoint);
     }
 
-    public boolean hasEndpoint(EndpointTuple endpointTuple) {
+    public boolean hasEndpoint(EndpointTuple<?, ?> endpointTuple) {
         return firstEndpoint.equals(endpointTuple.firstEndpoint) || secondEndpoint.equals(endpointTuple.secondEndpoint);
     }
 
@@ -46,7 +46,7 @@ public class EndpointTuple implements Serializable {
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof EndpointTuple other)) {
+        if (!(obj instanceof EndpointTuple<?, ?> other)) {
             return false;
         }
         return Objects.equals(firstEndpoint, other.firstEndpoint) && Objects.equals(secondEndpoint, other.secondEndpoint);
@@ -54,14 +54,14 @@ public class EndpointTuple implements Serializable {
 
     @Override
     public String toString() {
-        return "Architecture Endpoint: " + firstEndpoint + ", Code Endpoint: " + secondEndpoint;
+        return "First Endpoint: " + firstEndpoint + ", Second Endpoint: " + secondEndpoint;
     }
 
-    public Entity firstEndpoint() {
+    public E1 firstEndpoint() {
         return firstEndpoint;
     }
 
-    public Entity secondEndpoint() {
+    public E2 secondEndpoint() {
         return secondEndpoint;
     }
 
