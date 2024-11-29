@@ -6,5 +6,6 @@ import java.io.Serializable;
 /**
  * This is a marker interface for classes that claim something, i.e., an intermediate result with usually a certain confidence.
  */
+// TODO Serializable for Confidence
 public interface Claimant extends Serializable {
 }
