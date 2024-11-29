@@ -8,11 +8,9 @@ import org.junit.jupiter.api.Test;
 
 import edu.kit.kastel.mcse.ardoco.core.common.similarity.wordsim.ComparisonContext;
 import edu.kit.kastel.mcse.ardoco.core.common.similarity.wordsim.UnicodeCharacterMatchFunctions;
-import edu.kit.kastel.mcse.ardoco.core.common.similarity.wordsim.measures.levenshtein.LevenshteinMeasure;
-import edu.kit.kastel.mcse.ardoco.core.common.similarity.wordsim.measures.levenshtein.UnicodeLevenshteinDistance;
 
 class LevenshteinMeasureTest {
-    private static final double delta = 0.01;
+    private static final double DELTA = 0.01;
 
     /**
      * These tests were extracted from the original {@link org.apache.commons.text.similarity.LevenshteinDistance} implementation and should still hold true.
@@ -36,6 +34,6 @@ class LevenshteinMeasureTest {
     @Test
     void testHomoglyphSimilarity() {
         var measure = new LevenshteinMeasure();
-        assertEquals(1d, measure.getSimilarity(new ComparisonContext("ℜ𝘂ᖯʏ", "Ruby", UnicodeCharacterMatchFunctions.EQUAL_OR_HOMOGLYPH)), delta);
+        assertEquals(1d, measure.getSimilarity(new ComparisonContext("ℜ𝘂ᖯʏ", "Ruby", UnicodeCharacterMatchFunctions.EQUAL_OR_HOMOGLYPH)), DELTA);
     }
 }

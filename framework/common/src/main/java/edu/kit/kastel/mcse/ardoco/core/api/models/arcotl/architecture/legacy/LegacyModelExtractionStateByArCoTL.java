@@ -83,7 +83,7 @@ public class LegacyModelExtractionStateByArCoTL implements LegacyModelExtraction
     }
 
     private static void fillPackages(Collection<? extends CodePackage> packages, List<ModelInstance> instances) {
-        for (var modelElement : packages) {
+        for (var modelElement : packages) { 
             String path = modelElement.getName();
             CodeModule parent = modelElement.getParent();
             while (parent != null) {

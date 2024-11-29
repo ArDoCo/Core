@@ -11,8 +11,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import edu.kit.kastel.mcse.ardoco.core.common.similarity.wordsim.vector.VectorUtils;
-
 class VectorUtilsTest {
 
     record Example(float[] firstVec, float[] secondVec, double expectedCosineSimilarity) {
@@ -78,7 +76,7 @@ class VectorUtilsTest {
         assertThrows(NullPointerException.class, () -> VectorUtils.add(new double[0], null));
         assertThrows(IllegalArgumentException.class, () -> VectorUtils.add(new double[1], new double[2]));
 
-        double[] result = new double[] { 1.0, 2.0 };
+        double[] result = { 1.0, 2.0 };
         VectorUtils.add(result, new double[] { 3.0, 4.0 });
         assertArrayEquals(new double[] { 4.0, 6.0 }, result);
     }
@@ -87,7 +85,7 @@ class VectorUtilsTest {
     void testScale() {
         assertThrows(NullPointerException.class, () -> VectorUtils.scale(null, 1.0));
 
-        double[] result = new double[] { 1.0, 2.0 };
+        double[] result = { 1.0, 2.0 };
         VectorUtils.scale(result, 2.0);
         assertArrayEquals(new double[] { 2.0, 4.0 }, result);
     }
