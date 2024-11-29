@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021-2023. */
+/* Licensed under MIT 2021-2024. */
 package edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator;
 
 import org.eclipse.collections.api.factory.Sets;
@@ -6,10 +6,13 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.set.ImmutableSet;
 import org.eclipse.collections.api.set.MutableSet;
 
+import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureEntity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.InstanceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadSamTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.text.SentenceEntity;
 import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.configuration.IConfigurable;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
@@ -65,13 +68,13 @@ public interface ConnectionState extends IConfigurable {
      *
      * @return list of tracelinks within this connection state
      */
-    default ImmutableSet<SadSamTraceLink> getTraceLinks() {
-        MutableSet<SadSamTraceLink> traceLinks = Sets.mutable.empty();
+    default ImmutableSet<TraceLink<SentenceEntity, ArchitectureEntity>> getTraceLinks() {
+        MutableSet<TraceLink<SentenceEntity, ArchitectureEntity>> traceLinks = Sets.mutable.empty();
         for (var instanceLink : getInstanceLinks()) {
             var textualInstance = instanceLink.getTextualInstance();
             for (var nm : textualInstance.getNameMappings()) {
                 for (var word : nm.getWords()) {
-                    var traceLink = new SadSamTraceLink(instanceLink, word);
+                    var traceLink = new SadSamTraceLink(word.getSentence(), instanceLink.getModelInstance());
                     traceLinks.add(traceLink);
                 }
             }

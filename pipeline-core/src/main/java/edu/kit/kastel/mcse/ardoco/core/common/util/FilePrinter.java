@@ -19,6 +19,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -36,14 +37,16 @@ import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.Inconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistentSentence;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.ModelInconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureEntity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.LegacyModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.InstanceLink;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadSamTraceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.text.SentenceEntity;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
@@ -335,17 +338,16 @@ public final class FilePrinter {
     private static ImmutableList<String[]> getLinksAsDataLinesOfConnectionState(ConnectionState connectionState) {
         MutableList<String[]> dataLines = Lists.mutable.empty();
 
-        dataLines.add(new String[] { "#Found TraceLinks: ", "", "" });
+        dataLines.add(new String[] { "#Found TraceLinks: ", "" });
         dataLines.add(new String[] { "" });
-        dataLines.add(new String[] { "modelElementID", "sentence", "confidence" });
+        dataLines.add(new String[] { "modelElementID", "sentence" });
 
-        Set<SadSamTraceLink> tracelinks = new java.util.LinkedHashSet<>(connectionState.getTraceLinks().castToCollection());
+        Set<TraceLink<SentenceEntity, ArchitectureEntity>> tracelinks = new LinkedHashSet<>(connectionState.getTraceLinks().castToCollection());
         for (var tracelink : tracelinks) {
-            var modelElementUid = tracelink.getModelElementUid();
+            var modelElementUid = tracelink.getSecondEndpoint().getId();
             // sentence offset is 1 because real sentences are 1-indexed
-            var sentenceNumber = Integer.toString(tracelink.getSentenceNumber() + 1);
-            var probability = Double.toString(tracelink.getConfidence());
-            dataLines.add(new String[] { modelElementUid, sentenceNumber, probability });
+            var sentenceNumber = Integer.toString(tracelink.getFirstEndpoint().getSentence().getSentenceNumber() + 1);
+            dataLines.add(new String[] { modelElementUid, sentenceNumber });
         }
 
         return dataLines.toImmutable();

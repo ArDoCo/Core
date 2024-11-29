@@ -1,17 +1,17 @@
-/* Licensed under MIT 2021-2023. */
+/* Licensed under MIT 2021-2024. */
 package edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator;
 
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
+import edu.kit.kastel.mcse.ardoco.core.api.models.TextEntity;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 /**
  * The Interface IRecommendedInstance defines the aggregation of noun mappings to one recommendation.
  */
-public abstract class RecommendedInstance extends Entity {
+public abstract class RecommendedInstance extends TextEntity {
 
     protected RecommendedInstance(String name, String id) {
         super(name, id);

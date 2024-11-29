@@ -1,4 +1,4 @@
-/* Licensed under MIT 2021-2023. */
+/* Licensed under MIT 2021-2024. */
 package edu.kit.kastel.mcse.ardoco.core.api.models;
 
 import org.eclipse.collections.api.list.ImmutableList;
@@ -6,7 +6,7 @@ import org.eclipse.collections.api.list.ImmutableList;
 /**
  * The Interface IModelInstance defines instances from models.
  */
-public abstract sealed class ModelInstance extends Entity permits ModelInstanceImpl {
+public abstract sealed class ModelInstance extends ArchitectureEntity permits ModelInstanceImpl {
 
     protected ModelInstance(String name, String id) {
         super(name, id);

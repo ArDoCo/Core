@@ -4,11 +4,15 @@ package edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class TraceLink implements Serializable {
-    private final EndpointTuple endpointTuple;
+import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
 
-    public TraceLink(EndpointTuple endpointTuple) {
-        this.endpointTuple = endpointTuple;
+public abstract class TraceLink<E1 extends Entity, E2 extends Entity> implements Serializable {
+    private final E1 endpoint1;
+    private final E2 endpoint2;
+
+    protected TraceLink(E1 firstEndpoint, E2 secondEndpoint) {
+        this.endpoint1 = firstEndpoint;
+        this.endpoint2 = secondEndpoint;
     }
 
     /**
@@ -16,13 +20,21 @@ public class TraceLink implements Serializable {
      *
      * @return the endpoint tuple of this trace link
      */
-    public EndpointTuple getEndpointTuple() {
-        return endpointTuple;
+    public EndpointTuple<E1, E2> getEndpointTuple() {
+        return new EndpointTuple<>(endpoint1, endpoint2);
+    }
+
+    public E1 getFirstEndpoint() {
+        return endpoint1;
+    }
+
+    public E2 getSecondEndpoint() {
+        return endpoint2;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(endpointTuple);
+        return Objects.hash(endpoint1, endpoint2);
     }
 
     @Override
@@ -30,14 +42,14 @@ public class TraceLink implements Serializable {
         if (this == obj) {
             return true;
         }
-        if (!(obj instanceof TraceLink other)) {
+        if (!(obj instanceof TraceLink<?, ?> other)) {
             return false;
         }
-        return Objects.equals(endpointTuple, other.endpointTuple);
+        return Objects.equals(endpoint1, other.endpoint1) && Objects.equals(endpoint2, other.endpoint2);
     }
 
     @Override
     public String toString() {
-        return endpointTuple.toString();
+        return getEndpointTuple().toString();
     }
 }
