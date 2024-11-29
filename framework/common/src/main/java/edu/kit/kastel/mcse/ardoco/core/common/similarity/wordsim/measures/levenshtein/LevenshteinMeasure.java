@@ -1,8 +1,9 @@
 /* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.common.similarity.wordsim.measures.levenshtein;
 
+import org.apache.commons.text.similarity.LevenshteinDistance;
+
 import edu.kit.kastel.mcse.ardoco.core.common.similarity.wordsim.ComparisonContext;
-import edu.kit.kastel.mcse.ardoco.core.common.similarity.wordsim.UnicodeCharacterSequence;
 import edu.kit.kastel.mcse.ardoco.core.common.similarity.wordsim.WordSimMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
 
@@ -22,7 +23,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
  */
 public class LevenshteinMeasure implements WordSimMeasure {
 
-    private final UnicodeLevenshteinDistance levenshteinDistance = new UnicodeLevenshteinDistance();
+    private final LevenshteinDistance levenshteinDistance = new LevenshteinDistance();
     private final int minLength;
     private final int maxDistance;
     private final double threshold;
@@ -66,22 +67,21 @@ public class LevenshteinMeasure implements WordSimMeasure {
         String secondWord = ctx.secondTerm().toLowerCase();
 
         int maxDynamicDistance = (int) Math.min(this.maxDistance, this.threshold * Math.min(firstWord.length(), secondWord.length()));
-        int distance = this.levenshteinDistance.apply(firstWord, secondWord, ctx.characterMatch());
+        int distance = this.levenshteinDistance.apply(firstWord, secondWord);
 
         if (firstWord.length() <= this.minLength) {
             return distance <= this.maxDistance && (secondWord.contains(firstWord) || firstWord.contains(secondWord));
-        } else {
-            return distance <= maxDynamicDistance;
         }
+        return distance <= maxDynamicDistance;
     }
 
     @Override
     public double getSimilarity(ComparisonContext ctx) {
-        //FIXME cast to lower case seems unwarranted given that this is delegated to WordSimUtils already
-        var firstWord = UnicodeCharacterSequence.valueOf(ctx.firstTerm().toLowerCase());
-        var secondWord = UnicodeCharacterSequence.valueOf(ctx.secondTerm().toLowerCase());
-        return 1.0 - this.levenshteinDistance.apply(ctx.firstTerm(), ctx.secondTerm(), ctx.characterMatch()) / (double) Math.max(Math.max(firstWord.length(),
-                secondWord.length()), 1);
+        // FIXME cast to lower case seems unwarranted given that this is delegated to WordSimUtils already
+        String firstWord = ctx.firstTerm().toLowerCase();
+        String secondWord = ctx.secondTerm().toLowerCase();
+        int distance = this.levenshteinDistance.apply(firstWord, secondWord);
+        return 1.0 - (distance / (double) Math.max(firstWord.length(), secondWord.length()));
     }
 
 }

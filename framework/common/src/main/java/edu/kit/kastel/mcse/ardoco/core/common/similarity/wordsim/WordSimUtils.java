@@ -1,7 +1,6 @@
 /* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.common.similarity.wordsim;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
@@ -25,12 +24,11 @@ import edu.kit.kastel.mcse.ardoco.core.common.similarity.wordsim.strategy.Simila
  * Any calls that do not provide their own measures or strategies will utilize them. As of right now, no protections against simultaneous write access from
  * multiple threads exist. Therefore, this class is not threadsafe.
  */
-public class WordSimUtils implements Serializable {
+public class WordSimUtils {
 
     private MutableList<WordSimMeasure> measures = Lists.mutable.withAll(WordSimLoader.loadUsingProperties());
     private ComparisonStrategy strategy = ComparisonStrategy.AT_LEAST_ONE;
     private SimilarityStrategy similarityStrategy = new AverageStrategy();
-    private UnicodeCharacterMatchFunctions characterMatch = UnicodeCharacterMatchFunctions.EQUAL;
 
     /**
      * Sets which measures should be used for similarity comparison. The specified collection of measures will be used for all subsequent comparisons.
@@ -67,14 +65,6 @@ public class WordSimUtils implements Serializable {
      */
     public void setStrategy(SimilarityStrategy strategy) {
         this.similarityStrategy = strategy;
-    }
-
-    public void setCharacterMatchFunction(UnicodeCharacterMatchFunctions characterMatch) {
-        this.characterMatch = characterMatch;
-    }
-
-    public UnicodeCharacterMatchFunctions getCharacterMatchFunction() {
-        return this.characterMatch;
     }
 
     /**
@@ -171,7 +161,7 @@ public class WordSimUtils implements Serializable {
      * @return Returns {@code true} if the default strategy considers the words similar enough.
      */
     public boolean areWordsSimilar(String firstWord, Word secondWord) {
-        return this.areWordsSimilar(new ComparisonContext(firstWord, secondWord.getText(), null, secondWord, false, this.characterMatch), this.strategy);
+        return this.areWordsSimilar(new ComparisonContext(firstWord, secondWord.getText(), null, secondWord, false), this.strategy);
     }
 
     /**
@@ -183,7 +173,7 @@ public class WordSimUtils implements Serializable {
      * @return Returns {@code true} if the given strategy considers the words similar enough.
      */
     public boolean areWordsSimilar(String firstWord, Word secondWord, ComparisonStrategy strategy) {
-        return this.areWordsSimilar(new ComparisonContext(firstWord, secondWord.getText(), null, secondWord, false, this.characterMatch), strategy);
+        return this.areWordsSimilar(new ComparisonContext(firstWord, secondWord.getText(), null, secondWord, false), strategy);
     }
 
     /**
@@ -203,7 +193,7 @@ public class WordSimUtils implements Serializable {
 
         return strategy.getSimilarity(new ComparisonContext(ignoreCase ? firstWord.toLowerCase() : firstWord, ignoreCase ?
                 secondWord.toLowerCase() :
-                secondWord, null, null, false, this.characterMatch), allMeasuresExceptDefault);
+                secondWord, null, null, false), allMeasuresExceptDefault);
     }
 
     /**

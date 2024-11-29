@@ -30,7 +30,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
  * This class is a utility class.
  */
 @Deterministic
-public final class SimilarityUtils implements Serializable {
+public final class SimilarityUtils {
     private static final SimilarityUtils INSTANCE = new SimilarityUtils(new WordSimUtils());
 
     private final WordSimUtils wordSimUtils;

@@ -1,12 +1,10 @@
 /* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.common.similarity.wordsim;
 
-import java.io.Serializable;
-
 /**
  * A measure that can determine whether two words from a {@link ComparisonContext} are similar.
  */
-public interface WordSimMeasure extends Serializable {
+public interface WordSimMeasure {
 
     /**
      * Evaluates whether the words from the given {@link ComparisonContext} are similar.
