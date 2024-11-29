@@ -25,7 +25,6 @@ public class ModelStates implements PipelineStepData {
      * Constructor to create a {@link ModelStates} object that holds all {@link LegacyModelExtractionState}s
      */
     public ModelStates() {
-        super();
     }
 
     /**
@@ -47,8 +46,8 @@ public class ModelStates implements PipelineStepData {
         }
 
         var legacyModel = switch (model) {
-        case ArchitectureModel am -> new LegacyModelExtractionStateByArCoTL(am);
-        case CodeModel cm -> new LegacyModelExtractionStateByArCoTL(cm);
+            case ArchitectureModel am -> new LegacyModelExtractionStateByArCoTL(am);
+            case CodeModel cm -> new LegacyModelExtractionStateByArCoTL(cm);
         };
 
         this.legacyModels.put(id, legacyModel);
