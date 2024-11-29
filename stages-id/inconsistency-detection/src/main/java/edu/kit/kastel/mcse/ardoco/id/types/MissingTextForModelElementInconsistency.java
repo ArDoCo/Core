@@ -8,7 +8,7 @@ import org.eclipse.collections.api.collection.ImmutableCollection;
 import org.eclipse.collections.api.factory.Lists;
 
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.ModelInconsistency;
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.legacy.ModelInstance;
 
 public class MissingTextForModelElementInconsistency implements ModelInconsistency {
     private static final String INCONSISTENCY_TYPE_NAME = "MissingTextForModelElement";

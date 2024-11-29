@@ -4,8 +4,8 @@ package edu.kit.kastel.mcse.ardoco.id.types;
 import org.junit.jupiter.api.BeforeEach;
 
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.Inconsistency;
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstanceImpl;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.legacy.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.legacy.ModelInstanceImpl;
 
 /**
  *

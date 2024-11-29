@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstanceImpl;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.legacy.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.legacy.ModelInstanceImpl;
 import edu.kit.kastel.mcse.ardoco.id.informants.UndocumentedModelElementInconsistencyInformant;
 
 /**

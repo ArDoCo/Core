@@ -8,11 +8,11 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionStates;
+import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.InstanceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistencyState;
 import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistencyStates;
-import edu.kit.kastel.mcse.ardoco.core.api.models.LegacyModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.InstanceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.legacy.LegacyModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
