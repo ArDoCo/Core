@@ -67,9 +67,9 @@ public class LegacyModelExtractionStateByArCoTL implements LegacyModelExtraction
         MutableList<ModelInstance> instances = Lists.mutable.empty();
         for (ArchitectureItem architectureItem : architectureModel.getEndpoints()) {
             switch (architectureItem) {
-            case ArchitectureComponent component -> instances.add(new ModelInstanceImpl(component.getName(), component.getType(), component.getId()));
-            case ArchitectureInterface ignored -> LegacyModelExtractionStateByArCoTL.logger.debug("Skipping .. ArchitectureInterface not supported yet");
-            case ArchitectureMethod ignored -> LegacyModelExtractionStateByArCoTL.logger.debug("Skipping .. ArchitectureMethod not supported yet");
+                case ArchitectureComponent component -> instances.add(new ModelInstanceImpl(component.getName(), component.getType(), component.getId()));
+                case ArchitectureInterface ignored -> LegacyModelExtractionStateByArCoTL.logger.debug("Skipping .. ArchitectureInterface not supported yet");
+                case ArchitectureMethod ignored -> LegacyModelExtractionStateByArCoTL.logger.debug("Skipping .. ArchitectureMethod not supported yet");
             }
         }
         return instances.toImmutable();
@@ -120,7 +120,7 @@ public class LegacyModelExtractionStateByArCoTL implements LegacyModelExtraction
             // Default to Class
             return "Class";
         }
-        if (unit.getLanguage() == ProgrammingLanguages.SHELL) {
+        if (ProgrammingLanguages.SHELL.equals(unit.getLanguage())) {
             return "ShellScript";
         }
         throw new IllegalStateException("Unknown type of CodeCompilationUnit");
