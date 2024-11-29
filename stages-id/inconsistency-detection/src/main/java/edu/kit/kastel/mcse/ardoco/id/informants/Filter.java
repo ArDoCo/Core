@@ -1,8 +1,8 @@
 /* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.id.informants;
 
-import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistencyState;
-import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.inconsistency.InconsistencyState;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
