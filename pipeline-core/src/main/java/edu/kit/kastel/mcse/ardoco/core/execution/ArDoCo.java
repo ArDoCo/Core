@@ -41,7 +41,7 @@ public final class ArDoCo extends Pipeline {
     public ArDoCo(String projectName) {
         super("ArDoCo", new DataRepository());
         this.projectName = projectName;
-        initDataRepository();
+        this.initDataRepository();
     }
 
     /**
@@ -55,9 +55,8 @@ public final class ArDoCo extends Pipeline {
     }
 
     private void initDataRepository() {
-        ProjectPipelineData projectPipelineData = new ProjectPipelineDataImpl(projectName);
-        getDataRepository().addData(ProjectPipelineData.ID, projectPipelineData);
-        dataRepository.getGlobalConfiguration().setPipeline(this);
+        ProjectPipelineData projectPipelineData = new ProjectPipelineDataImpl(this.projectName);
+        this.getDataRepository().addData(ProjectPipelineData.ID, projectPipelineData);
     }
 
     @Override
@@ -69,7 +68,7 @@ public final class ArDoCo extends Pipeline {
         classLogger.info("Starting {}", this.projectName);
 
         if (!this.hasPipelineSteps()) {
-            logger.error("Pipeline has not been defined and initialized beforehand. Aborting!");
+            this.logger.error("Pipeline has not been defined and initialized beforehand. Aborting!");
             return null;
         }
 
@@ -80,7 +79,7 @@ public final class ArDoCo extends Pipeline {
         ArDoCoResult arDoCoResult = new ArDoCoResult(this.getDataRepository());
         saveOutput(this.projectName, outputDir, arDoCoResult);
 
-        if (logger.isInfoEnabled()) {
+        if (this.logger.isInfoEnabled()) {
             var duration = Duration.between(startTime, endTime);
             long minutesPart = duration.toMinutes();
             int secondsPart = duration.toSecondsPart();

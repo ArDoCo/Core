@@ -25,16 +25,6 @@ public class DataRepository implements Serializable {
 
     public DataRepository() {
         this.data = new TreeMap<>();
-        this.addData(GlobalConfiguration.ID, new GlobalConfiguration());
-    }
-
-    /**
-     * Returns the {@link GlobalConfiguration} stored within the provided {@link DataRepository}.
-     *
-     * @return the data
-     */
-    public final GlobalConfiguration getGlobalConfiguration() {
-        return this.getData(GlobalConfiguration.ID, GlobalConfiguration.class).orElseThrow();
     }
 
     /**
