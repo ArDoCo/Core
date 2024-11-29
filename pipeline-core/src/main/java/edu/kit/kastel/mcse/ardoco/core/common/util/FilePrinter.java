@@ -32,26 +32,26 @@ import org.eclipse.collections.api.list.MutableList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.ConnectionState;
-import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.InstanceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.entity.ArchitectureEntity;
-import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.Inconsistency;
-import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistencyState;
-import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.InconsistentSentence;
-import edu.kit.kastel.mcse.ardoco.core.api.inconsistency.ModelInconsistency;
 import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.legacy.LegacyModelExtractionState;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.legacy.ModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
-import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendationState;
-import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.connectiongenerator.ConnectionState;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.connectiongenerator.InstanceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.inconsistency.Inconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.inconsistency.InconsistencyState;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.inconsistency.InconsistentSentence;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.inconsistency.ModelInconsistency;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.recommendationgenerator.RecommendationState;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.recommendationgenerator.RecommendedInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.MappingKind;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.NounMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.api.text.SentenceEntity;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
-import edu.kit.kastel.mcse.ardoco.core.api.textextraction.MappingKind;
-import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
-import edu.kit.kastel.mcse.ardoco.core.api.textextraction.TextState;
+import edu.kit.kastel.mcse.ardoco.core.api.tracelink.TraceLink;
 import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 
 /**
