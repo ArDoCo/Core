@@ -5,16 +5,17 @@ import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
 
 public class InputTextData implements PipelineStepData {
 
+    private static final long serialVersionUID = -5404851121533249349L;
+
     public static final String ID = "InputTextData";
 
     private String text;
 
     public InputTextData(String text) {
-        super();
         this.text = text;
     }
 
     public String getText() {
-        return text;
+        return this.text;
     }
 }

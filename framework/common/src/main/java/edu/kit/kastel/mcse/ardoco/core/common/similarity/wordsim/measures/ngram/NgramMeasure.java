@@ -65,12 +65,12 @@ public class NgramMeasure implements WordSimMeasure {
     @Override
     public boolean areWordsSimilar(ComparisonContext ctx) {
         Objects.requireNonNull(ctx);
-        return getSimilarity(ctx) >= this.similarityThreshold;
+        return this.getSimilarity(ctx) >= this.similarityThreshold;
     }
 
     @Override
     public double getSimilarity(ComparisonContext ctx) {
-        double distance = calculateDistance(ctx.firstTerm(), ctx.secondTerm());
+        double distance = this.calculateDistance(ctx.firstTerm(), ctx.secondTerm());
 
         double normalizedDistance = distance / Math.max(ctx.firstTerm().length(), ctx.secondTerm().length());
 
@@ -98,15 +98,15 @@ public class NgramMeasure implements WordSimMeasure {
         int l = yBuilder.length();
         double[][] d = new double[k + 1][l + 1];
 
-        for (int u = 1; u <= n - 1; u++) {
-            if (variant == Variant.LUCENE) {
+        for (int u = 1; u <= this.n - 1; u++) {
+            if (this.variant == Variant.LUCENE) {
                 xBuilder = new StringBuilder().append(LUCENE_PREFIX_CHARACTER).append(xBuilder);
                 yBuilder = new StringBuilder().append(LUCENE_PREFIX_CHARACTER).append(yBuilder);
-            } else if (variant == Variant.POSITIONAL) {
+            } else if (this.variant == Variant.POSITIONAL) {
                 xBuilder = new StringBuilder().append(xBuilder.charAt(0)).append(xBuilder);
                 yBuilder = new StringBuilder().append(yBuilder.charAt(0)).append(yBuilder);
             } else {
-                throw new UnsupportedOperationException("unknown variant: " + variant);
+                throw new UnsupportedOperationException("unknown variant: " + this.variant);
             }
         }
 
@@ -120,9 +120,9 @@ public class NgramMeasure implements WordSimMeasure {
 
         for (int i = 1; i <= k; i++) {
             for (int j = 1; j <= l; j++) {
-                double dN = dN(n, i - 1, j - 1, xBuilder.toString(), yBuilder.toString());
+                double dN = this.dN(this.n, i - 1, j - 1, xBuilder.toString(), yBuilder.toString());
 
-                d[i][j] = min(d[i - 1][j] + 1.0, d[i][j - 1] + 1.0, d[i - 1][j - 1] + dN);
+                d[i][j] = this.min(d[i - 1][j] + 1.0, d[i][j - 1] + 1.0, d[i - 1][j - 1] + dN);
             }
         }
 
@@ -134,11 +134,11 @@ public class NgramMeasure implements WordSimMeasure {
         double actualN = n;
 
         for (int u = 1; u <= n; u++) {
-            double diff = d1(x.charAt(i + u - 1), y.charAt(j + u - 1));
+            double diff = this.d1(x.charAt(i + u - 1), y.charAt(j + u - 1));
 
             sum += diff;
 
-            if (variant == Variant.LUCENE && diff == 0 && x.charAt(i + u - 1) == LUCENE_PREFIX_CHARACTER) {
+            if (this.variant == Variant.LUCENE && diff == 0 && x.charAt(i + u - 1) == LUCENE_PREFIX_CHARACTER) {
                 actualN -= 1.0; // Ignore prefix character in LUCENE mode
             }
         }

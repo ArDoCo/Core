@@ -9,7 +9,7 @@ public interface ProjectPipelineData extends PipelineStepData {
 
     /**
      * Return the project name
-     * 
+     *
      * @return the project name
      */
     String getProjectName();

@@ -16,7 +16,7 @@ import edu.kit.kastel.mcse.ardoco.core.common.similarity.wordsim.WordSimMeasure;
 @Deterministic
 public abstract class VectorBasedWordSimMeasure implements WordSimMeasure {
 
-    private static final float[] ZERO_VECTOR = new float[0];
+    private static final float[] ZERO_VECTOR = {};
     private final Map<String, float[]> vectorCache = new LinkedHashMap<>();
 
     protected abstract WordVectorDataSource getVectorDataSource();
@@ -25,7 +25,7 @@ public abstract class VectorBasedWordSimMeasure implements WordSimMeasure {
      * Compares the two given words by computing the cosine similarity between their respective vector representations.
      * If the vector representation for one of the words is not found, a similarity score of {@code 0.0} will be
      * returned.
-     * 
+     *
      * @param firstWord  the first word
      * @param secondWord the second word
      * @return returns the similarity score between the two words, between 0.0 and 1.0 (inclusive)
@@ -39,13 +39,13 @@ public abstract class VectorBasedWordSimMeasure implements WordSimMeasure {
             return 1.0;
         }
 
-        float[] firstVec = getVectorFromCacheOrDatabase(firstWord);
+        float[] firstVec = this.getVectorFromCacheOrDatabase(firstWord);
 
         if (VectorUtils.isZero(firstVec)) {
             return 0.0; // no vector representation for the first word
         }
 
-        float[] secondVec = getVectorFromCacheOrDatabase(secondWord);
+        float[] secondVec = this.getVectorFromCacheOrDatabase(secondWord);
 
         if (VectorUtils.isZero(secondVec)) {
             return 0.0; // no vector representation for the second word
@@ -58,7 +58,7 @@ public abstract class VectorBasedWordSimMeasure implements WordSimMeasure {
         float[] vector = this.vectorCache.getOrDefault(word, null);
 
         if (vector == null) {
-            vector = getVectorDataSource().getWordVector(word).orElse(ZERO_VECTOR);
+            vector = this.getVectorDataSource().getWordVector(word).orElse(ZERO_VECTOR);
             this.vectorCache.put(word, vector);
         }
 

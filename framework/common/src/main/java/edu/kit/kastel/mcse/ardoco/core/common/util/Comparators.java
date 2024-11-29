@@ -47,10 +47,9 @@ public final class Comparators {
         var f = first.iterator();
         var s = second.iterator();
         while (f.hasNext() || s.hasNext()) {
-            if (f.hasNext() != s.hasNext())
+            if ((f.hasNext() != s.hasNext()) || !f.next().equals(s.next())) {
                 return false;
-            if (!f.next().equals(s.next()))
-                return false;
+            }
         }
         return true;
     }
@@ -77,10 +76,9 @@ public final class Comparators {
         var f = first.iterator();
         var s = second.iterator();
         while (f.hasNext() || s.hasNext()) {
-            if (f.hasNext() != s.hasNext())
+            if ((f.hasNext() != s.hasNext()) || (f.next() != s.next())) {
                 return false;
-            if (f.next() != s.next())
-                return false;
+            }
         }
         return true;
     }

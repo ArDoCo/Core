@@ -29,13 +29,13 @@ public final class ResourceAccessor {
 
         if (isClasspath) {
             try (var inputStream = this.getClass().getResourceAsStream(filepath)) {
-                prop.load(inputStream);
+                this.prop.load(inputStream);
             } catch (IOException e) {
                 logger.debug(e.getMessage(), e.getCause());
             }
         } else {
             try (var inputStream = new FileInputStream(filepath)) {
-                prop.load(inputStream);
+                this.prop.load(inputStream);
             } catch (IOException e) {
                 logger.debug(e.getMessage(), e.getCause());
             }
@@ -49,7 +49,7 @@ public final class ResourceAccessor {
      * @return value of the property as a string
      */
     public String getProperty(String key) {
-        return prop.getProperty(key);
+        return this.prop.getProperty(key);
     }
 
     /**
@@ -60,7 +60,7 @@ public final class ResourceAccessor {
      *         case.
      */
     public boolean isPropertyEnabled(String key) {
-        var propValue = prop.getProperty(key).strip();
+        var propValue = this.prop.getProperty(key).strip();
         return Boolean.parseBoolean(propValue) || propValue.equalsIgnoreCase("yes") || propValue.equalsIgnoreCase("1");
     }
 
@@ -72,7 +72,7 @@ public final class ResourceAccessor {
      */
     public double getPropertyAsDouble(String key) {
         try {
-            return Double.parseDouble(prop.getProperty(key));
+            return Double.parseDouble(this.prop.getProperty(key));
         } catch (NumberFormatException n) {
             logger.debug(n.getMessage(), n.getCause());
             return -1;
@@ -87,7 +87,7 @@ public final class ResourceAccessor {
      */
     public int getPropertyAsInt(String key) {
         try {
-            return Integer.parseInt(prop.getProperty(key));
+            return Integer.parseInt(this.prop.getProperty(key));
         } catch (NumberFormatException n) {
             logger.debug(n.getMessage(), n.getCause());
             return -1;
@@ -102,7 +102,7 @@ public final class ResourceAccessor {
      */
     public ImmutableList<String> getPropertyAsList(String key) {
         MutableList<String> values = Lists.mutable.empty();
-        String value = prop.getProperty(key);
+        String value = this.prop.getProperty(key);
         if (value == null) {
             throw new IllegalArgumentException("Key: " + key + " not found in config");
         }

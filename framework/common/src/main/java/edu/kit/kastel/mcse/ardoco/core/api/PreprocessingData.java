@@ -9,17 +9,18 @@ import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
  * {@link Text} only.
  */
 public class PreprocessingData implements PipelineStepData {
+    private static final long serialVersionUID = 8103545017098419675L;
+
     public static final String ID = "PreprocessingData";
 
     private final Text preprocessedText;
 
     public PreprocessingData(Text preprocessedText) {
-        super();
         this.preprocessedText = preprocessedText;
     }
 
     public Text getText() {
-        return preprocessedText;
+        return this.preprocessedText;
     }
 
 }

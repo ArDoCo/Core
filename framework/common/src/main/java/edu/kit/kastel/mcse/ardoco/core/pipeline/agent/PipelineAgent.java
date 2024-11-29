@@ -18,6 +18,8 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
  * initialization before the main processing.
  */
 public abstract class PipelineAgent extends Pipeline implements Agent {
+    private static final long serialVersionUID = -2278691353857150422L;
+
     private final List<? extends Informant> informants;
 
     @Configurable
@@ -41,7 +43,7 @@ public abstract class PipelineAgent extends Pipeline implements Agent {
     @Override
     protected final void preparePipelineSteps() {
         super.preparePipelineSteps();
-        initialize();
+        this.initialize();
     }
 
     /**
@@ -64,9 +66,9 @@ public abstract class PipelineAgent extends Pipeline implements Agent {
      * Initialize the execution
      */
     protected final void initialize() {
-        initializeState();
-        for (var informant : informants) {
-            if (enabledInformants.contains(informant.getId())) {
+        this.initializeState();
+        for (var informant : this.informants) {
+            if (this.enabledInformants.contains(informant.getId())) {
                 this.addPipelineStep(informant);
             }
         }
@@ -83,13 +85,13 @@ public abstract class PipelineAgent extends Pipeline implements Agent {
      * {@return the informants including disabled}
      */
     public List<Informant> getInformants() {
-        return List.copyOf(informants);
+        return List.copyOf(this.informants);
     }
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration) {
         super.delegateApplyConfigurationToInternalObjects(additionalConfiguration);
-        informants.forEach(filter -> filter.applyConfiguration(additionalConfiguration));
+        this.informants.forEach(filter -> filter.applyConfiguration(additionalConfiguration));
     }
 
 }

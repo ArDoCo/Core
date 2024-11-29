@@ -50,7 +50,7 @@ public class Pipeline extends AbstractPipelineStep {
      * @return whether there were any pipeline steps added
      */
     public boolean hasPipelineSteps() {
-        return !pipelineSteps.isEmpty();
+        return !this.pipelineSteps.isEmpty();
     }
 
     /**
@@ -72,14 +72,14 @@ public class Pipeline extends AbstractPipelineStep {
 
     @Override
     public void process() {
-        preparePipelineSteps();
+        this.preparePipelineSteps();
         for (var pipelineStep : this.pipelineSteps) {
-            logger.info("Starting {} - {}", this.getId(), pipelineStep.getId());
+            this.logger.info("Starting {} - {}", this.getId(), pipelineStep.getId());
             var start = Instant.now();
 
             pipelineStep.run();
 
-            if (logger.isInfoEnabled()) {
+            if (this.logger.isInfoEnabled()) {
                 var end = Instant.now();
                 var duration = Duration.between(start, end);
                 long minutesPart = duration.toMinutes();
@@ -92,7 +92,7 @@ public class Pipeline extends AbstractPipelineStep {
                     durationString = String.format("%01d.%03d s", secondsPart, millisPart);
                 }
 
-                logger.info("Finished {} - {} in {}", this.getId(), pipelineStep.getId(), durationString);
+                this.logger.info("Finished {} - {} in {}", this.getId(), pipelineStep.getId(), durationString);
             }
         }
     }
@@ -104,7 +104,7 @@ public class Pipeline extends AbstractPipelineStep {
 
     @Override
     protected void after() {
-        executed = true;
+        this.executed = true;
     }
 
     /**
@@ -116,7 +116,7 @@ public class Pipeline extends AbstractPipelineStep {
      * The base version does apply the last configuration via the default call.
      */
     protected void preparePipelineSteps() {
-        delegateApplyConfigurationToInternalObjects(getLastAppliedConfiguration());
+        this.delegateApplyConfigurationToInternalObjects(this.getLastAppliedConfiguration());
     }
 
     @Override

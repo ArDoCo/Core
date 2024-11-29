@@ -41,10 +41,10 @@ public abstract class AbstractExecutionStage extends Pipeline {
     @Override
     protected final void preparePipelineSteps() {
         super.preparePipelineSteps();
-        initializeState();
+        this.initializeState();
 
-        for (var agent : agents) {
-            if (enabledAgents.contains(agent.getId())) {
+        for (var agent : this.agents) {
+            if (this.enabledAgents.contains(agent.getId())) {
                 this.addPipelineStep(agent);
             }
         }
@@ -75,13 +75,13 @@ public abstract class AbstractExecutionStage extends Pipeline {
      * {@return the {@link PipelineAgent agents}}
      */
     public List<PipelineAgent> getAgents() {
-        return List.copyOf(agents);
+        return List.copyOf(this.agents);
     }
 
     @Override
     protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration) {
         super.delegateApplyConfigurationToInternalObjects(additionalConfiguration);
-        for (var agent : agents) {
+        for (var agent : this.agents) {
             agent.applyConfiguration(additionalConfiguration);
         }
     }

@@ -27,9 +27,8 @@ public interface PipelineStepData extends Serializable {
     default <T extends PipelineStepData> Optional<T> asPipelineStepData(Class<T> clazz) {
         if (!clazz.isAssignableFrom(this.getClass())) {
             return Optional.empty();
-        } else {
-            return Optional.of(clazz.cast(this));
         }
+        return Optional.of(clazz.cast(this));
     }
 
     default String serialize() {

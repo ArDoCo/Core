@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serial;
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
@@ -22,10 +21,8 @@ import org.slf4j.LoggerFactory;
 import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 
 @Deterministic
-public abstract class AbstractConfigurable implements IConfigurable, Serializable {
-    private static final long serialVersionUID = 4781744504742817995L;
-
-    protected final transient Logger logger = LoggerFactory.getLogger(this.getClass());
+public abstract class AbstractConfigurable implements IConfigurable {
+    protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public static final String CLASS_ATTRIBUTE_CONNECTOR = "::";
     public static final String KEY_VALUE_CONNECTOR = "=";
