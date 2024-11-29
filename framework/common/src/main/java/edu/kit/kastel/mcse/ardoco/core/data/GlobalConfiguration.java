@@ -1,8 +1,8 @@
 /* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.data;
 
-import edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils;
-import edu.kit.kastel.mcse.ardoco.core.common.util.wordsim.WordSimUtils;
+import edu.kit.kastel.mcse.ardoco.core.common.similarity.SimilarityUtils;
+import edu.kit.kastel.mcse.ardoco.core.common.similarity.wordsim.WordSimUtils;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
 
 /**
