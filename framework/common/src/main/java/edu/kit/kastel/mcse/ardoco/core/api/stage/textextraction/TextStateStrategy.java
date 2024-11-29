@@ -9,7 +9,6 @@ import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.map.sorted.ImmutableSortedMap;
 import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 
-import edu.kit.kastel.mcse.ardoco.core.api.text.Phrase;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 import edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions;
 import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
@@ -119,26 +118,6 @@ public interface TextStateStrategy extends Serializable {
         refBuilder.append(referenceWords.get(referenceWords.size() - 1).getText());
         return refBuilder.toString();
     }
-
-    /**
-     * Tries to add a word abbreviation to the state. If the abbreviation already exists, it is extended.
-     *
-     * @param abbreviation the abbreviation
-     * @param word         the word
-     * @return the resulting {@link edu.kit.kastel.mcse.ardoco.core.api.Disambiguation} in the stage
-     */
-
-    WordAbbreviation addOrExtendWordAbbreviation(String abbreviation, Word word);
-
-    /**
-     * Tries to add a phrase abbreviation to the state. If the abbreviation already exists, it is extended.
-     *
-     * @param abbreviation the abbreviation
-     * @param phrase       the phrase
-     * @return the resulting {@link edu.kit.kastel.mcse.ardoco.core.api.Disambiguation} in the stage
-     */
-
-    PhraseAbbreviation addOrExtendPhraseAbbreviation(String abbreviation, Phrase phrase);
 
     ImmutableList<NounMapping> getNounMappingsWithSimilarReference(String reference);
 }

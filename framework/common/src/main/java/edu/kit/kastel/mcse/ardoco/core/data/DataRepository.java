@@ -16,22 +16,25 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
  * help of a data identifier (as string). Fetching also needs the necessary class of data that is expected.
  */
 public class DataRepository implements Serializable {
+
+    private static final long serialVersionUID = -3068992658696547744L;
+
     private static final Logger logger = LoggerFactory.getLogger(DataRepository.class);
 
     private final SortedMap<String, PipelineStepData> data;
 
     public DataRepository() {
         this.data = new TreeMap<>();
-        addData(GlobalConfiguration.ID, new GlobalConfiguration());
+        this.addData(GlobalConfiguration.ID, new GlobalConfiguration());
     }
 
     /**
      * Returns the {@link GlobalConfiguration} stored within the provided {@link DataRepository}.
-     * 
+     *
      * @return the data
      */
     public final GlobalConfiguration getGlobalConfiguration() {
-        return getData(GlobalConfiguration.ID, GlobalConfiguration.class).orElseThrow();
+        return this.getData(GlobalConfiguration.ID, GlobalConfiguration.class).orElseThrow();
     }
 
     /**
@@ -44,7 +47,7 @@ public class DataRepository implements Serializable {
      * @return Optional containing the requested data cast into the given class. The optional is empty is data could not be found or casting was unsuccessful.
      */
     public <T extends PipelineStepData> Optional<T> getData(String identifier, Class<T> clazz) {
-        var possibleData = data.get(identifier);
+        var possibleData = this.data.get(identifier);
         if (possibleData != null) {
             return possibleData.asPipelineStepData(clazz);
         }
@@ -59,7 +62,7 @@ public class DataRepository implements Serializable {
      * @param pipelineStepData Data that should be saved
      */
     public void addData(String identifier, PipelineStepData pipelineStepData) {
-        if (data.put(identifier, pipelineStepData) != null) {
+        if (this.data.put(identifier, pipelineStepData) != null) {
             logger.warn("Overriding data with identifier '{}'", identifier);
         }
     }
@@ -78,7 +81,6 @@ public class DataRepository implements Serializable {
      *
      * @return deep copy of the data repository
      */
-    @DeepCopy
     public DataRepository deepCopy() {
         return DataRepositoryHelper.deepCopy(this);
     }

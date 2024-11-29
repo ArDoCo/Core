@@ -2,20 +2,19 @@
 package edu.kit.kastel.mcse.ardoco.core.common.tuple;
 
 import java.io.Serializable;
-
-import com.github.jsonldjava.shaded.com.google.common.base.Objects;
+import java.util.Objects;
 
 public record Pair<T extends Serializable, U extends Serializable>(T first, U second) implements Serializable {
 
     public boolean hasElement(Serializable element) {
-        return Objects.equal(this.first, element) || Objects.equal(this.second, element);
+        return Objects.equals(this.first, element) || Objects.equals(this.second, element);
     }
 
     public Serializable getOtherElement(Serializable element) {
-        if (Objects.equal(this.first, element)) {
+        if (Objects.equals(this.first, element)) {
             return this.second;
         }
-        if (Objects.equal(this.second, element)) {
+        if (Objects.equals(this.second, element)) {
             return this.first;
         }
         throw new IllegalArgumentException("Unknown element: " + element);
