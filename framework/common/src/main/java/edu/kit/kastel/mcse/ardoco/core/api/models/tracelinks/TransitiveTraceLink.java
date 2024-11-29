@@ -28,8 +28,8 @@ public final class TransitiveTraceLink<A extends Entity, M extends Entity, B ext
     }
 
     public static boolean isValidTransitiveTraceLink(TraceLink<?, ?> firstTraceLink, TraceLink<?, ?> secondTraceLink) {
-        var secondEndpointOfFirstTl = firstTraceLink.getEndpointTuple().secondEndpoint().getId();
-        var firstEndpointOfSecondTl = secondTraceLink.getEndpointTuple().firstEndpoint().getId();
+        var secondEndpointOfFirstTl = firstTraceLink.asPair().second().getId();
+        var firstEndpointOfSecondTl = secondTraceLink.asPair().first().getId();
         return secondEndpointOfFirstTl.equals(firstEndpointOfSecondTl);
     }
 
@@ -43,7 +43,7 @@ public final class TransitiveTraceLink<A extends Entity, M extends Entity, B ext
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.getEndpointTuple());
+        return Objects.hash(this.asPair());
     }
 
     @Override
@@ -56,6 +56,6 @@ public final class TransitiveTraceLink<A extends Entity, M extends Entity, B ext
         }
         return Objects.equals(this.getFirstTraceLink(), other.getFirstTraceLink()) && //
                 Objects.equals(this.getSecondTraceLink(), other.getSecondTraceLink()) && //
-                Objects.equals(this.getEndpointTuple(), other.getEndpointTuple());
+                Objects.equals(this.asPair(), other.asPair());
     }
 }
