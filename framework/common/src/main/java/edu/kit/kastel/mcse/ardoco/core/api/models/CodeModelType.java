@@ -5,7 +5,7 @@ public enum CodeModelType implements ModelType {
     CODE_MODEL;
 
     @Override
-    public String getModelId() {
-        return "CodeModel";
+    public Metamodel getMetamodel() {
+        return Metamodel.CODE;
     }
 }

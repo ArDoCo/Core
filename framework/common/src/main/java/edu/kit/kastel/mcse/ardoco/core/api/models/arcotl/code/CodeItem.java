@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.CodeEntity;
+import edu.kit.kastel.mcse.ardoco.core.api.models.entity.CodeEntity;
 
 /**
  * A code item of a code model.
@@ -23,6 +23,8 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.CodeEntity;
         @JsonSubTypes.Type(value = Datatype.class, name = "Datatype") //
 })
 public abstract sealed class CodeItem extends CodeEntity permits CodeModule, ComputationalObject, Datatype {
+
+    private static final long serialVersionUID = 7089107378955018027L;
 
     @JsonIgnore
     protected CodeItemRepository codeItemRepository;
@@ -61,14 +63,14 @@ public abstract sealed class CodeItem extends CodeEntity permits CodeModule, Com
     }
 
     public SortedSet<CodeItem> getAllDataTypesAndSelf() {
-        SortedSet<CodeItem> result = new TreeSet<>(getAllDataTypes());
+        SortedSet<CodeItem> result = new TreeSet<>(this.getAllDataTypes());
         result.add(this);
         return result;
     }
 
     public SortedSet<ControlElement> getDeclaredMethods() {
         SortedSet<ControlElement> methods = new TreeSet<>();
-        for (CodeItem codeItem : getContent()) {
+        for (CodeItem codeItem : this.getContent()) {
             if (codeItem instanceof ControlElement codeMethod) {
                 methods.add(codeMethod);
             }

@@ -1,12 +1,17 @@
 /* Licensed under MIT 2021-2024. */
-package edu.kit.kastel.mcse.ardoco.core.api.models;
+package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.legacy;
 
 import org.eclipse.collections.api.list.ImmutableList;
+
+import edu.kit.kastel.mcse.ardoco.core.api.models.entity.ArchitectureEntity;
 
 /**
  * The Interface IModelInstance defines instances from models.
  */
+@Deprecated
 public abstract sealed class ModelInstance extends ArchitectureEntity permits ModelInstanceImpl {
+
+    private static final long serialVersionUID = 2351521910499184817L;
 
     protected ModelInstance(String name, String id) {
         super(name, id);

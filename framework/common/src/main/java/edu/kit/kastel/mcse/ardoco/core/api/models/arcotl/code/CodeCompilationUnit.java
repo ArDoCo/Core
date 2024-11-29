@@ -17,12 +17,14 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 @JsonTypeName("CodeCompilationUnit")
 public final class CodeCompilationUnit extends CodeModule {
 
+    private static final long serialVersionUID = 6749513760670983294L;
+
     @JsonProperty
     private List<String> pathElements;
     @JsonProperty
     private String extension;
     @JsonProperty
-    private ProgrammingLanguage language;
+    private String language;
 
     @SuppressWarnings("unused")
     private CodeCompilationUnit() {
@@ -30,21 +32,21 @@ public final class CodeCompilationUnit extends CodeModule {
     }
 
     public CodeCompilationUnit(CodeItemRepository codeItemRepository, String name, SortedSet<? extends CodeItem> content, List<String> pathElements,
-            String extension, ProgrammingLanguage language) {
+            String extension, String language) {
         super(codeItemRepository, name, content);
         this.pathElements = new ArrayList<>(pathElements);
         this.extension = extension;
         this.language = language;
     }
 
-    public ProgrammingLanguage getLanguage() {
-        return language;
+    public String getLanguage() {
+        return this.language;
     }
 
     @Override
     public List<Datatype> getAllDataTypes() {
         List<Datatype> result = new ArrayList<>();
-        getContent().forEach(c -> result.addAll(c.getAllDataTypes()));
+        this.getContent().forEach(c -> result.addAll(c.getAllDataTypes()));
         return result;
     }
 
@@ -68,49 +70,44 @@ public final class CodeCompilationUnit extends CodeModule {
     }
 
     public List<String> getPathElements() {
-        return new ArrayList<>(pathElements);
+        return new ArrayList<>(this.pathElements);
     }
 
     public String getPath() {
         StringBuilder pathBuilder = new StringBuilder();
-        for (String pathElement : pathElements) {
+        for (String pathElement : this.pathElements) {
             pathBuilder.append(pathElement).append("/");
         }
         String ending = "";
-        if (!extension.isEmpty()) {
-            ending = "." + extension;
+        if (!this.extension.isEmpty()) {
+            ending = "." + this.extension;
         }
-        pathBuilder.append(getName()).append(ending);
+        pathBuilder.append(this.getName()).append(ending);
         return pathBuilder.toString();
     }
 
     @Override
     public String toString() {
-        return getPath();
+        return this.getPath();
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (!(o instanceof CodeCompilationUnit that))
+        }
+        if (!(o instanceof CodeCompilationUnit that) || !super.equals(o) || !Objects.equals(this.pathElements, that.pathElements) || !Objects.equals(
+                this.extension, that.extension)) {
             return false;
-        if (!super.equals(o))
-            return false;
-
-        if (!Objects.equals(pathElements, that.pathElements))
-            return false;
-        if (!Objects.equals(extension, that.extension))
-            return false;
-        return language == that.language;
+        }
+        return this.language == that.language;
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (pathElements != null ? pathElements.hashCode() : 0);
-        result = 31 * result + (extension != null ? extension.hashCode() : 0);
-        result = 31 * result + (language != null ? language.hashCode() : 0);
-        return result;
+        result = 31 * result + (this.pathElements != null ? this.pathElements.hashCode() : 0);
+        result = 31 * result + (this.extension != null ? this.extension.hashCode() : 0);
+        return 31 * result + (this.language != null ? this.language.hashCode() : 0);
     }
 }

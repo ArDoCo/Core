@@ -19,7 +19,7 @@ public enum ArchitectureModelType implements ModelType {
     RAW;
 
     @Override
-    public String getModelId() {
-        return this.name();
+    public Metamodel getMetamodel() {
+        return Metamodel.ARCHITECTURE;
     }
 }

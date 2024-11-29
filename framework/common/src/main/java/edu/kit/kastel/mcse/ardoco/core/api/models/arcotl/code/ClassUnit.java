@@ -12,13 +12,15 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 @JsonTypeName("ClassUnit")
 public final class ClassUnit extends Datatype {
 
+    private static final long serialVersionUID = 354013115794534271L;
+
     @JsonProperty
     private final List<String> content;
 
     @SuppressWarnings("unused")
     private ClassUnit() {
         // Jackson
-        content = new ArrayList<>();
+        this.content = new ArrayList<>();
     }
 
     public ClassUnit(CodeItemRepository codeItemRepository, String name, SortedSet<? extends CodeItem> content) {
@@ -31,37 +33,36 @@ public final class ClassUnit extends Datatype {
 
     @JsonGetter("content")
     protected List<String> getContentIds() {
-        return content;
+        return this.content;
     }
 
     @Override
     public List<CodeItem> getContent() {
-        return codeItemRepository.getCodeItemsFromIds(content);
+        return this.codeItemRepository.getCodeItemsFromIds(this.content);
     }
 
     @Override
     public List<Datatype> getAllDataTypes() {
         List<Datatype> result = new ArrayList<>();
         result.add(this);
-        getContent().forEach(c -> result.addAll(c.getAllDataTypes()));
+        this.getContent().forEach(c -> result.addAll(c.getAllDataTypes()));
         return result;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (!(o instanceof ClassUnit classUnit))
+        }
+        if (!(o instanceof ClassUnit classUnit) || !super.equals(o)) {
             return false;
-        if (!super.equals(o))
-            return false;
-        return content.equals(classUnit.content);
+        }
+        return this.content.equals(classUnit.content);
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + content.hashCode();
-        return result;
+        return 31 * result + this.content.hashCode();
     }
 }

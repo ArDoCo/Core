@@ -1,17 +1,19 @@
 /* Licensed under MIT 2021-2024. */
-package edu.kit.kastel.mcse.ardoco.core.api.models;
+package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.legacy;
 
 import java.io.Serializable;
 
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 
+import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
+import edu.kit.kastel.mcse.ardoco.core.api.models.ModelStates;
 import edu.kit.kastel.mcse.ardoco.core.configuration.IConfigurable;
 
 /**
  * The Interface IModelState defines the information directly extracted from the models.
- * 
- * @deprecated use {@link ModelStates#getModel(String)}
+ *
+ * @deprecated use {@link ModelStates#getModel(Metamodel)}
  */
 @Deprecated(since = "0.32.0")
 public interface LegacyModelExtractionState extends IConfigurable, Serializable {

@@ -3,10 +3,16 @@ package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl;
 
 import java.util.List;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelElement;
+import edu.kit.kastel.mcse.ardoco.core.api.models.entity.Entity;
+import edu.kit.kastel.mcse.ardoco.core.common.IdentifierProvider;
 
-public abstract sealed class Model extends ModelElement permits ArchitectureModel, CodeModel {
+public abstract sealed class Model permits ArchitectureModel, CodeModel {
+
+    private final String id = IdentifierProvider.createId();
+
+    public String getId() {
+        return this.id;
+    }
 
     /**
      * Returns the content of this model.

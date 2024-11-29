@@ -22,6 +22,8 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 @JsonTypeName("CodeModule")
 public sealed class CodeModule extends CodeItem permits CodeAssembly, CodeCompilationUnit, CodePackage {
 
+    private static final long serialVersionUID = -7941299662945801101L;
+
     @JsonProperty
     private String parentId;
     @JsonProperty
@@ -37,17 +39,17 @@ public sealed class CodeModule extends CodeItem permits CodeAssembly, CodeCompil
         for (var codeItem : content) {
             this.content.add(codeItem.getId());
         }
-        parentId = null;
+        this.parentId = null;
     }
 
     @JsonGetter("content")
     protected List<String> getContentIds() {
-        return content;
+        return this.content;
     }
 
     @Override
     public List<CodeItem> getContent() {
-        return codeItemRepository.getCodeItemsFromIds(content);
+        return this.codeItemRepository.getCodeItemsFromIds(this.content);
     }
 
     public void setContent(List<? extends CodeItem> content) {
@@ -66,7 +68,7 @@ public sealed class CodeModule extends CodeItem permits CodeAssembly, CodeCompil
     }
 
     public CodeModule getParent() {
-        CodeItem codeItem = codeItemRepository.getCodeItem(parentId);
+        CodeItem codeItem = this.codeItemRepository.getCodeItem(this.parentId);
         if (codeItem instanceof CodeModule codeModule) {
             return codeModule;
         }
@@ -74,49 +76,45 @@ public sealed class CodeModule extends CodeItem permits CodeAssembly, CodeCompil
     }
 
     public boolean hasParent() {
-        return getParent() != null;
+        return this.getParent() != null;
     }
 
     public void setParent(CodeModule parent) {
         this.parentId = parent.getId();
-        if (!codeItemRepository.containsCodeItem(parentId)) {
-            codeItemRepository.addCodeItem(parent);
+        if (!this.codeItemRepository.containsCodeItem(this.parentId)) {
+            this.codeItemRepository.addCodeItem(parent);
         }
     }
 
     @Override
     public SortedSet<CodeCompilationUnit> getAllCompilationUnits() {
         SortedSet<CodeCompilationUnit> result = new TreeSet<>();
-        getContent().forEach(c -> result.addAll(c.getAllCompilationUnits()));
+        this.getContent().forEach(c -> result.addAll(c.getAllCompilationUnits()));
         return result;
     }
 
     @Override
     public SortedSet<CodePackage> getAllPackages() {
         SortedSet<CodePackage> result = new TreeSet<>();
-        getContent().forEach(c -> result.addAll(c.getAllPackages()));
+        this.getContent().forEach(c -> result.addAll(c.getAllPackages()));
         return result;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (!(o instanceof CodeModule that))
+        }
+        if (!(o instanceof CodeModule that) || !super.equals(o) || !Objects.equals(this.parentId, that.parentId)) {
             return false;
-        if (!super.equals(o))
-            return false;
-
-        if (!Objects.equals(parentId, that.parentId))
-            return false;
-        return Objects.equals(content, that.content);
+        }
+        return Objects.equals(this.content, that.content);
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (parentId != null ? parentId.hashCode() : 0);
-        result = 31 * result + (content != null ? content.hashCode() : 0);
-        return result;
+        result = 31 * result + (this.parentId != null ? this.parentId.hashCode() : 0);
+        return 31 * result + (this.content != null ? this.content.hashCode() : 0);
     }
 }

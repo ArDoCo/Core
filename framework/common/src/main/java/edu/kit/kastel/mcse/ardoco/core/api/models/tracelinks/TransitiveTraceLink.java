@@ -4,9 +4,11 @@ package edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks;
 import java.util.Objects;
 import java.util.Optional;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
+import edu.kit.kastel.mcse.ardoco.core.api.models.entity.Entity;
 
 public final class TransitiveTraceLink<A extends Entity, M extends Entity, B extends Entity> extends TraceLink<A, B> {
+
+    private static final long serialVersionUID = 3781827633038556211L;
 
     private final TraceLink<A, M> firstTraceLink;
     private final TraceLink<M, B> secondTraceLink;
@@ -19,7 +21,7 @@ public final class TransitiveTraceLink<A extends Entity, M extends Entity, B ext
 
     public static <A extends Entity, M extends Entity, B extends Entity> Optional<TransitiveTraceLink<A, M, B>> createTransitiveTraceLink(
             TraceLink<A, M> firstTraceLink, TraceLink<M, B> secondTraceLink) {
-        if (isValidTransitiveTraceLink(firstTraceLink, secondTraceLink)) {
+        if (TransitiveTraceLink.isValidTransitiveTraceLink(firstTraceLink, secondTraceLink)) {
             return Optional.of(new TransitiveTraceLink<>(firstTraceLink, secondTraceLink));
         }
         return Optional.empty();
@@ -32,16 +34,16 @@ public final class TransitiveTraceLink<A extends Entity, M extends Entity, B ext
     }
 
     public TraceLink<A, M> getFirstTraceLink() {
-        return firstTraceLink;
+        return this.firstTraceLink;
     }
 
     public TraceLink<M, B> getSecondTraceLink() {
-        return secondTraceLink;
+        return this.secondTraceLink;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getEndpointTuple());
+        return Objects.hash(this.getEndpointTuple());
     }
 
     @Override
@@ -52,8 +54,8 @@ public final class TransitiveTraceLink<A extends Entity, M extends Entity, B ext
         if (!(obj instanceof TransitiveTraceLink<?, ?, ?> other)) {
             return false;
         }
-        return Objects.equals(getFirstTraceLink(), other.getFirstTraceLink()) && //
-                Objects.equals(getSecondTraceLink(), other.getSecondTraceLink()) && //
-                Objects.equals(getEndpointTuple(), other.getEndpointTuple());
+        return Objects.equals(this.getFirstTraceLink(), other.getFirstTraceLink()) && //
+                Objects.equals(this.getSecondTraceLink(), other.getSecondTraceLink()) && //
+                Objects.equals(this.getEndpointTuple(), other.getEndpointTuple());
     }
 }

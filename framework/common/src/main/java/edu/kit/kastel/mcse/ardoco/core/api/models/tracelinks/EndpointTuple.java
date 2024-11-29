@@ -4,13 +4,15 @@ package edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks;
 import java.io.Serializable;
 import java.util.Objects;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.Entity;
+import edu.kit.kastel.mcse.ardoco.core.api.models.entity.Entity;
 
 /**
  * A tuple of one architecture endpoint and one code endpoint. Every endpoint tuple is a possible candidate for the endpoints of a trace link that connects
  * corresponding elements of an architecture model and a code model. An endpoint tuple cannot consist of two architecture endpoints or of two code endpoints.
  */
 public class EndpointTuple<E1 extends Entity, E2 extends Entity> implements Serializable {
+    private static final long serialVersionUID = -3671983559151147055L;
+
     private final E1 firstEndpoint;
     private final E2 secondEndpoint;
 
@@ -24,21 +26,21 @@ public class EndpointTuple<E1 extends Entity, E2 extends Entity> implements Seri
     }
 
     public Entity getOtherEndpoint(Entity endpoint) {
-        if (firstEndpoint.equals(endpoint)) {
-            return secondEndpoint;
+        if (this.firstEndpoint.equals(endpoint)) {
+            return this.secondEndpoint;
         }
-        if (secondEndpoint.equals(endpoint)) {
-            return firstEndpoint;
+        if (this.secondEndpoint.equals(endpoint)) {
+            return this.firstEndpoint;
         }
         throw new IllegalArgumentException("Endpoint tuple must contain given endpoint");
     }
 
     public boolean hasEndpoint(Entity endpoint) {
-        return firstEndpoint.equals(endpoint) || secondEndpoint.equals(endpoint);
+        return this.firstEndpoint.equals(endpoint) || this.secondEndpoint.equals(endpoint);
     }
 
     public boolean hasEndpoint(EndpointTuple<?, ?> endpointTuple) {
-        return firstEndpoint.equals(endpointTuple.firstEndpoint) || secondEndpoint.equals(endpointTuple.secondEndpoint);
+        return this.firstEndpoint.equals(endpointTuple.firstEndpoint) || this.secondEndpoint.equals(endpointTuple.secondEndpoint);
     }
 
     @Override
@@ -49,25 +51,25 @@ public class EndpointTuple<E1 extends Entity, E2 extends Entity> implements Seri
         if (!(obj instanceof EndpointTuple<?, ?> other)) {
             return false;
         }
-        return Objects.equals(firstEndpoint, other.firstEndpoint) && Objects.equals(secondEndpoint, other.secondEndpoint);
+        return Objects.equals(this.firstEndpoint, other.firstEndpoint) && Objects.equals(this.secondEndpoint, other.secondEndpoint);
     }
 
     @Override
     public String toString() {
-        return "First Endpoint: " + firstEndpoint + ", Second Endpoint: " + secondEndpoint;
+        return "First Endpoint: " + this.firstEndpoint + ", Second Endpoint: " + this.secondEndpoint;
     }
 
     public E1 firstEndpoint() {
-        return firstEndpoint;
+        return this.firstEndpoint;
     }
 
     public E2 secondEndpoint() {
-        return secondEndpoint;
+        return this.secondEndpoint;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(firstEndpoint, secondEndpoint);
+        return Objects.hash(this.firstEndpoint, this.secondEndpoint);
     }
 
 }

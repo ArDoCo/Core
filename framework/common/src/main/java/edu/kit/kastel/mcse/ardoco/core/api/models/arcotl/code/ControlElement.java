@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 @JsonTypeName("ControlElement")
 public final class ControlElement extends ComputationalObject {
 
+    private static final long serialVersionUID = -2733651783905632198L;
+
     @SuppressWarnings("unused")
     private ControlElement() {
         // Jackson

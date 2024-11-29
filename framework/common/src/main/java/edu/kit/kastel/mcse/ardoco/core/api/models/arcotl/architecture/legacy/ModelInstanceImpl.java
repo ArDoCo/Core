@@ -1,5 +1,5 @@
 /* Licensed under MIT 2021-2023. */
-package edu.kit.kastel.mcse.ardoco.core.api.models;
+package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.legacy;
 
 import java.util.Objects;
 
@@ -13,7 +13,10 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
  * This class represents an instance extracted from a model. The name of an instance (as well as the type) are splitted at spaces and can be seen as multiple
  * names. Therefore, the longestName (and type) is the original name (type) of the instance.
  */
+@Deprecated
 public final class ModelInstanceImpl extends ModelInstance {
+
+    private static final long serialVersionUID = 9185325416212743266L;
 
     private final String fullName;
     private final String fullType;
@@ -32,19 +35,19 @@ public final class ModelInstanceImpl extends ModelInstance {
         super(name, uid);
 
         String splitName = CommonUtilities.splitCases(name);
-        names = Lists.mutable.with(splitName.split(" "));
-        if (names.size() > 1) {
-            names.add(name);
+        this.names = Lists.mutable.with(splitName.split(" "));
+        if (this.names.size() > 1) {
+            this.names.add(name);
         }
 
         String splitType = CommonUtilities.splitCases(type);
-        types = Lists.mutable.with(splitType.split(" "));
-        if (types.size() > 1) {
-            types.add(type);
+        this.types = Lists.mutable.with(splitType.split(" "));
+        if (this.types.size() > 1) {
+            this.types.add(type);
         }
         this.uid = uid;
-        fullName = name;
-        fullType = type;
+        this.fullName = name;
+        this.fullType = type;
     }
 
     /**
@@ -54,7 +57,7 @@ public final class ModelInstanceImpl extends ModelInstance {
      */
     @Override
     public String getFullName() {
-        return fullName;
+        return this.fullName;
     }
 
     /**
@@ -64,7 +67,7 @@ public final class ModelInstanceImpl extends ModelInstance {
      */
     @Override
     public String getFullType() {
-        return fullType;
+        return this.fullType;
     }
 
     /**
@@ -74,7 +77,7 @@ public final class ModelInstanceImpl extends ModelInstance {
      */
     @Override
     public ImmutableList<String> getNameParts() {
-        return names.toImmutable();
+        return this.names.toImmutable();
     }
 
     /**
@@ -84,7 +87,7 @@ public final class ModelInstanceImpl extends ModelInstance {
      */
     @Override
     public ImmutableList<String> getTypeParts() {
-        return types.toImmutable();
+        return this.types.toImmutable();
     }
 
     /**
@@ -94,17 +97,17 @@ public final class ModelInstanceImpl extends ModelInstance {
      */
     @Override
     public String getUid() {
-        return uid;
+        return this.uid;
     }
 
     @Override
     public String toString() {
-        return "Instance [names=" + String.join(", ", names) + ", type=" + String.join(", ", types) + "]";
+        return "Instance [names=" + String.join(", ", this.names) + ", type=" + String.join(", ", this.types) + "]";
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(fullName, fullType, uid);
+        return Objects.hash(this.fullName, this.fullType, this.uid);
     }
 
     @Override
@@ -115,7 +118,7 @@ public final class ModelInstanceImpl extends ModelInstance {
         if (!(obj instanceof ModelInstanceImpl other)) {
             return false;
         }
-        return Objects.equals(fullName, other.fullName) && Objects.equals(fullType, other.fullType) && Objects.equals(uid, other.uid);
+        return Objects.equals(this.fullName, other.fullName) && Objects.equals(this.fullType, other.fullType) && Objects.equals(this.uid, other.uid);
     }
 
 }

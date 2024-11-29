@@ -3,9 +3,9 @@ package edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks;
 
 import java.util.Objects;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureEntity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
+import edu.kit.kastel.mcse.ardoco.core.api.models.entity.ArchitectureEntity;
 
 /**
  * A trace link between exactly one architecture endpoint and exactly one code
@@ -13,6 +13,8 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUni
  * architecture and a code model.
  */
 public class SamCodeTraceLink extends TraceLink<ArchitectureEntity, CodeCompilationUnit> {
+
+    private static final long serialVersionUID = -7683024763031647537L;
 
     /**
      * Creates a new trace link between an architecture endpoint and a code endpoint
@@ -27,7 +29,7 @@ public class SamCodeTraceLink extends TraceLink<ArchitectureEntity, CodeCompilat
 
     @Override
     public int hashCode() {
-        return Objects.hash(getEndpointTuple());
+        return Objects.hash(this.getEndpointTuple());
     }
 
     @Override
@@ -38,11 +40,11 @@ public class SamCodeTraceLink extends TraceLink<ArchitectureEntity, CodeCompilat
         if (!(obj instanceof SamCodeTraceLink other)) {
             return false;
         }
-        return Objects.equals(getEndpointTuple(), other.getEndpointTuple());
+        return Objects.equals(this.getEndpointTuple(), other.getEndpointTuple());
     }
 
     @Override
     public String toString() {
-        return getEndpointTuple().toString();
+        return this.getEndpointTuple().toString();
     }
 }

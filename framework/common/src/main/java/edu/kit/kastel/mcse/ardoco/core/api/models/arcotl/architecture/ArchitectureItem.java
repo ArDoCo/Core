@@ -1,7 +1,7 @@
 /* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureEntity;
+import edu.kit.kastel.mcse.ardoco.core.api.models.entity.ArchitectureEntity;
 
 /**
  * An architecture item of an architecture model. A possible candidate for the
@@ -9,6 +9,8 @@ import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureEntity;
  * an architecture model and a code model.
  */
 public abstract sealed class ArchitectureItem extends ArchitectureEntity permits ArchitectureComponent, ArchitectureInterface, ArchitectureMethod {
+
+    private static final long serialVersionUID = -216185356134452192L;
 
     /**
      * Creates a new architecture item with the specified name.
