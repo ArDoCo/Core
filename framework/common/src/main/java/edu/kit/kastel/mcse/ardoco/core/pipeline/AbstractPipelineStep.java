@@ -29,9 +29,9 @@ public abstract class AbstractPipelineStep extends AbstractConfigurable {
      * {@link #after()}
      */
     public void run() {
-        before();
-        process();
-        after();
+        this.before();
+        this.process();
+        this.after();
     }
 
     /**
@@ -62,6 +62,6 @@ public abstract class AbstractPipelineStep extends AbstractConfigurable {
      * @return the id
      */
     public final String getId() {
-        return id;
+        return this.id;
     }
 }

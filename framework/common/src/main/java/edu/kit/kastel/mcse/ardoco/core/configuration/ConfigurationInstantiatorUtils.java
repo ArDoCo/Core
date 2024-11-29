@@ -33,27 +33,32 @@ public final class ConfigurationInstantiatorUtils {
         AbstractConfigurable result = null;
 
         result = findAndCreate(constructors, c -> c.getParameterCount() == 0, new Object[0]);
-        if (result != null)
+        if (result != null) {
             return result;
+        }
 
         result = findAndCreate(constructors, c -> c.getParameterCount() == 1 && c.getParameterTypes()[0] == Map.class, new Object[] { Map.of() });
-        if (result != null)
+        if (result != null) {
             return result;
+        }
 
         result = findAndCreate(constructors, c -> c.getParameterCount() == 1 && c.getParameterTypes()[0] == DataRepository.class, new Object[] {
                 new DataRepository() });
-        if (result != null)
+        if (result != null) {
             return result;
+        }
 
         result = findAndCreate(constructors, c -> c.getParameterCount() == 2 && c.getParameterTypes()[0] == String.class && c
                 .getParameterTypes()[1] == DataRepository.class, new Object[] { null, new DataRepository() });
-        if (result != null)
+        if (result != null) {
             return result;
+        }
 
         result = findAndCreate(constructors, c -> c.getParameterCount() == 2 && c.getParameterTypes()[0] == DataRepository.class && c
                 .getParameterTypes()[1] == List.class, new Object[] { new DataRepository(), List.of() });
-        if (result != null)
+        if (result != null) {
             return result;
+        }
 
         var c = constructors.stream().findFirst().orElseThrow(() -> new IllegalStateException("Not reachable code reached for class " + clazz.getName()));
 

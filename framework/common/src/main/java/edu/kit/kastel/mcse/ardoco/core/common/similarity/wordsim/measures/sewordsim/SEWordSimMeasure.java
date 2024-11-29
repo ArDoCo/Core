@@ -18,7 +18,7 @@ public class SEWordSimMeasure implements WordSimMeasure {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SEWordSimMeasure.class);
 
-    private transient SEWordSimDataSource dataSource;
+    private SEWordSimDataSource dataSource;
     private final double similarityThreshold;
 
     /**
@@ -43,7 +43,7 @@ public class SEWordSimMeasure implements WordSimMeasure {
 
     @Override
     public boolean areWordsSimilar(ComparisonContext ctx) {
-        var similarity = getSimilarity(ctx);
+        var similarity = this.getSimilarity(ctx);
         return !Double.isNaN(similarity) && similarity >= this.similarityThreshold;
     }
 
@@ -52,22 +52,21 @@ public class SEWordSimMeasure implements WordSimMeasure {
         double similarity = Double.NaN;
 
         try {
-            similarity = getDataSource().getSimilarity(ctx.firstTerm(), ctx.secondTerm()).orElse(Double.NaN);
+            similarity = this.getDataSource().getSimilarity(ctx.firstTerm(), ctx.secondTerm()).orElse(Double.NaN);
         } catch (SQLException e) {
             LOGGER.error("Failed to query the SEWordSim database for word comparison: " + ctx, e);
-            return similarity;
         }
         return similarity; // words are probably missing from the database
     }
 
     private SEWordSimDataSource getDataSource() {
-        if (dataSource == null) {
+        if (this.dataSource == null) {
             try {
-                dataSource = new SEWordSimDataSource(Path.of(CommonTextToolsConfig.SEWORDSIM_DB_FILE_PATH));
+                this.dataSource = new SEWordSimDataSource(Path.of(CommonTextToolsConfig.SEWORDSIM_DB_FILE_PATH));
             } catch (SQLException e) {
                 throw new IllegalArgumentException(e);
             }
         }
-        return dataSource;
+        return this.dataSource;
     }
 }

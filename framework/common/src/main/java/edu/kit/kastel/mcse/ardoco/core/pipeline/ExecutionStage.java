@@ -26,6 +26,6 @@ public abstract class ExecutionStage extends AbstractExecutionStage {
     @Override
     protected void before() {
         super.before();
-        applyConfiguration(additionalConfigs);
+        this.applyConfiguration(this.additionalConfigs);
     }
 }

@@ -9,8 +9,6 @@ import edu.kit.kastel.mcse.ardoco.core.common.similarity.wordsim.WordSimMeasure;
  *
  */
 public class EqualityMeasure implements WordSimMeasure {
-    private static final long serialVersionUID = -3748510855999411788L;
-
     @Override
     public boolean areWordsSimilar(ComparisonContext ctx) {
         return ctx.firstTerm().equalsIgnoreCase(ctx.secondTerm());

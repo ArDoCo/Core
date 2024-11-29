@@ -4,7 +4,6 @@ package edu.kit.kastel.mcse.ardoco.core.common.similarity.wordsim.vector;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -35,7 +34,7 @@ import org.sqlite.SQLiteOpenMode;
  * {@link #filterWord(String)} methods. Both methods are called for each word and allow filtering/modifying words before
  * they are inserted into the databse.
  */
-public class WordVectorSqliteImporter implements Serializable {
+public class WordVectorSqliteImporter {
 
     private static final int DEFAULT_MAX_WORD_LENGTH = 300;
     private static final Logger LOGGER = LoggerFactory.getLogger(WordVectorSqliteImporter.class);
@@ -129,18 +128,18 @@ public class WordVectorSqliteImporter implements Serializable {
         long linesRead = 0;
         long inserted = 0;
 
-        try (Connection connection = connect();
-                PreparedStatement statement = prepareSelect(connection);
-                var in = Files.newInputStream(Path.of(vectorFile), StandardOpenOption.READ);
+        try (Connection connection = this.connect();
+                PreparedStatement statement = this.prepareSelect(connection);
+                var in = Files.newInputStream(Path.of(this.vectorFile), StandardOpenOption.READ);
                 var bufferedReader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
 
-            ByteBuffer buffer = ByteBuffer.allocate(dimension * 4);
+            ByteBuffer buffer = ByteBuffer.allocate(this.dimension * 4);
 
-            while (bufferedReader.ready() && linesRead < endLine) {
+            while (bufferedReader.ready() && linesRead < this.endLine) {
                 var line = bufferedReader.readLine();
                 linesRead++;
 
-                if (linesRead >= startLine) {
+                if (linesRead >= this.startLine) {
                     var parts = line.split(" ", -1);
                     if (parts.length - 1 != this.dimension) {
                         throw new IllegalStateException("importer has read line with invalid vector dimension: \"" + line + "\"");
@@ -149,11 +148,11 @@ public class WordVectorSqliteImporter implements Serializable {
                     // Process the word
                     String word = parts[0];
                     // Filter out weird words from dataset
-                    if (word.length() > this.maxWordLength || !filterWord(word)) {
+                    if (word.length() > this.maxWordLength || !this.filterWord(word)) {
                         skippedWords.add(word);
                         continue;
                     }
-                    word = processWord(word);
+                    word = this.processWord(word);
 
                     // Process the vector
                     buffer.clear();
@@ -162,7 +161,7 @@ public class WordVectorSqliteImporter implements Serializable {
                         buffer.putFloat(value);
                     }
 
-                    insertIntoDatabase(statement, buffer, word);
+                    this.insertIntoDatabase(statement, buffer, word);
                     inserted++;
                 }
             }
@@ -172,7 +171,7 @@ public class WordVectorSqliteImporter implements Serializable {
     }
 
     private void insertIntoDatabase(PreparedStatement statement, ByteBuffer buffer, String word) throws SQLException {
-        if (!dryRun) {
+        if (!this.dryRun) {
             statement.setString(1, word);
             statement.setBytes(2, buffer.array());
             statement.execute();
@@ -188,7 +187,7 @@ public class WordVectorSqliteImporter implements Serializable {
         cfg.setSynchronous(SQLiteConfig.SynchronousMode.OFF);
         cfg.setOpenMode(SQLiteOpenMode.NOMUTEX);
 
-        return cfg.createConnection("jdbc:sqlite:" + Path.of(dbFile).toAbsolutePath());
+        return cfg.createConnection("jdbc:sqlite:" + Path.of(this.dbFile).toAbsolutePath());
     }
 
     private PreparedStatement prepareSelect(Connection conn) throws SQLException {

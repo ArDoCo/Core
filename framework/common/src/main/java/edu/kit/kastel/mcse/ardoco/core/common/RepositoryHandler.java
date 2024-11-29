@@ -20,7 +20,6 @@ public class RepositoryHandler {
     private static final Logger logger = LoggerFactory.getLogger(RepositoryHandler.class);
 
     private RepositoryHandler() {
-        super();
     }
 
     public static boolean shallowCloneRepository(String repositoryLink, String desiredCodeLocation, String desiredHash) {
@@ -36,8 +35,9 @@ public class RepositoryHandler {
             List<RevCommit> commits = new ArrayList<>();
             git.log().setMaxCount(1).call().forEach(commits::add);
             assert commits.size() == 1;
-            if (commits.get(0).getId().startsWith(AbbreviatedObjectId.fromString(desiredHash)))
+            if (commits.get(0).getId().startsWith(AbbreviatedObjectId.fromString(desiredHash))) {
                 return true;
+            }
 
             // Checkout correct code version
             git.fetch().setUnshallow(true).call();

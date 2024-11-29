@@ -62,7 +62,7 @@ public class LevenshteinMeasure implements WordSimMeasure {
 
     @Override
     public boolean areWordsSimilar(ComparisonContext ctx) {
-        //FIXME cast to lower case seems unwarranted given that this is delegated to WordSimUtils already
+        // FIXME cast to lower case seems unwarranted given that this is delegated to WordSimUtils already
         String firstWord = ctx.firstTerm().toLowerCase();
         String secondWord = ctx.secondTerm().toLowerCase();
 
