@@ -15,8 +15,8 @@ import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
 /**
- * The Interface for strategies for the text state. Responsible for creating {@link NounMapping NounMappings}, and
- * {@link edu.kit.kastel.mcse.ardoco.core.api.Disambiguation Disambiguations} from their constituent parts in a variety of situations.
+ * The Interface for strategies for the text state. Responsible for creating {@link NounMapping NounMappings} from their constituent parts in a variety of
+ * situations.
  */
 public interface TextStateStrategy extends Serializable {
     /**

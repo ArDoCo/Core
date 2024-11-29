@@ -8,53 +8,40 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
 /**
  * A ComparisonContext contains all information that can be used for comparing similarity between objects that occur within ArDoCo. The fields
  * {@link #firstString} and {@link #secondString} are always not null. The field {@link #lemmatize} decides whether the lemmatized version of both words should
- * be used for comparison. The field {@link #characterMatch} provides a function to determine whether two {@link UnicodeCharacter UnicodeCharacters} are
- * considered to be a match by the {@link WordSimMeasure WordSimMeasures}.
+ * be used for comparison.
  */
-public record ComparisonContext(String firstString, String secondString, Word firstWord, Word secondWord, boolean lemmatize,
-                                UnicodeCharacterMatchFunctions characterMatch) {
-
-    /**
-     * Constructs a string-based context with a given match function and no lemmatization.
-     * 
-     * @param firstString    the first string
-     * @param secondString   the second string
-     * @param characterMatch the match function
-     */
-    public ComparisonContext(String firstString, String secondString, UnicodeCharacterMatchFunctions characterMatch) {
-        this(firstString, secondString, null, null, false, characterMatch);
-    }
+public record ComparisonContext(String firstString, String secondString, Word firstWord, Word secondWord, boolean lemmatize) {
 
     /**
      * Constructs a string-based context with the default match function and no lemmatization.
-     * 
+     *
      * @param firstString  the first string
      * @param secondString the second string
      */
     public ComparisonContext(String firstString, String secondString) {
-        this(firstString, secondString, null, null, false, UnicodeCharacterMatchFunctions.EQUAL);
+        this(firstString, secondString, null, null, false);
     }
 
     /**
      * Constructs a string-based context with the default match function.
-     * 
+     *
      * @param firstString  the first string
      * @param secondString the second string
      * @param lemmatize    whether the string should be lemmatized
      */
     public ComparisonContext(String firstString, String secondString, boolean lemmatize) {
-        this(firstString, secondString, null, null, lemmatize, UnicodeCharacterMatchFunctions.EQUAL);
+        this(firstString, secondString, null, null, lemmatize);
     }
 
     /**
      * Constructs a word-based context with the default match function.
-     * 
+     *
      * @param firstWord  the first word
      * @param secondWord the second word
      * @param lemmatize  whether the words should be lemmatized
      */
     public ComparisonContext(Word firstWord, Word secondWord, boolean lemmatize) {
-        this(firstWord.getText(), secondWord.getText(), firstWord, secondWord, lemmatize, UnicodeCharacterMatchFunctions.EQUAL);
+        this(firstWord.getText(), secondWord.getText(), firstWord, secondWord, lemmatize);
     }
 
     /**
@@ -65,7 +52,7 @@ public record ComparisonContext(String firstString, String secondString, Word fi
      */
 
     public String firstTerm() {
-        return findAppropriateTerm(firstString, firstWord);
+        return this.findAppropriateTerm(this.firstString, this.firstWord);
     }
 
     /**
@@ -76,17 +63,16 @@ public record ComparisonContext(String firstString, String secondString, Word fi
      */
 
     public String secondTerm() {
-        return findAppropriateTerm(secondString, secondWord);
+        return this.findAppropriateTerm(this.secondString, this.secondWord);
     }
 
     private String findAppropriateTerm(String string, Word word) {
         Objects.requireNonNull(string);
 
         if (word != null) {
-            return lemmatize ? word.getLemma() : word.getText();
-        } else {
-            return string;
+            return this.lemmatize ? word.getLemma() : word.getText();
         }
+        return string;
     }
 
 }

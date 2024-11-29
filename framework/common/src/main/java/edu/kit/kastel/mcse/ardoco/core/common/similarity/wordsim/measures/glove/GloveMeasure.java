@@ -20,6 +20,8 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
  */
 public class GloveMeasure extends VectorBasedWordSimMeasure {
 
+    private static final long serialVersionUID = 1436951415138215284L;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(GloveMeasure.class);
 
     private final double similarityThreshold;
@@ -47,7 +49,7 @@ public class GloveMeasure extends VectorBasedWordSimMeasure {
 
     @Override
     public boolean areWordsSimilar(ComparisonContext ctx) {
-        return getSimilarity(ctx) >= this.similarityThreshold;
+        return this.getSimilarity(ctx) >= this.similarityThreshold;
     }
 
     @Override

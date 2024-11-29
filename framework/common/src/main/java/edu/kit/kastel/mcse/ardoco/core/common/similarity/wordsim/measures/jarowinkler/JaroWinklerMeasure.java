@@ -1,6 +1,8 @@
 /* Licensed under MIT 2022-2024. */
 package edu.kit.kastel.mcse.ardoco.core.common.similarity.wordsim.measures.jarowinkler;
 
+import org.apache.commons.text.similarity.JaroWinklerSimilarity;
+
 import edu.kit.kastel.mcse.ardoco.core.common.similarity.wordsim.ComparisonContext;
 import edu.kit.kastel.mcse.ardoco.core.common.similarity.wordsim.WordSimMeasure;
 import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
@@ -9,6 +11,8 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.CommonTextToolsConfig;
  * This word similarity measure uses the jaro winkler algorithm to calculate similarity.
  */
 public class JaroWinklerMeasure implements WordSimMeasure {
+
+    private final JaroWinklerSimilarity jaroWinklerSimilarity = new JaroWinklerSimilarity();
 
     private final double similarityThreshold;
 
@@ -35,13 +39,13 @@ public class JaroWinklerMeasure implements WordSimMeasure {
 
     @Override
     public boolean areWordsSimilar(ComparisonContext ctx) {
-        double similarity = getSimilarity(ctx);
+        double similarity = this.getSimilarity(ctx);
         return similarity >= this.similarityThreshold;
     }
 
     @Override
     public double getSimilarity(ComparisonContext ctx) {
-        return UnicodeJaroWinklerSimilarity.apply(ctx.firstTerm(), ctx.secondTerm(), ctx.characterMatch());
+        return this.jaroWinklerSimilarity.apply(ctx.firstTerm(), ctx.secondTerm());
     }
 
 }
