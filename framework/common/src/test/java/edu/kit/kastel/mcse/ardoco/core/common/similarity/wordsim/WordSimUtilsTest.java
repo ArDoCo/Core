@@ -5,8 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
-import edu.kit.kastel.mcse.ardoco.core.common.similarity.wordsim.WordSimUtils;
-
 class WordSimUtilsTest {
 
     @Test

@@ -9,18 +9,15 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 
-import edu.kit.kastel.mcse.ardoco.core.common.similarity.wordsim.ConfusablesHelper;
-import edu.kit.kastel.mcse.ardoco.core.common.similarity.wordsim.UnicodeCharacter;
-
 public class ConfusablesHelperTest {
-    public static final String example = """
+    public static final String EXAMPLE = """
             #	!	ǃ	ⵑ	！
             """;
     public static final List<UnicodeCharacter> homoglyphsExample = Stream.of("!", "ǃ", "ⵑ", "！").map(UnicodeCharacter::valueOf).toList();
 
     @Test
     void extractHomoglyphsFromLine() {
-        var homoglyphs = ConfusablesHelper.extractHomoglyphsFromLine(example);
+        var homoglyphs = ConfusablesHelper.extractHomoglyphsFromLine(EXAMPLE);
         assertEquals(homoglyphsExample.size(), homoglyphs.size());
         assertTrue(homoglyphs.containsAll(homoglyphsExample));
     }

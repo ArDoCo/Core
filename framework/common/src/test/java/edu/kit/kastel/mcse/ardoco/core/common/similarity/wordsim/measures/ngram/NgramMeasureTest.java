@@ -12,7 +12,6 @@ import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.junit.jupiter.api.Test;
 
 import edu.kit.kastel.mcse.ardoco.core.common.similarity.wordsim.ComparisonContext;
-import edu.kit.kastel.mcse.ardoco.core.common.similarity.wordsim.measures.ngram.NgramMeasure;
 
 class NgramMeasureTest {
 

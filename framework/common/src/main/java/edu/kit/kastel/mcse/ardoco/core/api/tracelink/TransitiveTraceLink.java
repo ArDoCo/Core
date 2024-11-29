@@ -28,8 +28,8 @@ public final class TransitiveTraceLink<A extends Entity, M extends Entity, B ext
     }
 
     public static boolean isValidTransitiveTraceLink(TraceLink<?, ?> firstTraceLink, TraceLink<?, ?> secondTraceLink) {
-        var secondEndpointOfFirstTl = firstTraceLink.asPair().second().getId();
-        var firstEndpointOfSecondTl = secondTraceLink.asPair().first().getId();
+        var secondEndpointOfFirstTl = firstTraceLink.getSecondEndpoint().getId();
+        var firstEndpointOfSecondTl = secondTraceLink.getFirstEndpoint().getId();
         return secondEndpointOfFirstTl.equals(firstEndpointOfSecondTl);
     }
 
