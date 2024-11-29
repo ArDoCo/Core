@@ -4,7 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.entity.TextEntity;
+import edu.kit.kastel.mcse.ardoco.core.api.entity.TextEntity;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 

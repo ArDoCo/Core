@@ -5,8 +5,8 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.list.MutableList;
 
+import edu.kit.kastel.mcse.ardoco.core.api.entity.ArchitectureEntity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
-import edu.kit.kastel.mcse.ardoco.core.api.models.entity.ArchitectureEntity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.text.SentenceEntity;
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;

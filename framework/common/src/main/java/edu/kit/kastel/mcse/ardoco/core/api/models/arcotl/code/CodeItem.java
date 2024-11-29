@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.entity.CodeEntity;
+import edu.kit.kastel.mcse.ardoco.core.api.entity.CodeEntity;
 
 /**
  * A code item of a code model.

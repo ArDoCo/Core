@@ -3,7 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.api.text;
 
 import java.util.Objects;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.entity.TextEntity;
+import edu.kit.kastel.mcse.ardoco.core.api.entity.TextEntity;
 
 public final class SentenceEntity extends TextEntity {
 

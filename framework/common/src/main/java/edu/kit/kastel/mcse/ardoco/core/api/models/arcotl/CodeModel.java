@@ -11,11 +11,11 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import edu.kit.kastel.mcse.ardoco.core.api.entity.Entity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItem;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItemRepository;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodePackage;
-import edu.kit.kastel.mcse.ardoco.core.api.models.entity.Entity;
 
 /**
  * A code model that is a CMTL instance.
