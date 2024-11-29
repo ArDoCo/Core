@@ -32,7 +32,7 @@ public abstract sealed class Entity implements Serializable, Comparable<Entity> 
      * @param name the name of the entity to be created
      */
     protected Entity(String name) {
-        this(IdentifierProvider.createId(), name);
+        this(name, IdentifierProvider.createId());
     }
 
     protected Entity(String name, String id) {
