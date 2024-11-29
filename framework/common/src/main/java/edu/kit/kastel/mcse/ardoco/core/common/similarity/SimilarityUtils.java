@@ -31,7 +31,13 @@ import edu.kit.kastel.mcse.ardoco.core.common.util.CommonUtilities;
  */
 @Deterministic
 public final class SimilarityUtils implements Serializable {
+    private static final SimilarityUtils INSTANCE = new SimilarityUtils(new WordSimUtils());
+
     private final WordSimUtils wordSimUtils;
+
+    public static SimilarityUtils getInstance() {
+        return INSTANCE;
+    }
 
     public SimilarityUtils(WordSimUtils wordSimUtils) {
         this.wordSimUtils = wordSimUtils;
@@ -41,7 +47,7 @@ public final class SimilarityUtils implements Serializable {
         return Lists.immutable.fromStream(recommendedInstance.getNameMappings()
                 .stream()
                 .flatMap(n -> n.getSurfaceForms().stream())
-                .filter(s -> wordSimUtils.areWordsSimilar(s, instance.getFullName())));
+                .filter(s -> this.wordSimUtils.areWordsSimilar(s, instance.getFullName())));
     }
 
     /**
@@ -68,9 +74,9 @@ public final class SimilarityUtils implements Serializable {
         if (nm1Words.size() == 1 && nm2Words.size() == 1) {
             var nm1Word = nm1Words.get(0);
             var nm2Word = nm2Words.get(0);
-            return areWordsSimilar(nm1FirstPart, nm2FirstPart) || areWordsSimilar(nm1Word, nm2Word);
+            return this.areWordsSimilar(nm1FirstPart, nm2FirstPart) || this.areWordsSimilar(nm1Word, nm2Word);
         }
-        return areWordsSimilar(nm1Reference, nm2Reference);
+        return this.areWordsSimilar(nm1Reference, nm2Reference);
     }
 
     /**
@@ -82,13 +88,13 @@ public final class SimilarityUtils implements Serializable {
      * @return true, iff the {@link NounMapping} and {@link ModelInstance} are similar.
      */
     public boolean isNounMappingSimilarToModelInstance(NounMapping nounMapping, ModelInstance instance) {
-        if (areWordsOfListsSimilar(instance.getNameParts(), Lists.immutable.with(nounMapping.getReference())) || areWordsSimilar(instance.getFullName(),
-                nounMapping.getReference())) {
+        if (this.areWordsOfListsSimilar(instance.getNameParts(), Lists.immutable.with(nounMapping.getReference())) || this.areWordsSimilar(instance
+                .getFullName(), nounMapping.getReference())) {
             return true;
         }
 
         for (String name : instance.getNameParts()) {
-            if (areWordsSimilar(name, nounMapping.getReference())) {
+            if (this.areWordsSimilar(name, nounMapping.getReference())) {
                 return true;
             }
         }
@@ -104,7 +110,7 @@ public final class SimilarityUtils implements Serializable {
      */
     public boolean isWordSimilarToModelInstance(Word word, ModelInstance instance) {
         var names = instance.getNameParts();
-        return compareWordWithStringListEntries(word, names);
+        return this.compareWordWithStringListEntries(word, names);
     }
 
     /**
@@ -117,7 +123,7 @@ public final class SimilarityUtils implements Serializable {
     public boolean isRecommendedInstanceSimilarToModelInstance(RecommendedInstance ri, ModelInstance instance) {
         var name = ri.getName();
         var nameList = Lists.immutable.with(name.split(" "));
-        return instance.getFullName().equalsIgnoreCase(ri.getName()) || areWordsOfListsSimilar(instance.getNameParts(), nameList);
+        return instance.getFullName().equalsIgnoreCase(ri.getName()) || this.areWordsOfListsSimilar(instance.getNameParts(), nameList);
     }
 
     /**
@@ -129,16 +135,16 @@ public final class SimilarityUtils implements Serializable {
      */
     public boolean isWordSimilarToModelInstanceType(Word word, ModelInstance instance) {
         var types = instance.getTypeParts();
-        return compareWordWithStringListEntries(word, types);
+        return this.compareWordWithStringListEntries(word, types);
     }
 
     private boolean compareWordWithStringListEntries(Word word, ImmutableList<String> names) {
-        return compareWordWithStringListEntries(word.getText(), names);
+        return this.compareWordWithStringListEntries(word.getText(), names);
     }
 
     private boolean compareWordWithStringListEntries(String word, ImmutableList<String> names) {
         for (String name : names) {
-            if (areWordsSimilar(name, word)) {
+            if (this.areWordsSimilar(name, word)) {
                 return true;
             }
         }
@@ -154,7 +160,7 @@ public final class SimilarityUtils implements Serializable {
      * @return true, if the words are similar; false if not.
      */
     public boolean areWordsSimilar(Word word1, Word word2) {
-        return wordSimUtils.areWordsSimilar(word1, word2);
+        return this.wordSimUtils.areWordsSimilar(word1, word2);
     }
 
     //FIXME this method is a duplicate of an existing method in WordSimUtils and should be removed
@@ -166,7 +172,7 @@ public final class SimilarityUtils implements Serializable {
      * @return true, if the test string is similar to the original; false if not.
      */
     public boolean areWordsSimilar(String word1, String word2) {
-        return wordSimUtils.areWordsSimilar(word1, word2);
+        return this.wordSimUtils.areWordsSimilar(word1, word2);
     }
 
     /**
@@ -181,7 +187,7 @@ public final class SimilarityUtils implements Serializable {
      */
     public boolean areWordsOfListsSimilar(ImmutableList<String> originals, ImmutableList<String> words2test, double minProportion) {
 
-        if (areWordsSimilar(String.join(" ", originals), String.join(" ", words2test))) {
+        if (this.areWordsSimilar(String.join(" ", originals), String.join(" ", words2test))) {
             return true;
         }
 
@@ -191,14 +197,16 @@ public final class SimilarityUtils implements Serializable {
         var possiblySimilar = originals.size() * words2test.size();
         for (String o : originals) {
             for (String wd : words2test) {
-                if (areWordsSimilar(o, wd)) {
+                if (this.areWordsSimilar(o, wd)) {
                     counterSimilar++;
-                    if (1.0 * counterSimilar / max >= minProportion)
+                    if (1.0 * counterSimilar / max >= minProportion) {
                         return true;
+                    }
                 } else {
                     counterDissimilar++;
-                    if (1.0 * (possiblySimilar - counterDissimilar) / max < minProportion)
+                    if (1.0 * (possiblySimilar - counterDissimilar) / max < minProportion) {
                         return false; //minProportion can no longer be achieved, can stop here
+                    }
                 }
             }
         }
@@ -215,7 +223,7 @@ public final class SimilarityUtils implements Serializable {
      * @return true if the list are similar, false if not
      */
     public boolean areWordsOfListsSimilar(ImmutableList<String> originals, ImmutableList<String> words2test) {
-        return areWordsOfListsSimilar(originals, words2test, CommonTextToolsConfig.JAROWINKLER_SIMILARITY_THRESHOLD);
+        return this.areWordsOfListsSimilar(originals, words2test, CommonTextToolsConfig.JAROWINKLER_SIMILARITY_THRESHOLD);
     }
 
     /**
@@ -232,7 +240,7 @@ public final class SimilarityUtils implements Serializable {
             ImmutableList<RecommendedInstance> recommendedInstances) {
         var instanceNames = instance.getNameParts();
         var similarity = CommonTextToolsConfig.JAROWINKLER_SIMILARITY_THRESHOLD;
-        var selection = recommendedInstances.select(ri -> checkRecommendedInstanceForSelection(instance, ri, similarity));
+        var selection = recommendedInstances.select(ri -> this.checkRecommendedInstanceForSelection(instance, ri, similarity));
 
         var getMostRecommendedIByRefMinProportion = CommonTextToolsConfig.GET_MOST_RECOMMENDED_I_BY_REF_MIN_PROPORTION;
         var getMostRecommendedIByRefIncrease = CommonTextToolsConfig.GET_MOST_RECOMMENDED_I_BY_REF_INCREASE;
@@ -245,7 +253,7 @@ public final class SimilarityUtils implements Serializable {
             getMostRecommendedIByRefMinProportion += getMostRecommendedIByRefIncrease;
             MutableList<RecommendedInstance> risToRemove = Lists.mutable.empty();
             for (RecommendedInstance ri : whileSelection) {
-                if (checkRecommendedInstanceWordSimilarityToInstance(instance, ri)) {
+                if (this.checkRecommendedInstanceWordSimilarityToInstance(instance, ri)) {
                     allListsSimilar++;
                 }
 
@@ -270,7 +278,7 @@ public final class SimilarityUtils implements Serializable {
         var instanceNames = instance.getNameParts();
         for (var sf : ri.getNameMappings().flatCollect(NounMapping::getSurfaceForms)) {
             var splitSF = CommonUtilities.splitCases(String.join(" ", CommonUtilities.splitAtSeparators(sf)));
-            if (areWordsSimilar(String.join(" ", instanceNames), splitSF)) {
+            if (this.areWordsSimilar(String.join(" ", instanceNames), splitSF)) {
                 return true;
             }
         }
@@ -282,7 +290,7 @@ public final class SimilarityUtils implements Serializable {
         ImmutableList<String> longestNameSplit = Lists.immutable.of(CommonUtilities.splitCases(instance.getFullName()).split(" "));
         ImmutableList<String> recommendedInstanceNames = Lists.immutable.with(ri.getName());
 
-        boolean instanceNameAndRIName = areWordsSimilar(instance.getFullName(), ri.getName());
+        boolean instanceNameAndRIName = this.areWordsSimilar(instance.getFullName(), ri.getName());
         boolean instanceNamesAndRIs = this.areWordsOfListsSimilar(instanceNames, recommendedInstanceNames, similarity);
         boolean longestNameSplitAndRINames = this.areWordsOfListsSimilar(longestNameSplit, recommendedInstanceNames, similarity);
         boolean listOfNamesSimilarEnough = 1.0 * similarEntriesOfList(instanceNames, recommendedInstanceNames) / Math.max(instanceNames.size(),
@@ -349,7 +357,7 @@ public final class SimilarityUtils implements Serializable {
         double currentMinSimilarity = minCosineSimilarity;
         PhraseMapping mostSimilarPhraseMapping = otherPhraseMappings.get(0);
         for (PhraseMapping otherPhraseMapping : otherPhraseMappings) {
-            double similarity = getPhraseMappingSimilarity(textState, phraseMapping, otherPhraseMapping, PhraseMappingAggregatorStrategy.MAX_SIMILARITY);
+            double similarity = this.getPhraseMappingSimilarity(textState, phraseMapping, otherPhraseMapping, PhraseMappingAggregatorStrategy.MAX_SIMILARITY);
             if (similarity > currentMinSimilarity) {
                 currentMinSimilarity = similarity;
                 mostSimilarPhraseMapping = otherPhraseMapping;
@@ -361,9 +369,11 @@ public final class SimilarityUtils implements Serializable {
 
     public static <A extends Serializable, B extends Serializable> ImmutableList<Pair<A, B>> uniqueDot(ImmutableList<A> first, ImmutableList<B> second) {
         List<Pair<A, B>> result = new ArrayList<>();
-        for (A a : first)
-            for (B b : second)
+        for (A a : first) {
+            for (B b : second) {
                 result.add(new Pair<>(a, b));
+            }
+        }
         return Lists.immutable.withAll(result);
     }
 
@@ -376,9 +386,9 @@ public final class SimilarityUtils implements Serializable {
         }
 
         // Maybe REWORK. Remove NounMappings?
-        if ((coversOtherPhraseVector(firstPhraseMapping, secondPhraseMapping) || coversOtherPhraseVector(secondPhraseMapping,
-                firstPhraseMapping)) && containsAllNounMappingsOfPhraseMapping(textState, firstPhraseMapping,
-                        secondPhraseMapping) && containsAllNounMappingsOfPhraseMapping(textState, secondPhraseMapping, firstPhraseMapping)) {
+        if ((coversOtherPhraseVector(firstPhraseMapping, secondPhraseMapping) || coversOtherPhraseVector(secondPhraseMapping, firstPhraseMapping)) && this
+                .containsAllNounMappingsOfPhraseMapping(textState, firstPhraseMapping, secondPhraseMapping) && this.containsAllNounMappingsOfPhraseMapping(
+                        textState, secondPhraseMapping, firstPhraseMapping)) {
             // HARD CODED... Change?
             return 1.0;
         }
@@ -390,15 +400,12 @@ public final class SimilarityUtils implements Serializable {
         MutableList<String> removed = Lists.mutable.empty();
 
         for (var element : list1) {
-            if (list2.contains(element)) {
+            if (list2.contains(element) || (list2.select(e -> !removed.contains(e) && (e.contains(element) || element.contains(e))).size() == 1)) {
                 removed.add(element);
-            } else {
-                if (list2.select(e -> !removed.contains(e) && (e.contains(element) || element.contains(e))).size() == 1) {
-                    removed.add(element);
-                }
             }
         }
 
         return removed.size();
     }
+
 }

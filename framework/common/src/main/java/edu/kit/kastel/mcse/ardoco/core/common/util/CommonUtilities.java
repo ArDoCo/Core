@@ -224,9 +224,9 @@ public final class CommonUtilities {
      * @param modelState      the model state containing information about types
      * @return List of type names in the model state that are similar to the given word
      */
-    public static ImmutableList<String> getSimilarTypes(SimilarityUtils similarityUtils, Word word, LegacyModelExtractionState modelState) {
+    public static ImmutableList<String> getSimilarTypes(Word word, LegacyModelExtractionState modelState) {
         var identifiers = getTypeIdentifiers(modelState);
-        return Lists.immutable.fromStream(identifiers.stream().filter(typeId -> similarityUtils.areWordsSimilar(typeId, word.getText())));
+        return Lists.immutable.fromStream(identifiers.stream().filter(typeId -> SimilarityUtils.getInstance().areWordsSimilar(typeId, word.getText())));
     }
 
     /**
