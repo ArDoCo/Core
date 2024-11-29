@@ -4,7 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks;
 import java.util.Objects;
 import java.util.Optional;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.entity.Entity;
+import edu.kit.kastel.mcse.ardoco.core.api.entity.Entity;
 
 public final class TransitiveTraceLink<A extends Entity, M extends Entity, B extends Entity> extends TraceLink<A, B> {
 

@@ -3,7 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.legacy;
 
 import org.eclipse.collections.api.list.ImmutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.entity.ArchitectureEntity;
+import edu.kit.kastel.mcse.ardoco.core.api.entity.ArchitectureEntity;
 
 /**
  * The Interface IModelInstance defines instances from models.

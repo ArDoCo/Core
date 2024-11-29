@@ -4,8 +4,8 @@ package edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks;
 import java.util.Objects;
 
 import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.InstanceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.entity.ArchitectureEntity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.legacy.ModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.models.entity.ArchitectureEntity;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.text.SentenceEntity;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;

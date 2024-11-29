@@ -1,5 +1,5 @@
 /* Licensed under MIT 2023-2024. */
-package edu.kit.kastel.mcse.ardoco.core.api.models.entity;
+package edu.kit.kastel.mcse.ardoco.core.api.entity;
 
 import java.io.Serializable;
 import java.util.Objects;

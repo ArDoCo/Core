@@ -5,7 +5,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.entity.Entity;
+import edu.kit.kastel.mcse.ardoco.core.api.entity.Entity;
 import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 
 public abstract class TraceLink<E1 extends Entity, E2 extends Entity> implements Serializable {

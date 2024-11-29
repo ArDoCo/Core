@@ -3,7 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl;
 
 import java.util.List;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.entity.Entity;
+import edu.kit.kastel.mcse.ardoco.core.api.entity.Entity;
 import edu.kit.kastel.mcse.ardoco.core.common.IdentifierProvider;
 
 public abstract sealed class Model permits ArchitectureModel, CodeModel {

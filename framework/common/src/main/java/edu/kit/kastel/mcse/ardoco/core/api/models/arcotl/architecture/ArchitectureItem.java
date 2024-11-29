@@ -1,7 +1,7 @@
 /* Licensed under MIT 2023-2024. */
 package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.entity.ArchitectureEntity;
+import edu.kit.kastel.mcse.ardoco.core.api.entity.ArchitectureEntity;
 
 /**
  * An architecture item of an architecture model. A possible candidate for the
