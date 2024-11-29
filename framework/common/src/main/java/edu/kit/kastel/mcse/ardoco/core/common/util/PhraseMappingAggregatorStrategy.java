@@ -6,7 +6,7 @@ import static edu.kit.kastel.mcse.ardoco.core.common.util.SimilarityUtils.unique
 
 import java.util.function.ToDoubleBiFunction;
 
-import edu.kit.kastel.mcse.ardoco.core.api.textextraction.PhraseMapping;
+import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.PhraseMapping;
 import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 
 @Deterministic
