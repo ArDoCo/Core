@@ -1,7 +1,9 @@
 /* Licensed under MIT 2024. */
-package edu.kit.kastel.mcse.ardoco.core.api.models;
+package edu.kit.kastel.mcse.ardoco.core.api.models.entity;
 
 public non-sealed class CodeEntity extends Entity {
+    private static final long serialVersionUID = 5520572653996476974L;
+
     protected CodeEntity(String name) {
         super(name);
     }

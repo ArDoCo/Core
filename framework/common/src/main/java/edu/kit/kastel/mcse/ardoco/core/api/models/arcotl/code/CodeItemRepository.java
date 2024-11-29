@@ -12,27 +12,30 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class CodeItemRepository implements Serializable {
 
+    private static final long serialVersionUID = 7081204548135982601L;
+
     @JsonProperty
     private SortedMap<String, CodeItem> repository = new TreeMap<>();
     @JsonIgnore
     private boolean initialized = false;
 
     public SortedMap<String, CodeItem> getRepository() {
-        return new TreeMap<>(repository);
+        return new TreeMap<>(this.repository);
     }
 
     void addCodeItem(CodeItem codeItem) {
-        repository.put(codeItem.getId(), codeItem);
+        this.repository.put(codeItem.getId(), codeItem);
     }
 
     boolean containsCodeItem(String id) {
-        return repository.containsKey(id);
+        return this.repository.containsKey(id);
     }
 
     CodeItem getCodeItem(String id) {
-        if (id == null)
+        if (id == null) {
             return null;
-        return repository.get(id);
+        }
+        return this.repository.get(id);
     }
 
     public List<CodeItem> getCodeItemsFromIds(List<String> codeItemIds) {
@@ -40,9 +43,10 @@ public class CodeItemRepository implements Serializable {
     }
 
     public synchronized void init() {
-        if (initialized)
+        if (this.initialized) {
             return;
+        }
         this.repository.values().forEach(it -> it.registerCurrentCodeItemRepository(this));
-        initialized = true;
+        this.initialized = true;
     }
 }

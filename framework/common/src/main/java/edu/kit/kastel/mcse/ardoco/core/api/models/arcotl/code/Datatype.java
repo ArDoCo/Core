@@ -21,6 +21,8 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 @JsonTypeName("Datatype")
 public sealed class Datatype extends CodeItem permits ClassUnit, InterfaceUnit {
 
+    private static final long serialVersionUID = -1925023806648753973L;
+
     @JsonProperty
     private String compilationUnitId;
     @JsonProperty
@@ -44,7 +46,7 @@ public sealed class Datatype extends CodeItem permits ClassUnit, InterfaceUnit {
     }
 
     public CodeCompilationUnit getCompilationUnit() {
-        CodeItem codeItem = codeItemRepository.getCodeItem(compilationUnitId);
+        CodeItem codeItem = this.codeItemRepository.getCodeItem(this.compilationUnitId);
         if (codeItem instanceof CodeCompilationUnit codeCompilationUnit) {
             return codeCompilationUnit;
         }
@@ -52,7 +54,7 @@ public sealed class Datatype extends CodeItem permits ClassUnit, InterfaceUnit {
     }
 
     public Datatype getParentDatatype() {
-        CodeItem codeItem = codeItemRepository.getCodeItem(parentDatatypeId);
+        CodeItem codeItem = this.codeItemRepository.getCodeItem(this.parentDatatypeId);
         if (codeItem instanceof Datatype datatype) {
             return datatype;
         }
@@ -60,8 +62,8 @@ public sealed class Datatype extends CodeItem permits ClassUnit, InterfaceUnit {
     }
 
     public SortedSet<Datatype> getExtendedTypes() {
-        return extendedDataTypesIds.stream().map(id -> {
-            CodeItem codeItem = codeItemRepository.getCodeItem(id);
+        return this.extendedDataTypesIds.stream().map(id -> {
+            CodeItem codeItem = this.codeItemRepository.getCodeItem(id);
             if (codeItem instanceof Datatype datatype) {
                 return datatype;
             } else {
@@ -71,8 +73,8 @@ public sealed class Datatype extends CodeItem permits ClassUnit, InterfaceUnit {
     }
 
     public SortedSet<Datatype> getImplementedTypes() {
-        return implementedDataTypesIds.stream().map(id -> {
-            CodeItem codeItem = codeItemRepository.getCodeItem(id);
+        return this.implementedDataTypesIds.stream().map(id -> {
+            CodeItem codeItem = this.codeItemRepository.getCodeItem(id);
             if (codeItem instanceof Datatype datatype) {
                 return datatype;
             } else {
@@ -82,8 +84,8 @@ public sealed class Datatype extends CodeItem permits ClassUnit, InterfaceUnit {
     }
 
     public SortedSet<Datatype> getDatatypeReferences() {
-        return datatypeReferencesIds.stream().map(id -> {
-            CodeItem codeItem = codeItemRepository.getCodeItem(id);
+        return this.datatypeReferencesIds.stream().map(id -> {
+            CodeItem codeItem = this.codeItemRepository.getCodeItem(id);
             if (codeItem instanceof Datatype datatype) {
                 return datatype;
             } else {
@@ -120,32 +122,28 @@ public sealed class Datatype extends CodeItem permits ClassUnit, InterfaceUnit {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (!(o instanceof Datatype datatype))
+        }
+        if (!(o instanceof Datatype datatype) || !super.equals(o) || !Objects.equals(this.compilationUnitId, datatype.compilationUnitId) || !Objects.equals(this.parentDatatypeId, datatype.parentDatatypeId)) {
             return false;
-        if (!super.equals(o))
+        }
+        if (!Objects.equals(this.extendedDataTypesIds, datatype.extendedDataTypesIds)) {
             return false;
-
-        if (!Objects.equals(compilationUnitId, datatype.compilationUnitId))
+        }
+        if (!Objects.equals(this.implementedDataTypesIds, datatype.implementedDataTypesIds)) {
             return false;
-        if (!Objects.equals(parentDatatypeId, datatype.parentDatatypeId))
-            return false;
-        if (!Objects.equals(extendedDataTypesIds, datatype.extendedDataTypesIds))
-            return false;
-        if (!Objects.equals(implementedDataTypesIds, datatype.implementedDataTypesIds))
-            return false;
-        return Objects.equals(datatypeReferencesIds, datatype.datatypeReferencesIds);
+        }
+        return Objects.equals(this.datatypeReferencesIds, datatype.datatypeReferencesIds);
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (compilationUnitId != null ? compilationUnitId.hashCode() : 0);
-        result = 31 * result + (parentDatatypeId != null ? parentDatatypeId.hashCode() : 0);
-        result = 31 * result + (extendedDataTypesIds != null ? extendedDataTypesIds.hashCode() : 0);
-        result = 31 * result + (implementedDataTypesIds != null ? implementedDataTypesIds.hashCode() : 0);
-        result = 31 * result + (datatypeReferencesIds != null ? datatypeReferencesIds.hashCode() : 0);
-        return result;
+        result = 31 * result + (this.compilationUnitId != null ? this.compilationUnitId.hashCode() : 0);
+        result = 31 * result + (this.parentDatatypeId != null ? this.parentDatatypeId.hashCode() : 0);
+        result = 31 * result + (this.extendedDataTypesIds != null ? this.extendedDataTypesIds.hashCode() : 0);
+        result = 31 * result + (this.implementedDataTypesIds != null ? this.implementedDataTypesIds.hashCode() : 0);
+        return 31 * result + (this.datatypeReferencesIds != null ? this.datatypeReferencesIds.hashCode() : 0);
     }
 }

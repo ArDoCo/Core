@@ -6,6 +6,8 @@ import java.util.SortedSet;
 
 public final class ArchitectureInterface extends ArchitectureItem {
 
+    private static final long serialVersionUID = 2232013345166120690L;
+
     private final SortedSet<ArchitectureMethod> signatures;
 
     public ArchitectureInterface(String name, String id, SortedSet<ArchitectureMethod> signatures) {
@@ -14,27 +16,27 @@ public final class ArchitectureInterface extends ArchitectureItem {
     }
 
     public SortedSet<ArchitectureMethod> getSignatures() {
-        return signatures;
+        return this.signatures;
     }
 
     @Override
     public String toString() {
-        return "Interface: " + getName();
+        return "Interface: " + this.getName();
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (!(o instanceof ArchitectureInterface that))
+        }
+        if (!(o instanceof ArchitectureInterface that) || !super.equals(o)) {
             return false;
-        if (!super.equals(o))
-            return false;
-        return Objects.equals(signatures, that.signatures);
+        }
+        return Objects.equals(this.signatures, that.signatures);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), signatures);
+        return Objects.hash(super.hashCode(), this.signatures);
     }
 }

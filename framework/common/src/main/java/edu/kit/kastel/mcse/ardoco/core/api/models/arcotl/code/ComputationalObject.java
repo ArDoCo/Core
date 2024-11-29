@@ -10,6 +10,8 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 @JsonTypeName("ComputationalObject")
 public sealed class ComputationalObject extends CodeItem permits ControlElement {
 
+    private static final long serialVersionUID = -6879811567216500291L;
+
     ComputationalObject() {
         // Jackson
     }

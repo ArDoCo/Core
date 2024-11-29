@@ -3,9 +3,11 @@ package edu.kit.kastel.mcse.ardoco.core.api.text;
 
 import java.util.Objects;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.TextEntity;
+import edu.kit.kastel.mcse.ardoco.core.api.models.entity.TextEntity;
 
 public final class SentenceEntity extends TextEntity {
+
+    private static final long serialVersionUID = 7370112901785822767L;
 
     private final Sentence sentence;
 
@@ -15,21 +17,23 @@ public final class SentenceEntity extends TextEntity {
     }
 
     public Sentence getSentence() {
-        return sentence;
+        return this.sentence;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (o == null || getClass() != o.getClass())
+        }
+        if (o == null || this.getClass() != o.getClass()) {
             return false;
+        }
         SentenceEntity that = (SentenceEntity) o;
-        return Objects.equals(sentence, that.sentence);
+        return Objects.equals(this.sentence, that.sentence);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(sentence);
+        return Objects.hash(this.sentence);
     }
 }

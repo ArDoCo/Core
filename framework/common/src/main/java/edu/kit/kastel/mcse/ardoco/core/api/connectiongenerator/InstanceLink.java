@@ -1,5 +1,5 @@
 /* Licensed under MIT 2021-2024. */
-package edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks;
+package edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;
@@ -9,11 +9,13 @@ import java.util.Set;
 import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.legacy.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.EndpointTuple;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions;
+import edu.kit.kastel.mcse.ardoco.core.common.Internal;
 import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
@@ -21,7 +23,10 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
  * An InstanceLink defines a link between an {@link RecommendedInstance} and an {@link ModelInstance}.
  */
 @Deterministic
+@Internal
 public class InstanceLink extends EndpointTuple<RecommendedInstance, ModelInstance> {
+
+    private static final long serialVersionUID = -8630933950725516269L;
 
     private final RecommendedInstance textualInstance;
     private final ModelInstance modelInstance;
@@ -55,7 +60,7 @@ public class InstanceLink extends EndpointTuple<RecommendedInstance, ModelInstan
 
     /**
      * Add confidence to this link.
-     * 
+     *
      * @param claimant   the claimant that wants to change the confidence
      * @param confidence the confidence value to add
      */
@@ -69,7 +74,7 @@ public class InstanceLink extends EndpointTuple<RecommendedInstance, ModelInstan
      * @return the probability of this link
      */
     public final double getConfidence() {
-        return confidence.getConfidence();
+        return this.confidence.getConfidence();
     }
 
     /**
@@ -78,7 +83,7 @@ public class InstanceLink extends EndpointTuple<RecommendedInstance, ModelInstan
      * @return the textual instance
      */
     public final RecommendedInstance getTextualInstance() {
-        return textualInstance;
+        return this.textualInstance;
     }
 
     /**
@@ -87,12 +92,12 @@ public class InstanceLink extends EndpointTuple<RecommendedInstance, ModelInstan
      * @return the extracted instance
      */
     public final ModelInstance getModelInstance() {
-        return modelInstance;
+        return this.modelInstance;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(modelInstance, textualInstance);
+        return Objects.hash(this.modelInstance, this.textualInstance);
     }
 
     @Override
@@ -103,7 +108,7 @@ public class InstanceLink extends EndpointTuple<RecommendedInstance, ModelInstan
         if (!(obj instanceof InstanceLink other)) {
             return false;
         }
-        return Objects.equals(getModelInstance(), other.getModelInstance()) && Objects.equals(getTextualInstance(), other.getTextualInstance());
+        return Objects.equals(this.getModelInstance(), other.getModelInstance()) && Objects.equals(this.getTextualInstance(), other.getTextualInstance());
     }
 
     @Override
@@ -113,17 +118,17 @@ public class InstanceLink extends EndpointTuple<RecommendedInstance, ModelInstan
         Set<String> types = new LinkedHashSet<>();
         MutableList<Integer> typePositions = Lists.mutable.empty();
 
-        for (NounMapping nameMapping : textualInstance.getNameMappings()) {
+        for (NounMapping nameMapping : this.textualInstance.getNameMappings()) {
             names.addAll(nameMapping.getSurfaceForms().castToCollection());
             namePositions.addAll(nameMapping.getMappingSentenceNo().castToCollection());
         }
-        for (NounMapping typeMapping : textualInstance.getTypeMappings()) {
+        for (NounMapping typeMapping : this.textualInstance.getTypeMappings()) {
             types.addAll(typeMapping.getSurfaceForms().castToCollection());
             typePositions.addAll(typeMapping.getMappingSentenceNo().castToCollection());
         }
-        return "InstanceMapping [ uid=" + modelInstance.getUid() + ", name=" + modelInstance.getFullName() + //
-                ", as=" + String.join(", ", modelInstance.getFullType()) + ", probability=" + getConfidence() + ", FOUND: " + //
-                textualInstance.getName() + " : " + textualInstance.getType() + ", occurrences= " + //
+        return "InstanceMapping [ uid=" + this.modelInstance.getUid() + ", name=" + this.modelInstance.getFullName() + //
+                ", as=" + String.join(", ", this.modelInstance.getFullType()) + ", probability=" + this.getConfidence() + ", FOUND: " + //
+                this.textualInstance.getName() + " : " + this.textualInstance.getType() + ", occurrences= " + //
                 "NameVariants: " + names.size() + ": " + names + " sentences{" + Arrays.toString(namePositions.toArray()) + "}" + //
                 ", TypeVariants: " + types.size() + ": " + types + "sentences{" + Arrays.toString(typePositions.toArray()) + "}" + "]";
     }

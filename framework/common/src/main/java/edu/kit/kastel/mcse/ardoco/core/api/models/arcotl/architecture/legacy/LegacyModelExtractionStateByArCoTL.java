@@ -1,5 +1,5 @@
 /* Licensed under MIT 2023. */
-package edu.kit.kastel.mcse.ardoco.core.api.models;
+package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.legacy;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,15 +16,23 @@ import org.eclipse.collections.api.set.sorted.MutableSortedSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.ArchitectureModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.CodeModel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureComponent;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureInterface;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureMethod;
-import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.*;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.ClassUnit;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeModule;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodePackage;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.InterfaceUnit;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.ProgrammingLanguages;
 
 public class LegacyModelExtractionStateByArCoTL implements LegacyModelExtractionState {
+    private static final long serialVersionUID = -9079063953852495629L;
+
     private static final Logger logger = LoggerFactory.getLogger(LegacyModelExtractionStateByArCoTL.class);
 
     private final String modelId;
@@ -38,21 +46,21 @@ public class LegacyModelExtractionStateByArCoTL implements LegacyModelExtraction
 
     public LegacyModelExtractionStateByArCoTL(ArchitectureModel architectureModel) {
         this.modelId = architectureModel.getId();
-        this.instances = initArchitectureInstances(architectureModel);
+        this.instances = LegacyModelExtractionStateByArCoTL.initArchitectureInstances(architectureModel);
         this.metamodel = Metamodel.ARCHITECTURE;
-        instanceTypes = SortedSets.mutable.empty();
-        names = SortedSets.mutable.empty();
-        collectTypesAndNames();
+        this.instanceTypes = SortedSets.mutable.empty();
+        this.names = SortedSets.mutable.empty();
+        this.collectTypesAndNames();
     }
 
     public LegacyModelExtractionStateByArCoTL(CodeModel codeModel) {
         this.modelId = codeModel.getId();
-        this.instances = initCodeInstances(codeModel);
+        this.instances = LegacyModelExtractionStateByArCoTL.initCodeInstances(codeModel);
         this.metamodel = Metamodel.CODE;
 
-        instanceTypes = SortedSets.mutable.empty();
-        names = SortedSets.mutable.empty();
-        collectTypesAndNames();
+        this.instanceTypes = SortedSets.mutable.empty();
+        this.names = SortedSets.mutable.empty();
+        this.collectTypesAndNames();
     }
 
     private static ImmutableList<ModelInstance> initArchitectureInstances(ArchitectureModel architectureModel) {
@@ -60,8 +68,8 @@ public class LegacyModelExtractionStateByArCoTL implements LegacyModelExtraction
         for (ArchitectureItem architectureItem : architectureModel.getEndpoints()) {
             switch (architectureItem) {
             case ArchitectureComponent component -> instances.add(new ModelInstanceImpl(component.getName(), component.getType(), component.getId()));
-            case ArchitectureInterface ignored -> logger.debug("Skipping .. ArchitectureInterface not supported yet");
-            case ArchitectureMethod ignored -> logger.debug("Skipping .. ArchitectureMethod not supported yet");
+            case ArchitectureInterface ignored -> LegacyModelExtractionStateByArCoTL.logger.debug("Skipping .. ArchitectureInterface not supported yet");
+            case ArchitectureMethod ignored -> LegacyModelExtractionStateByArCoTL.logger.debug("Skipping .. ArchitectureMethod not supported yet");
             }
         }
         return instances.toImmutable();
@@ -69,8 +77,8 @@ public class LegacyModelExtractionStateByArCoTL implements LegacyModelExtraction
 
     private static ImmutableList<ModelInstance> initCodeInstances(CodeModel codeModel) {
         List<ModelInstance> instances = new ArrayList<>();
-        fillPackages(codeModel.getAllPackages(), instances);
-        fillCompilationUnits(codeModel.getEndpoints(), instances);
+        LegacyModelExtractionStateByArCoTL.fillPackages(codeModel.getAllPackages(), instances);
+        LegacyModelExtractionStateByArCoTL.fillCompilationUnits(codeModel.getEndpoints(), instances);
         return Lists.immutable.withAll(instances);
     }
 
@@ -90,7 +98,7 @@ public class LegacyModelExtractionStateByArCoTL implements LegacyModelExtraction
 
     private static void fillCompilationUnits(Collection<? extends CodeCompilationUnit> units, List<ModelInstance> instances) {
         for (var unit : units) {
-            String type = findType(unit);
+            String type = LegacyModelExtractionStateByArCoTL.findType(unit);
             instances.add(new ModelInstanceImpl(unit.getName(), type, unit.getPath()));
         }
 
@@ -112,16 +120,16 @@ public class LegacyModelExtractionStateByArCoTL implements LegacyModelExtraction
             // Default to Class
             return "Class";
         }
-        if (unit.getLanguage() == ProgrammingLanguage.SHELL) {
+        if (unit.getLanguage() == ProgrammingLanguages.SHELL) {
             return "ShellScript";
         }
         throw new IllegalStateException("Unknown type of CodeCompilationUnit");
     }
 
     private void collectTypesAndNames() {
-        for (ModelInstance i : instances) {
-            instanceTypes.addAll(i.getTypeParts().castToCollection());
-            names.addAll(i.getNameParts().castToCollection());
+        for (ModelInstance i : this.instances) {
+            this.instanceTypes.addAll(i.getTypeParts().castToCollection());
+            this.names.addAll(i.getNameParts().castToCollection());
         }
     }
 
@@ -137,28 +145,28 @@ public class LegacyModelExtractionStateByArCoTL implements LegacyModelExtraction
 
     @Override
     public ImmutableList<ModelInstance> getInstancesOfType(String type) {
-        return instances.select(i -> i.getTypeParts().contains(type));
+        return this.instances.select(i -> i.getTypeParts().contains(type));
     }
 
     @Override
     public ImmutableSortedSet<String> getInstanceTypes() {
-        return instanceTypes.toImmutable();
+        return this.instanceTypes.toImmutable();
     }
 
     @Override
     public ImmutableSortedSet<String> getNames() {
-        return names.toImmutable();
+        return this.names.toImmutable();
     }
 
     @Override
     public ImmutableList<ModelInstance> getInstances() {
-        return instances;
+        return this.instances;
     }
 
     @Override
     public String toString() {
         var output = new StringBuilder("Instances:\n");
-        for (ModelInstance i : instances) {
+        for (ModelInstance i : this.instances) {
             output.append(i.toString()).append("\n");
         }
         return output.toString();
@@ -171,6 +179,6 @@ public class LegacyModelExtractionStateByArCoTL implements LegacyModelExtraction
 
     @Override
     public SortedMap<String, String> getLastAppliedConfiguration() {
-        return lastConfig;
+        return this.lastConfig;
     }
 }

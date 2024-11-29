@@ -12,6 +12,8 @@ import java.util.SortedSet;
  */
 public final class ArchitectureComponent extends ArchitectureItem {
 
+    private static final long serialVersionUID = -7349058662425121364L;
+
     private final SortedSet<ArchitectureComponent> subcomponents;
     private final SortedSet<ArchitectureInterface> providedInterfaces;
 
@@ -33,7 +35,7 @@ public final class ArchitectureComponent extends ArchitectureItem {
      * @return the subcomponents of this component
      */
     public SortedSet<ArchitectureComponent> getSubcomponents() {
-        return subcomponents;
+        return this.subcomponents;
     }
 
     /**
@@ -43,7 +45,7 @@ public final class ArchitectureComponent extends ArchitectureItem {
      * @return the provided interfaces of this component
      */
     public SortedSet<ArchitectureInterface> getProvidedInterfaces() {
-        return providedInterfaces;
+        return this.providedInterfaces;
     }
 
     /**
@@ -53,7 +55,7 @@ public final class ArchitectureComponent extends ArchitectureItem {
      * @return the required interfaces of this component
      */
     public SortedSet<ArchitectureInterface> getRequiredInterfaces() {
-        return requiredInterfaces;
+        return this.requiredInterfaces;
     }
 
     /**
@@ -62,36 +64,30 @@ public final class ArchitectureComponent extends ArchitectureItem {
      * @return the type of this component
      */
     public String getType() {
-        return type;
+        return this.type;
     }
 
     @Override
     public String toString() {
-        return "Component: " + getName();
+        return "Component: " + this.getName();
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (!(o instanceof ArchitectureComponent that))
+        }
+        if (!(o instanceof ArchitectureComponent that) || !super.equals(o) || !this.subcomponents.equals(that.subcomponents) || !this.providedInterfaces.equals(that.providedInterfaces)) {
             return false;
-        if (!super.equals(o))
-            return false;
-
-        if (!subcomponents.equals(that.subcomponents))
-            return false;
-        if (!providedInterfaces.equals(that.providedInterfaces))
-            return false;
-        return requiredInterfaces.equals(that.requiredInterfaces);
+        }
+        return this.requiredInterfaces.equals(that.requiredInterfaces);
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + subcomponents.hashCode();
-        result = 31 * result + providedInterfaces.hashCode();
-        result = 31 * result + requiredInterfaces.hashCode();
-        return result;
+        result = 31 * result + this.subcomponents.hashCode();
+        result = 31 * result + this.providedInterfaces.hashCode();
+        return 31 * result + this.requiredInterfaces.hashCode();
     }
 }

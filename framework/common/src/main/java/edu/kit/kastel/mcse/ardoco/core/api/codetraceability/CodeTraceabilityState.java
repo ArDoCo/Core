@@ -5,8 +5,8 @@ import java.util.Collection;
 
 import org.eclipse.collections.api.set.ImmutableSet;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureEntity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
+import edu.kit.kastel.mcse.ardoco.core.api.models.entity.ArchitectureEntity;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SadCodeTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.SamCodeTraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TraceLink;
@@ -33,7 +33,7 @@ public interface CodeTraceabilityState extends PipelineStepData {
      * @param traceLinks the trace links to add
      * @return whether the operation was successful
      */
-    boolean addSamCodeTraceLinks(Collection<TraceLink<ArchitectureEntity, CodeCompilationUnit>> traceLinks);
+    boolean addSamCodeTraceLinks(Collection<? extends TraceLink<ArchitectureEntity, CodeCompilationUnit>> traceLinks);
 
     /**
      * Return a set of stored {@link SamCodeTraceLink SamCodeTraceLinks}.
@@ -56,7 +56,7 @@ public interface CodeTraceabilityState extends PipelineStepData {
      * @param traceLinks the trace links to add
      * @return whether the operation was successful
      */
-    boolean addSadCodeTraceLinks(Collection<TraceLink<SentenceEntity, CodeCompilationUnit>> traceLinks);
+    boolean addSadCodeTraceLinks(Collection<? extends TraceLink<SentenceEntity, CodeCompilationUnit>> traceLinks);
 
     /**
      * Return a set of stored {@link TransitiveTraceLink TransitiveTraceLinks}.

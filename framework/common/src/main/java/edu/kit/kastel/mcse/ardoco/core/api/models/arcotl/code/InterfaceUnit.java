@@ -13,6 +13,8 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 @JsonTypeName("InterfaceUnit")
 public final class InterfaceUnit extends Datatype {
 
+    private static final long serialVersionUID = 7746781256077022392L;
+
     @JsonProperty
     private List<String> content;
 
@@ -31,38 +33,37 @@ public final class InterfaceUnit extends Datatype {
 
     @JsonGetter("content")
     protected List<String> getContentIds() {
-        return content;
+        return this.content;
     }
 
     @Override
     public List<CodeItem> getContent() {
-        return codeItemRepository.getCodeItemsFromIds(content);
+        return this.codeItemRepository.getCodeItemsFromIds(this.content);
     }
 
     @Override
     public List<Datatype> getAllDataTypes() {
         List<Datatype> result = new ArrayList<>();
         result.add(this);
-        getContent().forEach(c -> result.addAll(c.getAllDataTypes()));
+        this.getContent().forEach(c -> result.addAll(c.getAllDataTypes()));
         return result;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (!(o instanceof InterfaceUnit that))
+        }
+        if (!(o instanceof InterfaceUnit that) || !super.equals(o)) {
             return false;
-        if (!super.equals(o))
-            return false;
+        }
 
-        return Objects.equals(content, that.content);
+        return Objects.equals(this.content, that.content);
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (content != null ? content.hashCode() : 0);
-        return result;
+        return 31 * result + (this.content != null ? this.content.hashCode() : 0);
     }
 }

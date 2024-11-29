@@ -4,7 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator;
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.TextEntity;
+import edu.kit.kastel.mcse.ardoco.core.api.models.entity.TextEntity;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
@@ -12,6 +12,8 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
  * The Interface IRecommendedInstance defines the aggregation of noun mappings to one recommendation.
  */
 public abstract class RecommendedInstance extends TextEntity {
+
+    private static final long serialVersionUID = -5422301094494768943L;
 
     protected RecommendedInstance(String name, String id) {
         super(name, id);

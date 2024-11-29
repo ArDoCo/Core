@@ -9,6 +9,8 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Informant;
  */
 public abstract class NlpInformant extends Informant {
 
+    private static final long serialVersionUID = 7456517198218574644L;
+
     protected NlpInformant(String id, DataRepository dataRepository) {
         super(id, dataRepository);
     }

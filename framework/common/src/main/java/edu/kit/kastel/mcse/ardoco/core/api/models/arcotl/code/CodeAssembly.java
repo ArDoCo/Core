@@ -8,6 +8,8 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 @JsonTypeName("CodeAssembly")
 public final class CodeAssembly extends CodeModule {
 
+    private static final long serialVersionUID = 3082912967900986071L;
+
     @SuppressWarnings("unused")
     private CodeAssembly() {
         // Jackson

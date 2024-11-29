@@ -3,8 +3,9 @@ package edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks;
 
 import java.util.Objects;
 
-import edu.kit.kastel.mcse.ardoco.core.api.models.ArchitectureEntity;
-import edu.kit.kastel.mcse.ardoco.core.api.models.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator.InstanceLink;
+import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.legacy.ModelInstance;
+import edu.kit.kastel.mcse.ardoco.core.api.models.entity.ArchitectureEntity;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Sentence;
 import edu.kit.kastel.mcse.ardoco.core.api.text.SentenceEntity;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
@@ -15,16 +16,18 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.Word;
  */
 public class SadSamTraceLink extends TraceLink<SentenceEntity, ArchitectureEntity> {
 
+    private static final long serialVersionUID = -4902602672085469964L;
+
     private final Sentence sentence;
-    private final ModelInstance modelInstance;
+    private final ArchitectureEntity architectureEntity;
 
     /**
      * Create a trace link based on a {@link Sentence} and a concrete {@link ModelInstance} .
      */
-    public SadSamTraceLink(Sentence sentence, ModelInstance modelInstance) {
+    public SadSamTraceLink(Sentence sentence, ArchitectureEntity modelInstance) {
         super(new SentenceEntity(sentence), modelInstance);
         this.sentence = sentence;
-        this.modelInstance = modelInstance;
+        this.architectureEntity = modelInstance;
     }
 
     /**
@@ -33,7 +36,7 @@ public class SadSamTraceLink extends TraceLink<SentenceEntity, ArchitectureEntit
      * @return sentence number of the word that the trace link is based on.
      */
     public int getSentenceNumber() {
-        return sentence.getSentenceNumber();
+        return this.sentence.getSentenceNumber();
     }
 
     /**
@@ -42,7 +45,7 @@ public class SadSamTraceLink extends TraceLink<SentenceEntity, ArchitectureEntit
      * @return the sentence of the word that the trace link is based on.
      */
     public Sentence getSentence() {
-        return sentence;
+        return this.sentence;
     }
 
     /**
@@ -50,8 +53,8 @@ public class SadSamTraceLink extends TraceLink<SentenceEntity, ArchitectureEntit
      *
      * @return Uid of the model element that the trace link is based on.
      */
-    public String getModelElementUid() {
-        return modelInstance.getUid();
+    public String getArchitectureEntityId() {
+        return this.architectureEntity.getId();
     }
 
     /**
@@ -60,16 +63,16 @@ public class SadSamTraceLink extends TraceLink<SentenceEntity, ArchitectureEntit
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof SadSamTraceLink other) {
-            var otherId = other.getModelElementUid();
+            var otherId = other.getArchitectureEntityId();
             var otherSentenceNo = other.getSentenceNumber();
-            return getModelElementUid().equals(otherId) && getSentenceNumber() == otherSentenceNo;
+            return this.getArchitectureEntityId().equals(otherId) && this.getSentenceNumber() == otherSentenceNo;
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getModelElementUid(), getSentenceNumber());
+        return Objects.hash(this.getArchitectureEntityId(), this.getSentenceNumber());
     }
 
 }

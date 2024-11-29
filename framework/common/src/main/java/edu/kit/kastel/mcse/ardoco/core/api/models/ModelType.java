@@ -2,5 +2,5 @@
 package edu.kit.kastel.mcse.ardoco.core.api.models;
 
 public interface ModelType {
-    String getModelId();
+    Metamodel getMetamodel();
 }

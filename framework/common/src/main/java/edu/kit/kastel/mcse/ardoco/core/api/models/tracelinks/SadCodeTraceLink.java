@@ -6,6 +6,8 @@ import edu.kit.kastel.mcse.ardoco.core.api.text.SentenceEntity;
 
 public class SadCodeTraceLink extends TraceLink<SentenceEntity, CodeCompilationUnit> {
 
+    private static final long serialVersionUID = -1099702076674008083L;
+
     public SadCodeTraceLink(SentenceEntity e1, CodeCompilationUnit e2) {
         super(e1, e2);
     }
