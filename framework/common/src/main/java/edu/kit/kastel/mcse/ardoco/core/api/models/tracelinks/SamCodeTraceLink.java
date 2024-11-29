@@ -29,7 +29,7 @@ public class SamCodeTraceLink extends TraceLink<ArchitectureEntity, CodeCompilat
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.getEndpointTuple());
+        return Objects.hash(this.asPair());
     }
 
     @Override
@@ -40,11 +40,11 @@ public class SamCodeTraceLink extends TraceLink<ArchitectureEntity, CodeCompilat
         if (!(obj instanceof SamCodeTraceLink other)) {
             return false;
         }
-        return Objects.equals(this.getEndpointTuple(), other.getEndpointTuple());
+        return Objects.equals(this.asPair(), other.asPair());
     }
 
     @Override
     public String toString() {
-        return this.getEndpointTuple().toString();
+        return this.asPair().toString();
     }
 }

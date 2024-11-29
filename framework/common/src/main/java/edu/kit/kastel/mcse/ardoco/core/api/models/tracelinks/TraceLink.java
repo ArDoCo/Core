@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.entity.Entity;
+import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 
 public abstract class TraceLink<E1 extends Entity, E2 extends Entity> implements Serializable {
     @Serial
@@ -24,8 +25,8 @@ public abstract class TraceLink<E1 extends Entity, E2 extends Entity> implements
      *
      * @return the endpoint tuple of this trace link
      */
-    public EndpointTuple<E1, E2> getEndpointTuple() {
-        return new EndpointTuple<>(this.endpoint1, this.endpoint2);
+    public Pair<E1, E2> asPair() {
+        return new Pair<>(this.endpoint1, this.endpoint2);
     }
 
     public E1 getFirstEndpoint() {
@@ -54,6 +55,6 @@ public abstract class TraceLink<E1 extends Entity, E2 extends Entity> implements
 
     @Override
     public String toString() {
-        return this.getEndpointTuple().toString();
+        return this.asPair().toString();
     }
 }

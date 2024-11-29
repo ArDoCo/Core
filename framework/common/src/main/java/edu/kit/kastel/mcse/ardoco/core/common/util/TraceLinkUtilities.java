@@ -7,9 +7,9 @@ import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
 import edu.kit.kastel.mcse.ardoco.core.api.models.entity.ArchitectureEntity;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.EndpointTuple;
 import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.TraceLink;
 import edu.kit.kastel.mcse.ardoco.core.api.text.SentenceEntity;
+import edu.kit.kastel.mcse.ardoco.core.common.tuple.Pair;
 
 public class TraceLinkUtilities {
 
@@ -32,9 +32,9 @@ public class TraceLinkUtilities {
     public static ImmutableList<String> getSamCodeTraceLinksAsStringList(ImmutableList<TraceLink<ArchitectureEntity, CodeCompilationUnit>> samCodeTraceLinks) {
         MutableList<String> resultsMut = Lists.mutable.empty();
         for (var traceLink : samCodeTraceLinks) {
-            EndpointTuple<ArchitectureEntity, CodeCompilationUnit> endpointTuple = traceLink.getEndpointTuple();
-            var modelElement = endpointTuple.firstEndpoint();
-            var codeElement = endpointTuple.secondEndpoint();
+            Pair<ArchitectureEntity, CodeCompilationUnit> endpointTuple = traceLink.asPair();
+            var modelElement = endpointTuple.first();
+            var codeElement = endpointTuple.second();
             String traceLinkString = createTraceLinkString(modelElement.getId(), codeElement.toString());
             resultsMut.add(traceLinkString);
         }
@@ -44,9 +44,9 @@ public class TraceLinkUtilities {
     public static ImmutableList<String> getSadCodeTraceLinksAsStringList(ImmutableList<TraceLink<SentenceEntity, CodeCompilationUnit>> sadCodeTraceLinks) {
         MutableList<String> resultsMut = Lists.mutable.empty();
         for (var traceLink : sadCodeTraceLinks) {
-            EndpointTuple<SentenceEntity, CodeCompilationUnit> endpointTuple = traceLink.getEndpointTuple();
-            var codeElement = endpointTuple.secondEndpoint();
-            String sentenceNumber = String.valueOf(endpointTuple.firstEndpoint().getSentence().getSentenceNumber() + 1);
+            Pair<SentenceEntity, CodeCompilationUnit> endpointTuple = traceLink.asPair();
+            var codeElement = endpointTuple.second();
+            String sentenceNumber = String.valueOf(endpointTuple.first().getSentence().getSentenceNumber() + 1);
             String traceLinkString = TraceLinkUtilities.createTraceLinkString(sentenceNumber, codeElement.toString());
             resultsMut.add(traceLinkString);
         }

@@ -1,6 +1,7 @@
 /* Licensed under MIT 2021-2024. */
 package edu.kit.kastel.mcse.ardoco.core.api.connectiongenerator;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Objects;
@@ -10,7 +11,6 @@ import org.eclipse.collections.api.factory.Lists;
 import org.eclipse.collections.api.list.MutableList;
 
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.legacy.ModelInstance;
-import edu.kit.kastel.mcse.ardoco.core.api.models.tracelinks.EndpointTuple;
 import edu.kit.kastel.mcse.ardoco.core.api.recommendationgenerator.RecommendedInstance;
 import edu.kit.kastel.mcse.ardoco.core.api.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
@@ -24,7 +24,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
  */
 @Deterministic
 @Internal
-public class InstanceLink extends EndpointTuple<RecommendedInstance, ModelInstance> {
+public class InstanceLink implements Serializable {
 
     private static final long serialVersionUID = -8630933950725516269L;
 
@@ -39,7 +39,6 @@ public class InstanceLink extends EndpointTuple<RecommendedInstance, ModelInstan
      * @param modelInstance   the model instance
      */
     public InstanceLink(RecommendedInstance textualInstance, ModelInstance modelInstance) {
-        super(textualInstance, modelInstance);
         this.textualInstance = textualInstance;
         this.modelInstance = modelInstance;
         this.confidence = new Confidence(AggregationFunctions.AVERAGE);
