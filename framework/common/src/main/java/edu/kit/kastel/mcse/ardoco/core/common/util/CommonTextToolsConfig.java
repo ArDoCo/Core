@@ -24,11 +24,6 @@ public final class CommonTextToolsConfig {
     public static final ImmutableList<String> SEPARATORS_TO_SPLIT = CONFIG.getPropertyAsList("separators_ToSplit");
 
     /**
-     * Decides whether abbrevations should be considered during similarity calculations.
-     */
-    public static final boolean CONSIDER_ABBREVIATIONS = CONFIG.isPropertyEnabled("considerAbbreviations");
-
-    /**
      * Decides whether the levenshtein similarity measure should be used.
      */
     public static final boolean LEVENSHTEIN_ENABLED = CONFIG.isPropertyEnabled("levenshtein_Enabled");

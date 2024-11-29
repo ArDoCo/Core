@@ -23,6 +23,8 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 @Deterministic
 public final class Confidence implements Comparable<Confidence>, ICopyable<Confidence>, Serializable {
 
+    private static final long serialVersionUID = 4307327201754195030L;
+
     private final AggregationFunctions confidenceAggregator;
 
     // Claimant, Confidence, MethodName
@@ -62,8 +64,9 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
      */
     public Set<Claimant> getClaimants() {
         Set<Claimant> identitySet = Collections.newSetFromMap(new IdentityHashMap<>());
-        for (var confidence : this.agentConfidences)
+        for (var confidence : this.agentConfidences) {
             identitySet.add(confidence.first());
+        }
         return identitySet;
     }
 
@@ -79,8 +82,8 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
      * @param confidence the confidence
      */
     public void addAgentConfidence(Claimant claimant, double confidence) {
-        String method = getMethodInClaimant(claimant);
-        agentConfidences.add(new Triple<>(claimant, confidence, method));
+        String method = this.getMethodInClaimant(claimant);
+        this.agentConfidences.add(new Triple<>(claimant, confidence, method));
     }
 
     private String getMethodInClaimant(Claimant claimant) {
@@ -95,14 +98,15 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
 
     @Override
     public int compareTo(Confidence o) {
-        if (this.equals(o))
+        if (this.equals(o)) {
             return 0;
+        }
         return Double.compare(this.getConfidence(), o.getConfidence());
     }
 
     @Override
     public String toString() {
-        return "Confidence{" + confidenceAggregator + "=>" + getConfidence() + '}';
+        return "Confidence{" + this.confidenceAggregator + "=>" + this.getConfidence() + '}';
     }
 
     /**
@@ -111,17 +115,17 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
      * @return the (aggregated) confidence value
      */
     public double getConfidence() {
-        if (agentConfidences.isEmpty()) {
+        if (this.agentConfidences.isEmpty()) {
             return 0;
         }
-        if (confidenceAggregator == AggregationFunctions.ROLLING_AVERAGE) {
+        if (this.confidenceAggregator == AggregationFunctions.ROLLING_AVERAGE) {
             // No aggregate
-            return confidenceAggregator.applyAsDouble(agentConfidences.stream().map(Triple::second).toList());
+            return this.confidenceAggregator.applyAsDouble(this.agentConfidences.stream().map(Triple::second).toList());
         }
         var groupAggregator = AggregationFunctions.MAX;
-        var claimantGroupings = agentConfidences.stream().collect(Collectors.groupingBy(Triple::first)).values();
+        var claimantGroupings = this.agentConfidences.stream().collect(Collectors.groupingBy(Triple::first)).values();
         var claimantConfidences = claimantGroupings.stream().map(l -> l.stream().map(Triple::second).toList()).map(groupAggregator::applyAsDouble).toList();
-        return confidenceAggregator.applyAsDouble(claimantConfidences);
+        return this.confidenceAggregator.applyAsDouble(claimantConfidences);
     }
 
     /**
@@ -157,7 +161,7 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
 
     @Override
     public int hashCode() {
-        return Objects.hash(agentConfidences, confidenceAggregator);
+        return Objects.hash(this.agentConfidences, this.confidenceAggregator);
     }
 
     @Override
@@ -165,11 +169,11 @@ public final class Confidence implements Comparable<Confidence>, ICopyable<Confi
         if (this == obj) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass()) {
+        if (obj == null || this.getClass() != obj.getClass()) {
             return false;
         }
         var other = (Confidence) obj;
-        return Objects.equals(agentConfidences, other.agentConfidences) && confidenceAggregator == other.confidenceAggregator;
+        return Objects.equals(this.agentConfidences, other.agentConfidences) && this.confidenceAggregator == other.confidenceAggregator;
     }
 
     public void addAllConfidences(Confidence other) {

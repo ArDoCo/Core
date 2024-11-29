@@ -23,6 +23,8 @@ import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 
 @Deterministic
 public abstract class AbstractConfigurable implements IConfigurable, Serializable {
+    private static final long serialVersionUID = 4781744504742817995L;
+
     protected final transient Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public static final String CLASS_ATTRIBUTE_CONNECTOR = "::";
@@ -33,24 +35,25 @@ public abstract class AbstractConfigurable implements IConfigurable, Serializabl
 
     @Override
     public final void applyConfiguration(SortedMap<String, String> additionalConfiguration) {
-        applyConfiguration(additionalConfiguration, this, this.getClass());
-        delegateApplyConfigurationToInternalObjects(additionalConfiguration);
+        this.applyConfiguration(additionalConfiguration, this, this.getClass());
+        this.delegateApplyConfigurationToInternalObjects(additionalConfiguration);
         this.lastAppliedConfiguration = new TreeMap<>(additionalConfiguration);
     }
 
     @Override
     public SortedMap<String, String> getLastAppliedConfiguration() {
-        return Collections.unmodifiableSortedMap(lastAppliedConfiguration);
+        return Collections.unmodifiableSortedMap(this.lastAppliedConfiguration);
     }
 
     protected abstract void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration);
 
     private void applyConfiguration(SortedMap<String, String> additionalConfiguration, AbstractConfigurable configurable, Class<?> currentClassInHierarchy) {
-        if (currentClassInHierarchy == Object.class || currentClassInHierarchy == AbstractConfigurable.class)
+        if (currentClassInHierarchy == Object.class || currentClassInHierarchy == AbstractConfigurable.class) {
             return;
+        }
 
         if (currentClassInHierarchy.getAnnotation(NoConfiguration.class) != null) {
-            logger.debug("Skipping configuration for class {}", currentClassInHierarchy.getSimpleName());
+            this.logger.debug("Skipping configuration for class {}", currentClassInHierarchy.getSimpleName());
             return;
         }
 
@@ -61,17 +64,17 @@ public abstract class AbstractConfigurable implements IConfigurable, Serializabl
             }
             String key = getKeyOfField(configurable, currentClassInHierarchy, field);
             if (additionalConfiguration.containsKey(key)) {
-                setValue(field, additionalConfiguration.get(key));
+                this.setValue(field, additionalConfiguration.get(key));
             }
         }
 
-        applyConfiguration(additionalConfiguration, configurable, currentClassInHierarchy.getSuperclass());
+        this.applyConfiguration(additionalConfiguration, configurable, currentClassInHierarchy.getSuperclass());
     }
 
     /**
      * Returns the key (for the configuration file) of a field. If the field is marked as ChildClassConfigurable, the key is based on the class of the
      * configurable object. Otherwise, the key is based on the class where the field is defined.
-     * 
+     *
      * @param configurable            the configurable object
      * @param currentClassInHierarchy the class where the field is defined
      * @param field                   the field
@@ -92,15 +95,16 @@ public abstract class AbstractConfigurable implements IConfigurable, Serializabl
 
     private void setValue(Field field, String value) {
         var clazz = field.getType();
-        var parsedValue = parse(field, clazz, value);
-        if (parsedValue == null)
+        var parsedValue = this.parse(field, clazz, value);
+        if (parsedValue == null) {
             return;
+        }
 
         try {
             field.setAccessible(true);
             field.set(this, parsedValue);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            this.logger.error(e.getMessage(), e);
         }
     }
 
@@ -122,8 +126,9 @@ public abstract class AbstractConfigurable implements IConfigurable, Serializabl
         if (List.class.isAssignableFrom(fieldsClass) && field.getGenericType() instanceof ParameterizedType parameterizedType) {
             var generics = parameterizedType.getActualTypeArguments();
 
-            if (generics != null && generics.length == 1 && generics[0] == String.class)
+            if (generics != null && generics.length == 1 && generics[0] == String.class) {
                 return new ArrayList<>(Arrays.stream(value.split(LIST_SEPARATOR)).toList());
+            }
         }
 
         throw new IllegalArgumentException("Could not find a parse method for fields of type: " + fieldsClass);
@@ -138,7 +143,7 @@ public abstract class AbstractConfigurable implements IConfigurable, Serializabl
     private void readObject(ObjectInputStream objectInputStream) throws IOException, ClassNotFoundException {
         objectInputStream.defaultReadObject();
         try {
-            var loggerField = Arrays.stream(FieldUtils.getAllFields(getClass())).filter(f -> f.getName().equals("logger")).findFirst().orElseThrow();
+            var loggerField = Arrays.stream(FieldUtils.getAllFields(this.getClass())).filter(f -> f.getName().equals("logger")).findFirst().orElseThrow();
             loggerField.setAccessible(true);
             loggerField.set(this, LoggerFactory.getLogger(this.getClass()));
         } catch (IllegalAccessException e) {

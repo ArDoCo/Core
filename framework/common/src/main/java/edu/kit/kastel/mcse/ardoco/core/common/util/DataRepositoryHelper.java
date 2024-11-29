@@ -18,7 +18,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.stage.recommendationgenerator.Recomme
 import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.TextState;
 import edu.kit.kastel.mcse.ardoco.core.api.text.Text;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
-import edu.kit.kastel.mcse.ardoco.core.data.DeepCopy;
 import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
 import edu.kit.kastel.mcse.ardoco.core.data.ProjectPipelineData;
 
@@ -29,7 +28,6 @@ import edu.kit.kastel.mcse.ardoco.core.data.ProjectPipelineData;
 public final class DataRepositoryHelper {
 
     private DataRepositoryHelper() {
-        super();
     }
 
     /**
@@ -249,7 +247,6 @@ public final class DataRepositoryHelper {
      *
      * @param object the object to copy
      */
-    @DeepCopy
     public static <T extends Serializable> T deepCopy(T object) {
         try {
             var byteArrayOutputStream = new ByteArrayOutputStream();
