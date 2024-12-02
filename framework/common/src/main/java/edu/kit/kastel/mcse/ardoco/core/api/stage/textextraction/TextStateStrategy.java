@@ -3,8 +3,6 @@ package edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction;
 
 import static edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions.AVERAGE;
 
-import java.io.Serializable;
-
 import org.eclipse.collections.api.list.ImmutableList;
 import org.eclipse.collections.api.map.sorted.ImmutableSortedMap;
 import org.eclipse.collections.api.set.sorted.ImmutableSortedSet;
@@ -18,7 +16,7 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
  * The Interface for strategies for the text state. Responsible for creating {@link NounMapping NounMappings} from their constituent parts in a variety of
  * situations.
  */
-public interface TextStateStrategy extends Serializable {
+public interface TextStateStrategy {
     /**
      * Aggregation function used to aggregate multiple confidences into a single value
      */

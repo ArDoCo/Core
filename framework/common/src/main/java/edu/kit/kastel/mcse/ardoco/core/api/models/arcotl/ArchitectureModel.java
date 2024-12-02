@@ -3,6 +3,7 @@ package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl;
 
 import java.util.List;
 
+import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.architecture.ArchitectureItem;
 
 /**
@@ -24,29 +25,33 @@ public final class ArchitectureModel extends Model {
 
     @Override
     public List<ArchitectureItem> getContent() {
-        return content;
+        return this.content;
     }
 
     @Override
     public List<ArchitectureItem> getEndpoints() {
-        return getContent();
+        return this.getContent();
+    }
+
+    @Override
+    public Metamodel getMetamodel() {
+        return Metamodel.ARCHITECTURE;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (!(o instanceof ArchitectureModel that))
+        }
+        if (!(o instanceof ArchitectureModel that) || !super.equals(o)) {
             return false;
-        if (!super.equals(o))
-            return false;
-        return content.equals(that.content);
+        }
+        return this.content.equals(that.content);
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + content.hashCode();
-        return result;
+        return 31 * result + this.content.hashCode();
     }
 }

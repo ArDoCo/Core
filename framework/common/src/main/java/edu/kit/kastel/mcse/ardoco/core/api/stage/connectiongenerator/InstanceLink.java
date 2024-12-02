@@ -15,7 +15,6 @@ import edu.kit.kastel.mcse.ardoco.core.api.stage.recommendationgenerator.Recomme
 import edu.kit.kastel.mcse.ardoco.core.api.stage.textextraction.NounMapping;
 import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 import edu.kit.kastel.mcse.ardoco.core.common.AggregationFunctions;
-import edu.kit.kastel.mcse.ardoco.core.common.Internal;
 import edu.kit.kastel.mcse.ardoco.core.data.Confidence;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
 
@@ -23,7 +22,6 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.agent.Claimant;
  * An InstanceLink defines a link between an {@link RecommendedInstance} and an {@link ModelInstance}.
  */
 @Deterministic
-@Internal
 public class InstanceLink implements Serializable {
 
     private static final long serialVersionUID = -8630933950725516269L;

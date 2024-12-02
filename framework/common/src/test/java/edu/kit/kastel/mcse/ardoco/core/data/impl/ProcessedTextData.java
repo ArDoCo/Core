@@ -9,6 +9,7 @@ import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
  * Example {@link PipelineStepData}
  */
 public class ProcessedTextData implements PipelineStepData {
+    private static final long serialVersionUID = -6806096212069462237L;
     private List<String> importantTokens = null;
 
     public ProcessedTextData() {
@@ -16,7 +17,7 @@ public class ProcessedTextData implements PipelineStepData {
     }
 
     public List<String> getImportantTokens() {
-        return importantTokens;
+        return this.importantTokens;
     }
 
     public void setImportantTokens(List<String> importantTokens) {

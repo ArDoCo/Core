@@ -4,6 +4,7 @@ package edu.kit.kastel.mcse.ardoco.core.api.models.arcotl;
 import java.util.List;
 
 import edu.kit.kastel.mcse.ardoco.core.api.entity.Entity;
+import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.common.IdentifierProvider;
 
 public abstract sealed class Model permits ArchitectureModel, CodeModel {
@@ -27,4 +28,6 @@ public abstract sealed class Model permits ArchitectureModel, CodeModel {
      * @return the endpoints of this model
      */
     public abstract List<? extends Entity> getEndpoints();
+
+    public abstract Metamodel getMetamodel();
 }
