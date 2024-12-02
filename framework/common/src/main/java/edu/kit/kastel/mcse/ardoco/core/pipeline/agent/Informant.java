@@ -7,7 +7,6 @@ import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractPipelineStep;
 
 public abstract class Informant extends AbstractPipelineStep implements Claimant {
-    private static final long serialVersionUID = -5249465765417831157L;
 
     protected Informant(String id, DataRepository dataRepository) {
         super(id, dataRepository);
@@ -15,12 +14,12 @@ public abstract class Informant extends AbstractPipelineStep implements Claimant
 
     @Override
     protected void before() {
-        //Nothing by default
+        // Nothing by default
     }
 
     @Override
     protected void after() {
-        //Nothing by default
+        // Nothing by default
     }
 
     @Override

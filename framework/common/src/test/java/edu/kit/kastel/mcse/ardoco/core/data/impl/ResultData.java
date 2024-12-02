@@ -7,10 +7,11 @@ import edu.kit.kastel.mcse.ardoco.core.data.PipelineStepData;
  * Example {@link PipelineStepData}
  */
 public class ResultData implements PipelineStepData {
+    private static final long serialVersionUID = 9183617106768927240L;
     private String result = null;
 
     public String getResult() {
-        return result;
+        return this.result;
     }
 
     public void setResult(String result) {

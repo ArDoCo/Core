@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serial;
-import java.io.Serializable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +13,7 @@ import edu.kit.kastel.mcse.ardoco.core.api.output.ArDoCoResult;
 import edu.kit.kastel.mcse.ardoco.core.data.DataRepository;
 import edu.kit.kastel.mcse.ardoco.core.execution.ArDoCo;
 
-public abstract class ArDoCoRunner implements Serializable {
+public abstract class ArDoCoRunner {
     private static final Logger logger = LoggerFactory.getLogger(ArDoCoRunner.class);
 
     private final transient ArDoCo arDoCo;
@@ -24,18 +23,18 @@ public abstract class ArDoCoRunner implements Serializable {
 
     protected ArDoCoRunner(String projectName) {
         this.arDoCo = new ArDoCo(projectName);
-        outputDirectory = null;
+        this.outputDirectory = null;
     }
 
     public boolean isSetUp() {
-        return isSetUp;
+        return this.isSetUp;
     }
 
     public final ArDoCoResult run() {
-        if (this.isSetUp() && outputDirectory != null) {
-            return this.getArDoCo().runAndSave(outputDirectory);
+        if (this.isSetUp() && this.outputDirectory != null) {
+            return this.getArDoCo().runAndSave(this.outputDirectory);
         } else {
-            logger.error("Cannot run ArDoCo because the runner is not properly set up.");
+            ArDoCoRunner.logger.error("Cannot run ArDoCo because the runner is not properly set up.");
             return null;
         }
     }
@@ -48,7 +47,7 @@ public abstract class ArDoCoRunner implements Serializable {
             this.getArDoCo().run();
             return this.getArDoCo().getDataRepository();
         } else {
-            logger.error("Cannot run ArDoCo because the runner is not properly set up.");
+            ArDoCoRunner.logger.error("Cannot run ArDoCo because the runner is not properly set up.");
             return null;
         }
     }
@@ -63,8 +62,9 @@ public abstract class ArDoCoRunner implements Serializable {
 
     @Serial
     private void writeObject(ObjectOutputStream out) throws IOException {
-        if (!getArDoCo().wasExecuted())
-            runWithoutSaving();
+        if (!this.getArDoCo().wasExecuted()) {
+            this.runWithoutSaving();
+        }
         out.defaultWriteObject();
     }
 }

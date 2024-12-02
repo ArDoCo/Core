@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import edu.kit.kastel.mcse.ardoco.core.api.entity.Entity;
+import edu.kit.kastel.mcse.ardoco.core.api.models.Metamodel;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeCompilationUnit;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItem;
 import edu.kit.kastel.mcse.ardoco.core.api.models.arcotl.code.CodeItemRepository;
@@ -51,22 +52,27 @@ public final class CodeModel extends Model {
         }
     }
 
+    @Override
+    public Metamodel getMetamodel() {
+        return Metamodel.CODE;
+    }
+
     @JsonGetter("content")
     protected List<String> getContentIds() {
-        initialize();
-        return content;
+        this.initialize();
+        return this.content;
     }
 
     @Override
     public List<? extends CodeItem> getContent() {
-        initialize();
-        return codeItemRepository.getCodeItemsFromIds(content);
+        this.initialize();
+        return this.codeItemRepository.getCodeItemsFromIds(this.content);
     }
 
     @Override
     public List<? extends CodeCompilationUnit> getEndpoints() {
         List<CodeCompilationUnit> compilationUnits = new ArrayList<>();
-        getContent().forEach(c -> compilationUnits.addAll(c.getAllCompilationUnits()));
+        this.getContent().forEach(c -> compilationUnits.addAll(c.getAllCompilationUnits()));
         return compilationUnits;
     }
 
@@ -77,7 +83,7 @@ public final class CodeModel extends Model {
      */
     public List<? extends CodePackage> getAllPackages() {
         List<CodePackage> codePackages = new ArrayList<>();
-        var lContent = getContent();
+        var lContent = this.getContent();
         for (CodeItem c : lContent) {
             var allPackages = c.getAllPackages();
             for (CodePackage cp : allPackages) {
@@ -91,31 +97,28 @@ public final class CodeModel extends Model {
     }
 
     private synchronized void initialize() {
-        if (initialized)
+        if (this.initialized) {
             return;
+        }
         this.codeItemRepository.init();
-        initialized = true;
+        this.initialized = true;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (!(o instanceof CodeModel codeModel))
+        }
+        if (!(o instanceof CodeModel codeModel) || !super.equals(o) || !Objects.equals(this.codeItemRepository, codeModel.codeItemRepository)) {
             return false;
-        if (!super.equals(o))
-            return false;
-
-        if (!Objects.equals(codeItemRepository, codeModel.codeItemRepository))
-            return false;
-        return Objects.equals(content, codeModel.content);
+        }
+        return Objects.equals(this.content, codeModel.content);
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (codeItemRepository != null ? codeItemRepository.hashCode() : 0);
-        result = 31 * result + (content != null ? content.hashCode() : 0);
-        return result;
+        result = 31 * result + (this.codeItemRepository != null ? this.codeItemRepository.hashCode() : 0);
+        return 31 * result + (this.content != null ? this.content.hashCode() : 0);
     }
 }

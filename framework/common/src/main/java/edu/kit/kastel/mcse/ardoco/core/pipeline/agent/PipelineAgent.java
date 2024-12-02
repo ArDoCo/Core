@@ -18,7 +18,6 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
  * initialization before the main processing.
  */
 public abstract class PipelineAgent extends Pipeline implements Agent {
-    private static final long serialVersionUID = -2278691353857150422L;
 
     private final List<? extends Informant> informants;
 
