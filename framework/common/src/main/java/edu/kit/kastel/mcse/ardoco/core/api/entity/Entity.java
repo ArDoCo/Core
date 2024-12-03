@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import edu.kit.kastel.mcse.ardoco.core.common.IdentifierProvider;
 
 /**
- * An entity with a name. Is a model element.
+ * An entity defines the smallest unit of a trace link.
  */
 public abstract sealed class Entity implements Serializable, Comparable<Entity> permits ArchitectureEntity, TextEntity, CodeEntity {
 
