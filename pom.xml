@@ -546,6 +546,7 @@
       <modules>
         <module>framework</module>
         <module>pipeline-core</module>
+        <module>tests-base</module>
       </modules>
       <build>
         <plugins>
@@ -593,6 +594,7 @@
         <module>framework</module>
         <module>pipeline-core</module>
         <module>report</module>
+        <module>tests-base</module>
       </modules>
     </profile>
   </profiles>
