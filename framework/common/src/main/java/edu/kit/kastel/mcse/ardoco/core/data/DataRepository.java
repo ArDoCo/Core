@@ -9,8 +9,6 @@ import java.util.TreeMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
-
 /**
  * This class represents a data repository that can be used to store and fetch certain data ({@link PipelineStepData}. Data can be added and fetched with the
  * help of a data identifier (as string). Fetching also needs the necessary class of data that is expected.
@@ -41,7 +39,7 @@ public class DataRepository implements Serializable {
         if (possibleData != null) {
             return possibleData.asPipelineStepData(clazz);
         }
-        logger.warn("Could not find data for id '{}'", identifier);
+        DataRepository.logger.warn("Could not find data for id '{}'", identifier);
         return Optional.empty();
     }
 
@@ -53,7 +51,7 @@ public class DataRepository implements Serializable {
      */
     public void addData(String identifier, PipelineStepData pipelineStepData) {
         if (this.data.put(identifier, pipelineStepData) != null) {
-            logger.warn("Overriding data with identifier '{}'", identifier);
+            DataRepository.logger.warn("Overriding data with identifier '{}'", identifier);
         }
     }
 
@@ -64,14 +62,5 @@ public class DataRepository implements Serializable {
      */
     public void addAllData(DataRepository dataRepository) {
         this.data.putAll(dataRepository.data);
-    }
-
-    /**
-     * Creates a deep copy of the data repository using serialization.
-     *
-     * @return deep copy of the data repository
-     */
-    public DataRepository deepCopy() {
-        return DataRepositoryHelper.deepCopy(this);
     }
 }
