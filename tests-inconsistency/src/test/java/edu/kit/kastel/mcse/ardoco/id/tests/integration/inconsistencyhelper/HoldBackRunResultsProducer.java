@@ -52,16 +52,13 @@ public class HoldBackRunResultsProducer {
 
         HoldBackArCoTLModelProvider holdBackArCoTLModelProvider = new HoldBackArCoTLModelProvider(this.inputModel);
 
-        var preRunDataRepository = this.runShared(goldStandardProject);
-
-        var baseRunData = new ArDoCoResult(this.runUnshared(goldStandardProject, holdBackArCoTLModelProvider, preRunDataRepository.deepCopy(),
-                useBaselineApproach));
+        var baseRunData = new ArDoCoResult(this.run(goldStandardProject, holdBackArCoTLModelProvider, useBaselineApproach));
         runs.put(null, baseRunData);
 
         for (int i = 0; i < holdBackArCoTLModelProvider.numberOfActualInstances(); i++) {
             holdBackArCoTLModelProvider.setCurrentHoldBackIndex(i);
             var currentHoldBack = holdBackArCoTLModelProvider.getCurrentHoldBack();
-            var currentRunData = this.runUnshared(goldStandardProject, holdBackArCoTLModelProvider, preRunDataRepository.deepCopy(), useBaselineApproach);
+            var currentRunData = this.run(goldStandardProject, holdBackArCoTLModelProvider, useBaselineApproach);
             var result = new ArDoCoResult(currentRunData);
             runs.put(currentHoldBack, result);
         }
@@ -70,12 +67,16 @@ public class HoldBackRunResultsProducer {
     }
 
     /**
-     * Runs the part that is shared by all runs.
+     * Runs the part that is specific to each run.
      *
-     * @param goldStandardProject the current project
+     * @param goldStandardProject            the current project
+     * @param holdElementsBackModelConnector the model connector with the held-back model element
+     * @param preRunDataRepository           a deep copy of the data repository of the shared part
+     * @param useInconsistencyBaseline       whether the inconsistency baseline is used or ArDoCo's inconsistency checker
      * @return the data repository that is produced
      */
-    protected DataRepository runShared(GoldStandardProject goldStandardProject) {
+    protected DataRepository run(GoldStandardProject goldStandardProject, HoldBackArCoTLModelProvider holdElementsBackModelConnector,
+            boolean useInconsistencyBaseline) {
         return new AnonymousRunner(goldStandardProject.getProjectName()) {
             @Override
             public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) {
@@ -88,27 +89,6 @@ public class HoldBackRunResultsProducer {
                 DataRepositoryHelper.putInputText(dataRepository, text);
                 pipelineSteps.add(TextPreprocessingAgent.get(HoldBackRunResultsProducer.this.additionalConfigs, dataRepository));
                 pipelineSteps.add(TextExtraction.get(HoldBackRunResultsProducer.this.additionalConfigs, dataRepository));
-
-                return pipelineSteps;
-            }
-        }.runWithoutSaving();
-    }
-
-    /**
-     * Runs the part that is specific to each run.
-     *
-     * @param goldStandardProject            the current project
-     * @param holdElementsBackModelConnector the model connector with the held-back model element
-     * @param preRunDataRepository           a deep copy of the data repository of the shared part
-     * @param useInconsistencyBaseline       whether the inconsistency baseline is used or ArDoCo's inconsistency checker
-     * @return the data repository that is produced
-     */
-    protected DataRepository runUnshared(GoldStandardProject goldStandardProject, HoldBackArCoTLModelProvider holdElementsBackModelConnector,
-            DataRepository preRunDataRepository, boolean useInconsistencyBaseline) {
-        return new AnonymousRunner(goldStandardProject.getProjectName(), preRunDataRepository) {
-            @Override
-            public List<AbstractPipelineStep> initializePipelineSteps(DataRepository dataRepository) {
-                var pipelineSteps = new ArrayList<AbstractPipelineStep>();
 
                 pipelineSteps.add(holdElementsBackModelConnector.get(HoldBackRunResultsProducer.this.additionalConfigs, dataRepository));
                 pipelineSteps.add(RecommendationGenerator.get(HoldBackRunResultsProducer.this.additionalConfigs, dataRepository));
