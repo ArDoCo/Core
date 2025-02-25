@@ -22,7 +22,7 @@ To get to know the project, please read the following pages:
 * [Text Preprocessing Microservice](Text-Preprocessing-Microservice)
 * [Traceability Link Recovery (TLR)](traceability-link-recovery)
 * [Inconsistency Detection (ID)](inconsistency-detection)
-* [Linking Sketches and Software Architecture (LiSSA)](LiSSA)
+* [LiSSA Retrieval-Augmented TLR](LiSSA)
 
 ## Project Structure
 
