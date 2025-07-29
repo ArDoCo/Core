@@ -1,9 +1,10 @@
-/* Licensed under MIT 2022-2024. */
+/* Licensed under MIT 2022-2025. */
 package edu.kit.kastel.mcse.ardoco.core.pipeline.agent;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.SortedMap;
+
+import org.eclipse.collections.api.map.sorted.ImmutableSortedMap;
 
 import edu.kit.kastel.mcse.ardoco.core.configuration.ChildClassConfigurable;
 import edu.kit.kastel.mcse.ardoco.core.configuration.Configurable;
@@ -12,12 +13,11 @@ import edu.kit.kastel.mcse.ardoco.core.pipeline.AbstractExecutionStage;
 import edu.kit.kastel.mcse.ardoco.core.pipeline.Pipeline;
 
 /**
- * This class represents a pipeline agent that calculates some results for an {@link AbstractExecutionStage} execution stage}.
- *
- * Implementing classes need to override. Additionally, sub-classes are free to override {@link #initializeState()} to execute code at the beginning of the
- * initialization before the main processing.
+ * Represents a pipeline agent that calculates results for an {@link AbstractExecutionStage}.
+ * Subclasses should override and may override {@link #initializeState()} for custom initialization.
  */
 public abstract class PipelineAgent extends Pipeline implements Agent {
+
     private final List<? extends Informant> informants;
 
     @Configurable
@@ -25,8 +25,7 @@ public abstract class PipelineAgent extends Pipeline implements Agent {
     private List<String> enabledInformants;
 
     /**
-     * Creates a new pipeline agent with the specified id. During execution the pipeline agent sequentially runs its informants on the provided data
-     * repository.
+     * Creates a new pipeline agent with the specified id. Runs informants sequentially on the data repository.
      *
      * @param informants     the informants in order of execution (all enabled by default)
      * @param id             the id
@@ -38,14 +37,17 @@ public abstract class PipelineAgent extends Pipeline implements Agent {
         this.enabledInformants = informants.stream().map(Informant::getId).toList();
     }
 
+    /**
+     * Prepares pipeline steps and initializes the agent.
+     */
     @Override
     protected final void preparePipelineSteps() {
         super.preparePipelineSteps();
-        initialize();
+        this.initialize();
     }
 
     /**
-     * Called before all informants
+     * Called before all informants. Override to add custom behavior.
      */
     @Override
     protected void before() {
@@ -53,7 +55,7 @@ public abstract class PipelineAgent extends Pipeline implements Agent {
     }
 
     /**
-     * Called after all informants
+     * Called after all informants. Override to add custom behavior.
      */
     @Override
     protected void after() {
@@ -61,35 +63,42 @@ public abstract class PipelineAgent extends Pipeline implements Agent {
     }
 
     /**
-     * Initialize the execution
+     * Initializes the execution and adds enabled informants as pipeline steps.
      */
     protected final void initialize() {
-        initializeState();
-        for (var informant : informants) {
-            if (enabledInformants.contains(informant.getId())) {
+        this.initializeState();
+        for (var informant : this.informants) {
+            if (this.enabledInformants.contains(informant.getId())) {
                 this.addPipelineStep(informant);
             }
         }
     }
 
     /**
-     * If necessary, override this method to additionally initialize the state before the processing
+     * Override to initialize state before processing, if necessary.
      */
     protected void initializeState() {
         // do nothing here
     }
 
     /**
-     * {@return the informants including disabled}
+     * Returns the informants, including disabled ones.
+     *
+     * @return the list of informants
      */
     public List<Informant> getInformants() {
-        return List.copyOf(informants);
+        return List.copyOf(this.informants);
     }
 
+    /**
+     * Applies additional configuration to internal objects and informants.
+     */
     @Override
-    protected void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration) {
+    protected void delegateApplyConfigurationToInternalObjects(ImmutableSortedMap<String, String> additionalConfiguration) {
         super.delegateApplyConfigurationToInternalObjects(additionalConfiguration);
-        informants.forEach(filter -> filter.applyConfiguration(additionalConfiguration));
+        for (Informant informant : this.informants) {
+            informant.applyConfiguration(additionalConfiguration);
+        }
     }
 
 }
