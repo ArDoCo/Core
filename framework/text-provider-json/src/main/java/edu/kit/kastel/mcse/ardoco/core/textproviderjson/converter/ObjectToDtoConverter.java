@@ -1,4 +1,4 @@
-/* Licensed under MIT 2023. */
+/* Licensed under MIT 2023-2025. */
 package edu.kit.kastel.mcse.ardoco.core.textproviderjson.converter;
 
 import java.io.IOException;
@@ -74,7 +74,7 @@ public class ObjectToDtoConverter {
 
     private WordDto convertToWordDTO(Word word) throws NotConvertableException {
         WordDto wordDTO = new WordDto();
-        wordDTO.setId(word.getPosition() + (long) 1);
+        wordDTO.setId(word.getPosition() + 1L);
         wordDTO.setText(word.getText());
         wordDTO.setLemma(word.getLemma());
         try {
@@ -82,7 +82,7 @@ public class ObjectToDtoConverter {
         } catch (IOException e) {
             throw new NotConvertableException(String.format("IOException when converting word with id %d to WordDto: PosTag not found.", wordDTO.getId()));
         }
-        wordDTO.setSentenceNo(word.getSentenceNo() + (long) 1);
+        wordDTO.setSentenceNo(word.getSentenceNumber() + 1L);
         List<DependencyImpl> inDep = new ArrayList<>();
         List<DependencyImpl> outDep = new ArrayList<>();
         for (DependencyTag depType : DependencyTag.values()) {
@@ -116,22 +116,22 @@ public class ObjectToDtoConverter {
         while (!words.isEmpty() || !subphrases.isEmpty()) {
             if (subphrases.isEmpty()) {
                 // word next
-                Word word = words.remove(0);
+                Word word = words.removeFirst();
                 constituencyTree.append(TREE_SEPARATOR).append(convertWordToTree(word));
             } else if (words.isEmpty()) {
                 // phrase next
-                Phrase subphrase = subphrases.remove(0);
+                Phrase subphrase = subphrases.removeFirst();
                 constituencyTree.append(TREE_SEPARATOR).append(convertToSubtree(subphrase));
             } else {
-                int wordIndex = words.get(0).getPosition();
-                List<Integer> phraseWordIndices = subphrases.get(0).getContainedWords().toList().stream().map(Word::getPosition).toList();
+                int wordIndex = words.getFirst().getPosition();
+                List<Integer> phraseWordIndices = subphrases.getFirst().getContainedWords().toList().stream().map(Word::getPosition).toList();
                 if (wordIndex < Collections.min(phraseWordIndices)) {
                     // word next
-                    Word word = words.remove(0);
+                    Word word = words.removeFirst();
                     constituencyTree.append(TREE_SEPARATOR).append(convertWordToTree(word));
                 } else {
                     // phrase next
-                    Phrase subphrase = subphrases.remove(0);
+                    Phrase subphrase = subphrases.removeFirst();
                     constituencyTree.append(TREE_SEPARATOR).append(convertToSubtree(subphrase));
                 }
             }

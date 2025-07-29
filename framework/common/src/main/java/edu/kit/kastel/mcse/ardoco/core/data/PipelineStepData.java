@@ -1,4 +1,4 @@
-/* Licensed under MIT 2022-2024. */
+/* Licensed under MIT 2022-2025. */
 package edu.kit.kastel.mcse.ardoco.core.data;
 
 import java.io.Serializable;
@@ -10,10 +10,13 @@ import org.slf4j.LoggerFactory;
 import edu.kit.kastel.mcse.ardoco.core.common.JsonHandling;
 
 /**
- * This abstract class defines data that is used for the pipeline steps.
+ * Interface for data used in pipeline steps, supporting serialization and conversion between data types.
  */
 public interface PipelineStepData extends Serializable {
 
+    /**
+     * Logger for pipeline step data operations.
+     */
     Logger logger = LoggerFactory.getLogger(PipelineStepData.class);
 
     /**
@@ -27,11 +30,15 @@ public interface PipelineStepData extends Serializable {
     default <T extends PipelineStepData> Optional<T> asPipelineStepData(Class<T> clazz) {
         if (!clazz.isAssignableFrom(this.getClass())) {
             return Optional.empty();
-        } else {
-            return Optional.of(clazz.cast(this));
         }
+        return Optional.of(clazz.cast(this));
     }
 
+    /**
+     * Serializes this data into a JSON string.
+     *
+     * @return JSON string representation of this data or null if serialization fails.
+     */
     default String serialize() {
         var oom = JsonHandling.createObjectMapper();
         try {
@@ -42,6 +49,12 @@ public interface PipelineStepData extends Serializable {
         }
     }
 
+    /**
+     * Deserializes the given JSON string into an instance of this data type.
+     *
+     * @param data JSON string to deserialize
+     * @return Deserialized instance of this data type or null if deserialization fails.
+     */
     default PipelineStepData deserialize(String data) {
         var oom = JsonHandling.createObjectMapper();
         try {

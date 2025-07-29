@@ -1,6 +1,7 @@
-/* Licensed under MIT 2022-2024. */
+/* Licensed under MIT 2022-2025. */
 package edu.kit.kastel.mcse.ardoco.core.data;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Optional;
 import java.util.SortedMap;
@@ -9,29 +10,24 @@ import java.util.TreeMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import edu.kit.kastel.mcse.ardoco.core.common.util.DataRepositoryHelper;
-
 /**
- * This class represents a data repository that can be used to store and fetch certain data ({@link PipelineStepData}. Data can be added and fetched with the
- * help of a data identifier (as string). Fetching also needs the necessary class of data that is expected.
+ * Represents a data repository for storing and fetching pipeline step data by identifier. Data can be added and fetched using a string identifier and the
+ * expected class type.
  */
 public class DataRepository implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = -3068992658696547744L;
+
+    /**
+     * Logger for data repository operations.
+     */
     private static final Logger logger = LoggerFactory.getLogger(DataRepository.class);
 
     private final SortedMap<String, PipelineStepData> data;
 
     public DataRepository() {
         this.data = new TreeMap<>();
-        addData(GlobalConfiguration.ID, new GlobalConfiguration());
-    }
-
-    /**
-     * Returns the {@link GlobalConfiguration} stored within the provided {@link DataRepository}.
-     * 
-     * @return the data
-     */
-    public final GlobalConfiguration getGlobalConfiguration() {
-        return getData(GlobalConfiguration.ID, GlobalConfiguration.class).orElseThrow();
     }
 
     /**
@@ -44,11 +40,11 @@ public class DataRepository implements Serializable {
      * @return Optional containing the requested data cast into the given class. The optional is empty is data could not be found or casting was unsuccessful.
      */
     public <T extends PipelineStepData> Optional<T> getData(String identifier, Class<T> clazz) {
-        var possibleData = data.get(identifier);
+        var possibleData = this.data.get(identifier);
         if (possibleData != null) {
             return possibleData.asPipelineStepData(clazz);
         }
-        logger.warn("Could not find data for id '{}'", identifier);
+        DataRepository.logger.debug("Could not find data for id '{}'", identifier);
         return Optional.empty();
     }
 
@@ -59,27 +55,8 @@ public class DataRepository implements Serializable {
      * @param pipelineStepData Data that should be saved
      */
     public void addData(String identifier, PipelineStepData pipelineStepData) {
-        if (data.put(identifier, pipelineStepData) != null) {
-            logger.warn("Overriding data with identifier '{}'", identifier);
+        if (this.data.put(identifier, pipelineStepData) != null) {
+            DataRepository.logger.warn("Overriding data with identifier '{}'", identifier);
         }
-    }
-
-    /**
-     * Adds all data to the existing repository using the provided repository.
-     *
-     * @param dataRepository data repository
-     */
-    public void addAllData(DataRepository dataRepository) {
-        this.data.putAll(dataRepository.data);
-    }
-
-    /**
-     * Creates a deep copy of the data repository using serialization.
-     *
-     * @return deep copy of the data repository
-     */
-    @DeepCopy
-    public DataRepository deepCopy() {
-        return DataRepositoryHelper.deepCopy(this);
     }
 }

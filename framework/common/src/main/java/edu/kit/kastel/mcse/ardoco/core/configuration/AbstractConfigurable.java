@@ -1,56 +1,64 @@
-/* Licensed under MIT 2022-2024. */
+/* Licensed under MIT 2022-2025. */
 package edu.kit.kastel.mcse.ardoco.core.configuration;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serial;
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
-import org.apache.commons.lang3.reflect.FieldUtils;
+import org.eclipse.collections.api.factory.SortedMaps;
+import org.eclipse.collections.api.map.sorted.ImmutableSortedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.kit.kastel.mcse.ardoco.core.architecture.Deterministic;
 
+/**
+ * Abstract base class for configurable components. Provides configuration application logic and utility methods for subclasses.
+ */
 @Deterministic
-public abstract class AbstractConfigurable implements IConfigurable, Serializable {
-    protected final transient Logger logger = LoggerFactory.getLogger(this.getClass());
-
+public abstract class AbstractConfigurable implements IConfigurable {
+    /**
+     * Connector for class attribute keys ("::").
+     */
     public static final String CLASS_ATTRIBUTE_CONNECTOR = "::";
+    /**
+     * Connector for key-value pairs ("=").
+     */
     public static final String KEY_VALUE_CONNECTOR = "=";
+    /**
+     * Separator for list values (",").
+     */
     public static final String LIST_SEPARATOR = ",";
 
-    private SortedMap<String, String> lastAppliedConfiguration = new TreeMap<>();
+    @SuppressWarnings("java:S2065") // The logger is used in the subclasses that are serializable
+    private transient Logger logger;
+
+    private ImmutableSortedMap<String, String> lastAppliedConfiguration = SortedMaps.immutable.empty();
 
     @Override
-    public final void applyConfiguration(SortedMap<String, String> additionalConfiguration) {
-        applyConfiguration(additionalConfiguration, this, this.getClass());
-        delegateApplyConfigurationToInternalObjects(additionalConfiguration);
-        this.lastAppliedConfiguration = new TreeMap<>(additionalConfiguration);
+    public final void applyConfiguration(ImmutableSortedMap<String, String> additionalConfiguration) {
+        this.applyConfiguration(additionalConfiguration, this, this.getClass());
+        this.delegateApplyConfigurationToInternalObjects(additionalConfiguration);
+        this.lastAppliedConfiguration = additionalConfiguration;
     }
 
     @Override
-    public SortedMap<String, String> getLastAppliedConfiguration() {
-        return Collections.unmodifiableSortedMap(lastAppliedConfiguration);
+    public ImmutableSortedMap<String, String> getLastAppliedConfiguration() {
+        return this.lastAppliedConfiguration;
     }
 
-    protected abstract void delegateApplyConfigurationToInternalObjects(SortedMap<String, String> additionalConfiguration);
+    protected abstract void delegateApplyConfigurationToInternalObjects(ImmutableSortedMap<String, String> additionalConfiguration);
 
-    private void applyConfiguration(SortedMap<String, String> additionalConfiguration, AbstractConfigurable configurable, Class<?> currentClassInHierarchy) {
-        if (currentClassInHierarchy == Object.class || currentClassInHierarchy == AbstractConfigurable.class)
+    private void applyConfiguration(ImmutableSortedMap<String, String> additionalConfiguration, AbstractConfigurable configurable,
+            Class<?> currentClassInHierarchy) {
+        if (currentClassInHierarchy == Object.class || currentClassInHierarchy == AbstractConfigurable.class) {
             return;
+        }
 
         if (currentClassInHierarchy.getAnnotation(NoConfiguration.class) != null) {
-            logger.debug("Skipping configuration for class {}", currentClassInHierarchy.getSimpleName());
+            this.getLogger().debug("Skipping configuration for class {}", currentClassInHierarchy.getSimpleName());
             return;
         }
 
@@ -61,17 +69,17 @@ public abstract class AbstractConfigurable implements IConfigurable, Serializabl
             }
             String key = getKeyOfField(configurable, currentClassInHierarchy, field);
             if (additionalConfiguration.containsKey(key)) {
-                setValue(field, additionalConfiguration.get(key));
+                this.setValue(field, additionalConfiguration.get(key));
             }
         }
 
-        applyConfiguration(additionalConfiguration, configurable, currentClassInHierarchy.getSuperclass());
+        this.applyConfiguration(additionalConfiguration, configurable, currentClassInHierarchy.getSuperclass());
     }
 
     /**
      * Returns the key (for the configuration file) of a field. If the field is marked as ChildClassConfigurable, the key is based on the class of the
      * configurable object. Otherwise, the key is based on the class where the field is defined.
-     * 
+     *
      * @param configurable            the configurable object
      * @param currentClassInHierarchy the class where the field is defined
      * @param field                   the field
@@ -92,15 +100,16 @@ public abstract class AbstractConfigurable implements IConfigurable, Serializabl
 
     private void setValue(Field field, String value) {
         var clazz = field.getType();
-        var parsedValue = parse(field, clazz, value);
-        if (parsedValue == null)
+        var parsedValue = this.parse(field, clazz, value);
+        if (parsedValue == null) {
             return;
+        }
 
         try {
             field.setAccessible(true);
             field.set(this, parsedValue);
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            this.getLogger().error(e.getMessage(), e);
         }
     }
 
@@ -122,27 +131,23 @@ public abstract class AbstractConfigurable implements IConfigurable, Serializabl
         if (List.class.isAssignableFrom(fieldsClass) && field.getGenericType() instanceof ParameterizedType parameterizedType) {
             var generics = parameterizedType.getActualTypeArguments();
 
-            if (generics != null && generics.length == 1 && generics[0] == String.class)
+            if (generics.length == 1 && generics[0] == String.class) {
                 return new ArrayList<>(Arrays.stream(value.split(LIST_SEPARATOR)).toList());
+            }
         }
 
         throw new IllegalArgumentException("Could not find a parse method for fields of type: " + fieldsClass);
     }
 
-    @Serial
-    private void writeObject(ObjectOutputStream objectOutputStream) throws IOException {
-        objectOutputStream.defaultWriteObject();
-    }
-
-    @Serial
-    private void readObject(ObjectInputStream objectInputStream) throws IOException, ClassNotFoundException {
-        objectInputStream.defaultReadObject();
-        try {
-            var loggerField = Arrays.stream(FieldUtils.getAllFields(getClass())).filter(f -> f.getName().equals("logger")).findFirst().orElseThrow();
-            loggerField.setAccessible(true);
-            loggerField.set(this, LoggerFactory.getLogger(this.getClass()));
-        } catch (IllegalAccessException e) {
-            throw new IllegalAccessError(e.getMessage());
+    /**
+     * Returns the logger for this configurable instance.
+     *
+     * @return the logger
+     */
+    protected final Logger getLogger() {
+        if (this.logger == null) {
+            this.logger = LoggerFactory.getLogger(this.getClass());
         }
+        return this.logger;
     }
 }

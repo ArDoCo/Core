@@ -1,4 +1,4 @@
-/* Licensed under MIT 2023-2024. */
+/* Licensed under MIT 2023-2025. */
 package edu.kit.kastel.mcse.ardoco.core.textproviderjson.converter;
 
 import java.util.ArrayList;
@@ -89,7 +89,7 @@ public class DtoToObjectConverter {
                 if (wordsOfSentence.isEmpty()) {
                     throw new NotConvertableException("Constituency tree does not match words of sentence");
                 }
-                words.add(wordsOfSentence.remove(0));
+                words.add(wordsOfSentence.removeFirst());
             } else {
                 subPhrases.add(parseConstituencyTree(subtree, wordsOfSentence));
             }
